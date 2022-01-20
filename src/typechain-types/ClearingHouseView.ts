@@ -24,6 +24,72 @@ import type {
   OnEvent,
 } from './common';
 
+export type DepositTokenViewStruct = {
+  rTokenAddress: string;
+  balance: BigNumberish;
+};
+
+export type DepositTokenViewStructOutput = [string, BigNumber] & {
+  rTokenAddress: string;
+  balance: BigNumber;
+};
+
+export type LiquidityPositionViewStruct = {
+  limitOrderType: BigNumberish;
+  tickLower: BigNumberish;
+  tickUpper: BigNumberish;
+  liquidity: BigNumberish;
+  vTokenAmountIn: BigNumberish;
+  sumALastX128: BigNumberish;
+  sumBInsideLastX128: BigNumberish;
+  sumFpInsideLastX128: BigNumberish;
+  sumFeeInsideLastX128: BigNumberish;
+};
+
+export type LiquidityPositionViewStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  limitOrderType: number;
+  tickLower: number;
+  tickUpper: number;
+  liquidity: BigNumber;
+  vTokenAmountIn: BigNumber;
+  sumALastX128: BigNumber;
+  sumBInsideLastX128: BigNumber;
+  sumFpInsideLastX128: BigNumber;
+  sumFeeInsideLastX128: BigNumber;
+};
+
+export type VTokenPositionViewStruct = {
+  vTokenAddress: string;
+  balance: BigNumberish;
+  netTraderPosition: BigNumberish;
+  sumAX128Ckpt: BigNumberish;
+  liquidityPositions: LiquidityPositionViewStruct[];
+};
+
+export type VTokenPositionViewStructOutput = [
+  string,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  LiquidityPositionViewStructOutput[]
+] & {
+  vTokenAddress: string;
+  balance: BigNumber;
+  netTraderPosition: BigNumber;
+  sumAX128Ckpt: BigNumber;
+  liquidityPositions: LiquidityPositionViewStructOutput[];
+};
+
 export type BalanceAdjustmentsStruct = {
   vBaseIncrease: BigNumberish;
   vTokenIncrease: BigNumberish;
@@ -155,6 +221,7 @@ export interface ClearingHouseViewInterface extends ethers.utils.Interface {
     'addMargin(uint256,uint32,uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
+    'getAccountView(uint256)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
     'governance()': FunctionFragment;
     'initRealToken(address)': FunctionFragment;
@@ -200,6 +267,10 @@ export interface ClearingHouseViewInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'extsload', values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountView',
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: 'getTwapSqrtPricesForSetDuration',
     values: [string]
@@ -322,6 +393,10 @@ export interface ClearingHouseViewInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'extsload', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountView',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getTwapSqrtPricesForSetDuration',
     data: BytesLike
@@ -501,6 +576,21 @@ export interface ClearingHouseView extends BaseContract {
       slots: BytesLike[],
       overrides?: CallOverrides
     ): Promise<[string[]]>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
+      }
+    >;
 
     getTwapSqrtPricesForSetDuration(
       vToken: string,
@@ -691,6 +781,21 @@ export interface ClearingHouseView extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getAccountView(
+    accountNo: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      DepositTokenViewStructOutput[],
+      VTokenPositionViewStructOutput[]
+    ] & {
+      owner: string;
+      tokenDeposits: DepositTokenViewStructOutput[];
+      tokenPositions: VTokenPositionViewStructOutput[];
+    }
+  >;
+
   getTwapSqrtPricesForSetDuration(
     vToken: string,
     overrides?: CallOverrides
@@ -865,6 +970,21 @@ export interface ClearingHouseView extends BaseContract {
       slots: BytesLike[],
       overrides?: CallOverrides
     ): Promise<string[]>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
+      }
+    >;
 
     getTwapSqrtPricesForSetDuration(
       vToken: string,
@@ -1080,6 +1200,11 @@ export interface ClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTwapSqrtPricesForSetDuration(
       vToken: string,
       overrides?: CallOverrides
@@ -1243,6 +1368,11 @@ export interface ClearingHouseView extends BaseContract {
 
     'extsload(bytes32[])'(
       slots: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountView(
+      accountNo: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

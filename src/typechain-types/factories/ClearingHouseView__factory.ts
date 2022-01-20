@@ -255,6 +255,121 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
+    name: 'getAccountView',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'rTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'balance',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct IClearingHouse.DepositTokenView[]',
+        name: 'tokenDeposits',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'vTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'int256',
+            name: 'balance',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'netTraderPosition',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumAX128Ckpt',
+            type: 'int256',
+          },
+          {
+            components: [
+              {
+                internalType: 'enum IClearingHouse.LimitOrderType',
+                name: 'limitOrderType',
+                type: 'uint8',
+              },
+              {
+                internalType: 'int24',
+                name: 'tickLower',
+                type: 'int24',
+              },
+              {
+                internalType: 'int24',
+                name: 'tickUpper',
+                type: 'int24',
+              },
+              {
+                internalType: 'uint128',
+                name: 'liquidity',
+                type: 'uint128',
+              },
+              {
+                internalType: 'int256',
+                name: 'vTokenAmountIn',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumALastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumBInsideLastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumFpInsideLastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'sumFeeInsideLastX128',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct IClearingHouse.LiquidityPositionView[]',
+            name: 'liquidityPositions',
+            type: 'tuple[]',
+          },
+        ],
+        internalType: 'struct IClearingHouse.VTokenPositionView[]',
+        name: 'tokenPositions',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
