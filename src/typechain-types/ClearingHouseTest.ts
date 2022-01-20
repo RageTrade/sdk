@@ -24,6 +24,72 @@ import type {
   OnEvent,
 } from './common';
 
+export type DepositTokenViewStruct = {
+  rTokenAddress: string;
+  balance: BigNumberish;
+};
+
+export type DepositTokenViewStructOutput = [string, BigNumber] & {
+  rTokenAddress: string;
+  balance: BigNumber;
+};
+
+export type LiquidityPositionViewStruct = {
+  limitOrderType: BigNumberish;
+  tickLower: BigNumberish;
+  tickUpper: BigNumberish;
+  liquidity: BigNumberish;
+  vTokenAmountIn: BigNumberish;
+  sumALastX128: BigNumberish;
+  sumBInsideLastX128: BigNumberish;
+  sumFpInsideLastX128: BigNumberish;
+  sumFeeInsideLastX128: BigNumberish;
+};
+
+export type LiquidityPositionViewStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  limitOrderType: number;
+  tickLower: number;
+  tickUpper: number;
+  liquidity: BigNumber;
+  vTokenAmountIn: BigNumber;
+  sumALastX128: BigNumber;
+  sumBInsideLastX128: BigNumber;
+  sumFpInsideLastX128: BigNumber;
+  sumFeeInsideLastX128: BigNumber;
+};
+
+export type VTokenPositionViewStruct = {
+  vTokenAddress: string;
+  balance: BigNumberish;
+  netTraderPosition: BigNumberish;
+  sumAX128Ckpt: BigNumberish;
+  liquidityPositions: LiquidityPositionViewStruct[];
+};
+
+export type VTokenPositionViewStructOutput = [
+  string,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  LiquidityPositionViewStructOutput[]
+] & {
+  vTokenAddress: string;
+  balance: BigNumber;
+  netTraderPosition: BigNumber;
+  sumAX128Ckpt: BigNumber;
+  liquidityPositions: LiquidityPositionViewStructOutput[];
+};
+
 export type BalanceAdjustmentsStruct = {
   vBaseIncrease: BigNumberish;
   vTokenIncrease: BigNumberish;
@@ -168,6 +234,7 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
     'getAccountOwner(uint256)': FunctionFragment;
     'getAccountTokenPositionFunding(uint256,address)': FunctionFragment;
     'getAccountValueAndRequiredMargin(uint256,bool)': FunctionFragment;
+    'getAccountView(uint256)': FunctionFragment;
     'getTokenAddressInVTokens(address)': FunctionFragment;
     'getTruncatedTokenAddress(address)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
@@ -272,6 +339,10 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'getAccountValueAndRequiredMargin',
     values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountView',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getTokenAddressInVTokens',
@@ -495,6 +566,10 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getAccountValueAndRequiredMargin',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountView',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -820,6 +895,21 @@ export interface ClearingHouseTest extends BaseContract {
       [BigNumber, BigNumber] & {
         accountMarketValue: BigNumber;
         requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
       }
     >;
 
@@ -1190,6 +1280,21 @@ export interface ClearingHouseTest extends BaseContract {
     }
   >;
 
+  getAccountView(
+    accountNo: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      DepositTokenViewStructOutput[],
+      VTokenPositionViewStructOutput[]
+    ] & {
+      owner: string;
+      tokenDeposits: DepositTokenViewStructOutput[];
+      tokenPositions: VTokenPositionViewStructOutput[];
+    }
+  >;
+
   getTokenAddressInVTokens(
     vToken: string,
     overrides?: CallOverrides
@@ -1540,6 +1645,21 @@ export interface ClearingHouseTest extends BaseContract {
       [BigNumber, BigNumber] & {
         accountMarketValue: BigNumber;
         requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
       }
     >;
 
@@ -1894,6 +2014,11 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTokenAddressInVTokens(
       vToken: string,
       overrides?: CallOverrides
@@ -2200,6 +2325,11 @@ export interface ClearingHouseTest extends BaseContract {
     getAccountValueAndRequiredMargin(
       accountNo: BigNumberish,
       isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountView(
+      accountNo: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
