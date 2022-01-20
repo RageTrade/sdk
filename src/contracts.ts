@@ -15,7 +15,6 @@ import {
   VPoolWrapper__factory,
   VToken__factory,
 } from './typechain-types';
-import { resolve } from 'path';
 
 export type NetworkName = 'mainnet' | 'rinkeby' | 'arbmain' | 'arbtest';
 
@@ -40,14 +39,14 @@ export async function getContracts(signerOrProvider: Signer | Provider) {
   }
 
   const network = await provider.getNetwork();
-  return getContractsWithChainId(signerOrProvider, network.chainId);
+  return await getContractsWithChainId(signerOrProvider, network.chainId);
 }
 
-export function getContractsWithChainId(
+export async function getContractsWithChainId(
   signerOrProvider: Signer | Provider,
   chainId: number
 ) {
-  const d = getDeployments(getNetworkNameFromChainId(chainId));
+  const d = await getDeployments(getNetworkNameFromChainId(chainId));
   return {
     accountLib: Account__factory.connect(
       d.AccountLibraryDeployment.address,
@@ -111,24 +110,30 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
   });
 }
 
-export function getDeployments(network: NetworkName) {
-  const AccountLibraryDeployment = getDeployment(network, 'AccountLibrary');
-  const ClearingHouseDeployment = getDeployment(network, 'ClearingHouse');
-  const ClearingHouseLogicDeployment = getDeployment(
+export async function getDeployments(network: NetworkName) {
+  const AccountLibraryDeployment = await getDeployment(
+    network,
+    'AccountLibrary'
+  );
+  const ClearingHouseDeployment = await getDeployment(network, 'ClearingHouse');
+  const ClearingHouseLogicDeployment = await getDeployment(
     network,
     'ClearingHouseLogic'
   );
-  const InsuranceFundDeployment = getDeployment(network, 'InsuranceFund');
-  const InsuranceFundLogicDeployment = getDeployment(
+  const InsuranceFundDeployment = await getDeployment(network, 'InsuranceFund');
+  const InsuranceFundLogicDeployment = await getDeployment(
     network,
     'InsuranceFundLogic'
   );
-  const NativeOracleDeployment = getDeployment(network, 'NativeOracle');
-  const ProxyAdminDeployment = getDeployment(network, 'ProxyAdmin');
-  const RageTradeFactoryDeployment = getDeployment(network, 'RageTradeFactory');
-  const RBaseDeployment = getDeployment(network, 'RBase');
-  const VBaseDeployment = getDeployment(network, 'VBase');
-  const VPoolWrapperLogicDeployment = getDeployment(
+  const NativeOracleDeployment = await getDeployment(network, 'NativeOracle');
+  const ProxyAdminDeployment = await getDeployment(network, 'ProxyAdmin');
+  const RageTradeFactoryDeployment = await getDeployment(
+    network,
+    'RageTradeFactory'
+  );
+  const RBaseDeployment = await getDeployment(network, 'RBase');
+  const VBaseDeployment = await getDeployment(network, 'VBase');
+  const VPoolWrapperLogicDeployment = await getDeployment(
     network,
     'VPoolWrapperLogic'
   );
@@ -177,15 +182,12 @@ export function getNetworkNameFromChainId(chainId: number): NetworkName {
   }
 }
 
-export function getDeployment(
+export async function getDeployment(
   networkName: NetworkName,
   name: string
-): { address: string } {
+): Promise<{ address: string }> {
   try {
-    return require(resolve(
-      __dirname,
-      `../deployments/${networkName}/${name}.json`
-    ));
+    return await import(`../deployments/${networkName}/${name}.json`);
   } catch (e) {
     console.error(e);
     throw new Error(
