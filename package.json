@@ -1,10 +1,11 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
+    "deployments",
     "src"
   ],
   "engines": {
@@ -37,8 +38,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "sdk",
+  "name": "@ragetrade/sdk",
   "author": "LeadDev",
+  "homepage": "https://github.com/owner/project#readme",
   "module": "dist/sdk.esm.js",
   "size-limit": [
     {

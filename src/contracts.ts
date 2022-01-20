@@ -48,8 +48,6 @@ export function getContractsWithChainId(
   chainId: number
 ) {
   const d = getDeployments(getNetworkNameFromChainId(chainId));
-  console.log(d);
-
   return {
     accountLib: Account__factory.connect(
       d.AccountLibraryDeployment.address,
