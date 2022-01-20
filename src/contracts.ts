@@ -7,6 +7,7 @@ import {
   InsuranceFund__factory,
   IOracle__factory,
   IUniswapV3Pool__factory,
+  OracleMock__factory,
   ProxyAdmin__factory,
   RageTradeFactory,
   RageTradeFactory__factory,
@@ -147,6 +148,20 @@ export function getDeployments(network: NetworkName) {
     VBaseDeployment,
     VPoolWrapperLogicDeployment,
   };
+}
+
+export function getEthersInterfaces() {
+  return [
+    Account__factory.createInterface(),
+    ClearingHouse__factory.createInterface(),
+    InsuranceFund__factory.createInterface(),
+    OracleMock__factory.createInterface(),
+    ProxyAdmin__factory.createInterface(),
+    RageTradeFactory__factory.createInterface(),
+    VBase__factory.createInterface(),
+    VToken__factory.createInterface(),
+    VPoolWrapper__factory.createInterface(),
+  ];
 }
 
 export function getNetworkNameFromChainId(chainId: number): NetworkName {
