@@ -229,6 +229,7 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
     'getAccountLiquidityPositionDetails(uint256,address,uint8)': FunctionFragment;
     'getAccountLiquidityPositionFundingAndFee(uint256,address,uint8)': FunctionFragment;
     'getAccountLiquidityPositionNum(uint256,address)': FunctionFragment;
+    'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNumInTokenPositionSet(uint256)': FunctionFragment;
     'getAccountOpenTokenPosition(uint256,address)': FunctionFragment;
     'getAccountOwner(uint256)': FunctionFragment;
@@ -319,6 +320,10 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'getAccountLiquidityPositionNum',
     values: [BigNumberish, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
+    values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountNumInTokenPositionSet',
@@ -546,6 +551,10 @@ export interface ClearingHouseTestInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getAccountLiquidityPositionNum',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -860,6 +869,17 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number] & { num: number }>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
     getAccountNumInTokenPositionSet(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -904,10 +924,12 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<
       [
         string,
+        BigNumber,
         DepositTokenViewStructOutput[],
         VTokenPositionViewStructOutput[]
       ] & {
         owner: string;
+        vBaseBalance: BigNumber;
         tokenDeposits: DepositTokenViewStructOutput[];
         tokenPositions: VTokenPositionViewStructOutput[];
       }
@@ -1242,6 +1264,17 @@ export interface ClearingHouseTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<number>;
 
+  getAccountMarketValueAndRequiredMargin(
+    accountNo: BigNumberish,
+    isInitialMargin: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      accountMarketValue: BigNumber;
+      requiredMargin: BigNumber;
+    }
+  >;
+
   getAccountNumInTokenPositionSet(
     accountNo: BigNumberish,
     overrides?: CallOverrides
@@ -1286,10 +1319,12 @@ export interface ClearingHouseTest extends BaseContract {
   ): Promise<
     [
       string,
+      BigNumber,
       DepositTokenViewStructOutput[],
       VTokenPositionViewStructOutput[]
     ] & {
       owner: string;
+      vBaseBalance: BigNumber;
       tokenDeposits: DepositTokenViewStructOutput[];
       tokenPositions: VTokenPositionViewStructOutput[];
     }
@@ -1610,6 +1645,17 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<number>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
     getAccountNumInTokenPositionSet(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -1654,10 +1700,12 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<
       [
         string,
+        BigNumber,
         DepositTokenViewStructOutput[],
         VTokenPositionViewStructOutput[]
       ] & {
         owner: string;
+        vBaseBalance: BigNumber;
         tokenDeposits: DepositTokenViewStructOutput[];
         tokenPositions: VTokenPositionViewStructOutput[];
       }
@@ -1986,6 +2034,12 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAccountNumInTokenPositionSet(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -2297,6 +2351,12 @@ export interface ClearingHouseTest extends BaseContract {
     getAccountLiquidityPositionNum(
       accountNo: BigNumberish,
       vToken: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -1,17 +1,19 @@
 import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from 'ethers';
 import {
-  Account__factory,
+  AccountLibrary__factory,
   ClearingHouse__factory,
-  IERC20Metadata__factory,
   InsuranceFund__factory,
-  IOracle__factory,
-  IUniswapV3Pool__factory,
-  OracleMock__factory,
   ProxyAdmin__factory,
   RageTradeFactory,
   RageTradeFactory__factory,
   VBase__factory,
+} from './typechain';
+import {
+  IERC20Metadata__factory,
+  IOracle__factory,
+  IUniswapV3Pool__factory,
+  OracleMock__factory,
   VPoolWrapper__factory,
   VToken__factory,
 } from './typechain-types';
@@ -48,7 +50,7 @@ export async function getContractsWithChainId(
 ) {
   const d = await getDeployments(getNetworkNameFromChainId(chainId));
   return {
-    accountLib: Account__factory.connect(
+    accountLib: AccountLibrary__factory.connect(
       d.AccountLibraryDeployment.address,
       signerOrProvider
     ),
@@ -155,7 +157,7 @@ export async function getDeployments(network: NetworkName) {
 
 export function getEthersInterfaces() {
   return [
-    Account__factory.createInterface(),
+    AccountLibrary__factory.createInterface(),
     ClearingHouse__factory.createInterface(),
     InsuranceFund__factory.createInterface(),
     OracleMock__factory.createInterface(),
