@@ -1641,7 +1641,7 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
         name: 'ownerAddress',
         type: 'address',

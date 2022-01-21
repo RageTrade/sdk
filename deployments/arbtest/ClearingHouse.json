@@ -1,5 +1,5 @@
 {
-  "address": "0x7b6C70D91328479B3da4C07a22b961f05105f51c",
+  "address": "0x6f4ba7FB65304EA7a1515908e317939c9d2D5c77",
   "abi": [
     {
       "inputs": [
@@ -1635,7 +1635,7 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "ownerAddress",
           "type": "address"
