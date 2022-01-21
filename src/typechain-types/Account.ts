@@ -218,11 +218,11 @@ export interface Account extends BaseContract {
 
   filters: {
     'AccountCreated(address,uint256)'(
-      ownerAddress?: null,
+      ownerAddress?: string | null,
       accountNo?: null
     ): AccountCreatedEventFilter;
     AccountCreated(
-      ownerAddress?: null,
+      ownerAddress?: string | null,
       accountNo?: null
     ): AccountCreatedEventFilter;
 
