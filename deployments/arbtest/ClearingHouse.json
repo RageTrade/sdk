@@ -1,5 +1,5 @@
 {
-  "address": "0x1075fD230b451EB38298dec0C7c4B8d808e46c64",
+  "address": "0x08b4E256d836ABAFcF49d1D1FA6536396d320E0A",
   "abi": [
     {
       "inputs": [
@@ -314,6 +314,35 @@
           "internalType": "uint256",
           "name": "accountNo",
           "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "isInitialMargin",
+          "type": "bool"
+        }
+      ],
+      "name": "getAccountMarketValueAndRequiredMargin",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "accountMarketValue",
+          "type": "int256"
+        },
+        {
+          "internalType": "int256",
+          "name": "requiredMargin",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
         }
       ],
       "name": "getAccountView",
@@ -322,6 +351,11 @@
           "internalType": "address",
           "name": "owner",
           "type": "address"
+        },
+        {
+          "internalType": "int256",
+          "name": "vBaseBalance",
+          "type": "int256"
         },
         {
           "components": [
@@ -1457,6 +1491,535 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyInitialized",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "internalType": "uint256",
+          "name": "liquidity",
+          "type": "uint256"
+        }
+      ],
+      "name": "DeactivationFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "element",
+          "type": "uint32"
+        }
+      ],
+      "name": "IllegalElement",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        }
+      ],
+      "name": "IllegalTicks",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InactiveRange",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "IneligibleLimitOrderRemoval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "accountMarketValue",
+          "type": "int256"
+        },
+        {
+          "internalType": "int256",
+          "name": "totalRequiredMargin",
+          "type": "int256"
+        }
+      ],
+      "name": "InvalidLiquidationAccountAbovewater",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        }
+      ],
+      "name": "InvalidLiquidationActiveRangePresent",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "accountMarketValue",
+          "type": "int256"
+        },
+        {
+          "internalType": "int256",
+          "name": "totalRequiredMargin",
+          "type": "int256"
+        }
+      ],
+      "name": "InvalidTransactionNotEnoughMargin",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "int256",
+          "name": "totalProfit",
+          "type": "int256"
+        }
+      ],
+      "name": "InvalidTransactionNotEnoughProfit",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "element",
+          "type": "uint32"
+        }
+      ],
+      "name": "NoSpaceLeftToInsert",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        }
+      ],
+      "name": "TokenInactive",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "ownerAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        }
+      ],
+      "name": "AccountCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "rTokenAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositMargin",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "amount",
+          "type": "int256"
+        }
+      ],
+      "name": "FundingPayment",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "keeperAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "liquidationFee",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "keeperFee",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "insuranceFundFee",
+          "type": "int256"
+        }
+      ],
+      "name": "LiquidateRanges",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "liquidatorAccountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint16",
+          "name": "liquidationBps",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "liquidationPriceX128",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "liquidatorPriceX128",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "insuranceFundFee",
+          "type": "int256"
+        }
+      ],
+      "name": "LiquidateTokenPosition",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int128",
+          "name": "liquidityDelta",
+          "type": "int128"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum IClearingHouse.LimitOrderType",
+          "name": "limitOrderType",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "tokenAmountOut",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "baseAmountOut",
+          "type": "int256"
+        }
+      ],
+      "name": "LiquidityChange",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "amount",
+          "type": "int256"
+        }
+      ],
+      "name": "LiquidityFee",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "tokenAmountOut",
+          "type": "int256"
+        }
+      ],
+      "name": "LiquidityTokenPositionChange",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "wrapperAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProtocolFeeWithdrawm",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract IVToken",
+          "name": "vToken",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "tokenAmountOut",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "baseAmountOut",
+          "type": "int256"
+        }
+      ],
+      "name": "TokenPositionChange",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "rTokenAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawMargin",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "accountNo",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "WithdrawProfit",
+      "type": "event"
     }
   ]
 }

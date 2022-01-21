@@ -222,6 +222,7 @@ export interface ClearingHouseDummyInterface extends ethers.utils.Interface {
     'addMargin(uint256,uint32,uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
+    'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountView(uint256)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
     'governance()': FunctionFragment;
@@ -281,6 +282,10 @@ export interface ClearingHouseDummyInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'extsload', values: [BytesLike]): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
+    values: [BigNumberish, boolean]
+  ): string;
   encodeFunctionData(
     functionFragment: 'getAccountView',
     values: [BigNumberish]
@@ -456,6 +461,10 @@ export interface ClearingHouseDummyInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'extsload', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getAccountView',
     data: BytesLike
@@ -680,16 +689,29 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
         string,
+        BigNumber,
         DepositTokenViewStructOutput[],
         VTokenPositionViewStructOutput[]
       ] & {
         owner: string;
+        vBaseBalance: BigNumber;
         tokenDeposits: DepositTokenViewStructOutput[];
         tokenPositions: VTokenPositionViewStructOutput[];
       }
@@ -948,16 +970,29 @@ export interface ClearingHouseDummy extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
+  getAccountMarketValueAndRequiredMargin(
+    accountNo: BigNumberish,
+    isInitialMargin: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      accountMarketValue: BigNumber;
+      requiredMargin: BigNumber;
+    }
+  >;
+
   getAccountView(
     accountNo: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [
       string,
+      BigNumber,
       DepositTokenViewStructOutput[],
       VTokenPositionViewStructOutput[]
     ] & {
       owner: string;
+      vBaseBalance: BigNumber;
       tokenDeposits: DepositTokenViewStructOutput[];
       tokenPositions: VTokenPositionViewStructOutput[];
     }
@@ -1202,16 +1237,29 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
         string,
+        BigNumber,
         DepositTokenViewStructOutput[],
         VTokenPositionViewStructOutput[]
       ] & {
         owner: string;
+        vBaseBalance: BigNumber;
         tokenDeposits: DepositTokenViewStructOutput[];
         tokenPositions: VTokenPositionViewStructOutput[];
       }
@@ -1492,6 +1540,12 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -1724,6 +1778,12 @@ export interface ClearingHouseDummy extends BaseContract {
 
     'extsload(bytes32[])'(
       slots: BytesLike[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -4,10 +4,7 @@
 
 import { Contract, Signer, utils } from 'ethers';
 import { Provider } from '@ethersproject/providers';
-import type {
-  ClearingHouseView,
-  ClearingHouseViewInterface,
-} from '../ClearingHouseView';
+import type { ClearingHouse, ClearingHouseInterface } from '../ClearingHouse';
 
 const _abi = [
   {
@@ -19,6 +16,38 @@ const _abi = [
       },
     ],
     name: 'AccessDenied',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'length',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'limit',
+        type: 'uint256',
+      },
+    ],
+    name: 'CalldataLengthExceeded',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'gasUsedClaim',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasUsedActual',
+        type: 'uint256',
+      },
+    ],
+    name: 'ExcessGasUsedClaim',
     type: 'error',
   },
   {
@@ -57,6 +86,16 @@ const _abi = [
       },
     ],
     name: 'LowNotionalValue',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NotRageTradeFactory',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'Paused',
     type: 'error',
   },
   {
@@ -181,13 +220,36 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'rTokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'oracleAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint32',
+        name: 'twapDuration',
+        type: 'uint32',
+      },
+    ],
+    name: 'addCollateralSupport',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
         internalType: 'uint32',
-        name: 'vTokenTruncatedAddress',
+        name: 'rTokenTruncatedAddress',
         type: 'uint32',
       },
       {
@@ -442,7 +504,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '_realToken',
+        name: 'realToken',
         type: 'address',
       },
     ],
@@ -525,6 +587,30 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateLiquidityPositionsWithGasClaim',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
         name: 'liquidatorAccountNo',
         type: 'uint256',
       },
@@ -545,6 +631,62 @@ const _abi = [
       },
     ],
     name: 'liquidateTokenPosition',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'vBaseIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vTokenIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'traderPositionIncrease',
+            type: 'int256',
+          },
+        ],
+        internalType: 'struct IClearingHouse.BalanceAdjustments',
+        name: 'liquidatorBalanceAdjustments',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'liquidatorAccountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint16',
+        name: 'liquidationBps',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateTokenPositionWithGasClaim',
     outputs: [
       {
         components: [
@@ -914,6 +1056,45 @@ const _abi = [
         type: 'uint32',
       },
       {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeLimitOrderWithGasClaim',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'keeperFee',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'rTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
@@ -938,6 +1119,64 @@ const _abi = [
       },
     ],
     name: 'removeProfit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bool',
+        name: '_pause',
+        type: 'bool',
+      },
+    ],
+    name: 'setPaused',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'uint16',
+            name: 'liquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'tokenLiquidationPriceDeltaBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'insuranceFundFeeShareBps',
+            type: 'uint16',
+          },
+        ],
+        internalType: 'struct Account.LiquidationParams',
+        name: '_liquidationParams',
+        type: 'tuple',
+      },
+      {
+        internalType: 'uint256',
+        name: '_removeLimitOrderFee',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_minimumOrderNotional',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_minRequiredMargin',
+        type: 'uint256',
+      },
+    ],
+    name: 'setPlatformParameters',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1078,6 +1317,51 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint16',
+            name: 'initialMarginRatio',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maintainanceMarginRatio',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'twapDuration',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'whitelisted',
+            type: 'bool',
+          },
+          {
+            internalType: 'contract IOracle',
+            name: 'oracle',
+            type: 'address',
+          },
+        ],
+        internalType: 'struct IClearingHouse.RageTradePoolSettings',
+        name: 'newSettings',
+        type: 'tuple',
+      },
+    ],
+    name: 'updateRageTradePoolSettings',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
@@ -1149,6 +1433,42 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'add',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'status',
+        type: 'bool',
+      },
+    ],
+    name: 'updateSupportedDeposits',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IVToken',
+        name: 'add',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'status',
+        type: 'bool',
+      },
+    ],
+    name: 'updateSupportedVTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint32',
         name: 'vTokenAddressTruncated',
         type: 'uint32',
@@ -1178,17 +1498,546 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    inputs: [],
+    name: 'AlreadyInitialized',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint256',
+        name: 'liquidity',
+        type: 'uint256',
+      },
+    ],
+    name: 'DeactivationFailed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'element',
+        type: 'uint32',
+      },
+    ],
+    name: 'IllegalElement',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+    ],
+    name: 'IllegalTicks',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InactiveRange',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IneligibleLimitOrderRemoval',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int256',
+        name: 'accountMarketValue',
+        type: 'int256',
+      },
+      {
+        internalType: 'int256',
+        name: 'totalRequiredMargin',
+        type: 'int256',
+      },
+    ],
+    name: 'InvalidLiquidationAccountAbovewater',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+    ],
+    name: 'InvalidLiquidationActiveRangePresent',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int256',
+        name: 'accountMarketValue',
+        type: 'int256',
+      },
+      {
+        internalType: 'int256',
+        name: 'totalRequiredMargin',
+        type: 'int256',
+      },
+    ],
+    name: 'InvalidTransactionNotEnoughMargin',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int256',
+        name: 'totalProfit',
+        type: 'int256',
+      },
+    ],
+    name: 'InvalidTransactionNotEnoughProfit',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'element',
+        type: 'uint32',
+      },
+    ],
+    name: 'NoSpaceLeftToInsert',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+    ],
+    name: 'TokenInactive',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'ownerAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
+    name: 'AccountCreated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'rTokenAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'DepositMargin',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'FundingPayment',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'keeperAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'liquidationFee',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'insuranceFundFee',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidateRanges',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'liquidatorAccountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'liquidationBps',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'liquidationPriceX128',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'liquidatorPriceX128',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'insuranceFundFee',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidateTokenPosition',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int128',
+        name: 'liquidityDelta',
+        type: 'int128',
+      },
+      {
+        indexed: false,
+        internalType: 'enum IClearingHouse.LimitOrderType',
+        name: 'limitOrderType',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'tokenAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'baseAmountOut',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidityChange',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidityFee',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'tokenAmountOut',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidityTokenPositionChange',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'wrapperAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'feeAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'ProtocolFeeWithdrawm',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'tokenAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'baseAmountOut',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionChange',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'rTokenAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawMargin',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawProfit',
+    type: 'event',
+  },
 ];
 
-export class ClearingHouseView__factory {
+export class ClearingHouse__factory {
   static readonly abi = _abi;
-  static createInterface(): ClearingHouseViewInterface {
-    return new utils.Interface(_abi) as ClearingHouseViewInterface;
+  static createInterface(): ClearingHouseInterface {
+    return new utils.Interface(_abi) as ClearingHouseInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): ClearingHouseView {
-    return new Contract(address, _abi, signerOrProvider) as ClearingHouseView;
+  ): ClearingHouse {
+    return new Contract(address, _abi, signerOrProvider) as ClearingHouse;
   }
 }
