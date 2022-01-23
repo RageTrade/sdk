@@ -18,14 +18,32 @@ import {
   VToken__factory,
 } from './typechain-types';
 
-export type NetworkName = 'mainnet' | 'rinkeby' | 'arbmain' | 'arbtest';
+export type NetworkName =
+  | 'mainnet'
+  | 'rinkeby'
+  | 'arbmain'
+  | 'arbtest'
+  | 'opmain'
+  | 'optest';
 
 export const chainIds = {
   mainnet: 1,
   rinkeby: 4,
   arbmain: 42161,
   arbtest: 421611,
+  opmain: 10,
+  optest: 69,
 };
+
+export function getNetworkNameFromChainId(chainId: number): NetworkName {
+  for (const [key, val] of Object.entries(chainIds)) {
+    if (val === chainId) {
+      return key as NetworkName;
+    }
+  }
+
+  throw new Error(`chainId ${chainId} not recognized`);
+}
 
 /**
  * This method can be used to get contract instances
@@ -167,21 +185,6 @@ export function getEthersInterfaces() {
     VToken__factory.createInterface(),
     VPoolWrapper__factory.createInterface(),
   ];
-}
-
-export function getNetworkNameFromChainId(chainId: number): NetworkName {
-  switch (chainId) {
-    case chainIds.mainnet:
-      return 'mainnet';
-    case chainIds.rinkeby:
-      return 'rinkeby';
-    case chainIds.arbmain:
-      return 'arbmain';
-    case chainIds.arbtest:
-      return 'arbtest';
-    default:
-      throw new Error(`chainId ${chainId} not recognized`);
-  }
 }
 
 export async function getDeployment(

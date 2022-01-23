@@ -8,15 +8,17 @@ const {
 const _path = require('path');
 
 async function main() {
-  await forAllFilesInThis(_path.resolve(__dirname, 'deployments'));
+  const deploymentsDirPath = _path.resolve(__dirname, 'deployments');
+  removeMetadataFromDir(deploymentsDirPath);
 
-  await copyAccountEventsErrorsToClearingHouse();
+  copyAccountEventsErrorsToClearingHouse(deploymentsDirPath);
 }
 
-async function forAllFilesInThis(currentDirPath) {
+function removeMetadataFromDir(currentDirPath) {
   const dirs = readdirSync(currentDirPath);
   dirs.forEach((childDirName) => {
     const childPath = _path.resolve(currentDirPath, childDirName);
+    console.log(1);
     if (childDirName === 'solcInputs') {
       removeSync(childPath);
       return;
@@ -27,7 +29,7 @@ async function forAllFilesInThis(currentDirPath) {
     }
 
     if (lstatSync(childPath).isDirectory()) {
-      forAllFilesInThis(childPath);
+      removeMetadataFromDir(childPath);
     } else {
       removeMetadataFromFile(childPath);
     }
@@ -43,35 +45,38 @@ function removeMetadataFromFile(path) {
   });
 }
 
-function copyAccountEventsErrorsToClearingHouse() {
-  const AccountLibraryData = readJsonSync(
-    _path.resolve(__dirname, 'deployments', 'arbtest', 'AccountLibrary.json')
-  );
-  const ClearingHouseData = readJsonSync(
-    _path.resolve(__dirname, 'deployments', 'arbtest', 'ClearingHouse.json')
-  );
-  for (const accAbiEl of AccountLibraryData.abi) {
-    if (['error', 'event'].includes(accAbiEl.type)) {
-      if (
-        !ClearingHouseData.abi.find(
-          (chAbiEL) =>
-            chAbiEL.type + '-' + chAbiEL.name ===
-            accAbiEl.type + '-' + accAbiEl.name
-        )
-      ) {
-        console.log(accAbiEl.name);
-        ClearingHouseData.abi.push(accAbiEl);
+function copyAccountEventsErrorsToClearingHouse(deploymentsDirPath, fn) {
+  const dirs = readdirSync(deploymentsDirPath);
+  dirs.forEach((childDirName) => {
+    const childDeploymentPath = _path.resolve(deploymentsDirPath, childDirName);
+    if (lstatSync(childDeploymentPath).isDirectory()) {
+      const AccountLibraryData = readJsonSync(
+        _path.resolve(childDeploymentPath, 'AccountLibrary.json')
+      );
+      const ClearingHouseData = readJsonSync(
+        _path.resolve(childDeploymentPath, 'ClearingHouse.json')
+      );
+      for (const accAbiEl of AccountLibraryData.abi) {
+        if (['error', 'event'].includes(accAbiEl.type)) {
+          if (
+            !ClearingHouseData.abi.find(
+              (chAbiEL) =>
+                chAbiEL.type + '-' + chAbiEL.name ===
+                accAbiEl.type + '-' + accAbiEl.name
+            )
+          ) {
+            console.log(accAbiEl.name);
+            ClearingHouseData.abi.push(accAbiEl);
+          }
+        }
       }
+      writeJsonSync(
+        _path.resolve(childDeploymentPath, 'ClearingHouse.json'),
+        ClearingHouseData,
+        { spaces: 2 }
+      );
     }
-  }
-
-  writeJsonSync(
-    _path.resolve(__dirname, 'deployments', 'arbtest', 'ClearingHouse.json'),
-    ClearingHouseData,
-    {
-      spaces: 2,
-    }
-  );
+  });
 }
 
 main().catch(console.error);
