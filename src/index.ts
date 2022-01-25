@@ -1,3 +1,4 @@
 export * from './contracts';
 export * from './utils';
-export * as typechain from './typechain-types';
+export * from './typechain-types';
+export * as typechain from './typechain';
