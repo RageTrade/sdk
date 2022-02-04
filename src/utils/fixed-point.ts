@@ -44,7 +44,13 @@ export function toQ96(num: number): BigNumber {
   );
 }
 
-export function fromQ96(val: BigNumber): number {
+/**
+ *
+ * @param val A javascript number, can be fractional
+ * @param jsDecimals The number of decimal places to round to
+ * @returns A number rounded to the nearest jsDecimals
+ */
+export function fromQ96(val: BigNumber, jsDecimals?: number): number {
   let formatted = val.shr(96).toNumber();
   formatted +=
     val
@@ -53,5 +59,11 @@ export function fromQ96(val: BigNumber): number {
       .div(Q96)
       .toNumber() /
     (Number.MAX_SAFE_INTEGER - 1);
-  return formatted;
+  return typeof jsDecimals === 'undefined'
+    ? formatted
+    : roundToNearest(formatted, jsDecimals);
+}
+
+function roundToNearest(num: number, nearest: number) {
+  return Math.round(num / nearest) * nearest;
 }
