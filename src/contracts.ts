@@ -67,46 +67,68 @@ export async function getContractsWithChainId(
   chainId: number
 ) {
   const d = await getDeployments(getNetworkNameFromChainId(chainId));
+  return getContractsWithDeployments(signerOrProvider, d);
+}
+
+export async function getContractsWithDeployments(
+  signerOrProvider: Signer | Provider,
+  deployments: {
+    AccountLibraryDeployment: ContractDeployment;
+    ClearingHouseDeployment: ContractDeployment;
+    ClearingHouseLogicDeployment: ContractDeployment;
+    InsuranceFundDeployment: ContractDeployment;
+    InsuranceFundLogicDeployment: ContractDeployment;
+    NativeOracleDeployment: ContractDeployment;
+    ProxyAdminDeployment: ContractDeployment;
+    RageTradeFactoryDeployment: ContractDeployment;
+    RBaseDeployment: ContractDeployment;
+    VBaseDeployment: ContractDeployment;
+    VPoolWrapperLogicDeployment: ContractDeployment;
+  }
+) {
   return {
     accountLib: AccountLibrary__factory.connect(
-      d.AccountLibraryDeployment.address,
+      deployments.AccountLibraryDeployment.address,
       signerOrProvider
     ),
     clearingHouse: ClearingHouse__factory.connect(
-      d.ClearingHouseDeployment.address,
+      deployments.ClearingHouseDeployment.address,
       signerOrProvider
     ),
     clearingHouseLogic: ClearingHouse__factory.connect(
-      d.ClearingHouseLogicDeployment.address,
+      deployments.ClearingHouseLogicDeployment.address,
       signerOrProvider
     ),
     insuranceFund: InsuranceFund__factory.connect(
-      d.InsuranceFundDeployment.address,
+      deployments.InsuranceFundDeployment.address,
       signerOrProvider
     ),
     insuranceFundLogic: InsuranceFund__factory.connect(
-      d.InsuranceFundLogicDeployment.address,
+      deployments.InsuranceFundLogicDeployment.address,
       signerOrProvider
     ),
     nativeOracle: IOracle__factory.connect(
-      d.NativeOracleDeployment.address,
+      deployments.NativeOracleDeployment.address,
       signerOrProvider
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
-      d.ProxyAdminDeployment.address,
+      deployments.ProxyAdminDeployment.address,
       signerOrProvider
     ),
     rageTradeFactory: RageTradeFactory__factory.connect(
-      d.RageTradeFactoryDeployment.address,
+      deployments.RageTradeFactoryDeployment.address,
       signerOrProvider
     ),
     rBase: IERC20Metadata__factory.connect(
-      d.RBaseDeployment.address,
+      deployments.RBaseDeployment.address,
       signerOrProvider
     ),
-    vBase: VBase__factory.connect(d.VBaseDeployment.address, signerOrProvider),
+    vBase: VBase__factory.connect(
+      deployments.VBaseDeployment.address,
+      signerOrProvider
+    ),
     vPoolWrapperLogic: VPoolWrapper__factory.connect(
-      d.VPoolWrapperLogicDeployment.address,
+      deployments.VPoolWrapperLogicDeployment.address,
       signerOrProvider
     ),
   };
@@ -190,7 +212,7 @@ export function getEthersInterfaces() {
 export async function getDeployment(
   networkName: NetworkName,
   name: string
-): Promise<{ address: string }> {
+): Promise<ContractDeployment> {
   try {
     return await import(`../deployments/${networkName}/${name}.json`);
   } catch (e) {
@@ -199,4 +221,8 @@ export async function getDeployment(
       `Network ${networkName} does not the deployment ${name}. Make sure deployments are updated.`
     );
   }
+}
+
+export interface ContractDeployment {
+  address: string;
 }
