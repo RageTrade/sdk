@@ -1,5 +1,3 @@
-import { ethers } from 'ethers';
-
 export function truncate(address: string) {
-  return ethers.utils.hexDataSlice(address, 16, 20);
+  return '0x' + address.slice(34, 42);
 }
