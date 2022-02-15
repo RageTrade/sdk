@@ -193,6 +193,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Account__factory>;
     getContractFactory(
+      name: 'Bisection',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Bisection__factory>;
+    getContractFactory(
       name: 'Calldata',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Calldata__factory>;
@@ -292,6 +296,10 @@ declare module 'hardhat/types/runtime' {
       name: 'ArbitrumFixFeeTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ArbitrumFixFeeTest__factory>;
+    getContractFactory(
+      name: 'BisectionTest',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BisectionTest__factory>;
     getContractFactory(
       name: 'CalldataTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -428,6 +436,10 @@ declare module 'hardhat/types/runtime' {
       name: 'ProxyAdminDeployer',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ProxyAdminDeployer__factory>;
+    getContractFactory(
+      name: 'SwapSimulator',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SwapSimulator__factory>;
     getContractFactory(
       name: 'TxGasPriceLimit',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -667,6 +679,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.Account>;
     getContractAt(
+      name: 'Bisection',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Bisection>;
+    getContractAt(
       name: 'Calldata',
       address: string,
       signer?: ethers.Signer
@@ -791,6 +808,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ArbitrumFixFeeTest>;
+    getContractAt(
+      name: 'BisectionTest',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BisectionTest>;
     getContractAt(
       name: 'CalldataTest',
       address: string,
@@ -961,6 +983,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ProxyAdminDeployer>;
+    getContractAt(
+      name: 'SwapSimulator',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SwapSimulator>;
     getContractAt(
       name: 'TxGasPriceLimit',
       address: string,

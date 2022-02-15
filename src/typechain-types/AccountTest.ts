@@ -126,11 +126,11 @@ export interface AccountTestInterface extends ethers.utils.Interface {
     'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,address,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,address,uint256)': FunctionFragment;
-    'removeProfit(uint256,uint256)': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'swapTokenAmount(uint256,address,int256)': FunctionFragment;
     'swapTokenNotional(uint256,address,int256)': FunctionFragment;
+    'updateProfit(uint256,int256)': FunctionFragment;
   };
 
   encodeFunctionData(
@@ -213,10 +213,6 @@ export interface AccountTestInterface extends ethers.utils.Interface {
     values: [BigNumberish, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'removeProfit',
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'setAccountStorage',
     values: [
       LiquidationParamsStruct,
@@ -237,6 +233,10 @@ export interface AccountTestInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'swapTokenNotional',
     values: [BigNumberish, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateProfit',
+    values: [BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
@@ -316,10 +316,6 @@ export interface AccountTestInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'removeProfit',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'setAccountStorage',
     data: BytesLike
   ): Result;
@@ -333,6 +329,10 @@ export interface AccountTestInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'swapTokenNotional',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateProfit',
     data: BytesLike
   ): Result;
 
@@ -409,12 +409,14 @@ export interface AccountTest extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         tickLower: number;
         tickUpper: number;
         limitOrderType: number;
         liquidity: BigNumber;
+        vTokenAmountIn: BigNumber;
         sumALastX128: BigNumber;
         sumBInsideLastX128: BigNumber;
         sumFpInsideLastX128: BigNumber;
@@ -541,12 +543,6 @@ export interface AccountTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeProfit(
-      accountNo: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setAccountStorage(
       _liquidationParams: LiquidationParamsStruct,
       _minRequiredMargin: BigNumberish,
@@ -571,6 +567,12 @@ export interface AccountTest extends BaseContract {
     swapTokenNotional(
       accountNo: BigNumberish,
       vToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateProfit(
+      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -619,12 +621,14 @@ export interface AccountTest extends BaseContract {
       BigNumber,
       BigNumber,
       BigNumber,
+      BigNumber,
       BigNumber
     ] & {
       tickLower: number;
       tickUpper: number;
       limitOrderType: number;
       liquidity: BigNumber;
+      vTokenAmountIn: BigNumber;
       sumALastX128: BigNumber;
       sumBInsideLastX128: BigNumber;
       sumFpInsideLastX128: BigNumber;
@@ -745,12 +749,6 @@ export interface AccountTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeProfit(
-    accountNo: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setAccountStorage(
     _liquidationParams: LiquidationParamsStruct,
     _minRequiredMargin: BigNumberish,
@@ -775,6 +773,12 @@ export interface AccountTest extends BaseContract {
   swapTokenNotional(
     accountNo: BigNumberish,
     vToken: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateProfit(
+    accountNo: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -821,12 +825,14 @@ export interface AccountTest extends BaseContract {
         BigNumber,
         BigNumber,
         BigNumber,
+        BigNumber,
         BigNumber
       ] & {
         tickLower: number;
         tickUpper: number;
         limitOrderType: number;
         liquidity: BigNumber;
+        vTokenAmountIn: BigNumber;
         sumALastX128: BigNumber;
         sumBInsideLastX128: BigNumber;
         sumFpInsideLastX128: BigNumber;
@@ -955,12 +961,6 @@ export interface AccountTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    removeProfit(
-      accountNo: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setAccountStorage(
       _liquidationParams: LiquidationParamsStruct,
       _minRequiredMargin: BigNumberish,
@@ -982,6 +982,12 @@ export interface AccountTest extends BaseContract {
     swapTokenNotional(
       accountNo: BigNumberish,
       vToken: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateProfit(
+      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1112,12 +1118,6 @@ export interface AccountTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    removeProfit(
-      accountNo: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setAccountStorage(
       _liquidationParams: LiquidationParamsStruct,
       _minRequiredMargin: BigNumberish,
@@ -1142,6 +1142,12 @@ export interface AccountTest extends BaseContract {
     swapTokenNotional(
       accountNo: BigNumberish,
       vToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateProfit(
+      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1270,12 +1276,6 @@ export interface AccountTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeProfit(
-      accountNo: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setAccountStorage(
       _liquidationParams: LiquidationParamsStruct,
       _minRequiredMargin: BigNumberish,
@@ -1300,6 +1300,12 @@ export interface AccountTest extends BaseContract {
     swapTokenNotional(
       accountNo: BigNumberish,
       vToken: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateProfit(
+      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

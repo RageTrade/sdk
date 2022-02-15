@@ -80,7 +80,10 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
     'liquidityChange(int24,int24,int128)': FunctionFragment;
+    'liquidityFeePips()': FunctionFragment;
+    'protocolFeePips()': FunctionFragment;
     'swapToken(int256,uint160,bool)': FunctionFragment;
+    'uniswapFeePips()': FunctionFragment;
     'updateGlobalFundingState()': FunctionFragment;
     'vPool()': FunctionFragment;
   };
@@ -114,8 +117,20 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: 'liquidityFeePips',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'protocolFeePips',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'swapToken',
     values: [BigNumberish, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'uniswapFeePips',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
@@ -151,7 +166,19 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
     functionFragment: 'liquidityChange',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: 'liquidityFeePips',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'protocolFeePips',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'uniswapFeePips',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'updateGlobalFundingState',
     data: BytesLike
@@ -244,12 +271,18 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
+
+    protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
+
     swapToken(
       amount: BigNumberish,
       sqrtPriceLimit: BigNumberish,
       isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    uniswapFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -290,12 +323,18 @@ export interface IVPoolWrapper extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+  protocolFeePips(overrides?: CallOverrides): Promise<number>;
+
   swapToken(
     amount: BigNumberish,
     sqrtPriceLimit: BigNumberish,
     isNotional: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
   updateGlobalFundingState(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -340,6 +379,10 @@ export interface IVPoolWrapper extends BaseContract {
       }
     >;
 
+    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+    protocolFeePips(overrides?: CallOverrides): Promise<number>;
+
     swapToken(
       amount: BigNumberish,
       sqrtPriceLimit: BigNumberish,
@@ -351,6 +394,8 @@ export interface IVPoolWrapper extends BaseContract {
         vBaseAmount: BigNumber;
       }
     >;
+
+    uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
     updateGlobalFundingState(overrides?: CallOverrides): Promise<void>;
 
@@ -405,12 +450,18 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
+
+    protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
+
     swapToken(
       amount: BigNumberish,
       sqrtPriceLimit: BigNumberish,
       isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    uniswapFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -454,12 +505,18 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     swapToken(
       amount: BigNumberish,
       sqrtPriceLimit: BigNumberish,
       isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    uniswapFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }

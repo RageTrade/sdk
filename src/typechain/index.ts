@@ -10,6 +10,7 @@ export type { NativeOracle } from './NativeOracle';
 export type { ProxyAdmin } from './ProxyAdmin';
 export type { RageTradeFactory } from './RageTradeFactory';
 export type { RBase } from './RBase';
+export type { SwapSimulator } from './SwapSimulator';
 export type { VBase } from './VBase';
 export type { VPoolWrapperLogic } from './VPoolWrapperLogic';
 
@@ -22,5 +23,6 @@ export { NativeOracle__factory } from './factories/NativeOracle__factory';
 export { ProxyAdmin__factory } from './factories/ProxyAdmin__factory';
 export { RageTradeFactory__factory } from './factories/RageTradeFactory__factory';
 export { RBase__factory } from './factories/RBase__factory';
+export { SwapSimulator__factory } from './factories/SwapSimulator__factory';
 export { VBase__factory } from './factories/VBase__factory';
 export { VPoolWrapperLogic__factory } from './factories/VPoolWrapperLogic__factory';

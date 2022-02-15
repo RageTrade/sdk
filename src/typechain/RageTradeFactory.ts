@@ -61,11 +61,13 @@ export declare namespace RageTradeFactory {
     rageTradePoolInitialSettings: IClearingHouse.RageTradePoolSettingsStruct;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
+    slotsToInitialize: BigNumberish;
   };
 
   export type InitializePoolParamsStructOutput = [
     VTokenDeployer.DeployVTokenParamsStructOutput,
     IClearingHouse.RageTradePoolSettingsStructOutput,
+    number,
     number,
     number
   ] & {
@@ -73,18 +75,16 @@ export declare namespace RageTradeFactory {
     rageTradePoolInitialSettings: IClearingHouse.RageTradePoolSettingsStructOutput;
     liquidityFeePips: number;
     protocolFeePips: number;
+    slotsToInitialize: number;
   };
 }
 
 export interface RageTradeFactoryInterface extends utils.Interface {
   contractName: 'RageTradeFactory';
   functions: {
-    'UNISWAP_V3_DEFAULT_FEE_TIER()': FunctionFragment;
-    'UNISWAP_V3_FACTORY_ADDRESS()': FunctionFragment;
-    'UNISWAP_V3_POOL_BYTE_CODE_HASH()': FunctionFragment;
     'clearingHouse()': FunctionFragment;
     'governance()': FunctionFragment;
-    'initializePool(((string,string,uint8),(uint16,uint16,uint32,bool,address),uint24,uint24))': FunctionFragment;
+    'initializePool(((string,string,uint8),(uint16,uint16,uint32,bool,address),uint24,uint24,uint16))': FunctionFragment;
     'proxyAdmin()': FunctionFragment;
     'setVPoolWrapperLogicAddress(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;
@@ -94,18 +94,6 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     'vPoolWrapperLogicAddress()': FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: 'UNISWAP_V3_DEFAULT_FEE_TIER',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'UNISWAP_V3_FACTORY_ADDRESS',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'UNISWAP_V3_POOL_BYTE_CODE_HASH',
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: 'clearingHouse',
     values?: undefined
@@ -144,18 +132,6 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: 'UNISWAP_V3_DEFAULT_FEE_TIER',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'UNISWAP_V3_FACTORY_ADDRESS',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'UNISWAP_V3_POOL_BYTE_CODE_HASH',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'clearingHouse',
     data: BytesLike
@@ -248,14 +224,6 @@ export interface RageTradeFactory extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    UNISWAP_V3_DEFAULT_FEE_TIER(overrides?: CallOverrides): Promise<[number]>;
-
-    UNISWAP_V3_FACTORY_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
-
-    UNISWAP_V3_POOL_BYTE_CODE_HASH(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     clearingHouse(overrides?: CallOverrides): Promise<[string]>;
 
     governance(overrides?: CallOverrides): Promise<[string]>;
@@ -291,12 +259,6 @@ export interface RageTradeFactory extends BaseContract {
 
     vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<[string]>;
   };
-
-  UNISWAP_V3_DEFAULT_FEE_TIER(overrides?: CallOverrides): Promise<number>;
-
-  UNISWAP_V3_FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-  UNISWAP_V3_POOL_BYTE_CODE_HASH(overrides?: CallOverrides): Promise<string>;
 
   clearingHouse(overrides?: CallOverrides): Promise<string>;
 
@@ -334,12 +296,6 @@ export interface RageTradeFactory extends BaseContract {
   vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    UNISWAP_V3_DEFAULT_FEE_TIER(overrides?: CallOverrides): Promise<number>;
-
-    UNISWAP_V3_FACTORY_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-    UNISWAP_V3_POOL_BYTE_CODE_HASH(overrides?: CallOverrides): Promise<string>;
-
     clearingHouse(overrides?: CallOverrides): Promise<string>;
 
     governance(overrides?: CallOverrides): Promise<string>;
@@ -408,14 +364,6 @@ export interface RageTradeFactory extends BaseContract {
   };
 
   estimateGas: {
-    UNISWAP_V3_DEFAULT_FEE_TIER(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNISWAP_V3_FACTORY_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNISWAP_V3_POOL_BYTE_CODE_HASH(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
@@ -453,18 +401,6 @@ export interface RageTradeFactory extends BaseContract {
   };
 
   populateTransaction: {
-    UNISWAP_V3_DEFAULT_FEE_TIER(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNISWAP_V3_FACTORY_ADDRESS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNISWAP_V3_POOL_BYTE_CODE_HASH(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -281,6 +281,32 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'liquidityFeePips',
+    outputs: [
+      {
+        internalType: 'uint24',
+        name: '',
+        type: 'uint24',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'protocolFeePips',
+    outputs: [
+      {
+        internalType: 'uint24',
+        name: '',
+        type: 'uint24',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'int256',
@@ -312,6 +338,19 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'uniswapFeePips',
+    outputs: [
+      {
+        internalType: 'uint24',
+        name: '',
+        type: 'uint24',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

@@ -36,8 +36,8 @@ export interface AccountInterface extends ethers.utils.Interface {
     'LiquidityTokenPositionChange(uint256,address,int24,int24,int256)': EventFragment;
     'ProtocolFeeWithdrawm(address,uint256)': EventFragment;
     'TokenPositionChange(uint256,address,int256,int256)': EventFragment;
+    'UpdateProfit(uint256,int256)': EventFragment;
     'WithdrawMargin(uint256,address,uint256)': EventFragment;
-    'WithdrawProfit(uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
@@ -52,8 +52,8 @@ export interface AccountInterface extends ethers.utils.Interface {
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolFeeWithdrawm'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TokenPositionChange'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'UpdateProfit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'WithdrawMargin'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'WithdrawProfit'): EventFragment;
 }
 
 export type AccountCreatedEvent = TypedEvent<
@@ -172,19 +172,19 @@ export type TokenPositionChangeEvent = TypedEvent<
 
 export type TokenPositionChangeEventFilter = TypedEventFilter<TokenPositionChangeEvent>;
 
+export type UpdateProfitEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  { accountNo: BigNumber; amount: BigNumber }
+>;
+
+export type UpdateProfitEventFilter = TypedEventFilter<UpdateProfitEvent>;
+
 export type WithdrawMarginEvent = TypedEvent<
   [BigNumber, string, BigNumber],
   { accountNo: BigNumber; rTokenAddress: string; amount: BigNumber }
 >;
 
 export type WithdrawMarginEventFilter = TypedEventFilter<WithdrawMarginEvent>;
-
-export type WithdrawProfitEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  { accountNo: BigNumber; amount: BigNumber }
->;
-
-export type WithdrawProfitEventFilter = TypedEventFilter<WithdrawProfitEvent>;
 
 export interface Account extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -227,59 +227,59 @@ export interface Account extends BaseContract {
     ): AccountCreatedEventFilter;
 
     'DepositMargin(uint256,address,uint256)'(
-      accountNo?: null,
-      rTokenAddress?: null,
+      accountNo?: BigNumberish | null,
+      rTokenAddress?: string | null,
       amount?: null
     ): DepositMarginEventFilter;
     DepositMargin(
-      accountNo?: null,
-      rTokenAddress?: null,
+      accountNo?: BigNumberish | null,
+      rTokenAddress?: string | null,
       amount?: null
     ): DepositMarginEventFilter;
 
     'FundingPayment(uint256,address,int24,int24,int256)'(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): FundingPaymentEventFilter;
     FundingPayment(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): FundingPaymentEventFilter;
 
     'LiquidateRanges(uint256,address,int256,int256,int256)'(
-      accountNo?: null,
-      keeperAddress?: null,
+      accountNo?: BigNumberish | null,
+      keeperAddress?: string | null,
       liquidationFee?: null,
       keeperFee?: null,
       insuranceFundFee?: null
     ): LiquidateRangesEventFilter;
     LiquidateRanges(
-      accountNo?: null,
-      keeperAddress?: null,
+      accountNo?: BigNumberish | null,
+      keeperAddress?: string | null,
       liquidationFee?: null,
       keeperFee?: null,
       insuranceFundFee?: null
     ): LiquidateRangesEventFilter;
 
     'LiquidateTokenPosition(uint256,uint256,address,uint16,uint256,uint256,int256)'(
-      accountNo?: null,
-      liquidatorAccountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      liquidatorAccountNo?: BigNumberish | null,
+      vToken?: string | null,
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
       insuranceFundFee?: null
     ): LiquidateTokenPositionEventFilter;
     LiquidateTokenPosition(
-      accountNo?: null,
-      liquidatorAccountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      liquidatorAccountNo?: BigNumberish | null,
+      vToken?: string | null,
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
@@ -287,8 +287,8 @@ export interface Account extends BaseContract {
     ): LiquidateTokenPositionEventFilter;
 
     'LiquidityChange(uint256,address,int24,int24,int128,uint8,int256,int256)'(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
@@ -297,8 +297,8 @@ export interface Account extends BaseContract {
       baseAmountOut?: null
     ): LiquidityChangeEventFilter;
     LiquidityChange(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
@@ -308,73 +308,76 @@ export interface Account extends BaseContract {
     ): LiquidityChangeEventFilter;
 
     'LiquidityFee(uint256,address,int24,int24,int256)'(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): LiquidityFeeEventFilter;
     LiquidityFee(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): LiquidityFeeEventFilter;
 
     'LiquidityTokenPositionChange(uint256,address,int24,int24,int256)'(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       tokenAmountOut?: null
     ): LiquidityTokenPositionChangeEventFilter;
     LiquidityTokenPositionChange(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tickLower?: null,
       tickUpper?: null,
       tokenAmountOut?: null
     ): LiquidityTokenPositionChangeEventFilter;
 
     'ProtocolFeeWithdrawm(address,uint256)'(
-      wrapperAddress?: null,
+      wrapperAddress?: string | null,
       feeAmount?: null
     ): ProtocolFeeWithdrawmEventFilter;
     ProtocolFeeWithdrawm(
-      wrapperAddress?: null,
+      wrapperAddress?: string | null,
       feeAmount?: null
     ): ProtocolFeeWithdrawmEventFilter;
 
     'TokenPositionChange(uint256,address,int256,int256)'(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tokenAmountOut?: null,
       baseAmountOut?: null
     ): TokenPositionChangeEventFilter;
     TokenPositionChange(
-      accountNo?: null,
-      vToken?: null,
+      accountNo?: BigNumberish | null,
+      vToken?: string | null,
       tokenAmountOut?: null,
       baseAmountOut?: null
     ): TokenPositionChangeEventFilter;
 
+    'UpdateProfit(uint256,int256)'(
+      accountNo?: BigNumberish | null,
+      amount?: null
+    ): UpdateProfitEventFilter;
+    UpdateProfit(
+      accountNo?: BigNumberish | null,
+      amount?: null
+    ): UpdateProfitEventFilter;
+
     'WithdrawMargin(uint256,address,uint256)'(
-      accountNo?: null,
-      rTokenAddress?: null,
+      accountNo?: BigNumberish | null,
+      rTokenAddress?: string | null,
       amount?: null
     ): WithdrawMarginEventFilter;
     WithdrawMargin(
-      accountNo?: null,
-      rTokenAddress?: null,
+      accountNo?: BigNumberish | null,
+      rTokenAddress?: string | null,
       amount?: null
     ): WithdrawMarginEventFilter;
-
-    'WithdrawProfit(uint256,uint256)'(
-      accountNo?: null,
-      amount?: null
-    ): WithdrawProfitEventFilter;
-    WithdrawProfit(accountNo?: null, amount?: null): WithdrawProfitEventFilter;
   };
 
   estimateGas: {};
