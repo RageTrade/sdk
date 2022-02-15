@@ -45,7 +45,6 @@ export interface TickTestInterface extends ethers.utils.Interface {
     'getFeeGrowthInside(int24,int24,int24)': FunctionFragment;
     'getFundingPaymentGrowthInside(int24,int24,int24)': FunctionFragment;
     'getNetPositionInside(int24,int24,int24)': FunctionFragment;
-    'getUniswapFeeGrowthInside(int24,int24,int24)': FunctionFragment;
     'registerTrade(int256,uint256,uint48,uint256,uint256)': FunctionFragment;
     'setFeeGrowthOutsideX128(uint256)': FunctionFragment;
     'setFpGlobal((int256,int256,int256,uint48))': FunctionFragment;
@@ -67,10 +66,6 @@ export interface TickTestInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getNetPositionInside',
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getUniswapFeeGrowthInside',
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
@@ -117,10 +112,6 @@ export interface TickTestInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getNetPositionInside',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getUniswapFeeGrowthInside',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -213,13 +204,6 @@ export interface TickTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { netPositionGrowthX128: BigNumber }>;
 
-    getUniswapFeeGrowthInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      tickCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { uniswapFeeGrowthInside: BigNumber }>;
-
     registerTrade(
       tokenAmount: BigNumberish,
       liquidity: BigNumberish,
@@ -293,13 +277,6 @@ export interface TickTest extends BaseContract {
   ): Promise<BigNumber>;
 
   getNetPositionInside(
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    tickCurrent: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUniswapFeeGrowthInside(
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
     tickCurrent: BigNumberish,
@@ -382,13 +359,6 @@ export interface TickTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUniswapFeeGrowthInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      tickCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     registerTrade(
       tokenAmount: BigNumberish,
       liquidity: BigNumberish,
@@ -462,13 +432,6 @@ export interface TickTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUniswapFeeGrowthInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      tickCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     registerTrade(
       tokenAmount: BigNumberish,
       liquidity: BigNumberish,
@@ -527,13 +490,6 @@ export interface TickTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getNetPositionInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      tickCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUniswapFeeGrowthInside(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       tickCurrent: BigNumberish,

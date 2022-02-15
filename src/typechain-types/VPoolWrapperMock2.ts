@@ -744,9 +744,7 @@ export interface VPoolWrapperMock2 extends BaseContract {
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & { vTokenIn: BigNumber; vBaseIn: BigNumber }
-    >;
+    ): Promise<[BigNumber, BigNumber]>;
 
     swapToken(
       amount: BigNumberish,

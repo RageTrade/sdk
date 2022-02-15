@@ -157,25 +157,6 @@ const _abi = [
         type: 'address',
       },
     ],
-    name: 'realTokenInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
     name: 'supportedDeposits',
     outputs: [
       {

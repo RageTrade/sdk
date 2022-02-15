@@ -23,39 +23,39 @@ import type {
   OnEvent,
 } from './common';
 
-export interface PriceMathTestInterface extends ethers.utils.Interface {
+export interface BisectionTestInterface extends ethers.utils.Interface {
   functions: {
-    'toPriceX128(uint160)': FunctionFragment;
-    'toSqrtPriceX96(uint256)': FunctionFragment;
+    'findSolution(uint256,uint160,uint160)': FunctionFragment;
+    'increasingFunction(uint160)': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: 'toPriceX128',
-    values: [BigNumberish]
+    functionFragment: 'findSolution',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'toSqrtPriceX96',
+    functionFragment: 'increasingFunction',
     values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'toPriceX128',
+    functionFragment: 'findSolution',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'toSqrtPriceX96',
+    functionFragment: 'increasingFunction',
     data: BytesLike
   ): Result;
 
   events: {};
 }
 
-export interface PriceMathTest extends BaseContract {
+export interface BisectionTest extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: PriceMathTestInterface;
+  interface: BisectionTestInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -77,35 +77,41 @@ export interface PriceMathTest extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    toPriceX128(
-      sqrtPriceX96: BigNumberish,
+    findSolution(
+      y_target: BigNumberish,
+      x_lower: BigNumberish,
+      x_upper: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
-    toSqrtPriceX96(
-      priceX128: BigNumberish,
+    increasingFunction(
+      val: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { sqrtPriceX96: BigNumber }>;
+    ): Promise<[BigNumber]>;
   };
 
-  toPriceX128(
-    sqrtPriceX96: BigNumberish,
+  findSolution(
+    y_target: BigNumberish,
+    x_lower: BigNumberish,
+    x_upper: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  toSqrtPriceX96(
-    priceX128: BigNumberish,
+  increasingFunction(
+    val: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
-    toPriceX128(
-      sqrtPriceX96: BigNumberish,
+    findSolution(
+      y_target: BigNumberish,
+      x_lower: BigNumberish,
+      x_upper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    toSqrtPriceX96(
-      priceX128: BigNumberish,
+    increasingFunction(
+      val: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -113,25 +119,29 @@ export interface PriceMathTest extends BaseContract {
   filters: {};
 
   estimateGas: {
-    toPriceX128(
-      sqrtPriceX96: BigNumberish,
+    findSolution(
+      y_target: BigNumberish,
+      x_lower: BigNumberish,
+      x_upper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    toSqrtPriceX96(
-      priceX128: BigNumberish,
+    increasingFunction(
+      val: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    toPriceX128(
-      sqrtPriceX96: BigNumberish,
+    findSolution(
+      y_target: BigNumberish,
+      x_lower: BigNumberish,
+      x_upper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    toSqrtPriceX96(
-      priceX128: BigNumberish,
+    increasingFunction(
+      val: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

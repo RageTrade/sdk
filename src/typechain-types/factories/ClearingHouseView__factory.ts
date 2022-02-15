@@ -289,6 +289,25 @@ const _abi = [
         type: 'uint256',
       },
     ],
+    name: 'getAccountNetProfit',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'accountNetProfit',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
     name: 'getAccountView',
     outputs: [
       {
@@ -439,19 +458,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_realToken',
-        type: 'address',
-      },
-    ],
-    name: 'initRealToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'insuranceFund',
     outputs: [
@@ -459,25 +465,6 @@ const _abi = [
         internalType: 'contract IInsuranceFund',
         name: '',
         type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'realToken',
-        type: 'address',
-      },
-    ],
-    name: 'isRealTokenAlreadyInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -511,6 +498,24 @@ const _abi = [
       },
     ],
     name: 'liquidateLiquidityPositions',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateLiquidityPositionsWithGasClaim',
     outputs: [
       {
         internalType: 'int256',
@@ -545,6 +550,62 @@ const _abi = [
       },
     ],
     name: 'liquidateTokenPosition',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'vBaseIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vTokenIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'traderPositionIncrease',
+            type: 'int256',
+          },
+        ],
+        internalType: 'struct IClearingHouse.BalanceAdjustments',
+        name: 'liquidatorBalanceAdjustments',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'liquidatorAccountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint16',
+        name: 'liquidationBps',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateTokenPositionWithGasClaim',
     outputs: [
       {
         components: [
@@ -790,25 +851,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'realTokenInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'full',
         type: 'address',
       },
@@ -891,6 +933,39 @@ const _abi = [
       },
     ],
     name: 'removeLimitOrder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeLimitOrderWithGasClaim',
     outputs: [
       {
         internalType: 'uint256',
@@ -920,24 +995,6 @@ const _abi = [
       },
     ],
     name: 'removeMargin',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountNo',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeProfit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1071,6 +1128,24 @@ const _abi = [
       },
     ],
     name: 'transferTeamMultisig',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'updateProfit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

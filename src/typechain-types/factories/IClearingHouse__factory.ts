@@ -147,6 +147,174 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bool',
+        name: 'isInitialMargin',
+        type: 'bool',
+      },
+    ],
+    name: 'getAccountMarketValueAndRequiredMargin',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'accountMarketValue',
+        type: 'int256',
+      },
+      {
+        internalType: 'int256',
+        name: 'requiredMargin',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
+    name: 'getAccountNetProfit',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'accountNetProfit',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
+    name: 'getAccountView',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        internalType: 'int256',
+        name: 'vBaseBalance',
+        type: 'int256',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'rTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'balance',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct IClearingHouse.DepositTokenView[]',
+        name: 'tokenDeposits',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'vTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'int256',
+            name: 'balance',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'netTraderPosition',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumAX128Ckpt',
+            type: 'int256',
+          },
+          {
+            components: [
+              {
+                internalType: 'enum IClearingHouse.LimitOrderType',
+                name: 'limitOrderType',
+                type: 'uint8',
+              },
+              {
+                internalType: 'int24',
+                name: 'tickLower',
+                type: 'int24',
+              },
+              {
+                internalType: 'int24',
+                name: 'tickUpper',
+                type: 'int24',
+              },
+              {
+                internalType: 'uint128',
+                name: 'liquidity',
+                type: 'uint128',
+              },
+              {
+                internalType: 'int256',
+                name: 'vTokenAmountIn',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumALastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumBInsideLastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'int256',
+                name: 'sumFpInsideLastX128',
+                type: 'int256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'sumFeeInsideLastX128',
+                type: 'uint256',
+              },
+            ],
+            internalType: 'struct IClearingHouse.LiquidityPositionView[]',
+            name: 'liquidityPositions',
+            type: 'tuple[]',
+          },
+        ],
+        internalType: 'struct IClearingHouse.VTokenPositionView[]',
+        name: 'tokenPositions',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -184,38 +352,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_realToken',
-        type: 'address',
-      },
-    ],
-    name: 'initRealToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_realToken',
-        type: 'address',
-      },
-    ],
-    name: 'isRealTokenAlreadyInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint32',
         name: 'truncated',
         type: 'uint32',
@@ -241,6 +377,24 @@ const _abi = [
       },
     ],
     name: 'liquidateLiquidityPositions',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateLiquidityPositionsWithGasClaim',
     outputs: [
       {
         internalType: 'int256',
@@ -300,6 +454,211 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'liquidatorAccountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint16',
+        name: 'liquidationBps',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'liquidateTokenPositionWithGasClaim',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'vBaseIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vTokenIncrease',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'traderPositionIncrease',
+            type: 'int256',
+          },
+        ],
+        internalType: 'struct IClearingHouse.BalanceAdjustments',
+        name: 'liquidatorBalanceAdjustments',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+    ],
+    name: 'pools',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'contract IUniswapV3Pool',
+            name: 'vPool',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IVPoolWrapper',
+            name: 'vPoolWrapper',
+            type: 'address',
+          },
+          {
+            components: [
+              {
+                internalType: 'uint16',
+                name: 'initialMarginRatio',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint16',
+                name: 'maintainanceMarginRatio',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint32',
+                name: 'twapDuration',
+                type: 'uint32',
+              },
+              {
+                internalType: 'bool',
+                name: 'whitelisted',
+                type: 'bool',
+              },
+              {
+                internalType: 'contract IOracle',
+                name: 'oracle',
+                type: 'address',
+              },
+            ],
+            internalType: 'struct IClearingHouse.RageTradePoolSettings',
+            name: 'settings',
+            type: 'tuple',
+          },
+        ],
+        internalType: 'struct IClearingHouse.RageTradePool',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'protocolInfo',
+    outputs: [
+      {
+        internalType: 'contract IVBase',
+        name: 'vBase',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint16',
+            name: 'liquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'tokenLiquidationPriceDeltaBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'insuranceFundFeeShareBps',
+            type: 'uint16',
+          },
+        ],
+        internalType: 'struct Account.LiquidationParams',
+        name: 'liquidationParams',
+        type: 'tuple',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minRequiredMargin',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'removeLimitOrderFee',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minimumOrderNotional',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'rTokenId',
+        type: 'uint32',
+      },
+    ],
+    name: 'rTokens',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'tokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'oracleAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint32',
+            name: 'oracleTimeHorizon',
+            type: 'uint32',
+          },
+        ],
+        internalType: 'struct RTokenLib.RToken',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -388,6 +747,39 @@ const _abi = [
       },
     ],
     name: 'removeLimitOrder',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint256',
+        name: 'gasComputationUnitsClaim',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeLimitOrderWithGasClaim',
     outputs: [
       {
         internalType: 'uint256',
@@ -417,24 +809,6 @@ const _abi = [
       },
     ],
     name: 'removeMargin',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountNo',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeProfit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -542,6 +916,24 @@ const _abi = [
         type: 'uint256',
       },
       {
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'updateProfit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
         internalType: 'uint32',
         name: 'vTokenTruncatedAddress',
         type: 'uint32',
@@ -603,6 +995,25 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'vTokenAddressTruncated',
+        type: 'uint32',
+      },
+    ],
+    name: 'vTokens',
+    outputs: [
+      {
+        internalType: 'contract IVToken',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

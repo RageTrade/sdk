@@ -223,12 +223,11 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     'createAccount()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
+    'getAccountNetProfit(uint256)': FunctionFragment;
     'getAccountView(uint256)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
     'governance()': FunctionFragment;
-    'initRealToken(address)': FunctionFragment;
     'insuranceFund()': FunctionFragment;
-    'isRealTokenAlreadyInitilized(address)': FunctionFragment;
     'isVTokenAddressAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
@@ -242,12 +241,10 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     'rBase()': FunctionFragment;
     'rTokens(uint32)': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'realTokenInitilized(address)': FunctionFragment;
     'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
     'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,uint32,uint256)': FunctionFragment;
-    'removeProfit(uint256,uint256)': FunctionFragment;
     'setPaused(bool)': FunctionFragment;
     'setPlatformParameters((uint16,uint16,uint16),uint256,uint256,uint256)': FunctionFragment;
     'supportedDeposits(address)': FunctionFragment;
@@ -256,6 +253,7 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
+    'updateProfit(uint256,int256)': FunctionFragment;
     'updateRageTradePoolSettings(address,(uint16,uint16,uint32,bool,address))': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'updateSupportedDeposits(address,bool)': FunctionFragment;
@@ -286,6 +284,10 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
+    functionFragment: 'getAccountNetProfit',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getAccountView',
     values: [BigNumberish]
   ): string;
@@ -298,16 +300,8 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'initRealToken',
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'insuranceFund',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'isRealTokenAlreadyInitilized',
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'isVTokenAddressAvailable',
@@ -359,10 +353,6 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'realTokenInitilized',
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'registerPool',
     values: [string, RageTradePoolStruct]
   ): string;
@@ -383,10 +373,6 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'removeMargin',
     values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeProfit',
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'setPaused', values: [boolean]): string;
   encodeFunctionData(
@@ -416,6 +402,10 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'transferTeamMultisig',
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateProfit',
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateRageTradePoolSettings',
@@ -461,6 +451,10 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getAccountNetProfit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getAccountView',
     data: BytesLike
   ): Result;
@@ -470,15 +464,7 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'initRealToken',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'insuranceFund',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'isRealTokenAlreadyInitilized',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -522,10 +508,6 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'realTokenInitilized',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'registerPool',
     data: BytesLike
   ): Result;
@@ -539,10 +521,6 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'removeMargin',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'removeProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'setPaused', data: BytesLike): Result;
@@ -569,6 +547,10 @@ export interface ClearingHouseInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'transferTeamMultisig',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -691,6 +673,11 @@ export interface ClearingHouse extends BaseContract {
       }
     >;
 
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -720,17 +707,7 @@ export interface ClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<[string]>;
 
-    initRealToken(
-      realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
-
-    isRealTokenAlreadyInitilized(
-      realToken: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -803,11 +780,6 @@ export interface ClearingHouse extends BaseContract {
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     registerPool(
       full: string,
       rageTradePool: RageTradePoolStruct,
@@ -834,12 +806,6 @@ export interface ClearingHouse extends BaseContract {
     removeMargin(
       accountNo: BigNumberish,
       rTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    removeProfit(
-      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -883,6 +849,12 @@ export interface ClearingHouse extends BaseContract {
 
     transferTeamMultisig(
       newTeamMultisig: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -970,6 +942,11 @@ export interface ClearingHouse extends BaseContract {
     }
   >;
 
+  getAccountNetProfit(
+    accountNo: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getAccountView(
     accountNo: BigNumberish,
     overrides?: CallOverrides
@@ -999,17 +976,7 @@ export interface ClearingHouse extends BaseContract {
 
   governance(overrides?: CallOverrides): Promise<string>;
 
-  initRealToken(
-    realToken: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-  isRealTokenAlreadyInitilized(
-    realToken: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
 
   isVTokenAddressAvailable(
     truncated: BigNumberish,
@@ -1076,11 +1043,6 @@ export interface ClearingHouse extends BaseContract {
 
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
-  realTokenInitilized(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   registerPool(
     full: string,
     rageTradePool: RageTradePoolStruct,
@@ -1107,12 +1069,6 @@ export interface ClearingHouse extends BaseContract {
   removeMargin(
     accountNo: BigNumberish,
     rTokenTruncatedAddress: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  removeProfit(
-    accountNo: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1150,6 +1106,12 @@ export interface ClearingHouse extends BaseContract {
 
   transferTeamMultisig(
     newTeamMultisig: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateProfit(
+    accountNo: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1235,6 +1197,11 @@ export interface ClearingHouse extends BaseContract {
       }
     >;
 
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -1264,14 +1231,7 @@ export interface ClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<string>;
 
-    initRealToken(realToken: string, overrides?: CallOverrides): Promise<void>;
-
     insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-    isRealTokenAlreadyInitilized(
-      realToken: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -1281,7 +1241,7 @@ export interface ClearingHouse extends BaseContract {
     liquidateLiquidityPositions(
       accountNo: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
     liquidateLiquidityPositionsWithGasClaim(
       accountNo: BigNumberish,
@@ -1344,11 +1304,6 @@ export interface ClearingHouse extends BaseContract {
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     registerPool(
       full: string,
       rageTradePool: RageTradePoolStruct,
@@ -1361,7 +1316,7 @@ export interface ClearingHouse extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
     removeLimitOrderWithGasClaim(
       accountNo: BigNumberish,
@@ -1375,12 +1330,6 @@ export interface ClearingHouse extends BaseContract {
     removeMargin(
       accountNo: BigNumberish,
       rTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    removeProfit(
-      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1423,6 +1372,12 @@ export interface ClearingHouse extends BaseContract {
 
     transferTeamMultisig(
       newTeamMultisig: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1531,6 +1486,11 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -1543,17 +1503,7 @@ export interface ClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    initRealToken(
-      realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isRealTokenAlreadyInitilized(
-      realToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -1607,11 +1557,6 @@ export interface ClearingHouse extends BaseContract {
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     registerPool(
       full: string,
       rageTradePool: RageTradePoolStruct,
@@ -1638,12 +1583,6 @@ export interface ClearingHouse extends BaseContract {
     removeMargin(
       accountNo: BigNumberish,
       rTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    removeProfit(
-      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1687,6 +1626,12 @@ export interface ClearingHouse extends BaseContract {
 
     transferTeamMultisig(
       newTeamMultisig: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1770,6 +1715,11 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getAccountView(
       accountNo: BigNumberish,
       overrides?: CallOverrides
@@ -1782,17 +1732,7 @@ export interface ClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    initRealToken(
-      realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isRealTokenAlreadyInitilized(
-      realToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -1851,11 +1791,6 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     registerPool(
       full: string,
       rageTradePool: RageTradePoolStruct,
@@ -1882,12 +1817,6 @@ export interface ClearingHouse extends BaseContract {
     removeMargin(
       accountNo: BigNumberish,
       rTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeProfit(
-      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1931,6 +1860,12 @@ export interface ClearingHouse extends BaseContract {
 
     transferTeamMultisig(
       newTeamMultisig: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

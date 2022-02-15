@@ -351,6 +351,25 @@ const _abi = [
         type: 'uint256',
       },
     ],
+    name: 'getAccountNetProfit',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'accountNetProfit',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+    ],
     name: 'getAccountView',
     outputs: [
       {
@@ -501,19 +520,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'realToken',
-        type: 'address',
-      },
-    ],
-    name: 'initRealToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'insuranceFund',
     outputs: [
@@ -521,25 +527,6 @@ const _abi = [
         internalType: 'contract IInsuranceFund',
         name: '',
         type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'realToken',
-        type: 'address',
-      },
-    ],
-    name: 'isRealTokenAlreadyInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
       },
     ],
     stateMutability: 'view',
@@ -573,13 +560,7 @@ const _abi = [
       },
     ],
     name: 'liquidateLiquidityPositions',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'keeperFee',
-        type: 'int256',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -932,25 +913,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'realTokenInitilized',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'full',
         type: 'address',
       },
@@ -1033,13 +995,7 @@ const _abi = [
       },
     ],
     name: 'removeLimitOrder',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'keeperFee',
-        type: 'uint256',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -1101,24 +1057,6 @@ const _abi = [
       },
     ],
     name: 'removeMargin',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountNo',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeProfit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1310,6 +1248,24 @@ const _abi = [
       },
     ],
     name: 'transferTeamMultisig',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'updateProfit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1660,13 +1616,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
         name: 'rTokenAddress',
         type: 'address',
@@ -1685,13 +1641,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1722,13 +1678,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
         name: 'keeperAddress',
         type: 'address',
@@ -1759,19 +1715,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'liquidatorAccountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1808,13 +1764,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1863,13 +1819,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1900,13 +1856,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1937,7 +1893,7 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
         name: 'wrapperAddress',
         type: 'address',
@@ -1956,13 +1912,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: 'contract IVToken',
         name: 'vToken',
         type: 'address',
@@ -1987,13 +1943,32 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'uint256',
         name: 'accountNo',
         type: 'uint256',
       },
       {
         indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'UpdateProfit',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
         internalType: 'address',
         name: 'rTokenAddress',
         type: 'address',
@@ -2006,25 +1981,6 @@ const _abi = [
       },
     ],
     name: 'WithdrawMargin',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'accountNo',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'WithdrawProfit',
     type: 'event',
   },
 ];

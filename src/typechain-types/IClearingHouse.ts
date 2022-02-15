@@ -24,6 +24,72 @@ import type {
   OnEvent,
 } from './common';
 
+export type DepositTokenViewStruct = {
+  rTokenAddress: string;
+  balance: BigNumberish;
+};
+
+export type DepositTokenViewStructOutput = [string, BigNumber] & {
+  rTokenAddress: string;
+  balance: BigNumber;
+};
+
+export type LiquidityPositionViewStruct = {
+  limitOrderType: BigNumberish;
+  tickLower: BigNumberish;
+  tickUpper: BigNumberish;
+  liquidity: BigNumberish;
+  vTokenAmountIn: BigNumberish;
+  sumALastX128: BigNumberish;
+  sumBInsideLastX128: BigNumberish;
+  sumFpInsideLastX128: BigNumberish;
+  sumFeeInsideLastX128: BigNumberish;
+};
+
+export type LiquidityPositionViewStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  BigNumber
+] & {
+  limitOrderType: number;
+  tickLower: number;
+  tickUpper: number;
+  liquidity: BigNumber;
+  vTokenAmountIn: BigNumber;
+  sumALastX128: BigNumber;
+  sumBInsideLastX128: BigNumber;
+  sumFpInsideLastX128: BigNumber;
+  sumFeeInsideLastX128: BigNumber;
+};
+
+export type VTokenPositionViewStruct = {
+  vTokenAddress: string;
+  balance: BigNumberish;
+  netTraderPosition: BigNumberish;
+  sumAX128Ckpt: BigNumberish;
+  liquidityPositions: LiquidityPositionViewStruct[];
+};
+
+export type VTokenPositionViewStructOutput = [
+  string,
+  BigNumber,
+  BigNumber,
+  BigNumber,
+  LiquidityPositionViewStructOutput[]
+] & {
+  vTokenAddress: string;
+  balance: BigNumber;
+  netTraderPosition: BigNumber;
+  sumAX128Ckpt: BigNumber;
+  liquidityPositions: LiquidityPositionViewStructOutput[];
+};
+
 export type BalanceAdjustmentsStruct = {
   vBaseIncrease: BigNumberish;
   vTokenIncrease: BigNumberish;
@@ -78,6 +144,30 @@ export type RageTradePoolStructOutput = [
   settings: RageTradePoolSettingsStructOutput;
 };
 
+export type LiquidationParamsStruct = {
+  liquidationFeeFraction: BigNumberish;
+  tokenLiquidationPriceDeltaBps: BigNumberish;
+  insuranceFundFeeShareBps: BigNumberish;
+};
+
+export type LiquidationParamsStructOutput = [number, number, number] & {
+  liquidationFeeFraction: number;
+  tokenLiquidationPriceDeltaBps: number;
+  insuranceFundFeeShareBps: number;
+};
+
+export type RTokenStruct = {
+  tokenAddress: string;
+  oracleAddress: string;
+  oracleTimeHorizon: BigNumberish;
+};
+
+export type RTokenStructOutput = [string, string, number] & {
+  tokenAddress: string;
+  oracleAddress: string;
+  oracleTimeHorizon: number;
+};
+
 export type SwapParamsStruct = {
   amount: BigNumberish;
   sqrtPriceLimit: BigNumberish;
@@ -130,22 +220,30 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     '__ClearingHouse_init(address,address,address,address,address)': FunctionFragment;
     'addMargin(uint256,uint32,uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
+    'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
+    'getAccountNetProfit(uint256)': FunctionFragment;
+    'getAccountView(uint256)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
     'governance()': FunctionFragment;
-    'initRealToken(address)': FunctionFragment;
-    'isRealTokenAlreadyInitilized(address)': FunctionFragment;
     'isVTokenAddressAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
+    'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
+    'liquidateTokenPositionWithGasClaim(uint256,uint256,uint32,uint16,uint256)': FunctionFragment;
+    'pools(address)': FunctionFragment;
+    'protocolInfo()': FunctionFragment;
+    'rTokens(uint32)': FunctionFragment;
     'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
+    'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,uint32,uint256)': FunctionFragment;
-    'removeProfit(uint256,uint256)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
+    'updateProfit(uint256,int256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'vTokens(uint32)': FunctionFragment;
     'withdrawProtocolFee(address[])': FunctionFragment;
   };
 
@@ -162,20 +260,24 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
+    values: [BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountNetProfit',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getAccountView',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getTwapSqrtPricesForSetDuration',
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'initRealToken',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'isRealTokenAlreadyInitilized',
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'isVTokenAddressAvailable',
@@ -186,8 +288,31 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'liquidateTokenPositionWithGasClaim',
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(functionFragment: 'pools', values: [string]): string;
+  encodeFunctionData(
+    functionFragment: 'protocolInfo',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rTokens',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
@@ -198,12 +323,18 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'removeMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    functionFragment: 'removeLimitOrderWithGasClaim',
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'removeProfit',
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'removeMargin',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -222,8 +353,16 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: 'updateProfit',
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'updateRangeOrder',
     values: [BigNumberish, BigNumberish, LiquidityChangeParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'vTokens',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
@@ -240,18 +379,22 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getAccountMarketValueAndRequiredMargin',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountNetProfit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAccountView',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getTwapSqrtPricesForSetDuration',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'initRealToken',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'isRealTokenAlreadyInitilized',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'isVTokenAddressAvailable',
     data: BytesLike
@@ -261,9 +404,23 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'liquidateTokenPosition',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: 'liquidateTokenPositionWithGasClaim',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'pools', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'protocolInfo',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'rTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'registerPool',
     data: BytesLike
@@ -273,11 +430,11 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'removeMargin',
+    functionFragment: 'removeLimitOrderWithGasClaim',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'removeProfit',
+    functionFragment: 'removeMargin',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -294,9 +451,14 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'updateProfit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'updateRangeOrder',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'vTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'withdrawProtocolFee',
     data: BytesLike
@@ -352,6 +514,39 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        vBaseBalance: BigNumber;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
+      }
+    >;
+
     getTwapSqrtPricesForSetDuration(
       vToken: string,
       overrides?: CallOverrides
@@ -364,16 +559,6 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<[string]>;
 
-    initRealToken(
-      _realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    isRealTokenAlreadyInitilized(
-      _realToken: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     isVTokenAddressAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
@@ -384,6 +569,12 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    liquidateLiquidityPositionsWithGasClaim(
+      accountNo: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     liquidateTokenPosition(
       liquidatorAccountNo: BigNumberish,
       accountNo: BigNumberish,
@@ -391,6 +582,43 @@ export interface IClearingHouse extends BaseContract {
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    liquidateTokenPositionWithGasClaim(
+      liquidatorAccountNo: BigNumberish,
+      accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
+      liquidationBps: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    pools(
+      vToken: string,
+      overrides?: CallOverrides
+    ): Promise<[RageTradePoolStructOutput]>;
+
+    protocolInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        LiquidationParamsStructOutput,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
+        vBase: string;
+        liquidationParams: LiquidationParamsStructOutput;
+        minRequiredMargin: BigNumber;
+        removeLimitOrderFee: BigNumber;
+        minimumOrderNotional: BigNumber;
+      }
+    >;
+
+    rTokens(
+      rTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[RTokenStructOutput]>;
 
     registerPool(
       full: string,
@@ -406,15 +634,18 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeMargin(
+    removeLimitOrderWithGasClaim(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeProfit(
+    removeMargin(
       accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -438,12 +669,23 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     updateRangeOrder(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vTokens(
+      vTokenAddressTruncated: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     withdrawProtocolFee(
       wrapperAddresses: string[],
@@ -471,6 +713,39 @@ export interface IClearingHouse extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getAccountMarketValueAndRequiredMargin(
+    accountNo: BigNumberish,
+    isInitialMargin: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      accountMarketValue: BigNumber;
+      requiredMargin: BigNumber;
+    }
+  >;
+
+  getAccountNetProfit(
+    accountNo: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getAccountView(
+    accountNo: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [
+      string,
+      BigNumber,
+      DepositTokenViewStructOutput[],
+      VTokenPositionViewStructOutput[]
+    ] & {
+      owner: string;
+      vBaseBalance: BigNumber;
+      tokenDeposits: DepositTokenViewStructOutput[];
+      tokenPositions: VTokenPositionViewStructOutput[];
+    }
+  >;
+
   getTwapSqrtPricesForSetDuration(
     vToken: string,
     overrides?: CallOverrides
@@ -483,16 +758,6 @@ export interface IClearingHouse extends BaseContract {
 
   governance(overrides?: CallOverrides): Promise<string>;
 
-  initRealToken(
-    _realToken: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  isRealTokenAlreadyInitilized(
-    _realToken: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   isVTokenAddressAvailable(
     truncated: BigNumberish,
     overrides?: CallOverrides
@@ -503,6 +768,12 @@ export interface IClearingHouse extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  liquidateLiquidityPositionsWithGasClaim(
+    accountNo: BigNumberish,
+    gasComputationUnitsClaim: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   liquidateTokenPosition(
     liquidatorAccountNo: BigNumberish,
     accountNo: BigNumberish,
@@ -510,6 +781,37 @@ export interface IClearingHouse extends BaseContract {
     liquidationBps: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  liquidateTokenPositionWithGasClaim(
+    liquidatorAccountNo: BigNumberish,
+    accountNo: BigNumberish,
+    vTokenTruncatedAddress: BigNumberish,
+    liquidationBps: BigNumberish,
+    gasComputationUnitsClaim: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  pools(
+    vToken: string,
+    overrides?: CallOverrides
+  ): Promise<RageTradePoolStructOutput>;
+
+  protocolInfo(
+    overrides?: CallOverrides
+  ): Promise<
+    [string, LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber] & {
+      vBase: string;
+      liquidationParams: LiquidationParamsStructOutput;
+      minRequiredMargin: BigNumber;
+      removeLimitOrderFee: BigNumber;
+      minimumOrderNotional: BigNumber;
+    }
+  >;
+
+  rTokens(
+    rTokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<RTokenStructOutput>;
 
   registerPool(
     full: string,
@@ -525,15 +827,18 @@ export interface IClearingHouse extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeMargin(
+  removeLimitOrderWithGasClaim(
     accountNo: BigNumberish,
     vTokenTruncatedAddress: BigNumberish,
-    amount: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    gasComputationUnitsClaim: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeProfit(
+  removeMargin(
     accountNo: BigNumberish,
+    vTokenTruncatedAddress: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -557,12 +862,23 @@ export interface IClearingHouse extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateProfit(
+    accountNo: BigNumberish,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   updateRangeOrder(
     accountNo: BigNumberish,
     vTokenTruncatedAddress: BigNumberish,
     liquidityChangeParams: LiquidityChangeParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  vTokens(
+    vTokenAddressTruncated: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   withdrawProtocolFee(
     wrapperAddresses: string[],
@@ -588,6 +904,39 @@ export interface IClearingHouse extends BaseContract {
 
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        BigNumber,
+        DepositTokenViewStructOutput[],
+        VTokenPositionViewStructOutput[]
+      ] & {
+        owner: string;
+        vBaseBalance: BigNumber;
+        tokenDeposits: DepositTokenViewStructOutput[];
+        tokenPositions: VTokenPositionViewStructOutput[];
+      }
+    >;
+
     getTwapSqrtPricesForSetDuration(
       vToken: string,
       overrides?: CallOverrides
@@ -600,13 +949,6 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<string>;
 
-    initRealToken(_realToken: string, overrides?: CallOverrides): Promise<void>;
-
-    isRealTokenAlreadyInitilized(
-      _realToken: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     isVTokenAddressAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
@@ -614,6 +956,12 @@ export interface IClearingHouse extends BaseContract {
 
     liquidateLiquidityPositions(
       accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    liquidateLiquidityPositionsWithGasClaim(
+      accountNo: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -624,6 +972,43 @@ export interface IClearingHouse extends BaseContract {
       liquidationBps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BalanceAdjustmentsStructOutput>;
+
+    liquidateTokenPositionWithGasClaim(
+      liquidatorAccountNo: BigNumberish,
+      accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
+      liquidationBps: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BalanceAdjustmentsStructOutput>;
+
+    pools(
+      vToken: string,
+      overrides?: CallOverrides
+    ): Promise<RageTradePoolStructOutput>;
+
+    protocolInfo(
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        string,
+        LiquidationParamsStructOutput,
+        BigNumber,
+        BigNumber,
+        BigNumber
+      ] & {
+        vBase: string;
+        liquidationParams: LiquidationParamsStructOutput;
+        minRequiredMargin: BigNumber;
+        removeLimitOrderFee: BigNumber;
+        minimumOrderNotional: BigNumber;
+      }
+    >;
+
+    rTokens(
+      rTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<RTokenStructOutput>;
 
     registerPool(
       full: string,
@@ -637,17 +1022,20 @@ export interface IClearingHouse extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<void>;
+
+    removeLimitOrderWithGasClaim(
+      accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     removeMargin(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    removeProfit(
-      accountNo: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -676,6 +1064,12 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     updateRangeOrder(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
@@ -687,6 +1081,11 @@ export interface IClearingHouse extends BaseContract {
         vBaseAmountOut: BigNumber;
       }
     >;
+
+    vTokens(
+      vTokenAddressTruncated: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     withdrawProtocolFee(
       wrapperAddresses: string[],
@@ -717,22 +1116,28 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTwapSqrtPricesForSetDuration(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initRealToken(
-      _realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    isRealTokenAlreadyInitilized(
-      _realToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -744,12 +1149,36 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    liquidateLiquidityPositionsWithGasClaim(
+      accountNo: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     liquidateTokenPosition(
       liquidatorAccountNo: BigNumberish,
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    liquidateTokenPositionWithGasClaim(
+      liquidatorAccountNo: BigNumberish,
+      accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
+      liquidationBps: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    pools(vToken: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    protocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rTokens(
+      rTokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     registerPool(
@@ -766,15 +1195,18 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    removeMargin(
+    removeLimitOrderWithGasClaim(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    removeProfit(
+    removeMargin(
       accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -798,11 +1230,22 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     updateRangeOrder(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    vTokens(
+      vTokenAddressTruncated: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     withdrawProtocolFee(
@@ -832,22 +1275,28 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    getAccountMarketValueAndRequiredMargin(
+      accountNo: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountNetProfit(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAccountView(
+      accountNo: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTwapSqrtPricesForSetDuration(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initRealToken(
-      _realToken: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isRealTokenAlreadyInitilized(
-      _realToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     isVTokenAddressAvailable(
       truncated: BigNumberish,
@@ -859,12 +1308,39 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    liquidateLiquidityPositionsWithGasClaim(
+      accountNo: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     liquidateTokenPosition(
       liquidatorAccountNo: BigNumberish,
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    liquidateTokenPositionWithGasClaim(
+      liquidatorAccountNo: BigNumberish,
+      accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
+      liquidationBps: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    pools(
+      vToken: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    protocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rTokens(
+      rTokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     registerPool(
@@ -881,15 +1357,18 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeMargin(
+    removeLimitOrderWithGasClaim(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
-      amount: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeProfit(
+    removeMargin(
       accountNo: BigNumberish,
+      vTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -913,11 +1392,22 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    updateProfit(
+      accountNo: BigNumberish,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     updateRangeOrder(
       accountNo: BigNumberish,
       vTokenTruncatedAddress: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    vTokens(
+      vTokenAddressTruncated: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     withdrawProtocolFee(

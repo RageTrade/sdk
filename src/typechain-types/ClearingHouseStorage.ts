@@ -33,7 +33,6 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
     'paused()': FunctionFragment;
     'rBase()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'realTokenInitilized(address)': FunctionFragment;
     'supportedDeposits(address)': FunctionFragment;
     'supportedVTokens(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;
@@ -62,10 +61,6 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'rageTradeFactoryAddress',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'realTokenInitilized',
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'supportedDeposits',
@@ -105,10 +100,6 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'rBase', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rageTradeFactoryAddress',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'realTokenInitilized',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -196,11 +187,6 @@ export interface ClearingHouseStorage extends BaseContract {
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     supportedDeposits(
       arg0: string,
       overrides?: CallOverrides
@@ -238,11 +224,6 @@ export interface ClearingHouseStorage extends BaseContract {
 
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
-  realTokenInitilized(
-    arg0: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   supportedDeposits(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   supportedVTokens(arg0: string, overrides?: CallOverrides): Promise<boolean>;
@@ -273,11 +254,6 @@ export interface ClearingHouseStorage extends BaseContract {
     rBase(overrides?: CallOverrides): Promise<string>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
 
     supportedDeposits(
       arg0: string,
@@ -334,11 +310,6 @@ export interface ClearingHouseStorage extends BaseContract {
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
-    realTokenInitilized(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     supportedDeposits(
       arg0: string,
       overrides?: CallOverrides
@@ -376,11 +347,6 @@ export interface ClearingHouseStorage extends BaseContract {
     rBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rageTradeFactoryAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    realTokenInitilized(
-      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
