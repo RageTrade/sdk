@@ -7,6 +7,7 @@ import {
   ProxyAdmin__factory,
   RageTradeFactory,
   RageTradeFactory__factory,
+  SwapSimulator__factory,
   VBase__factory,
 } from './typechain';
 import {
@@ -84,6 +85,7 @@ export async function getContractsWithDeployments(
     RBaseDeployment: ContractDeployment;
     VBaseDeployment: ContractDeployment;
     VPoolWrapperLogicDeployment: ContractDeployment;
+    SwapSimulatorDeployment: ContractDeployment;
   }
 ) {
   return {
@@ -129,6 +131,10 @@ export async function getContractsWithDeployments(
     ),
     vPoolWrapperLogic: VPoolWrapper__factory.connect(
       deployments.VPoolWrapperLogicDeployment.address,
+      signerOrProvider
+    ),
+    swapSimulator: SwapSimulator__factory.connect(
+      deployments.SwapSimulatorDeployment.address,
       signerOrProvider
     ),
   };
@@ -179,6 +185,7 @@ export async function getDeployments(network: NetworkName) {
     network,
     'VPoolWrapperLogic'
   );
+  const SwapSimulatorDeployment = await getDeployment(network, 'SwapSimulator');
 
   return {
     AccountLibraryDeployment,
@@ -192,6 +199,7 @@ export async function getDeployments(network: NetworkName) {
     RBaseDeployment,
     VBaseDeployment,
     VPoolWrapperLogicDeployment,
+    SwapSimulatorDeployment,
   };
 }
 
@@ -206,6 +214,7 @@ export function getEthersInterfaces() {
     VBase__factory.createInterface(),
     VToken__factory.createInterface(),
     VPoolWrapper__factory.createInterface(),
+    SwapSimulator__factory.createInterface(),
   ];
 }
 
