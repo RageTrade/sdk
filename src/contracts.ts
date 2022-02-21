@@ -13,9 +13,12 @@ import {
 import {
   IERC20Metadata__factory,
   IOracle__factory,
+  IUniswapV3Pool,
   IUniswapV3Pool__factory,
   OracleMock__factory,
+  VPoolWrapper,
   VPoolWrapper__factory,
+  VToken,
   VToken__factory,
 } from './typechain-types';
 
@@ -52,15 +55,20 @@ export function getNetworkNameFromChainId(chainId: number): NetworkName {
  *      it should also be able to make read+write contract instance
  */
 export async function getContracts(signerOrProvider: Signer | Provider) {
+  const provider = getProviderFromSigner(signerOrProvider);
+
+  const network = await provider.getNetwork();
+  return await getContractsWithChainId(signerOrProvider, network.chainId);
+}
+
+function getProviderFromSigner(signerOrProvider: Signer | Provider) {
   const provider = Provider.isProvider(signerOrProvider)
     ? signerOrProvider
     : signerOrProvider.provider;
   if (provider === undefined) {
     throw new Error('provider is not present in getContracts signerOrProvider');
   }
-
-  const network = await provider.getNetwork();
-  return await getContractsWithChainId(signerOrProvider, network.chainId);
+  return provider;
 }
 
 export async function getContractsWithChainId(
@@ -156,6 +164,50 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
       ),
     };
   });
+}
+
+export async function getDefaultPoolContracts(
+  signerOrProvider: Signer | Provider
+): Promise<
+  | {
+      vToken: VToken | undefined;
+      vPool: IUniswapV3Pool | undefined;
+      vPoolWrapper: VPoolWrapper | undefined;
+    }
+  | undefined
+> {
+  const filename = './default-pools.json';
+  // If not used a dynamic path value in the dynamic import, it gives an error for some reason.
+  // Error: You must set "output.dir" instead of "output.file" when generating multiple chunks.
+  const defaultPoolsJson = await import(`${filename}`);
+  const provider = getProviderFromSigner(signerOrProvider);
+  const network = await provider.getNetwork();
+  const networkName = getNetworkNameFromChainId(network.chainId);
+  const defaultPoolsForChain = defaultPoolsJson[networkName] ?? {};
+
+  let vToken: VToken | undefined;
+  let vPool: IUniswapV3Pool | undefined;
+  let vPoolWrapper: VPoolWrapper | undefined;
+
+  if ('vTokenAddress' in defaultPoolsForChain) {
+    vToken = VToken__factory.connect(
+      defaultPoolsForChain.vTokenAddress,
+      provider
+    );
+  }
+  if ('vPoolAddress' in defaultPoolsForChain) {
+    vPool = IUniswapV3Pool__factory.connect(
+      defaultPoolsForChain.vPoolAddress,
+      provider
+    );
+  }
+  if ('vPoolWrapperAddress' in defaultPoolsForChain) {
+    vPoolWrapper = VPoolWrapper__factory.connect(
+      defaultPoolsForChain.vPoolWrapperAddress,
+      provider
+    );
+  }
+  return { vToken, vPool, vPoolWrapper };
 }
 
 export async function getDeployments(network: NetworkName) {
