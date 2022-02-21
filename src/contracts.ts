@@ -168,14 +168,11 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
 
 export async function getDefaultPoolContracts(
   signerOrProvider: Signer | Provider
-): Promise<
-  | {
-      vToken: VToken | undefined;
-      vPool: IUniswapV3Pool | undefined;
-      vPoolWrapper: VPoolWrapper | undefined;
-    }
-  | undefined
-> {
+): Promise<{
+  vToken: VToken | undefined;
+  vPool: IUniswapV3Pool | undefined;
+  vPoolWrapper: VPoolWrapper | undefined;
+}> {
   const filename = './default-pools.json';
   // If not used a dynamic path value in the dynamic import, it gives an error for some reason.
   // Error: You must set "output.dir" instead of "output.file" when generating multiple chunks.
