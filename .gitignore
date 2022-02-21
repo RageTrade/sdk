@@ -5,3 +5,4 @@ dist
 ethers.sh
 ethers.initializers.js
 scripts
+.env
