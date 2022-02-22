@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build && cp src/default-pools.d.ts dist/ && yarn update:default-pools",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
