@@ -166,6 +166,13 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
   });
 }
 
+async function importDefaultPoolsJson() {
+  const filename = './default-pools.json';
+  // If not used a dynamic path value in the dynamic import, it gives an error for some reason.
+  // Error: You must set "output.dir" instead of "output.file" when generating multiple chunks.
+  return await import(`${filename}`);
+}
+
 export async function getDefaultPoolContracts(
   signerOrProvider: Signer | Provider
 ): Promise<{
@@ -173,38 +180,47 @@ export async function getDefaultPoolContracts(
   vPool: IUniswapV3Pool | undefined;
   vPoolWrapper: VPoolWrapper | undefined;
 }> {
-  const filename = './default-pools.json';
-  // If not used a dynamic path value in the dynamic import, it gives an error for some reason.
-  // Error: You must set "output.dir" instead of "output.file" when generating multiple chunks.
-  const defaultPoolsJson = await import(`${filename}`);
   const provider = getProviderFromSigner(signerOrProvider);
   const network = await provider.getNetwork();
   const networkName = getNetworkNameFromChainId(network.chainId);
-  const defaultPoolsForChain = defaultPoolsJson[networkName] ?? {};
+  const defaultPoolAddresses = await getDefaultPoolAddressesByNetworkName(
+    networkName
+  );
 
   let vToken: VToken | undefined;
   let vPool: IUniswapV3Pool | undefined;
   let vPoolWrapper: VPoolWrapper | undefined;
 
-  if ('vTokenAddress' in defaultPoolsForChain) {
+  if (defaultPoolAddresses.vTokenAddress) {
     vToken = VToken__factory.connect(
-      defaultPoolsForChain.vTokenAddress,
+      defaultPoolAddresses.vTokenAddress,
       provider
     );
   }
-  if ('vPoolAddress' in defaultPoolsForChain) {
+  if (defaultPoolAddresses.vPoolAddress) {
     vPool = IUniswapV3Pool__factory.connect(
-      defaultPoolsForChain.vPoolAddress,
+      defaultPoolAddresses.vPoolAddress,
       provider
     );
   }
-  if ('vPoolWrapperAddress' in defaultPoolsForChain) {
+  if (defaultPoolAddresses.vPoolWrapperAddress) {
     vPoolWrapper = VPoolWrapper__factory.connect(
-      defaultPoolsForChain.vPoolWrapperAddress,
+      defaultPoolAddresses.vPoolWrapperAddress,
       provider
     );
   }
   return { vToken, vPool, vPoolWrapper };
+}
+
+export async function getDefaultPoolAddressesByNetworkName(
+  networkName: string
+): Promise<{
+  vTokenAddress: string | undefined;
+  vPoolAddress: string | undefined;
+  vPoolWrapperAddress: string | undefined;
+}> {
+  const defaultPoolsJson = await importDefaultPoolsJson();
+  return defaultPoolsJson[networkName] ?? {};
 }
 
 export async function getDeployments(network: NetworkName) {

@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import { getDefaultPoolContracts } from '../src/';
 
+import defaultPools from '../dist/default-pools.json';
+
 import { config } from 'dotenv';
 config();
 
@@ -17,5 +19,14 @@ describe('default pools', () => {
       // vTokena or vPool is undefined
       expect(false).toBeTruthy();
     }
+  });
+
+  it('works2', async () => {
+    expect(
+      ethers.utils.isHexString(defaultPools.arbtest.vTokenAddress)
+    ).toBeTruthy();
+    expect(
+      ethers.utils.isHexString(defaultPools.arbtest.vPoolAddress)
+    ).toBeTruthy();
   });
 });
