@@ -13,12 +13,9 @@ import {
 import {
   IERC20Metadata__factory,
   IOracle__factory,
-  IUniswapV3Pool,
   IUniswapV3Pool__factory,
   OracleMock__factory,
-  VPoolWrapper,
   VPoolWrapper__factory,
-  VToken,
   VToken__factory,
 } from './typechain-types';
 
@@ -55,20 +52,15 @@ export function getNetworkNameFromChainId(chainId: number): NetworkName {
  *      it should also be able to make read+write contract instance
  */
 export async function getContracts(signerOrProvider: Signer | Provider) {
-  const provider = getProviderFromSigner(signerOrProvider);
-
-  const network = await provider.getNetwork();
-  return await getContractsWithChainId(signerOrProvider, network.chainId);
-}
-
-function getProviderFromSigner(signerOrProvider: Signer | Provider) {
   const provider = Provider.isProvider(signerOrProvider)
     ? signerOrProvider
     : signerOrProvider.provider;
   if (provider === undefined) {
     throw new Error('provider is not present in getContracts signerOrProvider');
   }
-  return provider;
+
+  const network = await provider.getNetwork();
+  return await getContractsWithChainId(signerOrProvider, network.chainId);
 }
 
 export async function getContractsWithChainId(
@@ -164,63 +156,6 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
       ),
     };
   });
-}
-
-async function importDefaultPoolsJson() {
-  const filename = './default-pools.json';
-  // If not used a dynamic path value in the dynamic import, it gives an error for some reason.
-  // Error: You must set "output.dir" instead of "output.file" when generating multiple chunks.
-  return await import(`${filename}`);
-}
-
-export async function getDefaultPoolContracts(
-  signerOrProvider: Signer | Provider
-): Promise<{
-  vToken: VToken | undefined;
-  vPool: IUniswapV3Pool | undefined;
-  vPoolWrapper: VPoolWrapper | undefined;
-}> {
-  const provider = getProviderFromSigner(signerOrProvider);
-  const network = await provider.getNetwork();
-  const networkName = getNetworkNameFromChainId(network.chainId);
-  const defaultPoolAddresses = await getDefaultPoolAddressesByNetworkName(
-    networkName
-  );
-
-  let vToken: VToken | undefined;
-  let vPool: IUniswapV3Pool | undefined;
-  let vPoolWrapper: VPoolWrapper | undefined;
-
-  if (defaultPoolAddresses.vTokenAddress) {
-    vToken = VToken__factory.connect(
-      defaultPoolAddresses.vTokenAddress,
-      provider
-    );
-  }
-  if (defaultPoolAddresses.vPoolAddress) {
-    vPool = IUniswapV3Pool__factory.connect(
-      defaultPoolAddresses.vPoolAddress,
-      provider
-    );
-  }
-  if (defaultPoolAddresses.vPoolWrapperAddress) {
-    vPoolWrapper = VPoolWrapper__factory.connect(
-      defaultPoolAddresses.vPoolWrapperAddress,
-      provider
-    );
-  }
-  return { vToken, vPool, vPoolWrapper };
-}
-
-export async function getDefaultPoolAddressesByNetworkName(
-  networkName: string
-): Promise<{
-  vTokenAddress: string | undefined;
-  vPoolAddress: string | undefined;
-  vPoolWrapperAddress: string | undefined;
-}> {
-  const defaultPoolsJson = await importDefaultPoolsJson();
-  return defaultPoolsJson[networkName] ?? {};
 }
 
 export async function getDeployments(network: NetworkName) {
