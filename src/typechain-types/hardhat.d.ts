@@ -25,6 +25,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ArbSys__factory>;
     getContractFactory(
+      name: 'AggregatorV3Interface',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AggregatorV3Interface__factory>;
+    getContractFactory(
       name: 'ERC20Upgradeable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20Upgradeable__factory>;
@@ -161,6 +165,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUniswapV3PoolState__factory>;
     getContractFactory(
+      name: 'IMulticall',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IMulticall__factory>;
+    getContractFactory(
       name: 'IClearingHouse',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IClearingHouse__factory>;
@@ -236,6 +244,10 @@ declare module 'hardhat/types/runtime' {
       name: 'BaseOracle',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BaseOracle__factory>;
+    getContractFactory(
+      name: 'ChainlinkOracle',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ChainlinkOracle__factory>;
     getContractFactory(
       name: 'ClearingHouse',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -341,6 +353,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ClearingHouseDummy__factory>;
     getContractFactory(
+      name: 'MockAggregatorV3',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockAggregatorV3__factory>;
+    getContractFactory(
       name: 'OracleMock',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OracleMock__factory>;
@@ -429,6 +445,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Governable__factory>;
     getContractFactory(
+      name: 'Multicall',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Multicall__factory>;
+    getContractFactory(
       name: 'OptimisticGasUsedClaim',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OptimisticGasUsedClaim__factory>;
@@ -468,6 +488,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ArbSys>;
+    getContractAt(
+      name: 'AggregatorV3Interface',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AggregatorV3Interface>;
     getContractAt(
       name: 'ERC20Upgradeable',
       address: string,
@@ -639,6 +664,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.IUniswapV3PoolState>;
     getContractAt(
+      name: 'IMulticall',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IMulticall>;
+    getContractAt(
       name: 'IClearingHouse',
       address: string,
       signer?: ethers.Signer
@@ -733,6 +763,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BaseOracle>;
+    getContractAt(
+      name: 'ChainlinkOracle',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ChainlinkOracle>;
     getContractAt(
       name: 'ClearingHouse',
       address: string,
@@ -864,6 +899,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.ClearingHouseDummy>;
     getContractAt(
+      name: 'MockAggregatorV3',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockAggregatorV3>;
+    getContractAt(
       name: 'OracleMock',
       address: string,
       signer?: ethers.Signer
@@ -973,6 +1013,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Governable>;
+    getContractAt(
+      name: 'Multicall',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Multicall>;
     getContractAt(
       name: 'OptimisticGasUsedClaim',
       address: string,

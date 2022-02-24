@@ -9,6 +9,7 @@ import {
   CallOverrides,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -18,13 +19,38 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IClearingHouse {
+  export type RageTradePoolSettingsStruct = {
+    initialMarginRatio: BigNumberish;
+    maintainanceMarginRatio: BigNumberish;
+    twapDuration: BigNumberish;
+    supported: boolean;
+    isCrossMargined: boolean;
+    oracle: string;
+  };
+
+  export type RageTradePoolSettingsStructOutput = [
+    number,
+    number,
+    number,
+    boolean,
+    boolean,
+    string
+  ] & {
+    initialMarginRatio: number;
+    maintainanceMarginRatio: number;
+    twapDuration: number;
+    supported: boolean;
+    isCrossMargined: boolean;
+    oracle: string;
+  };
+
   export type DepositTokenViewStruct = {
-    rTokenAddress: string;
+    cTokenAddress: string;
     balance: BigNumberish;
   };
 
   export type DepositTokenViewStructOutput = [string, BigNumber] & {
-    rTokenAddress: string;
+    cTokenAddress: string;
     balance: BigNumber;
   };
 
@@ -100,26 +126,14 @@ export declare namespace IClearingHouse {
     traderPositionIncrease: BigNumber;
   };
 
-  export type RageTradePoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
-    twapDuration: BigNumberish;
-    whitelisted: boolean;
-    oracle: string;
+  export type MulticallOperationStruct = {
+    operationType: BigNumberish;
+    data: BytesLike;
   };
 
-  export type RageTradePoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    boolean,
-    string
-  ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
-    twapDuration: number;
-    whitelisted: boolean;
-    oracle: string;
+  export type MulticallOperationStructOutput = [number, string] & {
+    operationType: number;
+    data: string;
   };
 
   export type RageTradePoolStruct = {
@@ -186,6 +200,22 @@ export declare namespace IClearingHouse {
   };
 }
 
+export declare namespace CTokenLib {
+  export type CTokenStruct = {
+    tokenAddress: string;
+    oracleAddress: string;
+    oracleTimeHorizon: BigNumberish;
+    supported: boolean;
+  };
+
+  export type CTokenStructOutput = [string, string, number, boolean] & {
+    tokenAddress: string;
+    oracleAddress: string;
+    oracleTimeHorizon: number;
+    supported: boolean;
+  };
+}
+
 export declare namespace Account {
   export type LiquidationParamsStruct = {
     liquidationFeeFraction: BigNumberish;
@@ -200,27 +230,15 @@ export declare namespace Account {
   };
 }
 
-export declare namespace RTokenLib {
-  export type RTokenStruct = {
-    tokenAddress: string;
-    oracleAddress: string;
-    oracleTimeHorizon: BigNumberish;
-  };
-
-  export type RTokenStructOutput = [string, string, number] & {
-    tokenAddress: string;
-    oracleAddress: string;
-    oracleTimeHorizon: number;
-  };
-}
-
 export interface ClearingHouseLogicInterface extends utils.Interface {
   contractName: 'ClearingHouseLogic';
   functions: {
-    '__ClearingHouse_init(address,address,address,address,address)': FunctionFragment;
+    '__ClearingHouse_init(address,address,address,address,address,address)': FunctionFragment;
     'addCollateralSupport(address,address,uint32)': FunctionFragment;
     'addMargin(uint256,uint32,uint256)': FunctionFragment;
+    'cTokens(uint32)': FunctionFragment;
     'createAccount()': FunctionFragment;
+    'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
@@ -233,15 +251,15 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
     'liquidateTokenPositionWithGasClaim(uint256,uint256,uint32,uint16,uint256)': FunctionFragment;
+    'multicall(bytes[])': FunctionFragment;
+    'multicallWithSingleMarginCheck(uint256,(uint8,bytes)[])': FunctionFragment;
     'nativeOracle()': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'paused()': FunctionFragment;
     'pools(address)': FunctionFragment;
     'protocolInfo()': FunctionFragment;
-    'rBase()': FunctionFragment;
-    'rTokens(uint32)': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
+    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
     'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,uint32,uint256)': FunctionFragment;
@@ -256,7 +274,7 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     'transferTeamMultisig(address)': FunctionFragment;
     'txGasPriceLimit()': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
-    'updateRageTradePoolSettings(address,(uint16,uint16,uint32,bool,address))': FunctionFragment;
+    'updateRageTradePoolSettings(address,(uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'updateSupportedDeposits(address,bool)': FunctionFragment;
     'updateSupportedVTokens(address,bool)': FunctionFragment;
@@ -266,7 +284,7 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: '__ClearingHouse_init',
-    values: [string, string, string, string, string]
+    values: [string, string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'addCollateralSupport',
@@ -277,8 +295,16 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: 'cTokens',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'createAccount',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'createAccountAndAddMargin',
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'extsload', values: [BytesLike]): string;
   encodeFunctionData(
@@ -332,6 +358,14 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: 'multicall',
+    values: [BytesLike[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'multicallWithSingleMarginCheck',
+    values: [BigNumberish, IClearingHouse.MulticallOperationStruct[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'nativeOracle',
     values?: undefined
   ): string;
@@ -344,11 +378,6 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'protocolInfo',
     values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: 'rBase', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'rTokens',
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'rageTradeFactoryAddress',
@@ -460,8 +489,13 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'cTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'createAccountAndAddMargin',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'extsload', data: BytesLike): Result;
@@ -506,6 +540,11 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     functionFragment: 'liquidateTokenPositionWithGasClaim',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'multicallWithSingleMarginCheck',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'nativeOracle',
     data: BytesLike
@@ -520,8 +559,6 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
     functionFragment: 'protocolInfo',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'rBase', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'rTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rageTradeFactoryAddress',
     data: BytesLike
@@ -604,10 +641,18 @@ export interface ClearingHouseLogicInterface extends utils.Interface {
 
   events: {
     'GovernanceTransferred(address,address)': EventFragment;
+    'NewCollateralSupported(address)': EventFragment;
+    'NewVTokenSupported(address)': EventFragment;
+    'RageTradePoolSettingsUpdated(address,tuple)': EventFragment;
     'TeamMultisigTransferred(address,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'NewCollateralSupported'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'NewVTokenSupported'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'RageTradePoolSettingsUpdated'
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
 }
 
@@ -617,6 +662,24 @@ export type GovernanceTransferredEvent = TypedEvent<
 >;
 
 export type GovernanceTransferredEventFilter = TypedEventFilter<GovernanceTransferredEvent>;
+
+export type NewCollateralSupportedEvent = TypedEvent<
+  [string],
+  { rTokenAddress: string }
+>;
+
+export type NewCollateralSupportedEventFilter = TypedEventFilter<NewCollateralSupportedEvent>;
+
+export type NewVTokenSupportedEvent = TypedEvent<[string], { vToken: string }>;
+
+export type NewVTokenSupportedEventFilter = TypedEventFilter<NewVTokenSupportedEvent>;
+
+export type RageTradePoolSettingsUpdatedEvent = TypedEvent<
+  [string, IClearingHouse.RageTradePoolSettingsStructOutput],
+  { vToken: string; settings: IClearingHouse.RageTradePoolSettingsStructOutput }
+>;
+
+export type RageTradePoolSettingsUpdatedEventFilter = TypedEventFilter<RageTradePoolSettingsUpdatedEvent>;
 
 export type TeamMultisigTransferredEvent = TypedEvent<
   [string, string],
@@ -658,7 +721,8 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     __ClearingHouse_init(
       _rageTradeFactoryAddress: string,
-      _rBase: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vBase: string,
       _nativeOracle: string,
@@ -669,8 +733,8 @@ export interface ClearingHouseLogic extends BaseContract {
      * ADMIN FUNCTIONS
      */
     addCollateralSupport(
-      rTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -680,15 +744,29 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     addMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    cTokens(
+      cTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[CTokenLib.CTokenStructOutput]>;
 
     /**
      * creates a new account and adds it to the accounts map
      */
     createAccount(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * creates a new account and deposits 'amount' of token associated with 'vTokenTruncatedAddress'
+     */
+    createAccountAndAddMargin(
+      vTokenTruncatedAddress: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -797,6 +875,20 @@ export interface ClearingHouseLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Call multiple functions in the current contract and return the data from all of them if they all succeed
+     */
+    multicall(
+      data: BytesLike[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    multicallWithSingleMarginCheck(
+      accountNo: BigNumberish,
+      operations: IClearingHouse.MulticallOperationStruct[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     nativeOracle(overrides?: CallOverrides): Promise<[string]>;
 
     numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -828,13 +920,6 @@ export interface ClearingHouseLogic extends BaseContract {
         minimumOrderNotional: BigNumber;
       }
     >;
-
-    rBase(overrides?: CallOverrides): Promise<[string]>;
-
-    rTokens(
-      rTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[RTokenLib.RTokenStructOutput]>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
 
@@ -872,7 +957,7 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     removeMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -896,12 +981,12 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<ContractTransaction>;
 
     supportedDeposits(
-      arg0: string,
+      tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     supportedVTokens(
-      arg0: string,
+      vToken: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -949,13 +1034,13 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<ContractTransaction>;
 
     updateSupportedDeposits(
-      add: string,
+      tokenAddress: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateSupportedVTokens(
-      add: string,
+      vToken: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -979,7 +1064,8 @@ export interface ClearingHouseLogic extends BaseContract {
    */
   __ClearingHouse_init(
     _rageTradeFactoryAddress: string,
-    _rBase: string,
+    _defaultCollateralToken: string,
+    _defaultCollateralTokenOracle: string,
     _insuranceFund: string,
     _vBase: string,
     _nativeOracle: string,
@@ -990,8 +1076,8 @@ export interface ClearingHouseLogic extends BaseContract {
    * ADMIN FUNCTIONS
    */
   addCollateralSupport(
-    rTokenAddress: string,
-    oracleAddress: string,
+    cToken: string,
+    oracle: string,
     twapDuration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1001,15 +1087,29 @@ export interface ClearingHouseLogic extends BaseContract {
    */
   addMargin(
     accountNo: BigNumberish,
-    rTokenTruncatedAddress: BigNumberish,
+    cTokenTruncatedAddress: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  cTokens(
+    cTokenId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<CTokenLib.CTokenStructOutput>;
 
   /**
    * creates a new account and adds it to the accounts map
    */
   createAccount(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * creates a new account and deposits 'amount' of token associated with 'vTokenTruncatedAddress'
+   */
+  createAccountAndAddMargin(
+    vTokenTruncatedAddress: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1118,6 +1218,20 @@ export interface ClearingHouseLogic extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Call multiple functions in the current contract and return the data from all of them if they all succeed
+   */
+  multicall(
+    data: BytesLike[],
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  multicallWithSingleMarginCheck(
+    accountNo: BigNumberish,
+    operations: IClearingHouse.MulticallOperationStruct[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   nativeOracle(overrides?: CallOverrides): Promise<string>;
 
   numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1149,13 +1263,6 @@ export interface ClearingHouseLogic extends BaseContract {
       minimumOrderNotional: BigNumber;
     }
   >;
-
-  rBase(overrides?: CallOverrides): Promise<string>;
-
-  rTokens(
-    rTokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<RTokenLib.RTokenStructOutput>;
 
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1193,7 +1300,7 @@ export interface ClearingHouseLogic extends BaseContract {
    */
   removeMargin(
     accountNo: BigNumberish,
-    rTokenTruncatedAddress: BigNumberish,
+    cTokenTruncatedAddress: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1216,9 +1323,12 @@ export interface ClearingHouseLogic extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  supportedDeposits(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  supportedDeposits(
+    tokenAddress: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  supportedVTokens(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+  supportedVTokens(vToken: string, overrides?: CallOverrides): Promise<boolean>;
 
   swapToken(
     accountNo: BigNumberish,
@@ -1264,13 +1374,13 @@ export interface ClearingHouseLogic extends BaseContract {
   ): Promise<ContractTransaction>;
 
   updateSupportedDeposits(
-    add: string,
+    tokenAddress: string,
     status: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateSupportedVTokens(
-    add: string,
+    vToken: string,
     status: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1294,7 +1404,8 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     __ClearingHouse_init(
       _rageTradeFactoryAddress: string,
-      _rBase: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vBase: string,
       _nativeOracle: string,
@@ -1305,8 +1416,8 @@ export interface ClearingHouseLogic extends BaseContract {
      * ADMIN FUNCTIONS
      */
     addCollateralSupport(
-      rTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1316,15 +1427,29 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     addMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    cTokens(
+      cTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<CTokenLib.CTokenStructOutput>;
 
     /**
      * creates a new account and adds it to the accounts map
      */
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * creates a new account and deposits 'amount' of token associated with 'vTokenTruncatedAddress'
+     */
+    createAccountAndAddMargin(
+      vTokenTruncatedAddress: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     'extsload(bytes32)'(
       slot: BytesLike,
@@ -1431,6 +1556,17 @@ export interface ClearingHouseLogic extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IClearingHouse.BalanceAdjustmentsStructOutput>;
 
+    /**
+     * Call multiple functions in the current contract and return the data from all of them if they all succeed
+     */
+    multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
+
+    multicallWithSingleMarginCheck(
+      accountNo: BigNumberish,
+      operations: IClearingHouse.MulticallOperationStruct[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     nativeOracle(overrides?: CallOverrides): Promise<string>;
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1462,13 +1598,6 @@ export interface ClearingHouseLogic extends BaseContract {
         minimumOrderNotional: BigNumber;
       }
     >;
-
-    rBase(overrides?: CallOverrides): Promise<string>;
-
-    rTokens(
-      rTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<RTokenLib.RTokenStructOutput>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -1506,7 +1635,7 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     removeMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1527,11 +1656,14 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<void>;
 
     supportedDeposits(
-      arg0: string,
+      tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    supportedVTokens(arg0: string, overrides?: CallOverrides): Promise<boolean>;
+    supportedVTokens(
+      vToken: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     swapToken(
       accountNo: BigNumberish,
@@ -1587,13 +1719,13 @@ export interface ClearingHouseLogic extends BaseContract {
     >;
 
     updateSupportedDeposits(
-      add: string,
+      tokenAddress: string,
       status: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateSupportedVTokens(
-      add: string,
+      vToken: string,
       status: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1622,6 +1754,25 @@ export interface ClearingHouseLogic extends BaseContract {
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
 
+    'NewCollateralSupported(address)'(
+      rTokenAddress?: null
+    ): NewCollateralSupportedEventFilter;
+    NewCollateralSupported(
+      rTokenAddress?: null
+    ): NewCollateralSupportedEventFilter;
+
+    'NewVTokenSupported(address)'(vToken?: null): NewVTokenSupportedEventFilter;
+    NewVTokenSupported(vToken?: null): NewVTokenSupportedEventFilter;
+
+    'RageTradePoolSettingsUpdated(address,tuple)'(
+      vToken?: null,
+      settings?: null
+    ): RageTradePoolSettingsUpdatedEventFilter;
+    RageTradePoolSettingsUpdated(
+      vToken?: null,
+      settings?: null
+    ): RageTradePoolSettingsUpdatedEventFilter;
+
     'TeamMultisigTransferred(address,address)'(
       previousTeamMultisig?: string | null,
       newTeamMultisig?: string | null
@@ -1638,7 +1789,8 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     __ClearingHouse_init(
       _rageTradeFactoryAddress: string,
-      _rBase: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vBase: string,
       _nativeOracle: string,
@@ -1649,8 +1801,8 @@ export interface ClearingHouseLogic extends BaseContract {
      * ADMIN FUNCTIONS
      */
     addCollateralSupport(
-      rTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1660,15 +1812,29 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     addMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    cTokens(
+      cTokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * creates a new account and adds it to the accounts map
      */
     createAccount(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    /**
+     * creates a new account and deposits 'amount' of token associated with 'vTokenTruncatedAddress'
+     */
+    createAccountAndAddMargin(
+      vTokenTruncatedAddress: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1755,6 +1921,20 @@ export interface ClearingHouseLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Call multiple functions in the current contract and return the data from all of them if they all succeed
+     */
+    multicall(
+      data: BytesLike[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    multicallWithSingleMarginCheck(
+      accountNo: BigNumberish,
+      operations: IClearingHouse.MulticallOperationStruct[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     nativeOracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1767,13 +1947,6 @@ export interface ClearingHouseLogic extends BaseContract {
      * Account.ProtocolInfo VIEW
      */
     protocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rBase(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rTokens(
-      rTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1811,7 +1984,7 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     removeMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1835,12 +2008,12 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<BigNumber>;
 
     supportedDeposits(
-      arg0: string,
+      tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     supportedVTokens(
-      arg0: string,
+      vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1888,13 +2061,13 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<BigNumber>;
 
     updateSupportedDeposits(
-      add: string,
+      tokenAddress: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateSupportedVTokens(
-      add: string,
+      vToken: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1919,7 +2092,8 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     __ClearingHouse_init(
       _rageTradeFactoryAddress: string,
-      _rBase: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vBase: string,
       _nativeOracle: string,
@@ -1930,8 +2104,8 @@ export interface ClearingHouseLogic extends BaseContract {
      * ADMIN FUNCTIONS
      */
     addCollateralSupport(
-      rTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1941,15 +2115,29 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     addMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    cTokens(
+      cTokenId: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
      * creates a new account and adds it to the accounts map
      */
     createAccount(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * creates a new account and deposits 'amount' of token associated with 'vTokenTruncatedAddress'
+     */
+    createAccountAndAddMargin(
+      vTokenTruncatedAddress: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2036,6 +2224,20 @@ export interface ClearingHouseLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Call multiple functions in the current contract and return the data from all of them if they all succeed
+     */
+    multicall(
+      data: BytesLike[],
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    multicallWithSingleMarginCheck(
+      accountNo: BigNumberish,
+      operations: IClearingHouse.MulticallOperationStruct[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     nativeOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2051,13 +2253,6 @@ export interface ClearingHouseLogic extends BaseContract {
      * Account.ProtocolInfo VIEW
      */
     protocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rTokens(
-      rTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     rageTradeFactoryAddress(
       overrides?: CallOverrides
@@ -2097,7 +2292,7 @@ export interface ClearingHouseLogic extends BaseContract {
      */
     removeMargin(
       accountNo: BigNumberish,
-      rTokenTruncatedAddress: BigNumberish,
+      cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2121,12 +2316,12 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     supportedDeposits(
-      arg0: string,
+      tokenAddress: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     supportedVTokens(
-      arg0: string,
+      vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2174,13 +2369,13 @@ export interface ClearingHouseLogic extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateSupportedDeposits(
-      add: string,
+      tokenAddress: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateSupportedVTokens(
-      add: string,
+      vToken: string,
       status: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

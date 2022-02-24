@@ -15,12 +15,12 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'getTwapSqrtPriceX96',
+    name: 'getTwapPriceX128',
     outputs: [
       {
-        internalType: 'uint160',
-        name: 'sqrtPriceX96',
-        type: 'uint160',
+        internalType: 'uint256',
+        name: 'priceX128',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

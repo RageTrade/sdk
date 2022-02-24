@@ -20,25 +20,43 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 export interface NativeOracleInterface extends utils.Interface {
   contractName: 'NativeOracle';
   functions: {
+    'getTwapPriceX128(uint32)': FunctionFragment;
     'getTwapSqrtPriceX96(uint32)': FunctionFragment;
-    'setSqrtPrice(uint160)': FunctionFragment;
+    'setPriceX128(uint256)': FunctionFragment;
+    'setSqrtPriceX96(uint160)': FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: 'getTwapPriceX128',
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: 'getTwapSqrtPriceX96',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setSqrtPrice',
+    functionFragment: 'setPriceX128',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setSqrtPriceX96',
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'getTwapPriceX128',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getTwapSqrtPriceX96',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setSqrtPrice',
+    functionFragment: 'setPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setSqrtPriceX96',
     data: BytesLike
   ): Result;
 
@@ -73,35 +91,65 @@ export interface NativeOracle extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    getTwapPriceX128(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getTwapSqrtPriceX96(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { sqrtPriceX96: BigNumber }>;
 
-    setSqrtPrice(
-      sqrtPriceX96: BigNumberish,
+    setPriceX128(
+      _priceX128: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setSqrtPriceX96(
+      _sqrtPriceX96: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  getTwapPriceX128(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getTwapSqrtPriceX96(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  setSqrtPrice(
-    sqrtPriceX96: BigNumberish,
+  setPriceX128(
+    _priceX128: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setSqrtPriceX96(
+    _sqrtPriceX96: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    getTwapPriceX128(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTwapSqrtPriceX96(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setSqrtPrice(
-      sqrtPriceX96: BigNumberish,
+    setPriceX128(
+      _priceX128: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setSqrtPriceX96(
+      _sqrtPriceX96: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -109,25 +157,45 @@ export interface NativeOracle extends BaseContract {
   filters: {};
 
   estimateGas: {
+    getTwapPriceX128(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTwapSqrtPriceX96(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setSqrtPrice(
-      sqrtPriceX96: BigNumberish,
+    setPriceX128(
+      _priceX128: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setSqrtPriceX96(
+      _sqrtPriceX96: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    getTwapPriceX128(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTwapSqrtPriceX96(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setSqrtPrice(
-      sqrtPriceX96: BigNumberish,
+    setPriceX128(
+      _priceX128: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setSqrtPriceX96(
+      _sqrtPriceX96: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

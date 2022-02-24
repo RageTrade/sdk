@@ -65,7 +65,7 @@ export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
 
 export type DepositMarginEvent = TypedEvent<
   [BigNumber, string, BigNumber],
-  { accountNo: BigNumber; rTokenAddress: string; amount: BigNumber }
+  { accountNo: BigNumber; cTokenAddress: string; amount: BigNumber }
 >;
 
 export type DepositMarginEventFilter = TypedEventFilter<DepositMarginEvent>;
@@ -181,7 +181,7 @@ export type UpdateProfitEventFilter = TypedEventFilter<UpdateProfitEvent>;
 
 export type WithdrawMarginEvent = TypedEvent<
   [BigNumber, string, BigNumber],
-  { accountNo: BigNumber; rTokenAddress: string; amount: BigNumber }
+  { accountNo: BigNumber; cTokenAddress: string; amount: BigNumber }
 >;
 
 export type WithdrawMarginEventFilter = TypedEventFilter<WithdrawMarginEvent>;
@@ -228,12 +228,12 @@ export interface Account extends BaseContract {
 
     'DepositMargin(uint256,address,uint256)'(
       accountNo?: BigNumberish | null,
-      rTokenAddress?: string | null,
+      cTokenAddress?: string | null,
       amount?: null
     ): DepositMarginEventFilter;
     DepositMargin(
       accountNo?: BigNumberish | null,
-      rTokenAddress?: string | null,
+      cTokenAddress?: string | null,
       amount?: null
     ): DepositMarginEventFilter;
 
@@ -370,12 +370,12 @@ export interface Account extends BaseContract {
 
     'WithdrawMargin(uint256,address,uint256)'(
       accountNo?: BigNumberish | null,
-      rTokenAddress?: string | null,
+      cTokenAddress?: string | null,
       amount?: null
     ): WithdrawMarginEventFilter;
     WithdrawMargin(
       accountNo?: BigNumberish | null,
-      rTokenAddress?: string | null,
+      cTokenAddress?: string | null,
       amount?: null
     ): WithdrawMarginEventFilter;
   };

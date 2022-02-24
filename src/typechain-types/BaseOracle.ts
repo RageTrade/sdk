@@ -25,16 +25,16 @@ import type {
 
 export interface BaseOracleInterface extends ethers.utils.Interface {
   functions: {
-    'getTwapSqrtPriceX96(uint32)': FunctionFragment;
+    'getTwapPriceX128(uint32)': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: 'getTwapSqrtPriceX96',
+    functionFragment: 'getTwapPriceX128',
     values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'getTwapSqrtPriceX96',
+    functionFragment: 'getTwapPriceX128',
     data: BytesLike
   ): Result;
 
@@ -68,19 +68,19 @@ export interface BaseOracle extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    getTwapSqrtPriceX96(
+    getTwapPriceX128(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { sqrtPriceX96: BigNumber }>;
+    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
   };
 
-  getTwapSqrtPriceX96(
+  getTwapPriceX128(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
-    getTwapSqrtPriceX96(
+    getTwapPriceX128(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -89,14 +89,14 @@ export interface BaseOracle extends BaseContract {
   filters: {};
 
   estimateGas: {
-    getTwapSqrtPriceX96(
+    getTwapPriceX128(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    getTwapSqrtPriceX96(
+    getTwapPriceX128(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

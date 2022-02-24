@@ -28,7 +28,7 @@ const _abi = [
       },
       {
         internalType: 'uint8',
-        name: 'rTokenDecimals',
+        name: 'cTokenDecimals',
         type: 'uint8',
       },
     ],
@@ -392,26 +392,26 @@ export class VToken__factory extends ContractFactory {
   deploy(
     vTokenName: string,
     vTokenSymbol: string,
-    rTokenDecimals: BigNumberish,
+    cTokenDecimals: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<VToken> {
     return super.deploy(
       vTokenName,
       vTokenSymbol,
-      rTokenDecimals,
+      cTokenDecimals,
       overrides || {}
     ) as Promise<VToken>;
   }
   getDeployTransaction(
     vTokenName: string,
     vTokenSymbol: string,
-    rTokenDecimals: BigNumberish,
+    cTokenDecimals: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(
       vTokenName,
       vTokenSymbol,
-      rTokenDecimals,
+      cTokenDecimals,
       overrides || {}
     );
   }

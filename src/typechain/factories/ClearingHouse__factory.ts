@@ -73,8 +73,30 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [
+      {
+        internalType: 'enum IClearingHouse.MulticallOperationType',
+        name: 'multicallOperationType',
+        type: 'uint8',
+      },
+    ],
+    name: 'InvalidMulticallOperationType',
+    type: 'error',
+  },
+  {
     inputs: [],
     name: 'InvalidTokenLiquidationParameters',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
+      },
+    ],
+    name: 'KeeperFeeNotPositive',
     type: 'error',
   },
   {
@@ -123,11 +145,11 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'rTokenAddress',
+        name: 'cTokenAddress',
         type: 'address',
       },
     ],
-    name: 'UnsupportedRToken',
+    name: 'UnsupportedCToken',
     type: 'error',
   },
   {
@@ -169,6 +191,83 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: 'address',
+        name: 'rTokenAddress',
+        type: 'address',
+      },
+    ],
+    name: 'NewCollateralSupported',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+    ],
+    name: 'NewVTokenSupported',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'contract IVToken',
+        name: 'vToken',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint16',
+            name: 'initialMarginRatio',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maintainanceMarginRatio',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint32',
+            name: 'twapDuration',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'supported',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCrossMargined',
+            type: 'bool',
+          },
+          {
+            internalType: 'contract IOracle',
+            name: 'oracle',
+            type: 'address',
+          },
+        ],
+        indexed: false,
+        internalType: 'struct IClearingHouse.RageTradePoolSettings',
+        name: 'settings',
+        type: 'tuple',
+      },
+    ],
+    name: 'RageTradePoolSettingsUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: 'address',
         name: 'previousTeamMultisig',
@@ -193,7 +292,12 @@ const _abi = [
       },
       {
         internalType: 'contract IERC20',
-        name: '_rBase',
+        name: '_defaultCollateralToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IOracle',
+        name: '_defaultCollateralTokenOracle',
         type: 'address',
       },
       {
@@ -220,13 +324,13 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'rTokenAddress',
+        internalType: 'contract IERC20',
+        name: 'cToken',
         type: 'address',
       },
       {
-        internalType: 'address',
-        name: 'oracleAddress',
+        internalType: 'contract IOracle',
+        name: 'oracle',
         type: 'address',
       },
       {
@@ -249,7 +353,7 @@ const _abi = [
       },
       {
         internalType: 'uint32',
-        name: 'rTokenTruncatedAddress',
+        name: 'cTokenTruncatedAddress',
         type: 'uint32',
       },
       {
@@ -264,8 +368,73 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'cTokenId',
+        type: 'uint32',
+      },
+    ],
+    name: 'cTokens',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'tokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'oracleAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint32',
+            name: 'oracleTimeHorizon',
+            type: 'uint32',
+          },
+          {
+            internalType: 'bool',
+            name: 'supported',
+            type: 'bool',
+          },
+        ],
+        internalType: 'struct CTokenLib.CToken',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'createAccount',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'newAccountId',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'vTokenTruncatedAddress',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'createAccountAndAddMargin',
     outputs: [
       {
         internalType: 'uint256',
@@ -386,7 +555,7 @@ const _abi = [
         components: [
           {
             internalType: 'address',
-            name: 'rTokenAddress',
+            name: 'cTokenAddress',
             type: 'address',
           },
           {
@@ -696,6 +865,61 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'bytes[]',
+        name: 'data',
+        type: 'bytes[]',
+      },
+    ],
+    name: 'multicall',
+    outputs: [
+      {
+        internalType: 'bytes[]',
+        name: 'results',
+        type: 'bytes[]',
+      },
+    ],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountNo',
+        type: 'uint256',
+      },
+      {
+        components: [
+          {
+            internalType: 'enum IClearingHouse.MulticallOperationType',
+            name: 'operationType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'bytes',
+            name: 'data',
+            type: 'bytes',
+          },
+        ],
+        internalType: 'struct IClearingHouse.MulticallOperation[]',
+        name: 'operations',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'multicallWithSingleMarginCheck',
+    outputs: [
+      {
+        internalType: 'bytes[]',
+        name: 'results',
+        type: 'bytes[]',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'nativeOracle',
     outputs: [
@@ -775,7 +999,12 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'whitelisted',
+                name: 'supported',
+                type: 'bool',
+              },
+              {
+                internalType: 'bool',
+                name: 'isCrossMargined',
                 type: 'bool',
               },
               {
@@ -849,55 +1078,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'rBase',
-    outputs: [
-      {
-        internalType: 'contract IERC20',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: 'rTokenId',
-        type: 'uint32',
-      },
-    ],
-    name: 'rTokens',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'address',
-            name: 'tokenAddress',
-            type: 'address',
-          },
-          {
-            internalType: 'address',
-            name: 'oracleAddress',
-            type: 'address',
-          },
-          {
-            internalType: 'uint32',
-            name: 'oracleTimeHorizon',
-            type: 'uint32',
-          },
-        ],
-        internalType: 'struct RTokenLib.RToken',
-        name: '',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'rageTradeFactoryAddress',
     outputs: [
       {
@@ -947,7 +1127,12 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'whitelisted',
+                name: 'supported',
+                type: 'bool',
+              },
+              {
+                internalType: 'bool',
+                name: 'isCrossMargined',
                 type: 'bool',
               },
               {
@@ -1047,7 +1232,7 @@ const _abi = [
       },
       {
         internalType: 'uint32',
-        name: 'rTokenTruncatedAddress',
+        name: 'cTokenTruncatedAddress',
         type: 'uint32',
       },
       {
@@ -1123,7 +1308,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'tokenAddress',
         type: 'address',
       },
     ],
@@ -1142,7 +1327,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'contract IVToken',
-        name: '',
+        name: 'vToken',
         type: 'address',
       },
     ],
@@ -1296,7 +1481,12 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'whitelisted',
+            name: 'supported',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isCrossMargined',
             type: 'bool',
           },
           {
@@ -1390,7 +1580,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'add',
+        name: 'tokenAddress',
         type: 'address',
       },
       {
@@ -1408,7 +1598,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'contract IVToken',
-        name: 'add',
+        name: 'vToken',
         type: 'address',
       },
       {
@@ -1624,7 +1814,7 @@ const _abi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'rTokenAddress',
+        name: 'cTokenAddress',
         type: 'address',
       },
       {
@@ -1970,7 +2160,7 @@ const _abi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'rTokenAddress',
+        name: 'cTokenAddress',
         type: 'address',
       },
       {

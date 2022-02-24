@@ -31,10 +31,7 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
     'nativeOracle()': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'paused()': FunctionFragment;
-    'rBase()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'supportedDeposits(address)': FunctionFragment;
-    'supportedVTokens(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
@@ -57,18 +54,9 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'rBase', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'rageTradeFactoryAddress',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'supportedDeposits',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'supportedVTokens',
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -97,17 +85,8 @@ export interface ClearingHouseStorageInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'paused', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'rBase', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rageTradeFactoryAddress',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'supportedDeposits',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'supportedVTokens',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -183,19 +162,7 @@ export interface ClearingHouseStorage extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
-    rBase(overrides?: CallOverrides): Promise<[string]>;
-
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    supportedDeposits(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    supportedVTokens(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
 
@@ -220,13 +187,7 @@ export interface ClearingHouseStorage extends BaseContract {
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
-  rBase(overrides?: CallOverrides): Promise<string>;
-
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-
-  supportedDeposits(arg0: string, overrides?: CallOverrides): Promise<boolean>;
-
-  supportedVTokens(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
   teamMultisig(overrides?: CallOverrides): Promise<string>;
 
@@ -251,16 +212,7 @@ export interface ClearingHouseStorage extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
-    rBase(overrides?: CallOverrides): Promise<string>;
-
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-
-    supportedDeposits(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    supportedVTokens(arg0: string, overrides?: CallOverrides): Promise<boolean>;
 
     teamMultisig(overrides?: CallOverrides): Promise<string>;
 
@@ -306,19 +258,7 @@ export interface ClearingHouseStorage extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
-    rBase(overrides?: CallOverrides): Promise<BigNumber>;
-
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    supportedDeposits(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    supportedVTokens(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -344,19 +284,7 @@ export interface ClearingHouseStorage extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    rBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     rageTradeFactoryAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    supportedDeposits(
-      arg0: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    supportedVTokens(
-      arg0: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

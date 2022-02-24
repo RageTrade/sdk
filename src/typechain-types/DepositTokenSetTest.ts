@@ -40,7 +40,8 @@ export type RageTradePoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -49,12 +50,14 @@ export type RageTradePoolSettingsStructOutput = [
   number,
   number,
   boolean,
+  boolean,
   string
 ] & {
   initialMarginRatio: number;
   maintainanceMarginRatio: number;
   twapDuration: number;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -85,7 +88,7 @@ export interface DepositTokenSetTestInterface extends ethers.utils.Interface {
     'init(address,address,uint32)': FunctionFragment;
     'initVToken(address)': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
+    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'wrapper()': FunctionFragment;
@@ -228,7 +231,7 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     init(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -244,12 +247,14 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -308,7 +313,7 @@ export interface DepositTokenSetTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   init(
-    rTokenAddress: string,
+    cTokenAddress: string,
     oracleAddress: string,
     twapDuration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -322,8 +327,16 @@ export interface DepositTokenSetTest extends BaseContract {
   protocol(
     overrides?: CallOverrides
   ): Promise<
-    [string, LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber] & {
+    [
+      string,
+      string,
+      LiquidationParamsStructOutput,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       vBase: string;
+      rBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -380,7 +393,7 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<void>;
 
     init(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: CallOverrides
@@ -393,12 +406,14 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -457,7 +472,7 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<BigNumber>;
 
     init(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -522,7 +537,7 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     init(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }

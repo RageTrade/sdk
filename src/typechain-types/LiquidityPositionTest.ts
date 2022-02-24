@@ -40,7 +40,8 @@ export type RageTradePoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -49,12 +50,14 @@ export type RageTradePoolSettingsStructOutput = [
   number,
   number,
   boolean,
+  boolean,
   string
 ] & {
   initialMarginRatio: number;
   maintainanceMarginRatio: number;
   twapDuration: number;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -85,7 +88,7 @@ export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
     'maxNetPosition()': FunctionFragment;
     'netPosition()': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
+    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'updateCheckpoints()': FunctionFragment;
@@ -275,12 +278,14 @@ export interface LiquidityPositionTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -376,8 +381,16 @@ export interface LiquidityPositionTest extends BaseContract {
   protocol(
     overrides?: CallOverrides
   ): Promise<
-    [string, LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber] & {
+    [
+      string,
+      string,
+      LiquidationParamsStructOutput,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       vBase: string;
+      rBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -475,12 +488,14 @@ export interface LiquidityPositionTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;

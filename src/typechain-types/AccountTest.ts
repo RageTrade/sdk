@@ -68,7 +68,8 @@ export type RageTradePoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -77,12 +78,14 @@ export type RageTradePoolSettingsStructOutput = [
   number,
   number,
   boolean,
+  boolean,
   string
 ] & {
   initialMarginRatio: number;
   maintainanceMarginRatio: number;
   twapDuration: number;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -123,10 +126,10 @@ export interface AccountTestInterface extends ethers.utils.Interface {
     'liquidityChange(uint256,address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
+    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,address,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,address,uint256)': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256,address)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'swapTokenAmount(uint256,address,int256)': FunctionFragment;
     'swapTokenNotional(uint256,address,int256)': FunctionFragment;
@@ -219,7 +222,8 @@ export interface AccountTestInterface extends ethers.utils.Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
-      BigNumberish
+      BigNumberish,
+      string
     ]
   ): string;
   encodeFunctionData(
@@ -471,7 +475,7 @@ export interface AccountTest extends BaseContract {
     >;
 
     initCollateral(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -508,12 +512,14 @@ export interface AccountTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -549,6 +555,7 @@ export interface AccountTest extends BaseContract {
       _removeLimitOrderFee: BigNumberish,
       _minimumOrderNotional: BigNumberish,
       _fixFee: BigNumberish,
+      _rBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -683,7 +690,7 @@ export interface AccountTest extends BaseContract {
   >;
 
   initCollateral(
-    rTokenAddress: string,
+    cTokenAddress: string,
     oracleAddress: string,
     twapDuration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -718,8 +725,16 @@ export interface AccountTest extends BaseContract {
   protocol(
     overrides?: CallOverrides
   ): Promise<
-    [string, LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber] & {
+    [
+      string,
+      string,
+      LiquidationParamsStructOutput,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       vBase: string;
+      rBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -755,6 +770,7 @@ export interface AccountTest extends BaseContract {
     _removeLimitOrderFee: BigNumberish,
     _minimumOrderNotional: BigNumberish,
     _fixFee: BigNumberish,
+    _rBase: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -887,7 +903,7 @@ export interface AccountTest extends BaseContract {
     >;
 
     initCollateral(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: CallOverrides
@@ -926,12 +942,14 @@ export interface AccountTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -967,6 +985,7 @@ export interface AccountTest extends BaseContract {
       _removeLimitOrderFee: BigNumberish,
       _minimumOrderNotional: BigNumberish,
       _fixFee: BigNumberish,
+      _rBase: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1062,7 +1081,7 @@ export interface AccountTest extends BaseContract {
     ): Promise<BigNumber>;
 
     initCollateral(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1124,6 +1143,7 @@ export interface AccountTest extends BaseContract {
       _removeLimitOrderFee: BigNumberish,
       _minimumOrderNotional: BigNumberish,
       _fixFee: BigNumberish,
+      _rBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1220,7 +1240,7 @@ export interface AccountTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initCollateral(
-      rTokenAddress: string,
+      cTokenAddress: string,
       oracleAddress: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1282,6 +1302,7 @@ export interface AccountTest extends BaseContract {
       _removeLimitOrderFee: BigNumberish,
       _minimumOrderNotional: BigNumberish,
       _fixFee: BigNumberish,
+      _rBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

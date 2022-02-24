@@ -33,6 +33,11 @@ const _abi = [
         type: 'address',
       },
       {
+        internalType: 'contract IERC20',
+        name: 'rBase',
+        type: 'address',
+      },
+      {
         components: [
           {
             internalType: 'uint16',
@@ -111,7 +116,12 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'whitelisted',
+                name: 'supported',
+                type: 'bool',
+              },
+              {
+                internalType: 'bool',
+                name: 'isCrossMargined',
                 type: 'bool',
               },
               {

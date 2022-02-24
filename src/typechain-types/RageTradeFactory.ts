@@ -27,20 +27,21 @@ import type {
 export type DeployVTokenParamsStruct = {
   vTokenName: string;
   vTokenSymbol: string;
-  rTokenDecimals: BigNumberish;
+  cTokenDecimals: BigNumberish;
 };
 
 export type DeployVTokenParamsStructOutput = [string, string, number] & {
   vTokenName: string;
   vTokenSymbol: string;
-  rTokenDecimals: number;
+  cTokenDecimals: number;
 };
 
 export type RageTradePoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -49,12 +50,14 @@ export type RageTradePoolSettingsStructOutput = [
   number,
   number,
   boolean,
+  boolean,
   string
 ] & {
   initialMarginRatio: number;
   maintainanceMarginRatio: number;
   twapDuration: number;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -84,7 +87,7 @@ export interface RageTradeFactoryInterface extends ethers.utils.Interface {
   functions: {
     'clearingHouse()': FunctionFragment;
     'governance()': FunctionFragment;
-    'initializePool(((string,string,uint8),(uint16,uint16,uint32,bool,address),uint24,uint24,uint16))': FunctionFragment;
+    'initializePool(((string,string,uint8),(uint16,uint16,uint32,bool,bool,address),uint24,uint24,uint16))': FunctionFragment;
     'proxyAdmin()': FunctionFragment;
     'setVPoolWrapperLogicAddress(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;
@@ -166,12 +169,12 @@ export interface RageTradeFactoryInterface extends ethers.utils.Interface {
 
   events: {
     'GovernanceTransferred(address,address)': EventFragment;
-    'PoolInitlized(address,address,address)': EventFragment;
+    'PoolInitialized(address,address,address)': EventFragment;
     'TeamMultisigTransferred(address,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolInitlized'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'PoolInitialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
 }
 
@@ -182,12 +185,12 @@ export type GovernanceTransferredEvent = TypedEvent<
 
 export type GovernanceTransferredEventFilter = TypedEventFilter<GovernanceTransferredEvent>;
 
-export type PoolInitlizedEvent = TypedEvent<
+export type PoolInitializedEvent = TypedEvent<
   [string, string, string],
   { vPool: string; vToken: string; vPoolWrapper: string }
 >;
 
-export type PoolInitlizedEventFilter = TypedEventFilter<PoolInitlizedEvent>;
+export type PoolInitializedEventFilter = TypedEventFilter<PoolInitializedEvent>;
 
 export type TeamMultisigTransferredEvent = TypedEvent<
   [string, string],
@@ -332,16 +335,16 @@ export interface RageTradeFactory extends BaseContract {
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
 
-    'PoolInitlized(address,address,address)'(
+    'PoolInitialized(address,address,address)'(
       vPool?: null,
       vToken?: null,
       vPoolWrapper?: null
-    ): PoolInitlizedEventFilter;
-    PoolInitlized(
+    ): PoolInitializedEventFilter;
+    PoolInitialized(
       vPool?: null,
       vToken?: null,
       vPoolWrapper?: null
-    ): PoolInitlizedEventFilter;
+    ): PoolInitializedEventFilter;
 
     'TeamMultisigTransferred(address,address)'(
       previousTeamMultisig?: string | null,

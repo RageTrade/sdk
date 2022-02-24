@@ -68,7 +68,8 @@ export type RageTradePoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -77,12 +78,14 @@ export type RageTradePoolSettingsStructOutput = [
   number,
   number,
   boolean,
+  boolean,
   string
 ] & {
   initialMarginRatio: number;
   maintainanceMarginRatio: number;
   twapDuration: number;
-  whitelisted: boolean;
+  supported: boolean;
+  isCrossMargined: boolean;
   oracle: string;
 };
 
@@ -127,7 +130,7 @@ export interface VTokenPositionSetTest2Interface
     'init(address)': FunctionFragment;
     'liquidityChange(address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,address)))': FunctionFragment;
+    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'update((int256,int256,int256),address)': FunctionFragment;
@@ -255,12 +258,14 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -318,8 +323,16 @@ export interface VTokenPositionSetTest2 extends BaseContract {
   protocol(
     overrides?: CallOverrides
   ): Promise<
-    [string, LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber] & {
+    [
+      string,
+      string,
+      LiquidationParamsStructOutput,
+      BigNumber,
+      BigNumber,
+      BigNumber
+    ] & {
       vBase: string;
+      rBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -376,12 +389,14 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
         vBase: string;
+        rBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
