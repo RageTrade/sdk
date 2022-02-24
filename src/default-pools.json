@@ -3,9 +3,9 @@
   "rinkeby": {},
   "arbmain": {},
   "arbtest": {
-    "vTokenAddress": "0x47740811F53661d5FDFB9CC122EAa44d55467604",
-    "vPoolAddress": "0x89ec428218ab200E5e99d2953C8df1bc7Bd947De",
-    "vPoolWrapperAddress": "0x069E5f5593f10Aa870a6fb0598d278D4E8ABf707"
+    "vTokenAddress": "0x6Ee209F00408F1BaE5338E0279413916748A2779",
+    "vPoolAddress": "0x140CC37C536a03De8Add47876702Dd01DB84D3BE",
+    "vPoolWrapperAddress": "0x91115809dEdb23C20D8Ee461322BFc4c4b2525ad"
   },
   "opmain": {},
   "optest": {}

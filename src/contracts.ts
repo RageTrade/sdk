@@ -86,6 +86,10 @@ export async function getContractsWithDeployments(
     VBaseDeployment: ContractDeployment;
     VPoolWrapperLogicDeployment: ContractDeployment;
     SwapSimulatorDeployment: ContractDeployment;
+    ETH_vTokenDeployment: ContractDeployment;
+    ETH_vPoolDeployment: ContractDeployment;
+    ETH_vPoolWrapperDeployment: ContractDeployment;
+    ETH_IndexOracleDeployment: ContractDeployment;
   }
 ) {
   return {
@@ -137,12 +141,29 @@ export async function getContractsWithDeployments(
       deployments.SwapSimulatorDeployment.address,
       signerOrProvider
     ),
+
+    eth_vToken: VToken__factory.connect(
+      deployments.ETH_vTokenDeployment.address,
+      signerOrProvider
+    ),
+    eth_vPool: IUniswapV3Pool__factory.connect(
+      deployments.ETH_vPoolDeployment.address,
+      signerOrProvider
+    ),
+    eth_vPoolWrapper: VPoolWrapper__factory.connect(
+      deployments.ETH_vPoolWrapperDeployment.address,
+      signerOrProvider
+    ),
+    eth_oracle: IOracle__factory.connect(
+      deployments.ETH_IndexOracleDeployment.address,
+      signerOrProvider
+    ),
   };
 }
 
 export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
   const events = await rageTradeFactory.queryFilter(
-    rageTradeFactory.filters.PoolInitlized()
+    rageTradeFactory.filters.PoolInitialized()
   );
   return events.map(({ args: { vToken, vPool, vPoolWrapper } }) => {
     const signerOrProvider =
@@ -187,6 +208,13 @@ export async function getDeployments(network: NetworkName) {
   );
   const SwapSimulatorDeployment = await getDeployment(network, 'SwapSimulator');
 
+  const [
+    ETH_vTokenDeployment,
+    ETH_vPoolDeployment,
+    ETH_vPoolWrapperDeployment,
+    ETH_IndexOracleDeployment,
+  ] = await getPoolDeployments(network, 'ETH');
+
   return {
     AccountLibraryDeployment,
     ClearingHouseDeployment,
@@ -200,7 +228,23 @@ export async function getDeployments(network: NetworkName) {
     VBaseDeployment,
     VPoolWrapperLogicDeployment,
     SwapSimulatorDeployment,
+    ETH_vTokenDeployment,
+    ETH_vPoolDeployment,
+    ETH_vPoolWrapperDeployment,
+    ETH_IndexOracleDeployment,
   };
+}
+
+export async function getPoolDeployments(
+  network: NetworkName,
+  tokenSymbol: string
+) {
+  return await Promise.all([
+    getDeployment(network, tokenSymbol + '-vToken'),
+    getDeployment(network, tokenSymbol + '-vPool'),
+    getDeployment(network, tokenSymbol + '-vPoolWrapper'),
+    getDeployment(network, tokenSymbol + '-IndexOracle'),
+  ]);
 }
 
 export function getEthersInterfaces() {

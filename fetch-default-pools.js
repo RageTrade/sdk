@@ -21,11 +21,10 @@ async function main() {
     if (provider) {
       try {
         const contracts = await getContracts(provider);
-        const pools = await getPoolContracts(contracts.rageTradeFactory);
         defaultPoolsForChain = {
-          vTokenAddress: pools[pools.length - 1].vToken.address,
-          vPoolAddress: pools[pools.length - 1].vPool.address,
-          vPoolWrapperAddress: pools[pools.length - 1].vPoolWrapper.address,
+          vTokenAddress: contracts.eth_vToken.address,
+          vPoolAddress: contracts.eth_vPool.address,
+          vPoolWrapperAddress: contracts.eth_vPoolWrapper.address,
         };
       } catch {}
     }
