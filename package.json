@@ -13,7 +13,7 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build && cp src/default-pools.d.ts dist/ && yarn update:default-pools",
+    "build": "tsdx build && yarn update:pools",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "yarn build",
@@ -21,10 +21,10 @@
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
     "format:fix": "prettier --write src test",
-    "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn update:default-pools",
+    "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn update:pools",
     "update:deployments": "rm -rf deployments && mkdir deployments && cp -r ../perpswap/deployments/ deployments/ && node processAbi.js",
     "update:types": "rm -rf src/typechain-types && mkdir src/typechain-types && cp -r ../perpswap/typechain-types/ src/typechain-types/ && yarn format:fix",
-    "update:default-pools": "node fetch-default-pools.js",
+    "update:pools": "node fetch-pools.js",
     "typechain": "rm -rf src/typechain && typechain --target ethers-v5 --out-dir src/typechain './deployments/arbtest/*.json' && yarn format:fix"
   },
   "peerDependencies": {},

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 // import { getDefaultPoolContracts } from '../src/';
 
-import defaultPools from '../dist/default-pools.json';
+import pools from '../dist/pools.json';
 
 import { config } from 'dotenv';
 config();
@@ -21,12 +21,20 @@ describe('default pools', () => {
   //   }
   // });
 
-  it('works2', async () => {
+  it('defaultPool', async () => {
     expect(
-      ethers.utils.isHexString(defaultPools.arbtest.vTokenAddress)
+      ethers.utils.isHexString(pools.defaultPool.arbtest.vTokenAddress)
     ).toBeTruthy();
     expect(
-      ethers.utils.isHexString(defaultPools.arbtest.vPoolAddress)
+      ethers.utils.isHexString(pools.defaultPool.arbtest.vPoolAddress)
+    ).toBeTruthy();
+  });
+  it('defaultPool', async () => {
+    expect(
+      ethers.utils.isHexString(pools.poolsList.arbtest[0].vTokenAddress)
+    ).toBeTruthy();
+    expect(
+      ethers.utils.isHexString(pools.poolsList.arbtest[0].vPoolAddress)
     ).toBeTruthy();
   });
 });
