@@ -34,7 +34,7 @@ const _abi = [
       },
       {
         internalType: 'contract IERC20',
-        name: 'rBase',
+        name: 'cBase',
         type: 'address',
       },
       {
@@ -54,8 +54,13 @@ const _abi = [
             name: 'insuranceFundFeeShareBps',
             type: 'uint16',
           },
+          {
+            internalType: 'uint128',
+            name: 'maxRangeLiquidationFees',
+            type: 'uint128',
+          },
         ],
-        internalType: 'struct Account.LiquidationParams',
+        internalType: 'struct IClearingHouseStructures.LiquidationParams',
         name: 'liquidationParams',
         type: 'tuple',
       },
@@ -81,12 +86,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'full',
-        type: 'address',
-      },
-      {
         components: [
+          {
+            internalType: 'contract IVToken',
+            name: 'vToken',
+            type: 'address',
+          },
           {
             internalType: 'contract IUniswapV3Pool',
             name: 'vPool',
@@ -130,13 +135,13 @@ const _abi = [
                 type: 'address',
               },
             ],
-            internalType: 'struct IClearingHouse.RageTradePoolSettings',
+            internalType: 'struct IClearingHouseStructures.PoolSettings',
             name: 'settings',
             type: 'tuple',
           },
         ],
-        internalType: 'struct IClearingHouse.RageTradePool',
-        name: 'rageTradePool',
+        internalType: 'struct IClearingHouseStructures.Pool',
+        name: 'poolInfo',
         type: 'tuple',
       },
     ],
@@ -164,8 +169,13 @@ const _abi = [
             name: 'insuranceFundFeeShareBps',
             type: 'uint16',
           },
+          {
+            internalType: 'uint128',
+            name: 'maxRangeLiquidationFees',
+            type: 'uint128',
+          },
         ],
-        internalType: 'struct Account.LiquidationParams',
+        internalType: 'struct IClearingHouseStructures.LiquidationParams',
         name: '_liquidationParams',
         type: 'tuple',
       },

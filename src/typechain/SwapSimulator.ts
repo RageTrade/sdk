@@ -17,7 +17,7 @@ import { FunctionFragment, Result } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
-export declare namespace IClearingHouse {
+export declare namespace IClearingHouseStructures {
   export type SwapValuesStruct = {
     amountSpecified: BigNumberish;
     vTokenIn: BigNumberish;
@@ -142,12 +142,12 @@ export declare namespace SwapSimulator {
 export interface SwapSimulatorInterface extends utils.Interface {
   contractName: 'SwapSimulator';
   functions: {
-    'simulateSwap(address,address,int256,uint160,bool)': FunctionFragment;
+    'simulateSwap(address,uint32,int256,uint160,bool)': FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: 'simulateSwap',
-    values: [string, string, BigNumberish, BigNumberish, boolean]
+    values: [string, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
 
   decodeFunctionResult(
@@ -188,7 +188,7 @@ export interface SwapSimulator extends BaseContract {
   functions: {
     simulateSwap(
       clearingHouse: string,
-      vToken: string,
+      poolId: BigNumberish,
       amount: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       isNotional: boolean,
@@ -198,7 +198,7 @@ export interface SwapSimulator extends BaseContract {
 
   simulateSwap(
     clearingHouse: string,
-    vToken: string,
+    poolId: BigNumberish,
     amount: BigNumberish,
     sqrtPriceLimitX96: BigNumberish,
     isNotional: boolean,
@@ -208,19 +208,19 @@ export interface SwapSimulator extends BaseContract {
   callStatic: {
     simulateSwap(
       clearingHouse: string,
-      vToken: string,
+      poolId: BigNumberish,
       amount: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       isNotional: boolean,
       overrides?: CallOverrides
     ): Promise<
       [
-        IClearingHouse.SwapValuesStructOutput,
+        IClearingHouseStructures.SwapValuesStructOutput,
         BigNumber,
         SimulateSwap.SwapCacheStructOutput,
         SwapSimulator.SwapStepStructOutput[]
       ] & {
-        swapValues: IClearingHouse.SwapValuesStructOutput;
+        swapValues: IClearingHouseStructures.SwapValuesStructOutput;
         sqrtPriceX96End: BigNumber;
         cache: SimulateSwap.SwapCacheStructOutput;
         steps: SwapSimulator.SwapStepStructOutput[];
@@ -233,7 +233,7 @@ export interface SwapSimulator extends BaseContract {
   estimateGas: {
     simulateSwap(
       clearingHouse: string,
-      vToken: string,
+      poolId: BigNumberish,
       amount: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       isNotional: boolean,
@@ -244,7 +244,7 @@ export interface SwapSimulator extends BaseContract {
   populateTransaction: {
     simulateSwap(
       clearingHouse: string,
-      vToken: string,
+      poolId: BigNumberish,
       amount: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       isNotional: boolean,

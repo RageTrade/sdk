@@ -36,7 +36,7 @@ export type DeployVTokenParamsStructOutput = [string, string, number] & {
   cTokenDecimals: number;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -45,7 +45,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -63,7 +63,7 @@ export type RageTradePoolSettingsStructOutput = [
 
 export type InitializePoolParamsStruct = {
   deployVTokenParams: DeployVTokenParamsStruct;
-  rageTradePoolInitialSettings: RageTradePoolSettingsStruct;
+  poolInitialSettings: PoolSettingsStruct;
   liquidityFeePips: BigNumberish;
   protocolFeePips: BigNumberish;
   slotsToInitialize: BigNumberish;
@@ -71,13 +71,13 @@ export type InitializePoolParamsStruct = {
 
 export type InitializePoolParamsStructOutput = [
   DeployVTokenParamsStructOutput,
-  RageTradePoolSettingsStructOutput,
+  PoolSettingsStructOutput,
   number,
   number,
   number
 ] & {
   deployVTokenParams: DeployVTokenParamsStructOutput;
-  rageTradePoolInitialSettings: RageTradePoolSettingsStructOutput;
+  poolInitialSettings: PoolSettingsStructOutput;
   liquidityFeePips: number;
   protocolFeePips: number;
   slotsToInitialize: number;

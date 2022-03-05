@@ -28,15 +28,22 @@ export type LiquidationParamsStruct = {
   liquidationFeeFraction: BigNumberish;
   tokenLiquidationPriceDeltaBps: BigNumberish;
   insuranceFundFeeShareBps: BigNumberish;
+  maxRangeLiquidationFees: BigNumberish;
 };
 
-export type LiquidationParamsStructOutput = [number, number, number] & {
+export type LiquidationParamsStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber
+] & {
   liquidationFeeFraction: number;
   tokenLiquidationPriceDeltaBps: number;
   insuranceFundFeeShareBps: number;
+  maxRangeLiquidationFees: BigNumber;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -45,7 +52,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -61,35 +68,38 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type RageTradePoolStruct = {
+export type PoolStruct = {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
+  settings: PoolSettingsStruct;
 };
 
-export type RageTradePoolStructOutput = [
+export type PoolStructOutput = [
   string,
   string,
-  RageTradePoolSettingsStructOutput
+  string,
+  PoolSettingsStructOutput
 ] & {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
+  settings: PoolSettingsStructOutput;
 };
 
 export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
   functions: {
     'balanceAdjustments()': FunctionFragment;
-    'baseValue(uint160)': FunctionFragment;
     'fixFee()': FunctionFragment;
     'initialize(int24,int24)': FunctionFragment;
     'liquidityChange(int128)': FunctionFragment;
     'lp()': FunctionFragment;
+    'marketValue(uint160)': FunctionFragment;
     'maxNetPosition()': FunctionFragment;
-    'netPosition()': FunctionFragment;
+    'netPosition(uint160)': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'updateCheckpoints()': FunctionFragment;
     'wrapper()': FunctionFragment;
@@ -98,10 +108,6 @@ export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: 'balanceAdjustments',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'baseValue',
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'fixFee', values?: undefined): string;
   encodeFunctionData(
@@ -114,17 +120,21 @@ export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'lp', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'marketValue',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'maxNetPosition',
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'netPosition',
-    values?: undefined
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'protocol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAccountStorage',
@@ -150,7 +160,6 @@ export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
     functionFragment: 'balanceAdjustments',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'baseValue', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'fixFee', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
@@ -158,6 +167,10 @@ export interface LiquidityPositionTestInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'lp', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'marketValue',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'maxNetPosition',
     data: BytesLike
@@ -225,11 +238,6 @@ export interface LiquidityPositionTest extends BaseContract {
       }
     >;
 
-    baseValue(
-      sqrtPriceCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     fixFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     initialize(
@@ -269,9 +277,17 @@ export interface LiquidityPositionTest extends BaseContract {
       }
     >;
 
+    marketValue(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     maxNetPosition(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    netPosition(overrides?: CallOverrides): Promise<[BigNumber]>;
+    netPosition(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     protocol(
       overrides?: CallOverrides
@@ -285,7 +301,7 @@ export interface LiquidityPositionTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -294,8 +310,7 @@ export interface LiquidityPositionTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -329,11 +344,6 @@ export interface LiquidityPositionTest extends BaseContract {
       traderPositionIncrease: BigNumber;
     }
   >;
-
-  baseValue(
-    sqrtPriceCurrent: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -374,9 +384,17 @@ export interface LiquidityPositionTest extends BaseContract {
     }
   >;
 
+  marketValue(
+    sqrtPriceCurrent: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   maxNetPosition(overrides?: CallOverrides): Promise<BigNumber>;
 
-  netPosition(overrides?: CallOverrides): Promise<BigNumber>;
+  netPosition(
+    sqrtPriceCurrent: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   protocol(
     overrides?: CallOverrides
@@ -390,7 +408,7 @@ export interface LiquidityPositionTest extends BaseContract {
       BigNumber
     ] & {
       vBase: string;
-      rBase: string;
+      cBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -399,8 +417,7 @@ export interface LiquidityPositionTest extends BaseContract {
   >;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -434,11 +451,6 @@ export interface LiquidityPositionTest extends BaseContract {
         traderPositionIncrease: BigNumber;
       }
     >;
-
-    baseValue(
-      sqrtPriceCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -479,9 +491,17 @@ export interface LiquidityPositionTest extends BaseContract {
       }
     >;
 
+    marketValue(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     maxNetPosition(overrides?: CallOverrides): Promise<BigNumber>;
 
-    netPosition(overrides?: CallOverrides): Promise<BigNumber>;
+    netPosition(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     protocol(
       overrides?: CallOverrides
@@ -495,7 +515,7 @@ export interface LiquidityPositionTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -504,8 +524,7 @@ export interface LiquidityPositionTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -530,11 +549,6 @@ export interface LiquidityPositionTest extends BaseContract {
   estimateGas: {
     balanceAdjustments(overrides?: CallOverrides): Promise<BigNumber>;
 
-    baseValue(
-      sqrtPriceCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
@@ -550,15 +564,22 @@ export interface LiquidityPositionTest extends BaseContract {
 
     lp(overrides?: CallOverrides): Promise<BigNumber>;
 
+    marketValue(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     maxNetPosition(overrides?: CallOverrides): Promise<BigNumber>;
 
-    netPosition(overrides?: CallOverrides): Promise<BigNumber>;
+    netPosition(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     protocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -588,11 +609,6 @@ export interface LiquidityPositionTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    baseValue(
-      sqrtPriceCurrent: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     fixFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
@@ -608,15 +624,22 @@ export interface LiquidityPositionTest extends BaseContract {
 
     lp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    marketValue(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     maxNetPosition(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    netPosition(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    netPosition(
+      sqrtPriceCurrent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     protocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

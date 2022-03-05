@@ -26,18 +26,18 @@ import type {
 
 export interface IInsuranceFundInterface extends ethers.utils.Interface {
   functions: {
-    '__InsuranceFund_init(address,address,string,string)': FunctionFragment;
+    '__initialize_InsuranceFund(address,address,string,string)': FunctionFragment;
     'claim(uint256)': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     values: [string, string, string, string]
   ): string;
   encodeFunctionData(functionFragment: 'claim', values: [BigNumberish]): string;
 
   decodeFunctionResult(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result;
@@ -72,7 +72,7 @@ export interface IInsuranceFund extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       rBase: string,
       clearingHouse: string,
       name: string,
@@ -86,7 +86,7 @@ export interface IInsuranceFund extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  __InsuranceFund_init(
+  __initialize_InsuranceFund(
     rBase: string,
     clearingHouse: string,
     name: string,
@@ -100,7 +100,7 @@ export interface IInsuranceFund extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       rBase: string,
       clearingHouse: string,
       name: string,
@@ -114,7 +114,7 @@ export interface IInsuranceFund extends BaseContract {
   filters: {};
 
   estimateGas: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       rBase: string,
       clearingHouse: string,
       name: string,
@@ -129,7 +129,7 @@ export interface IInsuranceFund extends BaseContract {
   };
 
   populateTransaction: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       rBase: string,
       clearingHouse: string,
       name: string,

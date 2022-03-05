@@ -20,7 +20,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 export interface InsuranceFundLogicInterface extends utils.Interface {
   contractName: 'InsuranceFundLogic';
   functions: {
-    '__InsuranceFund_init(address,address,string,string)': FunctionFragment;
+    '__initialize_InsuranceFund(address,address,string,string)': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
@@ -40,7 +40,7 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     values: [string, string, string, string]
   ): string;
   encodeFunctionData(
@@ -91,7 +91,7 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
@@ -180,7 +180,7 @@ export interface InsuranceFundLogic extends BaseContract {
     /**
      * Initializer for Insurance Fund
      */
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -258,7 +258,7 @@ export interface InsuranceFundLogic extends BaseContract {
   /**
    * Initializer for Insurance Fund
    */
-  __InsuranceFund_init(
+  __initialize_InsuranceFund(
     _rBase: string,
     _clearingHouse: string,
     name: string,
@@ -336,7 +336,7 @@ export interface InsuranceFundLogic extends BaseContract {
     /**
      * Initializer for Insurance Fund
      */
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -430,7 +430,7 @@ export interface InsuranceFundLogic extends BaseContract {
     /**
      * Initializer for Insurance Fund
      */
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -509,7 +509,7 @@ export interface InsuranceFundLogic extends BaseContract {
     /**
      * Initializer for Insurance Fund
      */
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,

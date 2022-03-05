@@ -85,7 +85,7 @@ const _abi = [
         type: 'string',
       },
     ],
-    name: '__InsuranceFund_init',
+    name: '__initialize_InsuranceFund',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

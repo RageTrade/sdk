@@ -73,14 +73,15 @@ export type WrapperValuesInsideStructOutput = [
 
 export interface IVPoolWrapperInterface extends ethers.utils.Interface {
   functions: {
-    '__VPoolWrapper_init((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    'burn(int24,int24,uint128)': FunctionFragment;
     'collectAccruedProtocolFee()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;
     'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
-    'liquidityChange(int24,int24,int128)': FunctionFragment;
     'liquidityFeePips()': FunctionFragment;
+    'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
     'swapToken(int256,uint160,bool)': FunctionFragment;
     'uniswapFeePips()': FunctionFragment;
@@ -89,8 +90,12 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: '__VPoolWrapper_init',
+    functionFragment: '__initialize_VPoolWrapper',
     values: [InitializeVPoolWrapperParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'burn',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'collectAccruedProtocolFee',
@@ -113,12 +118,12 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'liquidityChange',
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'liquidityFeePips',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'mint',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'protocolFeePips',
@@ -139,9 +144,10 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: '__VPoolWrapper_init',
+    functionFragment: '__initialize_VPoolWrapper',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'burn', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'collectAccruedProtocolFee',
     data: BytesLike
@@ -163,13 +169,10 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'liquidityChange',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'liquidityFeePips',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'protocolFeePips',
     data: BytesLike
@@ -186,11 +189,70 @@ export interface IVPoolWrapperInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: 'vPool', data: BytesLike): Result;
 
   events: {
+    'AccruedProtocolFeeCollected(uint256)': EventFragment;
+    'Burn(int24,int24,uint128,uint256,uint256)': EventFragment;
+    'LiquidityFeeUpdated(uint24)': EventFragment;
+    'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
+    'ProtocolFeeUpdated(uint24)': EventFragment;
     'Swap(int256,int256,uint256,uint256)': EventFragment;
   };
 
+  getEvent(
+    nameOrSignatureOrTopic: 'AccruedProtocolFeeCollected'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'LiquidityFeeUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Swap'): EventFragment;
 }
+
+export type AccruedProtocolFeeCollectedEvent = TypedEvent<
+  [BigNumber],
+  { amount: BigNumber }
+>;
+
+export type AccruedProtocolFeeCollectedEventFilter = TypedEventFilter<AccruedProtocolFeeCollectedEvent>;
+
+export type BurnEvent = TypedEvent<
+  [number, number, BigNumber, BigNumber, BigNumber],
+  {
+    tickLower: number;
+    tickUpper: number;
+    liquidity: BigNumber;
+    vTokenPrincipal: BigNumber;
+    basePrincipal: BigNumber;
+  }
+>;
+
+export type BurnEventFilter = TypedEventFilter<BurnEvent>;
+
+export type LiquidityFeeUpdatedEvent = TypedEvent<
+  [number],
+  { liquidityFeePips: number }
+>;
+
+export type LiquidityFeeUpdatedEventFilter = TypedEventFilter<LiquidityFeeUpdatedEvent>;
+
+export type MintEvent = TypedEvent<
+  [number, number, BigNumber, BigNumber, BigNumber],
+  {
+    tickLower: number;
+    tickUpper: number;
+    liquidity: BigNumber;
+    vTokenPrincipal: BigNumber;
+    basePrincipal: BigNumber;
+  }
+>;
+
+export type MintEventFilter = TypedEventFilter<MintEvent>;
+
+export type ProtocolFeeUpdatedEvent = TypedEvent<
+  [number],
+  { protocolFeePips: number }
+>;
+
+export type ProtocolFeeUpdatedEventFilter = TypedEventFilter<ProtocolFeeUpdatedEvent>;
 
 export type SwapEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, BigNumber],
@@ -231,8 +293,15 @@ export interface IVPoolWrapper extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -264,14 +333,14 @@ export interface IVPoolWrapper extends BaseContract {
       }
     >;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
 
@@ -291,8 +360,15 @@ export interface IVPoolWrapper extends BaseContract {
     vPool(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  __VPoolWrapper_init(
+  __initialize_VPoolWrapper(
     params: InitializeVPoolWrapperParamsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  burn(
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -316,14 +392,14 @@ export interface IVPoolWrapper extends BaseContract {
     overrides?: CallOverrides
   ): Promise<WrapperValuesInsideStructOutput>;
 
-  liquidityChange(
+  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+  mint(
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
     liquidity: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
   protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -343,10 +419,23 @@ export interface IVPoolWrapper extends BaseContract {
   vPool(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: InitializeVPoolWrapperParamsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: BigNumber;
+        basePrincipal: BigNumber;
+        wrapperValuesInside: WrapperValuesInsideStructOutput;
+      }
+    >;
 
     collectAccruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -366,20 +455,20 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<WrapperValuesInsideStructOutput>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       liquidity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, WrapperValuesInsideStructOutput] & {
-        vBaseAmount: BigNumber;
-        vTokenAmount: BigNumber;
+        vTokenPrincipal: BigNumber;
+        basePrincipal: BigNumber;
         wrapperValuesInside: WrapperValuesInsideStructOutput;
       }
     >;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -403,6 +492,55 @@ export interface IVPoolWrapper extends BaseContract {
   };
 
   filters: {
+    'AccruedProtocolFeeCollected(uint256)'(
+      amount?: null
+    ): AccruedProtocolFeeCollectedEventFilter;
+    AccruedProtocolFeeCollected(
+      amount?: null
+    ): AccruedProtocolFeeCollectedEventFilter;
+
+    'Burn(int24,int24,uint128,uint256,uint256)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): BurnEventFilter;
+    Burn(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): BurnEventFilter;
+
+    'LiquidityFeeUpdated(uint24)'(
+      liquidityFeePips?: null
+    ): LiquidityFeeUpdatedEventFilter;
+    LiquidityFeeUpdated(
+      liquidityFeePips?: null
+    ): LiquidityFeeUpdatedEventFilter;
+
+    'Mint(int24,int24,uint128,uint256,uint256)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): MintEventFilter;
+    Mint(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): MintEventFilter;
+
+    'ProtocolFeeUpdated(uint24)'(
+      protocolFeePips?: null
+    ): ProtocolFeeUpdatedEventFilter;
+    ProtocolFeeUpdated(protocolFeePips?: null): ProtocolFeeUpdatedEventFilter;
+
     'Swap(int256,int256,uint256,uint256)'(
       vTokenIn?: null,
       vBaseIn?: null,
@@ -418,8 +556,15 @@ export interface IVPoolWrapper extends BaseContract {
   };
 
   estimateGas: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -443,14 +588,14 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -471,8 +616,15 @@ export interface IVPoolWrapper extends BaseContract {
   };
 
   populateTransaction: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -498,14 +650,14 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

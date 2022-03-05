@@ -56,15 +56,22 @@ export type LiquidationParamsStruct = {
   liquidationFeeFraction: BigNumberish;
   tokenLiquidationPriceDeltaBps: BigNumberish;
   insuranceFundFeeShareBps: BigNumberish;
+  maxRangeLiquidationFees: BigNumberish;
 };
 
-export type LiquidationParamsStructOutput = [number, number, number] & {
+export type LiquidationParamsStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber
+] & {
   liquidationFeeFraction: number;
   tokenLiquidationPriceDeltaBps: number;
   insuranceFundFeeShareBps: number;
+  maxRangeLiquidationFees: BigNumber;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -73,7 +80,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -89,20 +96,42 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type RageTradePoolStruct = {
+export type PoolStruct = {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
+  settings: PoolSettingsStruct;
 };
 
-export type RageTradePoolStructOutput = [
+export type PoolStructOutput = [
   string,
   string,
-  RageTradePoolSettingsStructOutput
+  string,
+  PoolSettingsStructOutput
 ] & {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
+  settings: PoolSettingsStructOutput;
+};
+
+export type SwapParamsStruct = {
+  amount: BigNumberish;
+  sqrtPriceLimit: BigNumberish;
+  isNotional: boolean;
+  isPartialAllowed: boolean;
+};
+
+export type SwapParamsStructOutput = [
+  BigNumber,
+  BigNumber,
+  boolean,
+  boolean
+] & {
+  amount: BigNumber;
+  sqrtPriceLimit: BigNumber;
+  isNotional: boolean;
+  isPartialAllowed: boolean;
 };
 
 export type BalanceAdjustmentsStruct = {
@@ -130,9 +159,10 @@ export interface VTokenPositionSetTest2Interface
     'init(address)': FunctionFragment;
     'liquidityChange(address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
+    'swap(address,(int256,uint160,bool,bool))': FunctionFragment;
     'update((int256,int256,int256),address)': FunctionFragment;
   };
 
@@ -153,7 +183,7 @@ export interface VTokenPositionSetTest2Interface
   encodeFunctionData(functionFragment: 'protocol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAccountStorage',
@@ -168,6 +198,10 @@ export interface VTokenPositionSetTest2Interface
   encodeFunctionData(
     functionFragment: 'setVBaseAddress',
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'swap',
+    values: [string, SwapParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'update',
@@ -201,6 +235,7 @@ export interface VTokenPositionSetTest2Interface
     functionFragment: 'setVBaseAddress',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'swap', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'update', data: BytesLike): Result;
 
   events: {};
@@ -265,7 +300,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -274,8 +309,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -290,6 +324,12 @@ export interface VTokenPositionSetTest2 extends BaseContract {
 
     setVBaseAddress(
       _vBase: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    swap(
+      vToken: string,
+      swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -332,7 +372,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
       BigNumber
     ] & {
       vBase: string;
-      rBase: string;
+      cBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -341,8 +381,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
   >;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -357,6 +396,12 @@ export interface VTokenPositionSetTest2 extends BaseContract {
 
   setVBaseAddress(
     _vBase: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  swap(
+    vToken: string,
+    swapParams: SwapParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -396,7 +441,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -405,8 +450,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -420,6 +464,12 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     ): Promise<void>;
 
     setVBaseAddress(_vBase: string, overrides?: CallOverrides): Promise<void>;
+
+    swap(
+      vToken: string,
+      swapParams: SwapParamsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     update(
       balanceAdjustments: BalanceAdjustmentsStruct,
@@ -454,8 +504,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -470,6 +519,12 @@ export interface VTokenPositionSetTest2 extends BaseContract {
 
     setVBaseAddress(
       _vBase: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    swap(
+      vToken: string,
+      swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -506,8 +561,7 @@ export interface VTokenPositionSetTest2 extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -522,6 +576,12 @@ export interface VTokenPositionSetTest2 extends BaseContract {
 
     setVBaseAddress(
       _vBase: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swap(
+      vToken: string,
+      swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

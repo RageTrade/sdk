@@ -12,6 +12,119 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'AccruedProtocolFeeCollected',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'liquidity',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'vTokenPrincipal',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'basePrincipal',
+        type: 'uint256',
+      },
+    ],
+    name: 'Burn',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint24',
+        name: 'liquidityFeePips',
+        type: 'uint24',
+      },
+    ],
+    name: 'LiquidityFeeUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'liquidity',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'vTokenPrincipal',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'basePrincipal',
+        type: 'uint256',
+      },
+    ],
+    name: 'Mint',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint24',
+        name: 'protocolFeePips',
+        type: 'uint24',
+      },
+    ],
+    name: 'ProtocolFeeUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'int256',
         name: 'vTokenIn',
         type: 'int256',
@@ -83,8 +196,69 @@ const _abi = [
         type: 'tuple',
       },
     ],
-    name: '__VPoolWrapper_init',
+    name: '__initialize_VPoolWrapper',
     outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint128',
+        name: 'liquidity',
+        type: 'uint128',
+      },
+    ],
+    name: 'burn',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'vTokenPrincipal',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'basePrincipal',
+        type: 'uint256',
+      },
+      {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'sumAX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumBInsideX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumFpInsideX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'sumFeeInsideX128',
+            type: 'uint256',
+          },
+        ],
+        internalType: 'struct IVPoolWrapper.WrapperValuesInside',
+        name: 'wrapperValuesInside',
+        type: 'tuple',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -220,6 +394,19 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'liquidityFeePips',
+    outputs: [
+      {
+        internalType: 'uint24',
+        name: '',
+        type: 'uint24',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'int24',
@@ -232,22 +419,22 @@ const _abi = [
         type: 'int24',
       },
       {
-        internalType: 'int128',
+        internalType: 'uint128',
         name: 'liquidity',
-        type: 'int128',
+        type: 'uint128',
       },
     ],
-    name: 'liquidityChange',
+    name: 'mint',
     outputs: [
       {
-        internalType: 'int256',
-        name: 'vBaseAmount',
-        type: 'int256',
+        internalType: 'uint256',
+        name: 'vTokenPrincipal',
+        type: 'uint256',
       },
       {
-        internalType: 'int256',
-        name: 'vTokenAmount',
-        type: 'int256',
+        internalType: 'uint256',
+        name: 'basePrincipal',
+        type: 'uint256',
       },
       {
         components: [
@@ -278,19 +465,6 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'liquidityFeePips',
-    outputs: [
-      {
-        internalType: 'uint24',
-        name: '',
-        type: 'uint24',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

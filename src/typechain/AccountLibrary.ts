@@ -11,96 +11,52 @@ export interface AccountLibraryInterface extends utils.Interface {
   functions: {};
 
   events: {
-    'AccountCreated(address,uint256)': EventFragment;
-    'DepositMargin(uint256,address,uint256)': EventFragment;
-    'FundingPayment(uint256,address,int24,int24,int256)': EventFragment;
-    'LiquidateRanges(uint256,address,int256,int256,int256)': EventFragment;
-    'LiquidateTokenPosition(uint256,uint256,address,uint16,uint256,uint256,int256)': EventFragment;
-    'LiquidityChange(uint256,address,int24,int24,int128,uint8,int256,int256)': EventFragment;
-    'LiquidityFee(uint256,address,int24,int24,int256)': EventFragment;
-    'LiquidityTokenPositionChange(uint256,address,int24,int24,int256)': EventFragment;
-    'ProtocolFeeWithdrawm(address,uint256)': EventFragment;
-    'TokenPositionChange(uint256,address,int256,int256)': EventFragment;
-    'UpdateProfit(uint256,int256)': EventFragment;
-    'WithdrawMargin(uint256,address,uint256)': EventFragment;
+    'FundingPaymentRealized(uint256,uint32,int24,int24,int256)': EventFragment;
+    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256)': EventFragment;
+    'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': EventFragment;
+    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256)': EventFragment;
+    'ProfitUpdated(uint256,int256)': EventFragment;
+    'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
+    'TokenPositionChanged(uint256,uint32,int256,int256)': EventFragment;
+    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)': EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DepositMargin'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FundingPayment'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidateRanges'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidateTokenPosition'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidityChange'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidityFee'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FundingPaymentRealized'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'LiquidityChanged'): EventFragment;
   getEvent(
-    nameOrSignatureOrTopic: 'LiquidityTokenPositionChange'
+    nameOrSignatureOrTopic: 'LiquidityPositionEarningsRealized'
   ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeWithdrawm'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionChange'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'UpdateProfit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'WithdrawMargin'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'LiquidityPositionsLiquidated'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProfitUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProtocolFeesWithdrawn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TokenPositionChanged'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'TokenPositionChangedDueToLiquidityChanged'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TokenPositionLiquidated'): EventFragment;
 }
 
-export type AccountCreatedEvent = TypedEvent<
-  [string, BigNumber],
-  { ownerAddress: string; accountNo: BigNumber }
->;
-
-export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
-
-export type DepositMarginEvent = TypedEvent<
-  [BigNumber, string, BigNumber],
-  { accountNo: BigNumber; cTokenAddress: string; amount: BigNumber }
->;
-
-export type DepositMarginEventFilter = TypedEventFilter<DepositMarginEvent>;
-
-export type FundingPaymentEvent = TypedEvent<
-  [BigNumber, string, number, number, BigNumber],
+export type FundingPaymentRealizedEvent = TypedEvent<
+  [BigNumber, number, number, number, BigNumber],
   {
-    accountNo: BigNumber;
-    vToken: string;
+    accountId: BigNumber;
+    poolId: number;
     tickLower: number;
     tickUpper: number;
     amount: BigNumber;
   }
 >;
 
-export type FundingPaymentEventFilter = TypedEventFilter<FundingPaymentEvent>;
+export type FundingPaymentRealizedEventFilter = TypedEventFilter<FundingPaymentRealizedEvent>;
 
-export type LiquidateRangesEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber, BigNumber],
+export type LiquidityChangedEvent = TypedEvent<
+  [BigNumber, number, number, number, BigNumber, number, BigNumber, BigNumber],
   {
-    accountNo: BigNumber;
-    keeperAddress: string;
-    liquidationFee: BigNumber;
-    keeperFee: BigNumber;
-    insuranceFundFee: BigNumber;
-  }
->;
-
-export type LiquidateRangesEventFilter = TypedEventFilter<LiquidateRangesEvent>;
-
-export type LiquidateTokenPositionEvent = TypedEvent<
-  [BigNumber, BigNumber, string, number, BigNumber, BigNumber, BigNumber],
-  {
-    accountNo: BigNumber;
-    liquidatorAccountNo: BigNumber;
-    vToken: string;
-    liquidationBps: number;
-    liquidationPriceX128: BigNumber;
-    liquidatorPriceX128: BigNumber;
-    insuranceFundFee: BigNumber;
-  }
->;
-
-export type LiquidateTokenPositionEventFilter = TypedEventFilter<LiquidateTokenPositionEvent>;
-
-export type LiquidityChangeEvent = TypedEvent<
-  [BigNumber, string, number, number, BigNumber, number, BigNumber, BigNumber],
-  {
-    accountNo: BigNumber;
-    vToken: string;
+    accountId: BigNumber;
+    poolId: number;
     tickLower: number;
     tickUpper: number;
     liquidityDelta: BigNumber;
@@ -110,66 +66,87 @@ export type LiquidityChangeEvent = TypedEvent<
   }
 >;
 
-export type LiquidityChangeEventFilter = TypedEventFilter<LiquidityChangeEvent>;
+export type LiquidityChangedEventFilter = TypedEventFilter<LiquidityChangedEvent>;
 
-export type LiquidityFeeEvent = TypedEvent<
-  [BigNumber, string, number, number, BigNumber],
+export type LiquidityPositionEarningsRealizedEvent = TypedEvent<
+  [BigNumber, number, number, number, BigNumber],
   {
-    accountNo: BigNumber;
-    vToken: string;
+    accountId: BigNumber;
+    poolId: number;
     tickLower: number;
     tickUpper: number;
     amount: BigNumber;
   }
 >;
 
-export type LiquidityFeeEventFilter = TypedEventFilter<LiquidityFeeEvent>;
+export type LiquidityPositionEarningsRealizedEventFilter = TypedEventFilter<LiquidityPositionEarningsRealizedEvent>;
 
-export type LiquidityTokenPositionChangeEvent = TypedEvent<
-  [BigNumber, string, number, number, BigNumber],
+export type LiquidityPositionsLiquidatedEvent = TypedEvent<
+  [BigNumber, string, BigNumber, BigNumber, BigNumber],
   {
-    accountNo: BigNumber;
-    vToken: string;
+    accountId: BigNumber;
+    keeperAddress: string;
+    liquidationFee: BigNumber;
+    keeperFee: BigNumber;
+    insuranceFundFee: BigNumber;
+  }
+>;
+
+export type LiquidityPositionsLiquidatedEventFilter = TypedEventFilter<LiquidityPositionsLiquidatedEvent>;
+
+export type ProfitUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  { accountId: BigNumber; amount: BigNumber }
+>;
+
+export type ProfitUpdatedEventFilter = TypedEventFilter<ProfitUpdatedEvent>;
+
+export type ProtocolFeesWithdrawnEvent = TypedEvent<
+  [string, BigNumber],
+  { wrapperAddress: string; feeAmount: BigNumber }
+>;
+
+export type ProtocolFeesWithdrawnEventFilter = TypedEventFilter<ProtocolFeesWithdrawnEvent>;
+
+export type TokenPositionChangedEvent = TypedEvent<
+  [BigNumber, number, BigNumber, BigNumber],
+  {
+    accountId: BigNumber;
+    poolId: number;
+    tokenAmountOut: BigNumber;
+    baseAmountOut: BigNumber;
+  }
+>;
+
+export type TokenPositionChangedEventFilter = TypedEventFilter<TokenPositionChangedEvent>;
+
+export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
+  [BigNumber, number, number, number, BigNumber],
+  {
+    accountId: BigNumber;
+    poolId: number;
     tickLower: number;
     tickUpper: number;
     tokenAmountOut: BigNumber;
   }
 >;
 
-export type LiquidityTokenPositionChangeEventFilter = TypedEventFilter<LiquidityTokenPositionChangeEvent>;
+export type TokenPositionChangedDueToLiquidityChangedEventFilter = TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
 
-export type ProtocolFeeWithdrawmEvent = TypedEvent<
-  [string, BigNumber],
-  { wrapperAddress: string; feeAmount: BigNumber }
->;
-
-export type ProtocolFeeWithdrawmEventFilter = TypedEventFilter<ProtocolFeeWithdrawmEvent>;
-
-export type TokenPositionChangeEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber],
+export type TokenPositionLiquidatedEvent = TypedEvent<
+  [BigNumber, BigNumber, number, number, BigNumber, BigNumber, BigNumber],
   {
-    accountNo: BigNumber;
-    vToken: string;
-    tokenAmountOut: BigNumber;
-    baseAmountOut: BigNumber;
+    accountId: BigNumber;
+    liquidatorAccountId: BigNumber;
+    poolId: number;
+    liquidationBps: number;
+    liquidationPriceX128: BigNumber;
+    liquidatorPriceX128: BigNumber;
+    insuranceFundFee: BigNumber;
   }
 >;
 
-export type TokenPositionChangeEventFilter = TypedEventFilter<TokenPositionChangeEvent>;
-
-export type UpdateProfitEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  { accountNo: BigNumber; amount: BigNumber }
->;
-
-export type UpdateProfitEventFilter = TypedEventFilter<UpdateProfitEvent>;
-
-export type WithdrawMarginEvent = TypedEvent<
-  [BigNumber, string, BigNumber],
-  { accountNo: BigNumber; cTokenAddress: string; amount: BigNumber }
->;
-
-export type WithdrawMarginEventFilter = TypedEventFilter<WithdrawMarginEvent>;
+export type TokenPositionLiquidatedEventFilter = TypedEventFilter<TokenPositionLiquidatedEvent>;
 
 export interface AccountLibrary extends BaseContract {
   contractName: 'AccountLibrary';
@@ -203,167 +180,136 @@ export interface AccountLibrary extends BaseContract {
   callStatic: {};
 
   filters: {
-    'AccountCreated(address,uint256)'(
-      ownerAddress?: string | null,
-      accountNo?: null
-    ): AccountCreatedEventFilter;
-    AccountCreated(
-      ownerAddress?: string | null,
-      accountNo?: null
-    ): AccountCreatedEventFilter;
-
-    'DepositMargin(uint256,address,uint256)'(
-      accountNo?: BigNumberish | null,
-      cTokenAddress?: string | null,
-      amount?: null
-    ): DepositMarginEventFilter;
-    DepositMargin(
-      accountNo?: BigNumberish | null,
-      cTokenAddress?: string | null,
-      amount?: null
-    ): DepositMarginEventFilter;
-
-    'FundingPayment(uint256,address,int24,int24,int256)'(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    'FundingPaymentRealized(uint256,uint32,int24,int24,int256)'(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
-    ): FundingPaymentEventFilter;
-    FundingPayment(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    ): FundingPaymentRealizedEventFilter;
+    FundingPaymentRealized(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
-    ): FundingPaymentEventFilter;
+    ): FundingPaymentRealizedEventFilter;
 
-    'LiquidateRanges(uint256,address,int256,int256,int256)'(
-      accountNo?: BigNumberish | null,
-      keeperAddress?: string | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null
-    ): LiquidateRangesEventFilter;
-    LiquidateRanges(
-      accountNo?: BigNumberish | null,
-      keeperAddress?: string | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null
-    ): LiquidateRangesEventFilter;
-
-    'LiquidateTokenPosition(uint256,uint256,address,uint16,uint256,uint256,int256)'(
-      accountNo?: BigNumberish | null,
-      liquidatorAccountNo?: BigNumberish | null,
-      vToken?: string | null,
-      liquidationBps?: null,
-      liquidationPriceX128?: null,
-      liquidatorPriceX128?: null,
-      insuranceFundFee?: null
-    ): LiquidateTokenPositionEventFilter;
-    LiquidateTokenPosition(
-      accountNo?: BigNumberish | null,
-      liquidatorAccountNo?: BigNumberish | null,
-      vToken?: string | null,
-      liquidationBps?: null,
-      liquidationPriceX128?: null,
-      liquidatorPriceX128?: null,
-      insuranceFundFee?: null
-    ): LiquidateTokenPositionEventFilter;
-
-    'LiquidityChange(uint256,address,int24,int24,int128,uint8,int256,int256)'(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256)'(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
       limitOrderType?: null,
       tokenAmountOut?: null,
       baseAmountOut?: null
-    ): LiquidityChangeEventFilter;
-    LiquidityChange(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    ): LiquidityChangedEventFilter;
+    LiquidityChanged(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
       limitOrderType?: null,
       tokenAmountOut?: null,
       baseAmountOut?: null
-    ): LiquidityChangeEventFilter;
+    ): LiquidityChangedEventFilter;
 
-    'LiquidityFee(uint256,address,int24,int24,int256)'(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)'(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
-    ): LiquidityFeeEventFilter;
-    LiquidityFee(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    ): LiquidityPositionEarningsRealizedEventFilter;
+    LiquidityPositionEarningsRealized(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
-    ): LiquidityFeeEventFilter;
+    ): LiquidityPositionEarningsRealizedEventFilter;
 
-    'LiquidityTokenPositionChange(uint256,address,int24,int24,int256)'(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256)'(
+      accountId?: BigNumberish | null,
+      keeperAddress?: string | null,
+      liquidationFee?: null,
+      keeperFee?: null,
+      insuranceFundFee?: null
+    ): LiquidityPositionsLiquidatedEventFilter;
+    LiquidityPositionsLiquidated(
+      accountId?: BigNumberish | null,
+      keeperAddress?: string | null,
+      liquidationFee?: null,
+      keeperFee?: null,
+      insuranceFundFee?: null
+    ): LiquidityPositionsLiquidatedEventFilter;
+
+    'ProfitUpdated(uint256,int256)'(
+      accountId?: BigNumberish | null,
+      amount?: null
+    ): ProfitUpdatedEventFilter;
+    ProfitUpdated(
+      accountId?: BigNumberish | null,
+      amount?: null
+    ): ProfitUpdatedEventFilter;
+
+    'ProtocolFeesWithdrawn(address,uint256)'(
+      wrapperAddress?: string | null,
+      feeAmount?: null
+    ): ProtocolFeesWithdrawnEventFilter;
+    ProtocolFeesWithdrawn(
+      wrapperAddress?: string | null,
+      feeAmount?: null
+    ): ProtocolFeesWithdrawnEventFilter;
+
+    'TokenPositionChanged(uint256,uint32,int256,int256)'(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
+      tokenAmountOut?: null,
+      baseAmountOut?: null
+    ): TokenPositionChangedEventFilter;
+    TokenPositionChanged(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
+      tokenAmountOut?: null,
+      baseAmountOut?: null
+    ): TokenPositionChangedEventFilter;
+
+    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       tokenAmountOut?: null
-    ): LiquidityTokenPositionChangeEventFilter;
-    LiquidityTokenPositionChange(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
+    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
+    TokenPositionChangedDueToLiquidityChanged(
+      accountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
       tokenAmountOut?: null
-    ): LiquidityTokenPositionChangeEventFilter;
+    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
 
-    'ProtocolFeeWithdrawm(address,uint256)'(
-      wrapperAddress?: string | null,
-      feeAmount?: null
-    ): ProtocolFeeWithdrawmEventFilter;
-    ProtocolFeeWithdrawm(
-      wrapperAddress?: string | null,
-      feeAmount?: null
-    ): ProtocolFeeWithdrawmEventFilter;
-
-    'TokenPositionChange(uint256,address,int256,int256)'(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
-    ): TokenPositionChangeEventFilter;
-    TokenPositionChange(
-      accountNo?: BigNumberish | null,
-      vToken?: string | null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
-    ): TokenPositionChangeEventFilter;
-
-    'UpdateProfit(uint256,int256)'(
-      accountNo?: BigNumberish | null,
-      amount?: null
-    ): UpdateProfitEventFilter;
-    UpdateProfit(
-      accountNo?: BigNumberish | null,
-      amount?: null
-    ): UpdateProfitEventFilter;
-
-    'WithdrawMargin(uint256,address,uint256)'(
-      accountNo?: BigNumberish | null,
-      cTokenAddress?: string | null,
-      amount?: null
-    ): WithdrawMarginEventFilter;
-    WithdrawMargin(
-      accountNo?: BigNumberish | null,
-      cTokenAddress?: string | null,
-      amount?: null
-    ): WithdrawMarginEventFilter;
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)'(
+      accountId?: BigNumberish | null,
+      liquidatorAccountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
+      liquidationBps?: null,
+      liquidationPriceX128?: null,
+      liquidatorPriceX128?: null,
+      insuranceFundFee?: null
+    ): TokenPositionLiquidatedEventFilter;
+    TokenPositionLiquidated(
+      accountId?: BigNumberish | null,
+      liquidatorAccountId?: BigNumberish | null,
+      poolId?: BigNumberish | null,
+      liquidationBps?: null,
+      liquidationPriceX128?: null,
+      liquidatorPriceX128?: null,
+      insuranceFundFee?: null
+    ): TokenPositionLiquidatedEventFilter;
   };
 
   estimateGas: {};

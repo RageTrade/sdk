@@ -56,15 +56,22 @@ export type LiquidationParamsStruct = {
   liquidationFeeFraction: BigNumberish;
   tokenLiquidationPriceDeltaBps: BigNumberish;
   insuranceFundFeeShareBps: BigNumberish;
+  maxRangeLiquidationFees: BigNumberish;
 };
 
-export type LiquidationParamsStructOutput = [number, number, number] & {
+export type LiquidationParamsStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber
+] & {
   liquidationFeeFraction: number;
   tokenLiquidationPriceDeltaBps: number;
   insuranceFundFeeShareBps: number;
+  maxRangeLiquidationFees: BigNumber;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -73,7 +80,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -89,20 +96,23 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type RageTradePoolStruct = {
+export type PoolStruct = {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
+  settings: PoolSettingsStruct;
 };
 
-export type RageTradePoolStructOutput = [
+export type PoolStructOutput = [
   string,
   string,
-  RageTradePoolSettingsStructOutput
+  string,
+  PoolSettingsStructOutput
 ] & {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
+  settings: PoolSettingsStructOutput;
 };
 
 export interface AccountTestInterface extends ethers.utils.Interface {
@@ -126,10 +136,10 @@ export interface AccountTestInterface extends ethers.utils.Interface {
     'liquidityChange(uint256,address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,address,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,address,uint256)': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256,address)': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256,address)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'swapTokenAmount(uint256,address,int256)': FunctionFragment;
     'swapTokenNotional(uint256,address,int256)': FunctionFragment;
@@ -205,7 +215,7 @@ export interface AccountTestInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: 'protocol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
@@ -371,19 +381,19 @@ export interface AccountTest extends BaseContract {
 
   functions: {
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     cleanDeposits(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     cleanPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -394,13 +404,13 @@ export interface AccountTest extends BaseContract {
     fixFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getAccountDepositBalance(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     getAccountLiquidityPositionDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       num: BigNumberish,
       overrides?: CallOverrides
@@ -429,18 +439,18 @@ export interface AccountTest extends BaseContract {
     >;
 
     getAccountLiquidityPositionNum(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<[number] & { num: number }>;
 
     getAccountProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { profit: BigNumber }>;
 
     getAccountTokenDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -452,7 +462,7 @@ export interface AccountTest extends BaseContract {
     >;
 
     getAccountValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<
@@ -475,8 +485,8 @@ export interface AccountTest extends BaseContract {
     >;
 
     initCollateral(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -487,19 +497,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     liquidateTokenPosition(
-      accountNo: BigNumberish,
-      liquidatorAccountNo: BigNumberish,
+      accountId: BigNumberish,
+      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     liquidityChange(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -519,7 +529,7 @@ export interface AccountTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -528,13 +538,12 @@ export interface AccountTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -543,19 +552,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     setAccountStorage(
-      _liquidationParams: LiquidationParamsStruct,
-      _minRequiredMargin: BigNumberish,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _fixFee: BigNumberish,
-      _rBase: string,
+      liquidationParams: LiquidationParamsStruct,
+      minRequiredMargin: BigNumberish,
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      fixFee_: BigNumberish,
+      cBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -565,40 +574,40 @@ export interface AccountTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     swapTokenAmount(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     swapTokenNotional(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
   addMargin(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     realTokenAddress: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   cleanDeposits(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   cleanPositions(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -609,13 +618,13 @@ export interface AccountTest extends BaseContract {
   fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
   getAccountDepositBalance(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getAccountLiquidityPositionDetails(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     num: BigNumberish,
     overrides?: CallOverrides
@@ -644,18 +653,18 @@ export interface AccountTest extends BaseContract {
   >;
 
   getAccountLiquidityPositionNum(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     overrides?: CallOverrides
   ): Promise<number>;
 
   getAccountProfit(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getAccountTokenDetails(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     overrides?: CallOverrides
   ): Promise<
@@ -667,7 +676,7 @@ export interface AccountTest extends BaseContract {
   >;
 
   getAccountValueAndRequiredMargin(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     isInitialMargin: boolean,
     overrides?: CallOverrides
   ): Promise<
@@ -690,8 +699,8 @@ export interface AccountTest extends BaseContract {
   >;
 
   initCollateral(
-    cTokenAddress: string,
-    oracleAddress: string,
+    cToken: string,
+    oracle: string,
     twapDuration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -702,19 +711,19 @@ export interface AccountTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   liquidateLiquidityPositions(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   liquidateTokenPosition(
-    accountNo: BigNumberish,
-    liquidatorAccountNo: BigNumberish,
+    accountId: BigNumberish,
+    liquidatorAccountId: BigNumberish,
     vToken: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   liquidityChange(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     liquidityChangeParams: LiquidityChangeParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -734,7 +743,7 @@ export interface AccountTest extends BaseContract {
       BigNumber
     ] & {
       vBase: string;
-      rBase: string;
+      cBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -743,13 +752,12 @@ export interface AccountTest extends BaseContract {
   >;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   removeLimitOrder(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
@@ -758,19 +766,19 @@ export interface AccountTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   removeMargin(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     realTokenAddress: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   setAccountStorage(
-    _liquidationParams: LiquidationParamsStruct,
-    _minRequiredMargin: BigNumberish,
-    _removeLimitOrderFee: BigNumberish,
-    _minimumOrderNotional: BigNumberish,
-    _fixFee: BigNumberish,
-    _rBase: string,
+    liquidationParams: LiquidationParamsStruct,
+    minRequiredMargin: BigNumberish,
+    removeLimitOrderFee: BigNumberish,
+    minimumOrderNotional: BigNumberish,
+    fixFee_: BigNumberish,
+    cBase: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -780,40 +788,40 @@ export interface AccountTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   swapTokenAmount(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   swapTokenNotional(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     vToken: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateProfit(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     cleanDeposits(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     cleanPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -822,13 +830,13 @@ export interface AccountTest extends BaseContract {
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAccountDepositBalance(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountLiquidityPositionDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       num: BigNumberish,
       overrides?: CallOverrides
@@ -857,18 +865,18 @@ export interface AccountTest extends BaseContract {
     >;
 
     getAccountLiquidityPositionNum(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<number>;
 
     getAccountProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountTokenDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -880,7 +888,7 @@ export interface AccountTest extends BaseContract {
     >;
 
     getAccountValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<
@@ -903,8 +911,8 @@ export interface AccountTest extends BaseContract {
     >;
 
     initCollateral(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -912,7 +920,7 @@ export interface AccountTest extends BaseContract {
     initToken(vToken: string, overrides?: CallOverrides): Promise<void>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -922,14 +930,14 @@ export interface AccountTest extends BaseContract {
     >;
 
     liquidateTokenPosition(
-      accountNo: BigNumberish,
-      liquidatorAccountNo: BigNumberish,
+      accountId: BigNumberish,
+      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     liquidityChange(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: CallOverrides
@@ -949,7 +957,7 @@ export interface AccountTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -958,13 +966,12 @@ export interface AccountTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -973,40 +980,40 @@ export interface AccountTest extends BaseContract {
     ): Promise<void>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setAccountStorage(
-      _liquidationParams: LiquidationParamsStruct,
-      _minRequiredMargin: BigNumberish,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _fixFee: BigNumberish,
-      _rBase: string,
+      liquidationParams: LiquidationParamsStruct,
+      minRequiredMargin: BigNumberish,
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      fixFee_: BigNumberish,
+      cBase: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setVBaseAddress(_vBase: string, overrides?: CallOverrides): Promise<void>;
 
     swapTokenAmount(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     swapTokenNotional(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1016,19 +1023,19 @@ export interface AccountTest extends BaseContract {
 
   estimateGas: {
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     cleanDeposits(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     cleanPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1039,37 +1046,37 @@ export interface AccountTest extends BaseContract {
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAccountDepositBalance(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountLiquidityPositionDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       num: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountLiquidityPositionNum(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountTokenDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1081,8 +1088,8 @@ export interface AccountTest extends BaseContract {
     ): Promise<BigNumber>;
 
     initCollateral(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1093,19 +1100,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidateTokenPosition(
-      accountNo: BigNumberish,
-      liquidatorAccountNo: BigNumberish,
+      accountId: BigNumberish,
+      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidityChange(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1116,13 +1123,12 @@ export interface AccountTest extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -1131,19 +1137,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<BigNumber>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setAccountStorage(
-      _liquidationParams: LiquidationParamsStruct,
-      _minRequiredMargin: BigNumberish,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _fixFee: BigNumberish,
-      _rBase: string,
+      liquidationParams: LiquidationParamsStruct,
+      minRequiredMargin: BigNumberish,
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      fixFee_: BigNumberish,
+      cBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1153,21 +1159,21 @@ export interface AccountTest extends BaseContract {
     ): Promise<BigNumber>;
 
     swapTokenAmount(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     swapTokenNotional(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1175,19 +1181,19 @@ export interface AccountTest extends BaseContract {
 
   populateTransaction: {
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     cleanDeposits(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     cleanPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1198,37 +1204,37 @@ export interface AccountTest extends BaseContract {
     fixFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getAccountDepositBalance(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountLiquidityPositionDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       num: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountLiquidityPositionNum(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountTokenDetails(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1240,8 +1246,8 @@ export interface AccountTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initCollateral(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1252,19 +1258,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateTokenPosition(
-      accountNo: BigNumberish,
-      liquidatorAccountNo: BigNumberish,
+      accountId: BigNumberish,
+      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidityChange(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1275,13 +1281,12 @@ export interface AccountTest extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -1290,19 +1295,19 @@ export interface AccountTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       realTokenAddress: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setAccountStorage(
-      _liquidationParams: LiquidationParamsStruct,
-      _minRequiredMargin: BigNumberish,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _fixFee: BigNumberish,
-      _rBase: string,
+      liquidationParams: LiquidationParamsStruct,
+      minRequiredMargin: BigNumberish,
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      fixFee_: BigNumberish,
+      cBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1312,21 +1317,21 @@ export interface AccountTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     swapTokenAmount(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     swapTokenNotional(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       vToken: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

@@ -169,6 +169,30 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IMulticall__factory>;
     getContractFactory(
+      name: 'IClearingHouseActions',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseActions__factory>;
+    getContractFactory(
+      name: 'IClearingHouseCustomErrors',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseCustomErrors__factory>;
+    getContractFactory(
+      name: 'IClearingHouseEvents',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseEvents__factory>;
+    getContractFactory(
+      name: 'IClearingHouseOwnerActions',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseOwnerActions__factory>;
+    getContractFactory(
+      name: 'IClearingHouseSystemActions',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseSystemActions__factory>;
+    getContractFactory(
+      name: 'IClearingHouseView',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IClearingHouseView__factory>;
+    getContractFactory(
       name: 'IClearingHouse',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IClearingHouse__factory>;
@@ -209,6 +233,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Calldata__factory>;
     getContractFactory(
+      name: 'FundingPayment',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FundingPayment__factory>;
+    getContractFactory(
       name: 'LiquidityPosition',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.LiquidityPosition__factory>;
@@ -220,6 +248,10 @@ declare module 'hardhat/types/runtime' {
       name: 'PriceMath',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PriceMath__factory>;
+    getContractFactory(
+      name: 'SafeCast',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SafeCast__factory>;
     getContractFactory(
       name: 'Uint32L8ArrayLib',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -416,14 +448,6 @@ declare module 'hardhat/types/runtime' {
       name: 'Uint48Test',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Uint48Test__factory>;
-    getContractFactory(
-      name: 'UtilsTest',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UtilsTest__factory>;
-    getContractFactory(
-      name: 'VTokenLibTest',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.VTokenLibTest__factory>;
     getContractFactory(
       name: 'VTokenPositionSetTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -669,6 +693,36 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.IMulticall>;
     getContractAt(
+      name: 'IClearingHouseActions',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseActions>;
+    getContractAt(
+      name: 'IClearingHouseCustomErrors',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseCustomErrors>;
+    getContractAt(
+      name: 'IClearingHouseEvents',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseEvents>;
+    getContractAt(
+      name: 'IClearingHouseOwnerActions',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseOwnerActions>;
+    getContractAt(
+      name: 'IClearingHouseSystemActions',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseSystemActions>;
+    getContractAt(
+      name: 'IClearingHouseView',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IClearingHouseView>;
+    getContractAt(
       name: 'IClearingHouse',
       address: string,
       signer?: ethers.Signer
@@ -719,6 +773,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.Calldata>;
     getContractAt(
+      name: 'FundingPayment',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FundingPayment>;
+    getContractAt(
       name: 'LiquidityPosition',
       address: string,
       signer?: ethers.Signer
@@ -733,6 +792,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.PriceMath>;
+    getContractAt(
+      name: 'SafeCast',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SafeCast>;
     getContractAt(
       name: 'Uint32L8ArrayLib',
       address: string,
@@ -978,16 +1042,6 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Uint48Test>;
-    getContractAt(
-      name: 'UtilsTest',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.UtilsTest>;
-    getContractAt(
-      name: 'VTokenLibTest',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.VTokenLibTest>;
     getContractAt(
       name: 'VTokenPositionSetTest',
       address: string,

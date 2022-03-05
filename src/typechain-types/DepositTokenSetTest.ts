@@ -28,15 +28,22 @@ export type LiquidationParamsStruct = {
   liquidationFeeFraction: BigNumberish;
   tokenLiquidationPriceDeltaBps: BigNumberish;
   insuranceFundFeeShareBps: BigNumberish;
+  maxRangeLiquidationFees: BigNumberish;
 };
 
-export type LiquidationParamsStructOutput = [number, number, number] & {
+export type LiquidationParamsStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber
+] & {
   liquidationFeeFraction: number;
   tokenLiquidationPriceDeltaBps: number;
   insuranceFundFeeShareBps: number;
+  maxRangeLiquidationFees: BigNumber;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -45,7 +52,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -61,20 +68,23 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type RageTradePoolStruct = {
+export type PoolStruct = {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
+  settings: PoolSettingsStruct;
 };
 
-export type RageTradePoolStructOutput = [
+export type PoolStructOutput = [
   string,
   string,
-  RageTradePoolSettingsStructOutput
+  string,
+  PoolSettingsStructOutput
 ] & {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
+  settings: PoolSettingsStructOutput;
 };
 
 export interface DepositTokenSetTestInterface extends ethers.utils.Interface {
@@ -88,8 +98,8 @@ export interface DepositTokenSetTestInterface extends ethers.utils.Interface {
     'init(address,address,uint32)': FunctionFragment;
     'initVToken(address)': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
     'wrapper()': FunctionFragment;
   };
@@ -120,7 +130,7 @@ export interface DepositTokenSetTestInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: 'protocol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAccountStorage',
@@ -231,8 +241,8 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     init(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -254,7 +264,7 @@ export interface DepositTokenSetTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -263,8 +273,7 @@ export interface DepositTokenSetTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -313,8 +322,8 @@ export interface DepositTokenSetTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   init(
-    cTokenAddress: string,
-    oracleAddress: string,
+    cToken: string,
+    oracle: string,
     twapDuration: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -336,7 +345,7 @@ export interface DepositTokenSetTest extends BaseContract {
       BigNumber
     ] & {
       vBase: string;
-      rBase: string;
+      cBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -345,8 +354,7 @@ export interface DepositTokenSetTest extends BaseContract {
   >;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -393,8 +401,8 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<void>;
 
     init(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -413,7 +421,7 @@ export interface DepositTokenSetTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -422,8 +430,7 @@ export interface DepositTokenSetTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -472,8 +479,8 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<BigNumber>;
 
     init(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -486,8 +493,7 @@ export interface DepositTokenSetTest extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -537,8 +543,8 @@ export interface DepositTokenSetTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     init(
-      cTokenAddress: string,
-      oracleAddress: string,
+      cToken: string,
+      oracle: string,
       twapDuration: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -551,8 +557,7 @@ export interface DepositTokenSetTest extends BaseContract {
     protocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

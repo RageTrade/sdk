@@ -69,8 +69,9 @@ export declare namespace IVPoolWrapper {
 export interface ETHVPoolWrapperInterface extends utils.Interface {
   contractName: 'ETHVPoolWrapper';
   functions: {
-    '__VPoolWrapper_init((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
     'accruedProtocolFee()': FunctionFragment;
+    'burn(int24,int24,uint128)': FunctionFragment;
     'clearingHouse()': FunctionFragment;
     'collectAccruedProtocolFee()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
@@ -79,8 +80,8 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
-    'liquidityChange(int24,int24,int128)': FunctionFragment;
     'liquidityFeePips()': FunctionFragment;
+    'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
     'setLiquidityFee(uint24)': FunctionFragment;
     'setProtocolFee(uint24)': FunctionFragment;
@@ -98,12 +99,16 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: '__VPoolWrapper_init',
+    functionFragment: '__initialize_VPoolWrapper',
     values: [IVPoolWrapper.InitializeVPoolWrapperParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'accruedProtocolFee',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'burn',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'clearingHouse',
@@ -132,12 +137,12 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'liquidityChange',
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'liquidityFeePips',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'mint',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'protocolFeePips',
@@ -188,13 +193,14 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'vToken', values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: '__VPoolWrapper_init',
+    functionFragment: '__initialize_VPoolWrapper',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'accruedProtocolFee',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'burn', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'clearingHouse',
     data: BytesLike
@@ -222,13 +228,10 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'liquidityChange',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'liquidityFeePips',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'protocolFeePips',
     data: BytesLike
@@ -272,11 +275,70 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'vToken', data: BytesLike): Result;
 
   events: {
+    'AccruedProtocolFeeCollected(uint256)': EventFragment;
+    'Burn(int24,int24,uint128,uint256,uint256)': EventFragment;
+    'LiquidityFeeUpdated(uint24)': EventFragment;
+    'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
+    'ProtocolFeeUpdated(uint24)': EventFragment;
     'Swap(int256,int256,uint256,uint256)': EventFragment;
   };
 
+  getEvent(
+    nameOrSignatureOrTopic: 'AccruedProtocolFeeCollected'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'LiquidityFeeUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Swap'): EventFragment;
 }
+
+export type AccruedProtocolFeeCollectedEvent = TypedEvent<
+  [BigNumber],
+  { amount: BigNumber }
+>;
+
+export type AccruedProtocolFeeCollectedEventFilter = TypedEventFilter<AccruedProtocolFeeCollectedEvent>;
+
+export type BurnEvent = TypedEvent<
+  [number, number, BigNumber, BigNumber, BigNumber],
+  {
+    tickLower: number;
+    tickUpper: number;
+    liquidity: BigNumber;
+    vTokenPrincipal: BigNumber;
+    basePrincipal: BigNumber;
+  }
+>;
+
+export type BurnEventFilter = TypedEventFilter<BurnEvent>;
+
+export type LiquidityFeeUpdatedEvent = TypedEvent<
+  [number],
+  { liquidityFeePips: number }
+>;
+
+export type LiquidityFeeUpdatedEventFilter = TypedEventFilter<LiquidityFeeUpdatedEvent>;
+
+export type MintEvent = TypedEvent<
+  [number, number, BigNumber, BigNumber, BigNumber],
+  {
+    tickLower: number;
+    tickUpper: number;
+    liquidity: BigNumber;
+    vTokenPrincipal: BigNumber;
+    basePrincipal: BigNumber;
+  }
+>;
+
+export type MintEventFilter = TypedEventFilter<MintEvent>;
+
+export type ProtocolFeeUpdatedEvent = TypedEvent<
+  [number],
+  { protocolFeePips: number }
+>;
+
+export type ProtocolFeeUpdatedEventFilter = TypedEventFilter<ProtocolFeeUpdatedEvent>;
 
 export type SwapEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, BigNumber],
@@ -318,12 +380,19 @@ export interface ETHVPoolWrapper extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     accruedProtocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     clearingHouse(overrides?: CallOverrides): Promise<[string]>;
 
@@ -376,14 +445,14 @@ export interface ETHVPoolWrapper extends BaseContract {
       }
     >;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      liquidityDelta: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
 
@@ -452,12 +521,19 @@ export interface ETHVPoolWrapper extends BaseContract {
     vToken(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  __VPoolWrapper_init(
+  __initialize_VPoolWrapper(
     params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  burn(
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   clearingHouse(overrides?: CallOverrides): Promise<string>;
 
@@ -502,14 +578,14 @@ export interface ETHVPoolWrapper extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
-  liquidityChange(
+  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+  mint(
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
-    liquidityDelta: BigNumberish,
+    liquidity: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
   protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -578,12 +654,25 @@ export interface ETHVPoolWrapper extends BaseContract {
   vToken(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: BigNumber;
+        basePrincipal: BigNumber;
+        wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
+      }
+    >;
 
     clearingHouse(overrides?: CallOverrides): Promise<string>;
 
@@ -626,20 +715,20 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      liquidityDelta: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
-        basePrincipal: BigNumber;
         vTokenPrincipal: BigNumber;
+        basePrincipal: BigNumber;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
     >;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -712,6 +801,55 @@ export interface ETHVPoolWrapper extends BaseContract {
   };
 
   filters: {
+    'AccruedProtocolFeeCollected(uint256)'(
+      amount?: null
+    ): AccruedProtocolFeeCollectedEventFilter;
+    AccruedProtocolFeeCollected(
+      amount?: null
+    ): AccruedProtocolFeeCollectedEventFilter;
+
+    'Burn(int24,int24,uint128,uint256,uint256)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): BurnEventFilter;
+    Burn(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): BurnEventFilter;
+
+    'LiquidityFeeUpdated(uint24)'(
+      liquidityFeePips?: null
+    ): LiquidityFeeUpdatedEventFilter;
+    LiquidityFeeUpdated(
+      liquidityFeePips?: null
+    ): LiquidityFeeUpdatedEventFilter;
+
+    'Mint(int24,int24,uint128,uint256,uint256)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): MintEventFilter;
+    Mint(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null,
+      vTokenPrincipal?: null,
+      basePrincipal?: null
+    ): MintEventFilter;
+
+    'ProtocolFeeUpdated(uint24)'(
+      protocolFeePips?: null
+    ): ProtocolFeeUpdatedEventFilter;
+    ProtocolFeeUpdated(protocolFeePips?: null): ProtocolFeeUpdatedEventFilter;
+
     'Swap(int256,int256,uint256,uint256)'(
       vTokenIn?: null,
       vBaseIn?: null,
@@ -727,12 +865,19 @@ export interface ETHVPoolWrapper extends BaseContract {
   };
 
   estimateGas: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -768,14 +913,14 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      liquidityDelta: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -838,13 +983,20 @@ export interface ETHVPoolWrapper extends BaseContract {
   };
 
   populateTransaction: {
-    __VPoolWrapper_init(
+    __initialize_VPoolWrapper(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     accruedProtocolFee(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    burn(
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish,
+      liquidity: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -883,14 +1035,14 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    liquidityChange(
+    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    mint(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      liquidityDelta: BigNumberish,
+      liquidity: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

@@ -25,7 +25,19 @@ import type {
   OnEvent,
 } from './common';
 
-export type RageTradePoolSettingsStruct = {
+export type CollateralSettingsStruct = {
+  oracle: string;
+  twapDuration: BigNumberish;
+  supported: boolean;
+};
+
+export type CollateralSettingsStructOutput = [string, number, boolean] & {
+  oracle: string;
+  twapDuration: number;
+  supported: boolean;
+};
+
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -34,7 +46,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -50,18 +62,23 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type CTokenStruct = {
-  tokenAddress: string;
-  oracleAddress: string;
-  oracleTimeHorizon: BigNumberish;
-  supported: boolean;
+export type LiquidationParamsStruct = {
+  liquidationFeeFraction: BigNumberish;
+  tokenLiquidationPriceDeltaBps: BigNumberish;
+  insuranceFundFeeShareBps: BigNumberish;
+  maxRangeLiquidationFees: BigNumberish;
 };
 
-export type CTokenStructOutput = [string, string, number, boolean] & {
-  tokenAddress: string;
-  oracleAddress: string;
-  oracleTimeHorizon: number;
-  supported: boolean;
+export type LiquidationParamsStructOutput = [
+  number,
+  number,
+  number,
+  BigNumber
+] & {
+  liquidationFeeFraction: number;
+  tokenLiquidationPriceDeltaBps: number;
+  insuranceFundFeeShareBps: number;
+  maxRangeLiquidationFees: BigNumber;
 };
 
 export type DepositTokenViewStruct = {
@@ -130,6 +147,35 @@ export type VTokenPositionViewStructOutput = [
   liquidityPositions: LiquidityPositionViewStructOutput[];
 };
 
+export type CollateralStruct = {
+  token: string;
+  settings: CollateralSettingsStruct;
+};
+
+export type CollateralStructOutput = [
+  string,
+  CollateralSettingsStructOutput
+] & { token: string; settings: CollateralSettingsStructOutput };
+
+export type PoolStruct = {
+  vToken: string;
+  vPool: string;
+  vPoolWrapper: string;
+  settings: PoolSettingsStruct;
+};
+
+export type PoolStructOutput = [
+  string,
+  string,
+  string,
+  PoolSettingsStructOutput
+] & {
+  vToken: string;
+  vPool: string;
+  vPoolWrapper: string;
+  settings: PoolSettingsStructOutput;
+};
+
 export type BalanceAdjustmentsStruct = {
   vBaseIncrease: BigNumberish;
   vTokenIncrease: BigNumberish;
@@ -154,34 +200,6 @@ export type MulticallOperationStruct = {
 export type MulticallOperationStructOutput = [number, string] & {
   operationType: number;
   data: string;
-};
-
-export type RageTradePoolStruct = {
-  vPool: string;
-  vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
-};
-
-export type RageTradePoolStructOutput = [
-  string,
-  string,
-  RageTradePoolSettingsStructOutput
-] & {
-  vPool: string;
-  vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
-};
-
-export type LiquidationParamsStruct = {
-  liquidationFeeFraction: BigNumberish;
-  tokenLiquidationPriceDeltaBps: BigNumberish;
-  insuranceFundFeeShareBps: BigNumberish;
-};
-
-export type LiquidationParamsStructOutput = [number, number, number] & {
-  liquidationFeeFraction: number;
-  tokenLiquidationPriceDeltaBps: number;
-  insuranceFundFeeShareBps: number;
 };
 
 export type SwapParamsStruct = {
@@ -233,16 +251,17 @@ export type LiquidityChangeParamsStructOutput = [
 
 export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   functions: {
-    '__ClearingHouse_init(address,address,address,address,address,address)': FunctionFragment;
-    'addCollateralSupport(address,address,uint32)': FunctionFragment;
+    '__initialize_ClearingHouse(address,address,address,address,address,address)': FunctionFragment;
     'addMargin(uint256,uint32,uint256)': FunctionFragment;
-    'cTokens(uint32)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
+    'getAccountInfo(uint256)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
-    'getAccountView(uint256)': FunctionFragment;
+    'getCollateralInfo(uint32)': FunctionFragment;
+    'getNetTokenPosition(uint256,uint32)': FunctionFragment;
+    'getPoolInfo(uint32)': FunctionFragment;
     'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
     'governance()': FunctionFragment;
     'insuranceFund()': FunctionFragment;
@@ -256,47 +275,34 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     'nativeOracle()': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'paused()': FunctionFragment;
-    'pools(address)': FunctionFragment;
     'protocolInfo()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
     'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,uint32,uint256)': FunctionFragment;
     'setPaused(bool)': FunctionFragment;
-    'setPlatformParameters((uint16,uint16,uint16),uint256,uint256,uint256)': FunctionFragment;
     'setTxGasPriceLimit(uint256)': FunctionFragment;
-    'supportedDeposits(address)': FunctionFragment;
-    'supportedVTokens(address)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
     'txGasPriceLimit()': FunctionFragment;
+    'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
+    'updatePoolSettings(uint32,(uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
-    'updateRageTradePoolSettings(address,(uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
+    'updateProtocolSettings((uint16,uint16,uint16,uint128),uint256,uint256,uint256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
-    'updateSupportedDeposits(address,bool)': FunctionFragment;
-    'updateSupportedVTokens(address,bool)': FunctionFragment;
-    'vTokens(uint32)': FunctionFragment;
     'withdrawProtocolFee(address[])': FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: '__ClearingHouse_init',
+    functionFragment: '__initialize_ClearingHouse',
     values: [string, string, string, string, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'addCollateralSupport',
-    values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'addMargin',
     values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'cTokens',
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
@@ -308,6 +314,10 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'extsload', values: [BytesLike]): string;
   encodeFunctionData(
+    functionFragment: 'getAccountInfo',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
     values: [BigNumberish, boolean]
   ): string;
@@ -316,7 +326,15 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAccountView',
+    functionFragment: 'getCollateralInfo',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getNetTokenPosition',
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getPoolInfo',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -374,7 +392,6 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'pools', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'protocolInfo',
     values?: undefined
@@ -385,7 +402,7 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
@@ -407,20 +424,8 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'setPaused', values: [boolean]): string;
   encodeFunctionData(
-    functionFragment: 'setPlatformParameters',
-    values: [LiquidationParamsStruct, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'setTxGasPriceLimit',
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'supportedDeposits',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'supportedVTokens',
-    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -443,28 +448,24 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'updateCollateralSettings',
+    values: [string, CollateralSettingsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updatePoolSettings',
+    values: [BigNumberish, PoolSettingsStruct]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'updateProfit',
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'updateRageTradePoolSettings',
-    values: [string, RageTradePoolSettingsStruct]
+    functionFragment: 'updateProtocolSettings',
+    values: [LiquidationParamsStruct, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateRangeOrder',
     values: [BigNumberish, BigNumberish, LiquidityChangeParamsStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'updateSupportedDeposits',
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'updateSupportedVTokens',
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'vTokens',
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
@@ -472,15 +473,10 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: '__ClearingHouse_init',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'addCollateralSupport',
+    functionFragment: '__initialize_ClearingHouse',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'cTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
@@ -491,6 +487,10 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'extsload', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'getAccountInfo',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
     data: BytesLike
   ): Result;
@@ -499,7 +499,15 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAccountView',
+    functionFragment: 'getCollateralInfo',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getNetTokenPosition',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPoolInfo',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -545,7 +553,6 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'paused', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'pools', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'protocolInfo',
     data: BytesLike
@@ -572,19 +579,7 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'setPaused', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'setPlatformParameters',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'setTxGasPriceLimit',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'supportedDeposits',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'supportedVTokens',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -605,11 +600,19 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'updateCollateralSettings',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updatePoolSettings',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'updateProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'updateRageTradePoolSettings',
+    functionFragment: 'updateProtocolSettings',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -617,35 +620,46 @@ export interface ClearingHouseEthereumInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'updateSupportedDeposits',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'updateSupportedVTokens',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: 'vTokens', data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: 'withdrawProtocolFee',
     data: BytesLike
   ): Result;
 
   events: {
+    'AccountCreated(address,uint256)': EventFragment;
+    'CollateralSettingsUpdated(address,tuple)': EventFragment;
     'GovernanceTransferred(address,address)': EventFragment;
-    'NewCollateralSupported(address)': EventFragment;
-    'NewVTokenSupported(address)': EventFragment;
-    'RageTradePoolSettingsUpdated(address,tuple)': EventFragment;
+    'MarginAdded(uint256,uint32,uint256)': EventFragment;
+    'MarginRemoved(uint256,uint32,uint256)': EventFragment;
+    'PausedUpdated(bool)': EventFragment;
+    'PoolSettingsUpdated(uint32,tuple)': EventFragment;
+    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': EventFragment;
     'TeamMultisigTransferred(address,address)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'NewCollateralSupported'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'NewVTokenSupported'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'RageTradePoolSettingsUpdated'
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'MarginAdded'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'MarginRemoved'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ProtocolSettingsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
 }
+
+export type AccountCreatedEvent = TypedEvent<
+  [string, BigNumber],
+  { ownerAddress: string; accountId: BigNumber }
+>;
+
+export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
+
+export type CollateralSettingsUpdatedEvent = TypedEvent<
+  [string, CollateralSettingsStructOutput],
+  { cToken: string; cTokenInfo: CollateralSettingsStructOutput }
+>;
+
+export type CollateralSettingsUpdatedEventFilter = TypedEventFilter<CollateralSettingsUpdatedEvent>;
 
 export type GovernanceTransferredEvent = TypedEvent<
   [string, string],
@@ -654,23 +668,42 @@ export type GovernanceTransferredEvent = TypedEvent<
 
 export type GovernanceTransferredEventFilter = TypedEventFilter<GovernanceTransferredEvent>;
 
-export type NewCollateralSupportedEvent = TypedEvent<
-  [string],
-  { rTokenAddress: string }
+export type MarginAddedEvent = TypedEvent<
+  [BigNumber, number, BigNumber],
+  { accountId: BigNumber; collateralId: number; amount: BigNumber }
 >;
 
-export type NewCollateralSupportedEventFilter = TypedEventFilter<NewCollateralSupportedEvent>;
+export type MarginAddedEventFilter = TypedEventFilter<MarginAddedEvent>;
 
-export type NewVTokenSupportedEvent = TypedEvent<[string], { vToken: string }>;
-
-export type NewVTokenSupportedEventFilter = TypedEventFilter<NewVTokenSupportedEvent>;
-
-export type RageTradePoolSettingsUpdatedEvent = TypedEvent<
-  [string, RageTradePoolSettingsStructOutput],
-  { vToken: string; settings: RageTradePoolSettingsStructOutput }
+export type MarginRemovedEvent = TypedEvent<
+  [BigNumber, number, BigNumber],
+  { accountId: BigNumber; collateralId: number; amount: BigNumber }
 >;
 
-export type RageTradePoolSettingsUpdatedEventFilter = TypedEventFilter<RageTradePoolSettingsUpdatedEvent>;
+export type MarginRemovedEventFilter = TypedEventFilter<MarginRemovedEvent>;
+
+export type PausedUpdatedEvent = TypedEvent<[boolean], { paused: boolean }>;
+
+export type PausedUpdatedEventFilter = TypedEventFilter<PausedUpdatedEvent>;
+
+export type PoolSettingsUpdatedEvent = TypedEvent<
+  [number, PoolSettingsStructOutput],
+  { poolId: number; settings: PoolSettingsStructOutput }
+>;
+
+export type PoolSettingsUpdatedEventFilter = TypedEventFilter<PoolSettingsUpdatedEvent>;
+
+export type ProtocolSettingsUpdatedEvent = TypedEvent<
+  [LiquidationParamsStructOutput, BigNumber, BigNumber, BigNumber],
+  {
+    liquidationParams: LiquidationParamsStructOutput;
+    removeLimitOrderFee: BigNumber;
+    minimumOrderNotional: BigNumber;
+    minRequiredMargin: BigNumber;
+  }
+>;
+
+export type ProtocolSettingsUpdatedEventFilter = TypedEventFilter<ProtocolSettingsUpdatedEvent>;
 
 export type TeamMultisigTransferredEvent = TypedEvent<
   [string, string],
@@ -706,7 +739,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __ClearingHouse_init(
+    __initialize_ClearingHouse(
       _rageTradeFactoryAddress: string,
       _defaultCollateralToken: string,
       _defaultCollateralTokenOracle: string,
@@ -716,31 +749,19 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    addCollateralSupport(
-      cToken: string,
-      oracle: string,
-      twapDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    cTokens(
-      cTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[CTokenStructOutput]>;
 
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     createAccountAndAddMargin(
-      vTokenTruncatedAddress: BigNumberish,
+      poolId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -755,24 +776,8 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
-    getAccountMarketValueAndRequiredMargin(
-      accountNo: BigNumberish,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
-        requiredMargin: BigNumber;
-      }
-    >;
-
-    getAccountNetProfit(
-      accountNo: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
-
-    getAccountView(
-      accountNo: BigNumberish,
+    getAccountInfo(
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -787,6 +792,38 @@ export interface ClearingHouseEthereum extends BaseContract {
         tokenPositions: VTokenPositionViewStructOutput[];
       }
     >;
+
+    getAccountMarketValueAndRequiredMargin(
+      accountId: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountNetProfit(
+      accountId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[CollateralStructOutput]>;
+
+    getNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { netPosition: BigNumber }>;
+
+    getPoolInfo(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[PoolStructOutput]>;
 
     getTwapSqrtPricesForSetDuration(
       vToken: string,
@@ -803,33 +840,33 @@ export interface ClearingHouseEthereum extends BaseContract {
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
 
     isVTokenAddressAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     liquidateLiquidityPositionsWithGasClaim(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     liquidateTokenPosition(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     liquidateTokenPositionWithGasClaim(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -841,7 +878,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<ContractTransaction>;
 
     multicallWithSingleMarginCheck(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       operations: MulticallOperationStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -851,11 +888,6 @@ export interface ClearingHouseEthereum extends BaseContract {
     numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
-
-    pools(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<[RageTradePoolStructOutput]>;
 
     protocolInfo(
       overrides?: CallOverrides
@@ -878,22 +910,21 @@ export interface ClearingHouseEthereum extends BaseContract {
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     removeLimitOrderWithGasClaim(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
@@ -901,7 +932,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<ContractTransaction>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -912,32 +943,14 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setPlatformParameters(
-      _liquidationParams: LiquidationParamsStruct,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setTxGasPriceLimit(
       _txGasPriceLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    supportedDeposits(
-      tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    supportedVTokens(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
     swapToken(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -956,41 +969,38 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     txGasPriceLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    updateCollateralSettings(
+      cToken: string,
+      collateralSettings: CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updatePoolSettings(
+      poolId: BigNumberish,
+      newSettings: PoolSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    updateRageTradePoolSettings(
-      vToken: string,
-      newSettings: RageTradePoolSettingsStruct,
+    updateProtocolSettings(
+      _liquidationParams: LiquidationParamsStruct,
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateRangeOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    updateSupportedDeposits(
-      tokenAddress: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    updateSupportedVTokens(
-      vToken: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    vTokens(
-      vTokenAddressTruncated: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     withdrawProtocolFee(
       wrapperAddresses: string[],
@@ -998,7 +1008,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  __ClearingHouse_init(
+  __initialize_ClearingHouse(
     _rageTradeFactoryAddress: string,
     _defaultCollateralToken: string,
     _defaultCollateralTokenOracle: string,
@@ -1008,31 +1018,19 @@ export interface ClearingHouseEthereum extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  addCollateralSupport(
-    cToken: string,
-    oracle: string,
-    twapDuration: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   addMargin(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     cTokenTruncatedAddress: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  cTokens(
-    cTokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<CTokenStructOutput>;
 
   createAccount(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   createAccountAndAddMargin(
-    vTokenTruncatedAddress: BigNumberish,
+    poolId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1047,24 +1045,8 @@ export interface ClearingHouseEthereum extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string[]>;
 
-  getAccountMarketValueAndRequiredMargin(
-    accountNo: BigNumberish,
-    isInitialMargin: boolean,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      accountMarketValue: BigNumber;
-      requiredMargin: BigNumber;
-    }
-  >;
-
-  getAccountNetProfit(
-    accountNo: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAccountView(
-    accountNo: BigNumberish,
+  getAccountInfo(
+    accountId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [
@@ -1079,6 +1061,38 @@ export interface ClearingHouseEthereum extends BaseContract {
       tokenPositions: VTokenPositionViewStructOutput[];
     }
   >;
+
+  getAccountMarketValueAndRequiredMargin(
+    accountId: BigNumberish,
+    isInitialMargin: boolean,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      accountMarketValue: BigNumber;
+      requiredMargin: BigNumber;
+    }
+  >;
+
+  getAccountNetProfit(
+    accountId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getCollateralInfo(
+    collateralId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<CollateralStructOutput>;
+
+  getNetTokenPosition(
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getPoolInfo(
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<PoolStructOutput>;
 
   getTwapSqrtPricesForSetDuration(
     vToken: string,
@@ -1095,33 +1109,33 @@ export interface ClearingHouseEthereum extends BaseContract {
   insuranceFund(overrides?: CallOverrides): Promise<string>;
 
   isVTokenAddressAvailable(
-    truncated: BigNumberish,
+    poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   liquidateLiquidityPositions(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   liquidateLiquidityPositionsWithGasClaim(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     gasComputationUnitsClaim: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   liquidateTokenPosition(
-    liquidatorAccountNo: BigNumberish,
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    liquidatorAccountId: BigNumberish,
+    targetAccountId: BigNumberish,
+    poolId: BigNumberish,
     liquidationBps: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   liquidateTokenPositionWithGasClaim(
-    liquidatorAccountNo: BigNumberish,
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    liquidatorAccountId: BigNumberish,
+    targetAccountId: BigNumberish,
+    poolId: BigNumberish,
     liquidationBps: BigNumberish,
     gasComputationUnitsClaim: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1133,7 +1147,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   ): Promise<ContractTransaction>;
 
   multicallWithSingleMarginCheck(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     operations: MulticallOperationStruct[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1143,11 +1157,6 @@ export interface ClearingHouseEthereum extends BaseContract {
   numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
-
-  pools(
-    vToken: string,
-    overrides?: CallOverrides
-  ): Promise<RageTradePoolStructOutput>;
 
   protocolInfo(
     overrides?: CallOverrides
@@ -1164,22 +1173,21 @@ export interface ClearingHouseEthereum extends BaseContract {
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   removeLimitOrder(
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    accountId: BigNumberish,
+    poolId: BigNumberish,
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   removeLimitOrderWithGasClaim(
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    accountId: BigNumberish,
+    poolId: BigNumberish,
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
     gasComputationUnitsClaim: BigNumberish,
@@ -1187,7 +1195,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   ): Promise<ContractTransaction>;
 
   removeMargin(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     cTokenTruncatedAddress: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1198,29 +1206,14 @@ export interface ClearingHouseEthereum extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setPlatformParameters(
-    _liquidationParams: LiquidationParamsStruct,
-    _removeLimitOrderFee: BigNumberish,
-    _minimumOrderNotional: BigNumberish,
-    _minRequiredMargin: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setTxGasPriceLimit(
     _txGasPriceLimit: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  supportedDeposits(
-    tokenAddress: string,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  supportedVTokens(vToken: string, overrides?: CallOverrides): Promise<boolean>;
-
   swapToken(
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    accountId: BigNumberish,
+    poolId: BigNumberish,
     swapParams: SwapParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1239,41 +1232,38 @@ export interface ClearingHouseEthereum extends BaseContract {
 
   txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+  updateCollateralSettings(
+    cToken: string,
+    collateralSettings: CollateralSettingsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updatePoolSettings(
+    poolId: BigNumberish,
+    newSettings: PoolSettingsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   updateProfit(
-    accountNo: BigNumberish,
+    accountId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateRageTradePoolSettings(
-    vToken: string,
-    newSettings: RageTradePoolSettingsStruct,
+  updateProtocolSettings(
+    _liquidationParams: LiquidationParamsStruct,
+    _removeLimitOrderFee: BigNumberish,
+    _minimumOrderNotional: BigNumberish,
+    _minRequiredMargin: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateRangeOrder(
-    accountNo: BigNumberish,
-    vTokenTruncatedAddress: BigNumberish,
+    accountId: BigNumberish,
+    poolId: BigNumberish,
     liquidityChangeParams: LiquidityChangeParamsStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  updateSupportedDeposits(
-    tokenAddress: string,
-    status: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  updateSupportedVTokens(
-    vToken: string,
-    status: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  vTokens(
-    vTokenAddressTruncated: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   withdrawProtocolFee(
     wrapperAddresses: string[],
@@ -1281,7 +1271,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __ClearingHouse_init(
+    __initialize_ClearingHouse(
       _rageTradeFactoryAddress: string,
       _defaultCollateralToken: string,
       _defaultCollateralTokenOracle: string,
@@ -1291,29 +1281,17 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    addCollateralSupport(
-      cToken: string,
-      oracle: string,
-      twapDuration: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    cTokens(
-      cTokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<CTokenStructOutput>;
-
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      vTokenTruncatedAddress: BigNumberish,
+      poolId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1328,24 +1306,8 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    getAccountMarketValueAndRequiredMargin(
-      accountNo: BigNumberish,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
-        requiredMargin: BigNumber;
-      }
-    >;
-
-    getAccountNetProfit(
-      accountNo: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountView(
-      accountNo: BigNumberish,
+    getAccountInfo(
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -1360,6 +1322,38 @@ export interface ClearingHouseEthereum extends BaseContract {
         tokenPositions: VTokenPositionViewStructOutput[];
       }
     >;
+
+    getAccountMarketValueAndRequiredMargin(
+      accountId: BigNumberish,
+      isInitialMargin: boolean,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        accountMarketValue: BigNumber;
+        requiredMargin: BigNumber;
+      }
+    >;
+
+    getAccountNetProfit(
+      accountId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<CollateralStructOutput>;
+
+    getNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPoolInfo(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PoolStructOutput>;
 
     getTwapSqrtPricesForSetDuration(
       vToken: string,
@@ -1376,33 +1370,33 @@ export interface ClearingHouseEthereum extends BaseContract {
     insuranceFund(overrides?: CallOverrides): Promise<string>;
 
     isVTokenAddressAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     liquidateLiquidityPositionsWithGasClaim(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     liquidateTokenPosition(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BalanceAdjustmentsStructOutput>;
 
     liquidateTokenPositionWithGasClaim(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: CallOverrides
@@ -1411,7 +1405,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
 
     multicallWithSingleMarginCheck(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       operations: MulticallOperationStruct[],
       overrides?: CallOverrides
     ): Promise<string[]>;
@@ -1421,11 +1415,6 @@ export interface ClearingHouseEthereum extends BaseContract {
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
-
-    pools(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<RageTradePoolStructOutput>;
 
     protocolInfo(
       overrides?: CallOverrides
@@ -1448,22 +1437,21 @@ export interface ClearingHouseEthereum extends BaseContract {
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     removeLimitOrderWithGasClaim(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
@@ -1471,7 +1459,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<BigNumber>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -1479,32 +1467,14 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     setPaused(_pause: boolean, overrides?: CallOverrides): Promise<void>;
 
-    setPlatformParameters(
-      _liquidationParams: LiquidationParamsStruct,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _minRequiredMargin: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setTxGasPriceLimit(
       _txGasPriceLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    supportedDeposits(
-      tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    supportedVTokens(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
     swapToken(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       swapParams: SwapParamsStruct,
       overrides?: CallOverrides
     ): Promise<
@@ -1528,21 +1498,35 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+    updateCollateralSettings(
+      cToken: string,
+      collateralSettings: CollateralSettingsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updatePoolSettings(
+      poolId: BigNumberish,
+      newSettings: PoolSettingsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateRageTradePoolSettings(
-      vToken: string,
-      newSettings: RageTradePoolSettingsStruct,
+    updateProtocolSettings(
+      _liquidationParams: LiquidationParamsStruct,
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateRangeOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: CallOverrides
     ): Promise<
@@ -1552,23 +1536,6 @@ export interface ClearingHouseEthereum extends BaseContract {
       }
     >;
 
-    updateSupportedDeposits(
-      tokenAddress: string,
-      status: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateSupportedVTokens(
-      vToken: string,
-      status: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    vTokens(
-      vTokenAddressTruncated: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     withdrawProtocolFee(
       wrapperAddresses: string[],
       overrides?: CallOverrides
@@ -1576,6 +1543,24 @@ export interface ClearingHouseEthereum extends BaseContract {
   };
 
   filters: {
+    'AccountCreated(address,uint256)'(
+      ownerAddress?: string | null,
+      accountId?: null
+    ): AccountCreatedEventFilter;
+    AccountCreated(
+      ownerAddress?: string | null,
+      accountId?: null
+    ): AccountCreatedEventFilter;
+
+    'CollateralSettingsUpdated(address,tuple)'(
+      cToken?: null,
+      cTokenInfo?: null
+    ): CollateralSettingsUpdatedEventFilter;
+    CollateralSettingsUpdated(
+      cToken?: null,
+      cTokenInfo?: null
+    ): CollateralSettingsUpdatedEventFilter;
+
     'GovernanceTransferred(address,address)'(
       previousGovernance?: string | null,
       newGovernance?: string | null
@@ -1585,24 +1570,52 @@ export interface ClearingHouseEthereum extends BaseContract {
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
 
-    'NewCollateralSupported(address)'(
-      rTokenAddress?: null
-    ): NewCollateralSupportedEventFilter;
-    NewCollateralSupported(
-      rTokenAddress?: null
-    ): NewCollateralSupportedEventFilter;
+    'MarginAdded(uint256,uint32,uint256)'(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginAddedEventFilter;
+    MarginAdded(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginAddedEventFilter;
 
-    'NewVTokenSupported(address)'(vToken?: null): NewVTokenSupportedEventFilter;
-    NewVTokenSupported(vToken?: null): NewVTokenSupportedEventFilter;
+    'MarginRemoved(uint256,uint32,uint256)'(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginRemovedEventFilter;
+    MarginRemoved(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginRemovedEventFilter;
 
-    'RageTradePoolSettingsUpdated(address,tuple)'(
-      vToken?: null,
+    'PausedUpdated(bool)'(paused?: null): PausedUpdatedEventFilter;
+    PausedUpdated(paused?: null): PausedUpdatedEventFilter;
+
+    'PoolSettingsUpdated(uint32,tuple)'(
+      poolId?: null,
       settings?: null
-    ): RageTradePoolSettingsUpdatedEventFilter;
-    RageTradePoolSettingsUpdated(
-      vToken?: null,
+    ): PoolSettingsUpdatedEventFilter;
+    PoolSettingsUpdated(
+      poolId?: null,
       settings?: null
-    ): RageTradePoolSettingsUpdatedEventFilter;
+    ): PoolSettingsUpdatedEventFilter;
+
+    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)'(
+      liquidationParams?: null,
+      removeLimitOrderFee?: null,
+      minimumOrderNotional?: null,
+      minRequiredMargin?: null
+    ): ProtocolSettingsUpdatedEventFilter;
+    ProtocolSettingsUpdated(
+      liquidationParams?: null,
+      removeLimitOrderFee?: null,
+      minimumOrderNotional?: null,
+      minRequiredMargin?: null
+    ): ProtocolSettingsUpdatedEventFilter;
 
     'TeamMultisigTransferred(address,address)'(
       previousTeamMultisig?: string | null,
@@ -1615,7 +1628,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   };
 
   estimateGas: {
-    __ClearingHouse_init(
+    __initialize_ClearingHouse(
       _rageTradeFactoryAddress: string,
       _defaultCollateralToken: string,
       _defaultCollateralTokenOracle: string,
@@ -1625,23 +1638,11 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    addCollateralSupport(
-      cToken: string,
-      oracle: string,
-      twapDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    cTokens(
-      cTokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     createAccount(
@@ -1649,7 +1650,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      vTokenTruncatedAddress: BigNumberish,
+      poolId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1664,19 +1665,35 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountInfo(
+      accountId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getAccountMarketValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountNetProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getAccountView(
-      accountNo: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPoolInfo(
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1690,33 +1707,33 @@ export interface ClearingHouseEthereum extends BaseContract {
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
 
     isVTokenAddressAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositionsWithGasClaim(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidateTokenPosition(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidateTokenPositionWithGasClaim(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1728,7 +1745,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<BigNumber>;
 
     multicallWithSingleMarginCheck(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       operations: MulticallOperationStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1739,29 +1756,26 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pools(vToken: string, overrides?: CallOverrides): Promise<BigNumber>;
-
     protocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     removeLimitOrderWithGasClaim(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
@@ -1769,7 +1783,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<BigNumber>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1780,32 +1794,14 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setPlatformParameters(
-      _liquidationParams: LiquidationParamsStruct,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setTxGasPriceLimit(
       _txGasPriceLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    supportedDeposits(
-      tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    supportedVTokens(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     swapToken(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1824,40 +1820,37 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+    updateCollateralSettings(
+      cToken: string,
+      collateralSettings: CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updatePoolSettings(
+      poolId: BigNumberish,
+      newSettings: PoolSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    updateRageTradePoolSettings(
-      vToken: string,
-      newSettings: RageTradePoolSettingsStruct,
+    updateProtocolSettings(
+      _liquidationParams: LiquidationParamsStruct,
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateRangeOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    updateSupportedDeposits(
-      tokenAddress: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    updateSupportedVTokens(
-      vToken: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    vTokens(
-      vTokenAddressTruncated: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     withdrawProtocolFee(
@@ -1867,7 +1860,7 @@ export interface ClearingHouseEthereum extends BaseContract {
   };
 
   populateTransaction: {
-    __ClearingHouse_init(
+    __initialize_ClearingHouse(
       _rageTradeFactoryAddress: string,
       _defaultCollateralToken: string,
       _defaultCollateralTokenOracle: string,
@@ -1877,23 +1870,11 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    addCollateralSupport(
-      cToken: string,
-      oracle: string,
-      twapDuration: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     addMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    cTokens(
-      cTokenId: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     createAccount(
@@ -1901,7 +1882,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createAccountAndAddMargin(
-      vTokenTruncatedAddress: BigNumberish,
+      poolId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1916,19 +1897,35 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getAccountInfo(
+      accountId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getAccountMarketValueAndRequiredMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       isInitialMargin: boolean,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountNetProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getAccountView(
-      accountNo: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPoolInfo(
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1942,33 +1939,33 @@ export interface ClearingHouseEthereum extends BaseContract {
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isVTokenAddressAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     liquidateLiquidityPositions(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateLiquidityPositionsWithGasClaim(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateTokenPosition(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateTokenPositionWithGasClaim(
-      liquidatorAccountNo: BigNumberish,
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      liquidatorAccountId: BigNumberish,
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       liquidationBps: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1980,7 +1977,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     multicallWithSingleMarginCheck(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       operations: MulticallOperationStruct[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1991,11 +1988,6 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    pools(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     protocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rageTradeFactoryAddress(
@@ -2003,22 +1995,21 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     removeLimitOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     removeLimitOrderWithGasClaim(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
@@ -2026,7 +2017,7 @@ export interface ClearingHouseEthereum extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     removeMargin(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       cTokenTruncatedAddress: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2037,32 +2028,14 @@ export interface ClearingHouseEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setPlatformParameters(
-      _liquidationParams: LiquidationParamsStruct,
-      _removeLimitOrderFee: BigNumberish,
-      _minimumOrderNotional: BigNumberish,
-      _minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setTxGasPriceLimit(
       _txGasPriceLimit: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    supportedDeposits(
-      tokenAddress: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    supportedVTokens(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     swapToken(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       swapParams: SwapParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2081,40 +2054,37 @@ export interface ClearingHouseEthereum extends BaseContract {
 
     txGasPriceLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    updateCollateralSettings(
+      cToken: string,
+      collateralSettings: CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updatePoolSettings(
+      poolId: BigNumberish,
+      newSettings: PoolSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     updateProfit(
-      accountNo: BigNumberish,
+      accountId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    updateRageTradePoolSettings(
-      vToken: string,
-      newSettings: RageTradePoolSettingsStruct,
+    updateProtocolSettings(
+      _liquidationParams: LiquidationParamsStruct,
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateRangeOrder(
-      accountNo: BigNumberish,
-      vTokenTruncatedAddress: BigNumberish,
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       liquidityChangeParams: LiquidityChangeParamsStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateSupportedDeposits(
-      tokenAddress: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateSupportedVTokens(
-      vToken: string,
-      status: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    vTokens(
-      vTokenAddressTruncated: BigNumberish,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     withdrawProtocolFee(

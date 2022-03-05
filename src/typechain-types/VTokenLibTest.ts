@@ -36,7 +36,7 @@ export type LiquidationParamsStructOutput = [number, number, number] & {
   insuranceFundFeeShareBps: number;
 };
 
-export type RageTradePoolSettingsStruct = {
+export type PoolSettingsStruct = {
   initialMarginRatio: BigNumberish;
   maintainanceMarginRatio: BigNumberish;
   twapDuration: BigNumberish;
@@ -45,7 +45,7 @@ export type RageTradePoolSettingsStruct = {
   oracle: string;
 };
 
-export type RageTradePoolSettingsStructOutput = [
+export type PoolSettingsStructOutput = [
   number,
   number,
   number,
@@ -61,53 +61,39 @@ export type RageTradePoolSettingsStructOutput = [
   oracle: string;
 };
 
-export type RageTradePoolStruct = {
+export type PoolStruct = {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStruct;
+  settings: PoolSettingsStruct;
 };
 
-export type RageTradePoolStructOutput = [
+export type PoolStructOutput = [
   string,
   string,
-  RageTradePoolSettingsStructOutput
+  string,
+  PoolSettingsStructOutput
 ] & {
+  vToken: string;
   vPool: string;
   vPoolWrapper: string;
-  settings: RageTradePoolSettingsStructOutput;
+  settings: PoolSettingsStructOutput;
 };
 
 export interface VTokenLibTestInterface extends ethers.utils.Interface {
   functions: {
     'fixFee()': FunctionFragment;
-    'getMarginRatio(address,bool)': FunctionFragment;
-    'getRealTwapSqrtPrice(address)': FunctionFragment;
-    'getVirtualTwapSqrtPrice(address)': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool(address,(address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVBaseAddress(address)': FunctionFragment;
-    'vPool(address)': FunctionFragment;
-    'vPoolWrapper(address)': FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: 'fixFee', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'getMarginRatio',
-    values: [string, boolean]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getRealTwapSqrtPrice',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getVirtualTwapSqrtPrice',
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: 'protocol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
-    values: [string, RageTradePoolStruct]
+    values: [PoolStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAccountStorage',
@@ -123,25 +109,8 @@ export interface VTokenLibTestInterface extends ethers.utils.Interface {
     functionFragment: 'setVBaseAddress',
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: 'vPool', values: [string]): string;
-  encodeFunctionData(
-    functionFragment: 'vPoolWrapper',
-    values: [string]
-  ): string;
 
   decodeFunctionResult(functionFragment: 'fixFee', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'getMarginRatio',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getRealTwapSqrtPrice',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getVirtualTwapSqrtPrice',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'protocol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'registerPool',
@@ -153,11 +122,6 @@ export interface VTokenLibTestInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setVBaseAddress',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: 'vPool', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'vPoolWrapper',
     data: BytesLike
   ): Result;
 
@@ -193,22 +157,6 @@ export interface VTokenLibTest extends BaseContract {
   functions: {
     fixFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    getMarginRatio(
-      vToken: string,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    getRealTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getVirtualTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     protocol(
       overrides?: CallOverrides
     ): Promise<
@@ -221,7 +169,7 @@ export interface VTokenLibTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -230,8 +178,7 @@ export interface VTokenLibTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -248,29 +195,9 @@ export interface VTokenLibTest extends BaseContract {
       _vBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    vPool(vToken: string, overrides?: CallOverrides): Promise<[string]>;
-
-    vPoolWrapper(vToken: string, overrides?: CallOverrides): Promise<[string]>;
   };
 
   fixFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getMarginRatio(
-    vToken: string,
-    isInitialMargin: boolean,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  getRealTwapSqrtPrice(
-    vToken: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getVirtualTwapSqrtPrice(
-    vToken: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   protocol(
     overrides?: CallOverrides
@@ -284,7 +211,7 @@ export interface VTokenLibTest extends BaseContract {
       BigNumber
     ] & {
       vBase: string;
-      rBase: string;
+      cBase: string;
       liquidationParams: LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
       removeLimitOrderFee: BigNumber;
@@ -293,8 +220,7 @@ export interface VTokenLibTest extends BaseContract {
   >;
 
   registerPool(
-    full: string,
-    rageTradePool: RageTradePoolStruct,
+    poolInfo: PoolStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -312,28 +238,8 @@ export interface VTokenLibTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  vPool(vToken: string, overrides?: CallOverrides): Promise<string>;
-
-  vPoolWrapper(vToken: string, overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMarginRatio(
-      vToken: string,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    getRealTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVirtualTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     protocol(
       overrides?: CallOverrides
@@ -347,7 +253,7 @@ export interface VTokenLibTest extends BaseContract {
         BigNumber
       ] & {
         vBase: string;
-        rBase: string;
+        cBase: string;
         liquidationParams: LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
         removeLimitOrderFee: BigNumber;
@@ -356,8 +262,7 @@ export interface VTokenLibTest extends BaseContract {
     >;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -371,10 +276,6 @@ export interface VTokenLibTest extends BaseContract {
     ): Promise<void>;
 
     setVBaseAddress(_vBase: string, overrides?: CallOverrides): Promise<void>;
-
-    vPool(vToken: string, overrides?: CallOverrides): Promise<string>;
-
-    vPoolWrapper(vToken: string, overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -382,27 +283,10 @@ export interface VTokenLibTest extends BaseContract {
   estimateGas: {
     fixFee(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getMarginRatio(
-      vToken: string,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRealTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVirtualTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     protocol(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -419,36 +303,15 @@ export interface VTokenLibTest extends BaseContract {
       _vBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    vPool(vToken: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    vPoolWrapper(vToken: string, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     fixFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getMarginRatio(
-      vToken: string,
-      isInitialMargin: boolean,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRealTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVirtualTwapSqrtPrice(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     protocol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerPool(
-      full: string,
-      rageTradePool: RageTradePoolStruct,
+      poolInfo: PoolStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -464,16 +327,6 @@ export interface VTokenLibTest extends BaseContract {
     setVBaseAddress(
       _vBase: string,
       overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    vPool(
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    vPoolWrapper(
-      vToken: string,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

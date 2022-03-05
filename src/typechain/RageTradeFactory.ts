@@ -31,8 +31,8 @@ export declare namespace VTokenDeployer {
   };
 }
 
-export declare namespace IClearingHouse {
-  export type RageTradePoolSettingsStruct = {
+export declare namespace IClearingHouseStructures {
+  export type PoolSettingsStruct = {
     initialMarginRatio: BigNumberish;
     maintainanceMarginRatio: BigNumberish;
     twapDuration: BigNumberish;
@@ -41,7 +41,7 @@ export declare namespace IClearingHouse {
     oracle: string;
   };
 
-  export type RageTradePoolSettingsStructOutput = [
+  export type PoolSettingsStructOutput = [
     number,
     number,
     number,
@@ -61,7 +61,7 @@ export declare namespace IClearingHouse {
 export declare namespace RageTradeFactory {
   export type InitializePoolParamsStruct = {
     deployVTokenParams: VTokenDeployer.DeployVTokenParamsStruct;
-    rageTradePoolInitialSettings: IClearingHouse.RageTradePoolSettingsStruct;
+    poolInitialSettings: IClearingHouseStructures.PoolSettingsStruct;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
     slotsToInitialize: BigNumberish;
@@ -69,13 +69,13 @@ export declare namespace RageTradeFactory {
 
   export type InitializePoolParamsStructOutput = [
     VTokenDeployer.DeployVTokenParamsStructOutput,
-    IClearingHouse.RageTradePoolSettingsStructOutput,
+    IClearingHouseStructures.PoolSettingsStructOutput,
     number,
     number,
     number
   ] & {
     deployVTokenParams: VTokenDeployer.DeployVTokenParamsStructOutput;
-    rageTradePoolInitialSettings: IClearingHouse.RageTradePoolSettingsStructOutput;
+    poolInitialSettings: IClearingHouseStructures.PoolSettingsStructOutput;
     liquidityFeePips: number;
     protocolFeePips: number;
     slotsToInitialize: number;

@@ -20,7 +20,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 export interface InsuranceFundInterface extends utils.Interface {
   contractName: 'InsuranceFund';
   functions: {
-    '__InsuranceFund_init(address,address,string,string)': FunctionFragment;
+    '__initialize_InsuranceFund(address,address,string,string)': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
@@ -40,7 +40,7 @@ export interface InsuranceFundInterface extends utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     values: [string, string, string, string]
   ): string;
   encodeFunctionData(
@@ -91,7 +91,7 @@ export interface InsuranceFundInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: '__InsuranceFund_init',
+    functionFragment: '__initialize_InsuranceFund',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
@@ -177,7 +177,7 @@ export interface InsuranceFund extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -252,7 +252,7 @@ export interface InsuranceFund extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  __InsuranceFund_init(
+  __initialize_InsuranceFund(
     _rBase: string,
     _clearingHouse: string,
     name: string,
@@ -327,7 +327,7 @@ export interface InsuranceFund extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -418,7 +418,7 @@ export interface InsuranceFund extends BaseContract {
   };
 
   estimateGas: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,
@@ -494,7 +494,7 @@ export interface InsuranceFund extends BaseContract {
   };
 
   populateTransaction: {
-    __InsuranceFund_init(
+    __initialize_InsuranceFund(
       _rBase: string,
       _clearingHouse: string,
       name: string,

@@ -13,34 +13,34 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'contract IVToken',
-        name: '',
-        type: 'address',
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
       },
     ],
     name: 'DeactivationFailed',
     type: 'error',
   },
   {
-    inputs: [],
-    name: 'IncorrectUpdate',
-    type: 'error',
-  },
-  {
     inputs: [
       {
-        internalType: 'contract IVToken',
-        name: 'vToken',
-        type: 'address',
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
       },
     ],
     name: 'TokenInactive',
     type: 'error',
   },
+  {
+    inputs: [],
+    name: 'VTokenPositionSetIncorrectUpdate',
+    type: 'error',
+  },
 ];
 
 const _bytecode =
-  '0x602d6037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea164736f6c634300080a000a';
+  '0x602d6037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea164736f6c634300080c000a';
 
 type VTokenPositionSetConstructorParams =
   | [signer?: Signer]
