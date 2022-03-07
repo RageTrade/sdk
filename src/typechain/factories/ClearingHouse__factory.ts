@@ -502,7 +502,7 @@ const _abi = [
       },
       {
         internalType: 'uint32',
-        name: 'cTokenTruncatedAddress',
+        name: 'collateralId',
         type: 'uint32',
       },
       {
@@ -913,7 +913,7 @@ const _abi = [
         type: 'address',
       },
     ],
-    name: 'getTwapSqrtPricesForSetDuration',
+    name: 'getTwapPrices',
     outputs: [
       {
         internalType: 'uint256',
@@ -963,7 +963,7 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'isVTokenAddressAvailable',
+    name: 'isPoolIdAvailable',
     outputs: [
       {
         internalType: 'bool',
@@ -1423,7 +1423,7 @@ const _abi = [
       },
       {
         internalType: 'uint32',
-        name: 'cTokenTruncatedAddress',
+        name: 'collateralId',
         type: 'uint32',
       },
       {
@@ -2230,6 +2230,12 @@ const _abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'liquidatorPriceX128',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'fixFee',
         type: 'uint256',
       },
       {

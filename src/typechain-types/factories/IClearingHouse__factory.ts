@@ -766,7 +766,7 @@ const _abi = [
         type: 'address',
       },
     ],
-    name: 'getTwapSqrtPricesForSetDuration',
+    name: 'getTwapPrices',
     outputs: [
       {
         internalType: 'uint256',
@@ -803,7 +803,7 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'isVTokenAddressAvailable',
+    name: 'isPoolIdAvailable',
     outputs: [
       {
         internalType: 'bool',

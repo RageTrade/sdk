@@ -250,9 +250,9 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
-    'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
+    'getTwapPrices(address)': FunctionFragment;
     'governance()': FunctionFragment;
-    'isVTokenAddressAvailable(uint32)': FunctionFragment;
+    'isPoolIdAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
@@ -315,7 +315,7 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getTwapSqrtPricesForSetDuration',
+    functionFragment: 'getTwapPrices',
     values: [string]
   ): string;
   encodeFunctionData(
@@ -323,7 +323,7 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'isVTokenAddressAvailable',
+    functionFragment: 'isPoolIdAvailable',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -453,12 +453,12 @@ export interface IClearingHouseInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getTwapSqrtPricesForSetDuration',
+    functionFragment: 'getTwapPrices',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'isVTokenAddressAvailable',
+    functionFragment: 'isPoolIdAvailable',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -708,7 +708,7 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[PoolStructOutput]>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -720,7 +720,7 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<[string]>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -934,7 +934,7 @@ export interface IClearingHouse extends BaseContract {
     overrides?: CallOverrides
   ): Promise<PoolStructOutput>;
 
-  getTwapSqrtPricesForSetDuration(
+  getTwapPrices(
     vToken: string,
     overrides?: CallOverrides
   ): Promise<
@@ -946,7 +946,7 @@ export interface IClearingHouse extends BaseContract {
 
   governance(overrides?: CallOverrides): Promise<string>;
 
-  isVTokenAddressAvailable(
+  isPoolIdAvailable(
     truncated: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -1152,7 +1152,7 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PoolStructOutput>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -1164,7 +1164,7 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<string>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1439,14 +1439,14 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1628,14 +1628,14 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       truncated: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

@@ -34,7 +34,7 @@ export interface AccountInterface extends ethers.utils.Interface {
     'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
     'TokenPositionChanged(uint256,uint32,int256,int256)': EventFragment;
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)': EventFragment;
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'FundingPaymentRealized'): EventFragment;
@@ -149,7 +149,16 @@ export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
 export type TokenPositionChangedDueToLiquidityChangedEventFilter = TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
 
 export type TokenPositionLiquidatedEvent = TypedEvent<
-  [BigNumber, BigNumber, number, number, BigNumber, BigNumber, BigNumber],
+  [
+    BigNumber,
+    BigNumber,
+    number,
+    number,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
   {
     accountId: BigNumber;
     liquidatorAccountId: BigNumber;
@@ -157,6 +166,7 @@ export type TokenPositionLiquidatedEvent = TypedEvent<
     liquidationBps: number;
     liquidationPriceX128: BigNumber;
     liquidatorPriceX128: BigNumber;
+    fixFee: BigNumber;
     insuranceFundFee: BigNumber;
   }
 >;
@@ -306,13 +316,14 @@ export interface Account extends BaseContract {
       tokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
 
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)'(
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)'(
       accountId?: BigNumberish | null,
       liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
+      fixFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
     TokenPositionLiquidated(
@@ -322,6 +333,7 @@ export interface Account extends BaseContract {
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
+      fixFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
   };

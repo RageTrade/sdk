@@ -261,10 +261,10 @@ export interface ClearingHouseInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
-    'getTwapSqrtPricesForSetDuration(address)': FunctionFragment;
+    'getTwapPrices(address)': FunctionFragment;
     'governance()': FunctionFragment;
     'insuranceFund()': FunctionFragment;
-    'isVTokenAddressAvailable(uint32)': FunctionFragment;
+    'isPoolIdAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
@@ -335,7 +335,7 @@ export interface ClearingHouseInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getTwapSqrtPricesForSetDuration',
+    functionFragment: 'getTwapPrices',
     values: [string]
   ): string;
   encodeFunctionData(
@@ -347,7 +347,7 @@ export interface ClearingHouseInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'isVTokenAddressAvailable',
+    functionFragment: 'isPoolIdAvailable',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -513,7 +513,7 @@ export interface ClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getTwapSqrtPricesForSetDuration',
+    functionFragment: 'getTwapPrices',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
@@ -522,7 +522,7 @@ export interface ClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'isVTokenAddressAvailable',
+    functionFragment: 'isPoolIdAvailable',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -636,7 +636,7 @@ export interface ClearingHouseInterface extends utils.Interface {
     'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
     'TokenPositionChanged(uint256,uint32,int256,int256)': EventFragment;
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)': EventFragment;
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
@@ -836,7 +836,16 @@ export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
 export type TokenPositionChangedDueToLiquidityChangedEventFilter = TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
 
 export type TokenPositionLiquidatedEvent = TypedEvent<
-  [BigNumber, BigNumber, number, number, BigNumber, BigNumber, BigNumber],
+  [
+    BigNumber,
+    BigNumber,
+    number,
+    number,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
   {
     accountId: BigNumber;
     liquidatorAccountId: BigNumber;
@@ -844,6 +853,7 @@ export type TokenPositionLiquidatedEvent = TypedEvent<
     liquidationBps: number;
     liquidationPriceX128: BigNumber;
     liquidatorPriceX128: BigNumber;
+    fixFee: BigNumber;
     insuranceFundFee: BigNumber;
   }
 >;
@@ -890,7 +900,7 @@ export interface ClearingHouse extends BaseContract {
 
     addMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -964,7 +974,7 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[IClearingHouseStructures.PoolStructOutput]>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -978,7 +988,7 @@ export interface ClearingHouse extends BaseContract {
 
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -1072,7 +1082,7 @@ export interface ClearingHouse extends BaseContract {
 
     removeMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1152,7 +1162,7 @@ export interface ClearingHouse extends BaseContract {
 
   addMargin(
     accountId: BigNumberish,
-    cTokenTruncatedAddress: BigNumberish,
+    collateralId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1226,7 +1236,7 @@ export interface ClearingHouse extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
-  getTwapSqrtPricesForSetDuration(
+  getTwapPrices(
     vToken: string,
     overrides?: CallOverrides
   ): Promise<
@@ -1240,7 +1250,7 @@ export interface ClearingHouse extends BaseContract {
 
   insuranceFund(overrides?: CallOverrides): Promise<string>;
 
-  isVTokenAddressAvailable(
+  isPoolIdAvailable(
     poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -1334,7 +1344,7 @@ export interface ClearingHouse extends BaseContract {
 
   removeMargin(
     accountId: BigNumberish,
-    cTokenTruncatedAddress: BigNumberish,
+    collateralId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1414,7 +1424,7 @@ export interface ClearingHouse extends BaseContract {
 
     addMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1486,7 +1496,7 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<
@@ -1500,7 +1510,7 @@ export interface ClearingHouse extends BaseContract {
 
     insuranceFund(overrides?: CallOverrides): Promise<string>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1591,7 +1601,7 @@ export interface ClearingHouse extends BaseContract {
 
     removeMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1862,13 +1872,14 @@ export interface ClearingHouse extends BaseContract {
       tokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
 
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,int256)'(
+    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)'(
       accountId?: BigNumberish | null,
       liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
+      fixFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
     TokenPositionLiquidated(
@@ -1878,6 +1889,7 @@ export interface ClearingHouse extends BaseContract {
       liquidationBps?: null,
       liquidationPriceX128?: null,
       liquidatorPriceX128?: null,
+      fixFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
   };
@@ -1895,7 +1907,7 @@ export interface ClearingHouse extends BaseContract {
 
     addMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1952,7 +1964,7 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1961,7 +1973,7 @@ export interface ClearingHouse extends BaseContract {
 
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -2039,7 +2051,7 @@ export interface ClearingHouse extends BaseContract {
 
     removeMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -2120,7 +2132,7 @@ export interface ClearingHouse extends BaseContract {
 
     addMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2177,7 +2189,7 @@ export interface ClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTwapSqrtPricesForSetDuration(
+    getTwapPrices(
       vToken: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2186,7 +2198,7 @@ export interface ClearingHouse extends BaseContract {
 
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    isVTokenAddressAvailable(
+    isPoolIdAvailable(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2266,7 +2278,7 @@ export interface ClearingHouse extends BaseContract {
 
     removeMargin(
       accountId: BigNumberish,
-      cTokenTruncatedAddress: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
