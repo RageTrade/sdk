@@ -1,6 +1,7 @@
 {
   "defaultPool": {
     "arbtest": {
+      "poolId": 165893226,
       "name": "Virtual ETH (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
@@ -15,6 +16,7 @@
     "arbmain": [],
     "arbtest": [
       {
+        "poolId": 165893226,
         "name": "Virtual ETH (Rage Trade)",
         "symbol": "vETH",
         "decimals": 18,

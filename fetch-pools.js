@@ -1,5 +1,5 @@
 const { providers } = require('ethers');
-const { getContracts, getPoolContracts } = require('./dist');
+const { getContracts, getPoolContracts, truncate } = require('./dist');
 const sdk = require('./dist');
 
 const { config } = require('dotenv');
@@ -29,6 +29,7 @@ async function getDefaultPool() {
       try {
         const contracts = await getContracts(provider);
         defaultPoolForChain = {
+          poolId: +truncate(contracts.eth_vToken.address),
           name: await contracts.eth_vToken.name(),
           symbol: await contracts.eth_vToken.symbol(),
           decimals: await contracts.eth_vToken.decimals(),
@@ -56,6 +57,7 @@ async function getPoolsList() {
         const poolContracts = await getPoolContracts(rageTradeFactory);
         poolsListForChain = await Promise.all(
           poolContracts.map(async ({ vToken, vPool, vPoolWrapper }) => ({
+            poolId: +truncate(vToken.address),
             name: await vToken.name(),
             symbol: await vToken.symbol(),
             decimals: await vToken.decimals(),
