@@ -49,7 +49,7 @@ const _abi = [
         type: 'uint128',
       },
     ],
-    name: 'SafeCaseInt128Overflow',
+    name: 'SafeCast_Int128Overflow',
     type: 'error',
   },
   {
@@ -60,7 +60,12 @@ const _abi = [
         type: 'uint256',
       },
     ],
-    name: 'SafeCastInt256Overflow',
+    name: 'SafeCast_Int256Overflow',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroAmount',
     type: 'error',
   },
   {
@@ -106,7 +111,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
     ],
@@ -156,7 +161,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
     ],
@@ -188,7 +193,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'int256',
-        name: 'vBaseIn',
+        name: 'vQuoteIn',
         type: 'int256',
       },
       {
@@ -222,8 +227,8 @@ const _abi = [
             type: 'address',
           },
           {
-            internalType: 'contract IVBase',
-            name: 'vBase',
+            internalType: 'contract IVQuote',
+            name: 'vQuote',
             type: 'address',
           },
           {
@@ -297,7 +302,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
       {
@@ -581,7 +586,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
       {
@@ -671,7 +676,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'bool',
-        name: 'swapVTokenForVBase',
+        name: 'swapVTokenForVQuote',
         type: 'bool',
       },
       {
@@ -689,46 +694,12 @@ const _abi = [
     outputs: [
       {
         internalType: 'int256',
-        name: '',
-        type: 'int256',
-      },
-      {
-        internalType: 'int256',
-        name: '',
-        type: 'int256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'int256',
-        name: 'amount',
-        type: 'int256',
-      },
-      {
-        internalType: 'uint160',
-        name: 'sqrtPriceLimitX96',
-        type: 'uint160',
-      },
-      {
-        internalType: 'bool',
-        name: 'isNotional',
-        type: 'bool',
-      },
-    ],
-    name: 'swapToken',
-    outputs: [
-      {
-        internalType: 'int256',
         name: 'vTokenAmount',
         type: 'int256',
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmount',
+        name: 'vQuoteAmount',
         type: 'int256',
       },
     ],
@@ -791,7 +762,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'vBaseAmount',
+        name: 'vQuoteAmount',
         type: 'uint256',
       },
       {
@@ -837,10 +808,10 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'vBase',
+    name: 'vPool',
     outputs: [
       {
-        internalType: 'contract IVBase',
+        internalType: 'contract IUniswapV3Pool',
         name: '',
         type: 'address',
       },
@@ -850,10 +821,10 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'vPool',
+    name: 'vQuote',
     outputs: [
       {
-        internalType: 'contract IUniswapV3Pool',
+        internalType: 'contract IVQuote',
         name: '',
         type: 'address',
       },

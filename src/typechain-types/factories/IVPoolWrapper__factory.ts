@@ -50,7 +50,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
     ],
@@ -100,7 +100,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
     ],
@@ -132,7 +132,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'int256',
-        name: 'vBaseIn',
+        name: 'vQuoteIn',
         type: 'int256',
       },
       {
@@ -166,8 +166,8 @@ const _abi = [
             type: 'address',
           },
           {
-            internalType: 'contract IVBase',
-            name: 'vBase',
+            internalType: 'contract IVQuote',
+            name: 'vQuote',
             type: 'address',
           },
           {
@@ -228,7 +228,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
       {
@@ -433,7 +433,7 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'basePrincipal',
+        name: 'vQuotePrincipal',
         type: 'uint256',
       },
       {
@@ -483,22 +483,22 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'bool',
+        name: 'swapVTokenForVQuote',
+        type: 'bool',
+      },
+      {
         internalType: 'int256',
-        name: 'amount',
+        name: 'amountSpecified',
         type: 'int256',
       },
       {
         internalType: 'uint160',
-        name: 'sqrtPriceLimit',
+        name: 'sqrtPriceLimitX96',
         type: 'uint160',
       },
-      {
-        internalType: 'bool',
-        name: 'isNotional',
-        type: 'bool',
-      },
     ],
-    name: 'swapToken',
+    name: 'swap',
     outputs: [
       {
         internalType: 'int256',
@@ -507,7 +507,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmount',
+        name: 'vQuoteAmount',
         type: 'int256',
       },
     ],

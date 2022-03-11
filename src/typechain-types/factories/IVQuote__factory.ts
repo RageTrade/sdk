@@ -4,7 +4,7 @@
 
 import { Contract, Signer, utils } from 'ethers';
 import { Provider } from '@ethersproject/providers';
-import type { IVBase, IVBaseInterface } from '../IVBase';
+import type { IVQuote, IVQuoteInterface } from '../IVQuote';
 
 const _abi = [
   {
@@ -185,7 +185,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'recipient',
+        name: 'to',
         type: 'address',
       },
       {
@@ -209,12 +209,12 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'sender',
+        name: 'from',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: 'recipient',
+        name: 'to',
         type: 'address',
       },
       {
@@ -236,12 +236,15 @@ const _abi = [
   },
 ];
 
-export class IVBase__factory {
+export class IVQuote__factory {
   static readonly abi = _abi;
-  static createInterface(): IVBaseInterface {
-    return new utils.Interface(_abi) as IVBaseInterface;
+  static createInterface(): IVQuoteInterface {
+    return new utils.Interface(_abi) as IVQuoteInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IVBase {
-    return new Contract(address, _abi, signerOrProvider) as IVBase;
+  static connect(
+    address: string,
+    signerOrProvider: Signer | Provider
+  ): IVQuote {
+    return new Contract(address, _abi, signerOrProvider) as IVQuote;
   }
 }

@@ -24,23 +24,34 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint160',
-        name: 'sqrtPriceX96',
-        type: 'uint160',
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
       },
     ],
-    name: 'IllegalSqrtPrice',
+    name: 'CollateralDoesNotExist',
     type: 'error',
   },
   {
     inputs: [
       {
         internalType: 'uint32',
-        name: 'period',
+        name: 'collateralId',
         type: 'uint32',
       },
     ],
-    name: 'IllegalTwapDuration',
+    name: 'CollateralNotAllowedForUse',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint160',
+        name: 'sqrtPriceX96',
+        type: 'uint160',
+      },
+    ],
+    name: 'IllegalSqrtPrice',
     type: 'error',
   },
   {
@@ -109,13 +120,14 @@ const _abi = [
     type: 'error',
   },
   {
-    inputs: [],
-    name: 'SlippageBeyondTolerance',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'Unauthorised',
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'PoolDoesNotExist',
     type: 'error',
   },
   {
@@ -126,34 +138,23 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'UninitializedToken',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'cTokenAddress',
-        type: 'address',
-      },
-    ],
-    name: 'UnsupportedCToken',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract IVToken',
-        name: 'vToken',
-        type: 'address',
-      },
-    ],
-    name: 'UnsupportedVToken',
+    name: 'PoolNotAllowedForTrade',
     type: 'error',
   },
   {
     inputs: [],
-    name: 'ZeroAddress',
+    name: 'SlippageBeyondTolerance',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'period',
+        type: 'uint32',
+      },
+    ],
+    name: 'UV3PH_IllegalTwapDuration',
     type: 'error',
   },
   {
@@ -198,7 +199,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForDeposit',
             type: 'bool',
           },
         ],
@@ -209,25 +210,6 @@ const _abi = [
       },
     ],
     name: 'CollateralSettingsUpdated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousGovernance',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newGovernance',
-        type: 'address',
-      },
-    ],
-    name: 'GovernanceTransferred',
     type: 'event',
   },
   {
@@ -321,7 +303,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForTrade',
             type: 'bool',
           },
           {
@@ -398,25 +380,6 @@ const _abi = [
     type: 'event',
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousTeamMultisig',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newTeamMultisig',
-        type: 'address',
-      },
-    ],
-    name: 'TeamMultisigTransferred',
-    type: 'event',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
@@ -439,8 +402,8 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {
@@ -569,14 +532,14 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseBalance',
+        name: 'vQuoteBalance',
         type: 'int256',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'cTokenAddress',
+            internalType: 'contract IERC20',
+            name: 'collateral',
             type: 'address',
           },
           {
@@ -585,15 +548,15 @@ const _abi = [
             type: 'uint256',
           },
         ],
-        internalType: 'struct IClearingHouseStructures.DepositTokenView[]',
-        name: 'tokenDeposits',
+        internalType: 'struct IClearingHouseStructures.CollateralDepositView[]',
+        name: 'collateralDeposits',
         type: 'tuple[]',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'vTokenAddress',
+            internalType: 'contract IVToken',
+            name: 'vToken',
             type: 'address',
           },
           {
@@ -608,7 +571,7 @@ const _abi = [
           },
           {
             internalType: 'int256',
-            name: 'sumAX128Ckpt',
+            name: 'sumAX128Chkpt',
             type: 'int256',
           },
           {
@@ -752,7 +715,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForDeposit',
                 type: 'bool',
               },
             ],
@@ -839,7 +802,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -1001,7 +964,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -1057,7 +1020,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -1107,24 +1070,11 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'paused',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'protocolInfo',
     outputs: [
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {
@@ -1224,7 +1174,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -1392,7 +1342,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -1459,7 +1409,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForDeposit',
             type: 'bool',
           },
         ],
@@ -1499,7 +1449,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForTrade',
             type: 'bool',
           },
           {
@@ -1655,7 +1605,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],

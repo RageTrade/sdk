@@ -29,6 +29,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AggregatorV3Interface__factory>;
     getContractFactory(
+      name: 'PausableUpgradeable',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PausableUpgradeable__factory>;
+    getContractFactory(
       name: 'ERC20Upgradeable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20Upgradeable__factory>;
@@ -60,6 +64,10 @@ declare module 'hardhat/types/runtime' {
       name: 'Ownable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: 'IERC1822Proxiable',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC1822Proxiable__factory>;
     getContractFactory(
       name: 'IBeacon',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -209,13 +217,13 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IOracle__factory>;
     getContractFactory(
-      name: 'IVBase',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IVBase__factory>;
-    getContractFactory(
       name: 'IVPoolWrapper',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVPoolWrapper__factory>;
+    getContractFactory(
+      name: 'IVQuote',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IVQuote__factory>;
     getContractFactory(
       name: 'IVToken',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -232,6 +240,10 @@ declare module 'hardhat/types/runtime' {
       name: 'Calldata',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Calldata__factory>;
+    getContractFactory(
+      name: 'CollateralDeposit',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CollateralDeposit__factory>;
     getContractFactory(
       name: 'FundingPayment',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -253,6 +265,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SafeCast__factory>;
     getContractFactory(
+      name: 'SimulateSwap',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimulateSwap__factory>;
+    getContractFactory(
       name: 'Uint32L8ArrayLib',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Uint32L8ArrayLib__factory>;
@@ -265,21 +281,17 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UniswapV3PoolHelper__factory>;
     getContractFactory(
-      name: 'VTokenPosition',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.VTokenPosition__factory>;
-    getContractFactory(
       name: 'VTokenPositionSet',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VTokenPositionSet__factory>;
     getContractFactory(
-      name: 'BaseOracle',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BaseOracle__factory>;
-    getContractFactory(
       name: 'ChainlinkOracle',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ChainlinkOracle__factory>;
+    getContractFactory(
+      name: 'SettlementTokenOracle',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SettlementTokenOracle__factory>;
     getContractFactory(
       name: 'ClearingHouse',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -317,9 +329,9 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RageTradeFactory__factory>;
     getContractFactory(
-      name: 'VBase',
+      name: 'VQuote',
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.VBase__factory>;
+    ): Promise<Contracts.VQuote__factory>;
     getContractFactory(
       name: 'VToken',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -353,9 +365,9 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ClearingHouseTest__factory>;
     getContractFactory(
-      name: 'DepositTokenSetTest',
+      name: 'CollateralDepositSetTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.DepositTokenSetTest__factory>;
+    ): Promise<Contracts.CollateralDepositSetTest__factory>;
     getContractFactory(
       name: 'ExtsloadTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -393,10 +405,6 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OracleMock__factory>;
     getContractFactory(
-      name: 'RealBaseMock',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.RealBaseMock__factory>;
-    getContractFactory(
       name: 'RealTokenMock',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RealTokenMock__factory>;
@@ -404,6 +412,10 @@ declare module 'hardhat/types/runtime' {
       name: 'RealTokenMockDecimals',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RealTokenMockDecimals__factory>;
+    getContractFactory(
+      name: 'SettlementTokenMock',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SettlementTokenMock__factory>;
     getContractFactory(
       name: 'UniswapV3PoolMock',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -518,6 +530,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.AggregatorV3Interface>;
     getContractAt(
+      name: 'PausableUpgradeable',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PausableUpgradeable>;
+    getContractAt(
       name: 'ERC20Upgradeable',
       address: string,
       signer?: ethers.Signer
@@ -557,6 +574,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: 'IERC1822Proxiable',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC1822Proxiable>;
     getContractAt(
       name: 'IBeacon',
       address: string,
@@ -743,15 +765,15 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.IOracle>;
     getContractAt(
-      name: 'IVBase',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IVBase>;
-    getContractAt(
       name: 'IVPoolWrapper',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IVPoolWrapper>;
+    getContractAt(
+      name: 'IVQuote',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IVQuote>;
     getContractAt(
       name: 'IVToken',
       address: string,
@@ -772,6 +794,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Calldata>;
+    getContractAt(
+      name: 'CollateralDeposit',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CollateralDeposit>;
     getContractAt(
       name: 'FundingPayment',
       address: string,
@@ -798,6 +825,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.SafeCast>;
     getContractAt(
+      name: 'SimulateSwap',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimulateSwap>;
+    getContractAt(
       name: 'Uint32L8ArrayLib',
       address: string,
       signer?: ethers.Signer
@@ -813,25 +845,20 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.UniswapV3PoolHelper>;
     getContractAt(
-      name: 'VTokenPosition',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.VTokenPosition>;
-    getContractAt(
       name: 'VTokenPositionSet',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.VTokenPositionSet>;
     getContractAt(
-      name: 'BaseOracle',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.BaseOracle>;
-    getContractAt(
       name: 'ChainlinkOracle',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ChainlinkOracle>;
+    getContractAt(
+      name: 'SettlementTokenOracle',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SettlementTokenOracle>;
     getContractAt(
       name: 'ClearingHouse',
       address: string,
@@ -878,10 +905,10 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.RageTradeFactory>;
     getContractAt(
-      name: 'VBase',
+      name: 'VQuote',
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.VBase>;
+    ): Promise<Contracts.VQuote>;
     getContractAt(
       name: 'VToken',
       address: string,
@@ -923,10 +950,10 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.ClearingHouseTest>;
     getContractAt(
-      name: 'DepositTokenSetTest',
+      name: 'CollateralDepositSetTest',
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.DepositTokenSetTest>;
+    ): Promise<Contracts.CollateralDepositSetTest>;
     getContractAt(
       name: 'ExtsloadTest',
       address: string,
@@ -973,11 +1000,6 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.OracleMock>;
     getContractAt(
-      name: 'RealBaseMock',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.RealBaseMock>;
-    getContractAt(
       name: 'RealTokenMock',
       address: string,
       signer?: ethers.Signer
@@ -987,6 +1009,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.RealTokenMockDecimals>;
+    getContractAt(
+      name: 'SettlementTokenMock',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SettlementTokenMock>;
     getContractAt(
       name: 'UniswapV3PoolMock',
       address: string,

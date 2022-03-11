@@ -27,14 +27,14 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseBalance',
+        name: 'vQuoteBalance',
         type: 'int256',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'cTokenAddress',
+            internalType: 'contract IERC20',
+            name: 'collateral',
             type: 'address',
           },
           {
@@ -43,15 +43,15 @@ const _abi = [
             type: 'uint256',
           },
         ],
-        internalType: 'struct IClearingHouseStructures.DepositTokenView[]',
-        name: 'tokenDeposits',
+        internalType: 'struct IClearingHouseStructures.CollateralDepositView[]',
+        name: 'collateralDeposits',
         type: 'tuple[]',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'vTokenAddress',
+            internalType: 'contract IVToken',
+            name: 'vToken',
             type: 'address',
           },
           {
@@ -66,7 +66,7 @@ const _abi = [
           },
           {
             internalType: 'int256',
-            name: 'sumAX128Ckpt',
+            name: 'sumAX128Chkpt',
             type: 'int256',
           },
           {
@@ -210,7 +210,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForDeposit',
                 type: 'bool',
               },
             ],
@@ -297,7 +297,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -372,8 +372,8 @@ const _abi = [
     name: 'protocolInfo',
     outputs: [
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {

@@ -8,7 +8,7 @@ import {
   RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
-  VBase__factory,
+  VQuote__factory,
 } from './typechain';
 import {
   IERC20Metadata__factory,
@@ -71,26 +71,28 @@ export async function getContractsWithChainId(
   return getContractsWithDeployments(signerOrProvider, d);
 }
 
+interface Deployments {
+  AccountLibraryDeployment: ContractDeployment;
+  ClearingHouseDeployment: ContractDeployment;
+  ClearingHouseLogicDeployment: ContractDeployment;
+  InsuranceFundDeployment: ContractDeployment;
+  InsuranceFundLogicDeployment: ContractDeployment;
+  NativeOracleDeployment: ContractDeployment;
+  ProxyAdminDeployment: ContractDeployment;
+  RageTradeFactoryDeployment: ContractDeployment;
+  SettlementTokenDeployment: ContractDeployment;
+  VQuoteDeployment: ContractDeployment;
+  VPoolWrapperLogicDeployment: ContractDeployment;
+  SwapSimulatorDeployment: ContractDeployment;
+  ETH_vTokenDeployment: ContractDeployment;
+  ETH_vPoolDeployment: ContractDeployment;
+  ETH_vPoolWrapperDeployment: ContractDeployment;
+  ETH_IndexOracleDeployment: ContractDeployment;
+}
+
 export async function getContractsWithDeployments(
   signerOrProvider: Signer | Provider,
-  deployments: {
-    AccountLibraryDeployment: ContractDeployment;
-    ClearingHouseDeployment: ContractDeployment;
-    ClearingHouseLogicDeployment: ContractDeployment;
-    InsuranceFundDeployment: ContractDeployment;
-    InsuranceFundLogicDeployment: ContractDeployment;
-    NativeOracleDeployment: ContractDeployment;
-    ProxyAdminDeployment: ContractDeployment;
-    RageTradeFactoryDeployment: ContractDeployment;
-    RBaseDeployment: ContractDeployment;
-    VBaseDeployment: ContractDeployment;
-    VPoolWrapperLogicDeployment: ContractDeployment;
-    SwapSimulatorDeployment: ContractDeployment;
-    ETH_vTokenDeployment: ContractDeployment;
-    ETH_vPoolDeployment: ContractDeployment;
-    ETH_vPoolWrapperDeployment: ContractDeployment;
-    ETH_IndexOracleDeployment: ContractDeployment;
-  }
+  deployments: Deployments
 ) {
   return {
     accountLib: AccountLibrary__factory.connect(
@@ -125,12 +127,12 @@ export async function getContractsWithDeployments(
       deployments.RageTradeFactoryDeployment.address,
       signerOrProvider
     ),
-    rBase: IERC20Metadata__factory.connect(
-      deployments.RBaseDeployment.address,
+    settlementToken: IERC20Metadata__factory.connect(
+      deployments.SettlementTokenDeployment.address,
       signerOrProvider
     ),
-    vBase: VBase__factory.connect(
-      deployments.VBaseDeployment.address,
+    vQuote: VQuote__factory.connect(
+      deployments.VQuoteDeployment.address,
       signerOrProvider
     ),
     vPoolWrapperLogic: VPoolWrapper__factory.connect(
@@ -179,7 +181,9 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
   });
 }
 
-export async function getDeployments(network: NetworkName) {
+export async function getDeployments(
+  network: NetworkName
+): Promise<Deployments> {
   const AccountLibraryDeployment = await getDeployment(
     network,
     'AccountLibrary'
@@ -200,8 +204,11 @@ export async function getDeployments(network: NetworkName) {
     network,
     'RageTradeFactory'
   );
-  const RBaseDeployment = await getDeployment(network, 'RBase');
-  const VBaseDeployment = await getDeployment(network, 'VBase');
+  const SettlementTokenDeployment = await getDeployment(
+    network,
+    'SettlementToken'
+  );
+  const VQuoteDeployment = await getDeployment(network, 'VQuote');
   const VPoolWrapperLogicDeployment = await getDeployment(
     network,
     'VPoolWrapperLogic'
@@ -224,8 +231,8 @@ export async function getDeployments(network: NetworkName) {
     NativeOracleDeployment,
     ProxyAdminDeployment,
     RageTradeFactoryDeployment,
-    RBaseDeployment,
-    VBaseDeployment,
+    SettlementTokenDeployment,
+    VQuoteDeployment,
     VPoolWrapperLogicDeployment,
     SwapSimulatorDeployment,
     ETH_vTokenDeployment,
@@ -255,7 +262,7 @@ export function getEthersInterfaces() {
     OracleMock__factory.createInterface(),
     ProxyAdmin__factory.createInterface(),
     RageTradeFactory__factory.createInterface(),
-    VBase__factory.createInterface(),
+    VQuote__factory.createInterface(),
     VToken__factory.createInterface(),
     VPoolWrapper__factory.createInterface(),
     SwapSimulator__factory.createInterface(),
@@ -271,7 +278,7 @@ export async function getDeployment(
   } catch (e) {
     console.error(e);
     throw new Error(
-      `Network ${networkName} does not the deployment ${name}. Make sure deployments are updated.`
+      `Network ${networkName} does not contain the deployment ${name}. Make sure deployments are updated.`
     );
   }
 }

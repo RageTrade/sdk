@@ -24,6 +24,28 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+    ],
+    name: 'CollateralDoesNotExist',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+    ],
+    name: 'CollateralNotAllowedForUse',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
         internalType: 'contract IERC20',
         name: 'incorrectAddress',
         type: 'address',
@@ -87,8 +109,14 @@ const _abi = [
     type: 'error',
   },
   {
-    inputs: [],
-    name: 'SlippageBeyondTolerance',
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'PoolDoesNotExist',
     type: 'error',
   },
   {
@@ -99,29 +127,12 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'UninitializedToken',
+    name: 'PoolNotAllowedForTrade',
     type: 'error',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'cTokenAddress',
-        type: 'address',
-      },
-    ],
-    name: 'UnsupportedCToken',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract IVToken',
-        name: 'vToken',
-        type: 'address',
-      },
-    ],
-    name: 'UnsupportedVToken',
+    inputs: [],
+    name: 'SlippageBeyondTolerance',
     type: 'error',
   },
 ];

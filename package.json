@@ -21,7 +21,7 @@
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
     "format:fix": "prettier --write src test",
-    "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn update:pools",
+    "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn build",
     "update:deployments": "rm -rf deployments && mkdir deployments && cp -r ../perpswap/deployments/ deployments/ && node processAbi.js",
     "update:types": "rm -rf src/typechain-types && mkdir src/typechain-types && cp -r ../perpswap/typechain-types/ src/typechain-types/ && yarn format:fix",
     "update:pools": "node fetch-pools.js",

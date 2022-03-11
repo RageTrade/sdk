@@ -28,13 +28,13 @@ const _abi = [
     name: 'protocol',
     outputs: [
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IERC20',
+        name: 'settlementToken',
         type: 'address',
       },
       {
-        internalType: 'contract IERC20',
-        name: 'cBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {
@@ -121,7 +121,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -208,12 +208,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'contract IVBase',
-        name: '_vBase',
+        internalType: 'contract IVQuote',
+        name: '_vQuote',
         type: 'address',
       },
     ],
-    name: 'setVBaseAddress',
+    name: 'setVQuoteAddress',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

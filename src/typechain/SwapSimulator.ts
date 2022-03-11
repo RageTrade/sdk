@@ -21,7 +21,7 @@ export declare namespace IClearingHouseStructures {
   export type SwapValuesStruct = {
     amountSpecified: BigNumberish;
     vTokenIn: BigNumberish;
-    vBaseIn: BigNumberish;
+    vQuoteIn: BigNumberish;
     liquidityFees: BigNumberish;
     protocolFees: BigNumberish;
   };
@@ -35,7 +35,7 @@ export declare namespace IClearingHouseStructures {
   ] & {
     amountSpecified: BigNumber;
     vTokenIn: BigNumber;
-    vBaseIn: BigNumber;
+    vQuoteIn: BigNumber;
     liquidityFees: BigNumber;
     protocolFees: BigNumber;
   };

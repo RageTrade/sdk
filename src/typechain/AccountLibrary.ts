@@ -61,8 +61,8 @@ export type LiquidityChangedEvent = TypedEvent<
     tickUpper: number;
     liquidityDelta: BigNumber;
     limitOrderType: number;
-    tokenAmountOut: BigNumber;
-    baseAmountOut: BigNumber;
+    vTokenAmountOut: BigNumber;
+    vQuoteAmountOut: BigNumber;
   }
 >;
 
@@ -113,8 +113,8 @@ export type TokenPositionChangedEvent = TypedEvent<
   {
     accountId: BigNumber;
     poolId: number;
-    tokenAmountOut: BigNumber;
-    baseAmountOut: BigNumber;
+    vTokenAmountOut: BigNumber;
+    vQuoteAmountOut: BigNumber;
   }
 >;
 
@@ -127,7 +127,7 @@ export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
     poolId: number;
     tickLower: number;
     tickUpper: number;
-    tokenAmountOut: BigNumber;
+    vTokenAmountOut: BigNumber;
   }
 >;
 
@@ -212,8 +212,8 @@ export interface AccountLibrary extends BaseContract {
       tickUpper?: null,
       liquidityDelta?: null,
       limitOrderType?: null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
+      vTokenAmountOut?: null,
+      vQuoteAmountOut?: null
     ): LiquidityChangedEventFilter;
     LiquidityChanged(
       accountId?: BigNumberish | null,
@@ -222,8 +222,8 @@ export interface AccountLibrary extends BaseContract {
       tickUpper?: null,
       liquidityDelta?: null,
       limitOrderType?: null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
+      vTokenAmountOut?: null,
+      vQuoteAmountOut?: null
     ): LiquidityChangedEventFilter;
 
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)'(
@@ -277,14 +277,14 @@ export interface AccountLibrary extends BaseContract {
     'TokenPositionChanged(uint256,uint32,int256,int256)'(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
+      vTokenAmountOut?: null,
+      vQuoteAmountOut?: null
     ): TokenPositionChangedEventFilter;
     TokenPositionChanged(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
-      tokenAmountOut?: null,
-      baseAmountOut?: null
+      vTokenAmountOut?: null,
+      vQuoteAmountOut?: null
     ): TokenPositionChangedEventFilter;
 
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
@@ -292,14 +292,14 @@ export interface AccountLibrary extends BaseContract {
       poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
-      tokenAmountOut?: null
+      vTokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
     TokenPositionChangedDueToLiquidityChanged(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       tickLower?: null,
       tickUpper?: null,
-      tokenAmountOut?: null
+      vTokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
 
     'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)'(

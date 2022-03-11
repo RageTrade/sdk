@@ -64,7 +64,9 @@ async function getPoolsList() {
             vPoolWrapperAddress: vPoolWrapper.address,
           }))
         );
-      } catch {}
+      } catch (e) {
+        console.error(e);
+      }
     }
     poolsList[chainName] = poolsListForChain;
   }

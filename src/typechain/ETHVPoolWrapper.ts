@@ -21,7 +21,7 @@ export declare namespace IVPoolWrapper {
   export type InitializeVPoolWrapperParamsStruct = {
     clearingHouse: string;
     vToken: string;
-    vBase: string;
+    vQuote: string;
     vPool: string;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
@@ -39,7 +39,7 @@ export declare namespace IVPoolWrapper {
   ] & {
     clearingHouse: string;
     vToken: string;
-    vBase: string;
+    vQuote: string;
     vPool: string;
     liquidityFeePips: number;
     protocolFeePips: number;
@@ -87,14 +87,13 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     'setProtocolFee(uint24)': FunctionFragment;
     'sumFeeGlobalX128()': FunctionFragment;
     'swap(bool,int256,uint160)': FunctionFragment;
-    'swapToken(int256,uint160,bool)': FunctionFragment;
     'ticksExtended(int24)': FunctionFragment;
     'uniswapFeePips()': FunctionFragment;
     'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment;
     'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment;
     'updateGlobalFundingState()': FunctionFragment;
-    'vBase()': FunctionFragment;
     'vPool()': FunctionFragment;
+    'vQuote()': FunctionFragment;
     'vToken()': FunctionFragment;
   };
 
@@ -165,10 +164,6 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     values: [boolean, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'swapToken',
-    values: [BigNumberish, BigNumberish, boolean]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'ticksExtended',
     values: [BigNumberish]
   ): string;
@@ -188,8 +183,8 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     functionFragment: 'updateGlobalFundingState',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'vBase', values?: undefined): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'vQuote', values?: undefined): string;
   encodeFunctionData(functionFragment: 'vToken', values?: undefined): string;
 
   decodeFunctionResult(
@@ -249,7 +244,6 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swap', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'ticksExtended',
     data: BytesLike
@@ -270,8 +264,8 @@ export interface ETHVPoolWrapperInterface extends utils.Interface {
     functionFragment: 'updateGlobalFundingState',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'vBase', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'vPool', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'vQuote', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'vToken', data: BytesLike): Result;
 
   events: {
@@ -307,7 +301,7 @@ export type BurnEvent = TypedEvent<
     tickUpper: number;
     liquidity: BigNumber;
     vTokenPrincipal: BigNumber;
-    basePrincipal: BigNumber;
+    vQuotePrincipal: BigNumber;
   }
 >;
 
@@ -327,7 +321,7 @@ export type MintEvent = TypedEvent<
     tickUpper: number;
     liquidity: BigNumber;
     vTokenPrincipal: BigNumber;
-    basePrincipal: BigNumber;
+    vQuotePrincipal: BigNumber;
   }
 >;
 
@@ -344,7 +338,7 @@ export type SwapEvent = TypedEvent<
   [BigNumber, BigNumber, BigNumber, BigNumber],
   {
     vTokenIn: BigNumber;
-    vBaseIn: BigNumber;
+    vQuoteIn: BigNumber;
     liquidityFees: BigNumber;
     protocolFees: BigNumber;
   }
@@ -469,16 +463,9 @@ export interface ETHVPoolWrapper extends BaseContract {
     sumFeeGlobalX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     swap(
-      swapVTokenForVBase: boolean,
+      swapVTokenForVQuote: boolean,
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    swapToken(
-      amount: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -498,7 +485,7 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
-      vBaseAmount: BigNumberish,
+      vQuoteAmount: BigNumberish,
       arg2: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -514,9 +501,9 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    vBase(overrides?: CallOverrides): Promise<[string]>;
-
     vPool(overrides?: CallOverrides): Promise<[string]>;
+
+    vQuote(overrides?: CallOverrides): Promise<[string]>;
 
     vToken(overrides?: CallOverrides): Promise<[string]>;
   };
@@ -602,16 +589,9 @@ export interface ETHVPoolWrapper extends BaseContract {
   sumFeeGlobalX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   swap(
-    swapVTokenForVBase: boolean,
+    swapVTokenForVQuote: boolean,
     amountSpecified: BigNumberish,
     sqrtPriceLimitX96: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  swapToken(
-    amount: BigNumberish,
-    sqrtPriceLimitX96: BigNumberish,
-    isNotional: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -631,7 +611,7 @@ export interface ETHVPoolWrapper extends BaseContract {
 
   uniswapV3MintCallback(
     vTokenAmount: BigNumberish,
-    vBaseAmount: BigNumberish,
+    vQuoteAmount: BigNumberish,
     arg2: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -647,9 +627,9 @@ export interface ETHVPoolWrapper extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  vBase(overrides?: CallOverrides): Promise<string>;
-
   vPool(overrides?: CallOverrides): Promise<string>;
+
+  vQuote(overrides?: CallOverrides): Promise<string>;
 
   vToken(overrides?: CallOverrides): Promise<string>;
 
@@ -669,7 +649,7 @@ export interface ETHVPoolWrapper extends BaseContract {
     ): Promise<
       [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
         vTokenPrincipal: BigNumber;
-        basePrincipal: BigNumber;
+        vQuotePrincipal: BigNumber;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
     >;
@@ -725,7 +705,7 @@ export interface ETHVPoolWrapper extends BaseContract {
     ): Promise<
       [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
         vTokenPrincipal: BigNumber;
-        basePrincipal: BigNumber;
+        vQuotePrincipal: BigNumber;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
     >;
@@ -745,21 +725,14 @@ export interface ETHVPoolWrapper extends BaseContract {
     sumFeeGlobalX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     swap(
-      swapVTokenForVBase: boolean,
+      swapVTokenForVQuote: boolean,
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    swapToken(
-      amount: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      isNotional: boolean,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
         vTokenAmount: BigNumber;
-        vBaseAmount: BigNumber;
+        vQuoteAmount: BigNumber;
       }
     >;
 
@@ -779,7 +752,7 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
-      vBaseAmount: BigNumberish,
+      vQuoteAmount: BigNumberish,
       arg2: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -793,9 +766,9 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     updateGlobalFundingState(overrides?: CallOverrides): Promise<void>;
 
-    vBase(overrides?: CallOverrides): Promise<string>;
-
     vPool(overrides?: CallOverrides): Promise<string>;
+
+    vQuote(overrides?: CallOverrides): Promise<string>;
 
     vToken(overrides?: CallOverrides): Promise<string>;
   };
@@ -813,14 +786,14 @@ export interface ETHVPoolWrapper extends BaseContract {
       tickUpper?: null,
       liquidity?: null,
       vTokenPrincipal?: null,
-      basePrincipal?: null
+      vQuotePrincipal?: null
     ): BurnEventFilter;
     Burn(
       tickLower?: null,
       tickUpper?: null,
       liquidity?: null,
       vTokenPrincipal?: null,
-      basePrincipal?: null
+      vQuotePrincipal?: null
     ): BurnEventFilter;
 
     'LiquidityFeeUpdated(uint24)'(
@@ -835,14 +808,14 @@ export interface ETHVPoolWrapper extends BaseContract {
       tickUpper?: null,
       liquidity?: null,
       vTokenPrincipal?: null,
-      basePrincipal?: null
+      vQuotePrincipal?: null
     ): MintEventFilter;
     Mint(
       tickLower?: null,
       tickUpper?: null,
       liquidity?: null,
       vTokenPrincipal?: null,
-      basePrincipal?: null
+      vQuotePrincipal?: null
     ): MintEventFilter;
 
     'ProtocolFeeUpdated(uint24)'(
@@ -852,13 +825,13 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     'Swap(int256,int256,uint256,uint256)'(
       vTokenIn?: null,
-      vBaseIn?: null,
+      vQuoteIn?: null,
       liquidityFees?: null,
       protocolFees?: null
     ): SwapEventFilter;
     Swap(
       vTokenIn?: null,
-      vBaseIn?: null,
+      vQuoteIn?: null,
       liquidityFees?: null,
       protocolFees?: null
     ): SwapEventFilter;
@@ -937,16 +910,9 @@ export interface ETHVPoolWrapper extends BaseContract {
     sumFeeGlobalX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     swap(
-      swapVTokenForVBase: boolean,
+      swapVTokenForVQuote: boolean,
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    swapToken(
-      amount: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -959,7 +925,7 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
-      vBaseAmount: BigNumberish,
+      vQuoteAmount: BigNumberish,
       arg2: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -975,9 +941,9 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    vBase(overrides?: CallOverrides): Promise<BigNumber>;
-
     vPool(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vQuote(overrides?: CallOverrides): Promise<BigNumber>;
 
     vToken(overrides?: CallOverrides): Promise<BigNumber>;
   };
@@ -1059,16 +1025,9 @@ export interface ETHVPoolWrapper extends BaseContract {
     sumFeeGlobalX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     swap(
-      swapVTokenForVBase: boolean,
+      swapVTokenForVQuote: boolean,
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapToken(
-      amount: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      isNotional: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1081,7 +1040,7 @@ export interface ETHVPoolWrapper extends BaseContract {
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
-      vBaseAmount: BigNumberish,
+      vQuoteAmount: BigNumberish,
       arg2: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1097,9 +1056,9 @@ export interface ETHVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    vBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     vPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    vQuote(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     vToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };

@@ -4,9 +4,9 @@
       "name": "Virtual ETH (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
-      "vTokenAddress": "0x7f2D1be802eF26465f39e675bd178A614718D44E",
-      "vPoolAddress": "0x4251628bd78fAC0827a7cE81ABA62658dCe6526E",
-      "vPoolWrapperAddress": "0xad5714e3BE75988c26d60CdE293A533B2EA9D072"
+      "vTokenAddress": "0x1Af4b12B709E98c49A80eD35363A9dCa09E3546a",
+      "vPoolAddress": "0xd052c73961eD7Aef4614aB0aAf8967C6E64F921c",
+      "vPoolWrapperAddress": "0x66d51a68F846da3EFFF251823D0A64b5f469160F"
     }
   },
   "poolsList": {
@@ -18,9 +18,9 @@
         "name": "Virtual ETH (Rage Trade)",
         "symbol": "vETH",
         "decimals": 18,
-        "vTokenAddress": "0x7f2D1be802eF26465f39e675bd178A614718D44E",
-        "vPoolAddress": "0x4251628bd78fAC0827a7cE81ABA62658dCe6526E",
-        "vPoolWrapperAddress": "0xad5714e3BE75988c26d60CdE293A533B2EA9D072"
+        "vTokenAddress": "0x1Af4b12B709E98c49A80eD35363A9dCa09E3546a",
+        "vPoolAddress": "0xd052c73961eD7Aef4614aB0aAf8967C6E64F921c",
+        "vPoolWrapperAddress": "0x66d51a68F846da3EFFF251823D0A64b5f469160F"
       }
     ],
     "opmain": [],

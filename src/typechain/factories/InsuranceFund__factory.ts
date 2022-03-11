@@ -66,7 +66,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'contract IERC20',
-        name: '_rBase',
+        name: '_settlementToken',
         type: 'address',
       },
       {
@@ -272,7 +272,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'rBase',
+    name: 'settlementToken',
     outputs: [
       {
         internalType: 'contract IERC20',
@@ -313,7 +313,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'recipient',
+        name: 'to',
         type: 'address',
       },
       {
@@ -337,12 +337,12 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
-        name: 'sender',
+        name: 'from',
         type: 'address',
       },
       {
         internalType: 'address',
-        name: 'recipient',
+        name: 'to',
         type: 'address',
       },
       {

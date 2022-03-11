@@ -37,6 +37,28 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+    ],
+    name: 'CollateralDoesNotExist',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+    ],
+    name: 'CollateralNotAllowedForUse',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'gasUsedClaim',
         type: 'uint256',
@@ -59,17 +81,6 @@ const _abi = [
       },
     ],
     name: 'IllegalSqrtPrice',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: 'period',
-        type: 'uint32',
-      },
-    ],
-    name: 'IllegalTwapDuration',
     type: 'error',
   },
   {
@@ -143,18 +154,14 @@ const _abi = [
     type: 'error',
   },
   {
-    inputs: [],
-    name: 'Paused',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'SlippageBeyondTolerance',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'Unauthorised',
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'PoolDoesNotExist',
     type: 'error',
   },
   {
@@ -165,34 +172,38 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'UninitializedToken',
+    name: 'PoolNotAllowedForTrade',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'SlippageBeyondTolerance',
     type: 'error',
   },
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'cTokenAddress',
-        type: 'address',
+        internalType: 'uint32',
+        name: 'period',
+        type: 'uint32',
       },
     ],
-    name: 'UnsupportedCToken',
+    name: 'UV3PH_IllegalTwapDuration',
     type: 'error',
   },
   {
-    inputs: [
-      {
-        internalType: 'contract IVToken',
-        name: 'vToken',
-        type: 'address',
-      },
-    ],
-    name: 'UnsupportedVToken',
+    inputs: [],
+    name: 'Unauthorised',
     type: 'error',
   },
   {
     inputs: [],
     name: 'ZeroAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroAmount',
     type: 'error',
   },
   {
@@ -237,7 +248,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForDeposit',
             type: 'bool',
           },
         ],
@@ -324,6 +335,19 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'Paused',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'bool',
         name: 'paused',
         type: 'bool',
@@ -360,7 +384,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForTrade',
             type: 'bool',
           },
           {
@@ -456,6 +480,19 @@ const _abi = [
     type: 'event',
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
+      },
+    ],
+    name: 'Unpaused',
+    type: 'event',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -478,8 +515,8 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'contract IVBase',
-        name: '_vBase',
+        internalType: 'contract IVQuote',
+        name: '_vQuote',
         type: 'address',
       },
       {
@@ -608,14 +645,14 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseBalance',
+        name: 'vQuoteBalance',
         type: 'int256',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'cTokenAddress',
+            internalType: 'contract IERC20',
+            name: 'collateral',
             type: 'address',
           },
           {
@@ -624,15 +661,15 @@ const _abi = [
             type: 'uint256',
           },
         ],
-        internalType: 'struct IClearingHouseStructures.DepositTokenView[]',
-        name: 'tokenDeposits',
+        internalType: 'struct IClearingHouseStructures.CollateralDepositView[]',
+        name: 'collateralDeposits',
         type: 'tuple[]',
       },
       {
         components: [
           {
-            internalType: 'address',
-            name: 'vTokenAddress',
+            internalType: 'contract IVToken',
+            name: 'vToken',
             type: 'address',
           },
           {
@@ -647,7 +684,7 @@ const _abi = [
           },
           {
             internalType: 'int256',
-            name: 'sumAX128Ckpt',
+            name: 'sumAX128Chkpt',
             type: 'int256',
           },
           {
@@ -791,7 +828,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForDeposit',
                 type: 'bool',
               },
             ],
@@ -878,7 +915,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -1040,7 +1077,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -1096,7 +1133,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -1201,6 +1238,13 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'pause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'paused',
     outputs: [
       {
@@ -1217,8 +1261,8 @@ const _abi = [
     name: 'protocolInfo',
     outputs: [
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {
@@ -1318,7 +1362,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {
@@ -1440,19 +1484,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'bool',
-        name: '_pause',
-        type: 'bool',
-      },
-    ],
-    name: 'setPaused',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint256',
         name: 'accountId',
         type: 'uint256',
@@ -1499,7 +1530,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -1546,6 +1577,13 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'unpause',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'contract IERC20',
@@ -1566,7 +1604,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForDeposit',
             type: 'bool',
           },
         ],
@@ -1606,7 +1644,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForTrade',
             type: 'bool',
           },
           {
@@ -1762,7 +1800,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -1784,65 +1822,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'AlreadyInitialized',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'int24',
-        name: 'tickLower',
-        type: 'int24',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickUpper',
-        type: 'int24',
-      },
-      {
-        internalType: 'uint256',
-        name: 'liquidity',
-        type: 'uint256',
-      },
-    ],
-    name: 'DeactivationFailed',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: 'element',
-        type: 'uint32',
-      },
-    ],
-    name: 'IllegalElement',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'int24',
-        name: 'tickLower',
-        type: 'int24',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickUpper',
-        type: 'int24',
-      },
-    ],
-    name: 'IllegalTicks',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'InactiveRange',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'IneligibleLimitOrderRemoval',
+    name: 'InsufficientCollateralBalance',
     type: 'error',
   },
   {
@@ -1902,12 +1882,97 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        internalType: 'uint256',
+        name: 'liquidity',
+        type: 'uint256',
+      },
+    ],
+    name: 'LPS_DeactivationFailed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+    ],
+    name: 'LPS_IllegalTicks',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'LPS_InactiveRange',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'LP_AlreadyInitialized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'LP_IneligibleLimitOrderRemoval',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint32',
         name: 'element',
         type: 'uint32',
       },
     ],
-    name: 'NoSpaceLeftToInsert',
+    name: 'U32L8_IllegalElement',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'element',
+        type: 'uint32',
+      },
+    ],
+    name: 'U32L8_NoSpaceLeftToInsert',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint48',
+        name: 'element',
+        type: 'uint48',
+      },
+    ],
+    name: 'U48L5_IllegalElement',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint48',
+        name: 'element',
+        type: 'uint48',
+      },
+    ],
+    name: 'U48L5_NoSpaceLeftToInsert',
     type: 'error',
   },
   {
@@ -1918,7 +1983,18 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'TokenInactive',
+    name: 'VPS_DeactivationFailed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'VPS_TokenInactive',
     type: 'error',
   },
   {
@@ -2000,13 +2076,13 @@ const _abi = [
       {
         indexed: false,
         internalType: 'int256',
-        name: 'tokenAmountOut',
+        name: 'vTokenAmountOut',
         type: 'int256',
       },
       {
         indexed: false,
         internalType: 'int256',
-        name: 'baseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -2143,13 +2219,13 @@ const _abi = [
       {
         indexed: false,
         internalType: 'int256',
-        name: 'tokenAmountOut',
+        name: 'vTokenAmountOut',
         type: 'int256',
       },
       {
         indexed: false,
         internalType: 'int256',
-        name: 'baseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -2186,7 +2262,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'int256',
-        name: 'tokenAmountOut',
+        name: 'vTokenAmountOut',
         type: 'int256',
       },
     ],

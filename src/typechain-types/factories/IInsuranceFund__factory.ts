@@ -14,7 +14,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'contract IERC20',
-        name: 'rBase',
+        name: 'settlementToken',
         type: 'address',
       },
       {

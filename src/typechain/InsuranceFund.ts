@@ -31,7 +31,7 @@ export interface InsuranceFundInterface extends utils.Interface {
     'deposit(uint256)': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
     'name()': FunctionFragment;
-    'rBase()': FunctionFragment;
+    'settlementToken()': FunctionFragment;
     'symbol()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
@@ -71,7 +71,10 @@ export interface InsuranceFundInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'rBase', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'settlementToken',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'totalSupply',
@@ -113,7 +116,10 @@ export interface InsuranceFundInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'rBase', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'settlementToken',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'totalSupply',
@@ -178,7 +184,7 @@ export interface InsuranceFund extends BaseContract {
 
   functions: {
     __initialize_InsuranceFund(
-      _rBase: string,
+      _settlementToken: string,
       _clearingHouse: string,
       name: string,
       symbol: string,
@@ -227,21 +233,21 @@ export interface InsuranceFund extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
-    rBase(overrides?: CallOverrides): Promise<[string]>;
+    settlementToken(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transfer(
-      recipient: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
+      from: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -253,7 +259,7 @@ export interface InsuranceFund extends BaseContract {
   };
 
   __initialize_InsuranceFund(
-    _rBase: string,
+    _settlementToken: string,
     _clearingHouse: string,
     name: string,
     symbol: string,
@@ -302,21 +308,21 @@ export interface InsuranceFund extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
-  rBase(overrides?: CallOverrides): Promise<string>;
+  settlementToken(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   transfer(
-    recipient: string,
+    to: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   transferFrom(
-    sender: string,
-    recipient: string,
+    from: string,
+    to: string,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -328,7 +334,7 @@ export interface InsuranceFund extends BaseContract {
 
   callStatic: {
     __initialize_InsuranceFund(
-      _rBase: string,
+      _settlementToken: string,
       _clearingHouse: string,
       name: string,
       symbol: string,
@@ -371,21 +377,21 @@ export interface InsuranceFund extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
-    rBase(overrides?: CallOverrides): Promise<string>;
+    settlementToken(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
-      recipient: string,
+      to: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
+      from: string,
+      to: string,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -419,7 +425,7 @@ export interface InsuranceFund extends BaseContract {
 
   estimateGas: {
     __initialize_InsuranceFund(
-      _rBase: string,
+      _settlementToken: string,
       _clearingHouse: string,
       name: string,
       symbol: string,
@@ -468,21 +474,21 @@ export interface InsuranceFund extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
-    rBase(overrides?: CallOverrides): Promise<BigNumber>;
+    settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     transfer(
-      recipient: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
+      from: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -495,7 +501,7 @@ export interface InsuranceFund extends BaseContract {
 
   populateTransaction: {
     __initialize_InsuranceFund(
-      _rBase: string,
+      _settlementToken: string,
       _clearingHouse: string,
       name: string,
       symbol: string,
@@ -547,21 +553,21 @@ export interface InsuranceFund extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    rBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    settlementToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transfer(
-      recipient: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     transferFrom(
-      sender: string,
-      recipient: string,
+      from: string,
+      to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

@@ -33,8 +33,8 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'contract IVBase',
-        name: 'vBase',
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
         type: 'address',
       },
       {
@@ -86,7 +86,7 @@ const _abi = [
               },
               {
                 internalType: 'bool',
-                name: 'supported',
+                name: 'isAllowedForTrade',
                 type: 'bool',
               },
               {

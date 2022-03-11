@@ -31,7 +31,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForDeposit',
             type: 'bool',
           },
         ],
@@ -71,7 +71,7 @@ const _abi = [
           },
           {
             internalType: 'bool',
-            name: 'supported',
+            name: 'isAllowedForTrade',
             type: 'bool',
           },
           {

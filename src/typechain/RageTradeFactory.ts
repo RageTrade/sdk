@@ -36,7 +36,7 @@ export declare namespace IClearingHouseStructures {
     initialMarginRatio: BigNumberish;
     maintainanceMarginRatio: BigNumberish;
     twapDuration: BigNumberish;
-    supported: boolean;
+    isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
@@ -52,7 +52,7 @@ export declare namespace IClearingHouseStructures {
     initialMarginRatio: number;
     maintainanceMarginRatio: number;
     twapDuration: number;
-    supported: boolean;
+    isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
@@ -93,8 +93,8 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
-    'vBase()': FunctionFragment;
     'vPoolWrapperLogicAddress()': FunctionFragment;
+    'vQuote()': FunctionFragment;
   };
 
   encodeFunctionData(
@@ -129,11 +129,11 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     functionFragment: 'transferTeamMultisig',
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: 'vBase', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'vPoolWrapperLogicAddress',
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: 'vQuote', values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: 'clearingHouse',
@@ -161,11 +161,11 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     functionFragment: 'transferTeamMultisig',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'vBase', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'vPoolWrapperLogicAddress',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'vQuote', data: BytesLike): Result;
 
   events: {
     'GovernanceTransferred(address,address)': EventFragment;
@@ -258,9 +258,9 @@ export interface RageTradeFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    vBase(overrides?: CallOverrides): Promise<[string]>;
-
     vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    vQuote(overrides?: CallOverrides): Promise<[string]>;
   };
 
   clearingHouse(overrides?: CallOverrides): Promise<string>;
@@ -294,9 +294,9 @@ export interface RageTradeFactory extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  vBase(overrides?: CallOverrides): Promise<string>;
-
   vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<string>;
+
+  vQuote(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     clearingHouse(overrides?: CallOverrides): Promise<string>;
@@ -330,9 +330,9 @@ export interface RageTradeFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    vBase(overrides?: CallOverrides): Promise<string>;
-
     vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<string>;
+
+    vQuote(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -398,9 +398,9 @@ export interface RageTradeFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    vBase(overrides?: CallOverrides): Promise<BigNumber>;
-
     vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    vQuote(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -435,10 +435,10 @@ export interface RageTradeFactory extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    vBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     vPoolWrapperLogicAddress(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    vQuote(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -12,67 +12,6 @@ import type {
 const _abi = [
   {
     inputs: [],
-    name: 'Unauthorised',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ZeroAddress',
-    type: 'error',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousGovernance',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newGovernance',
-        type: 'address',
-      },
-    ],
-    name: 'GovernanceTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousTeamMultisig',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newTeamMultisig',
-        type: 'address',
-      },
-    ],
-    name: 'TeamMultisigTransferred',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'governance',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'insuranceFund',
     outputs: [
       {
@@ -112,19 +51,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'paused',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'rageTradeFactoryAddress',
     outputs: [
       {
@@ -134,45 +60,6 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'teamMultisig',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newGovernance',
-        type: 'address',
-      },
-    ],
-    name: 'transferGovernance',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newTeamMultisig',
-        type: 'address',
-      },
-    ],
-    name: 'transferTeamMultisig',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
 ];

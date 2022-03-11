@@ -136,7 +136,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -192,7 +192,7 @@ const _abi = [
         components: [
           {
             internalType: 'int256',
-            name: 'vBaseIncrease',
+            name: 'vQuoteIncrease',
             type: 'int256',
           },
           {
@@ -353,7 +353,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
@@ -442,7 +442,7 @@ const _abi = [
       },
       {
         internalType: 'int256',
-        name: 'vBaseAmountOut',
+        name: 'vQuoteAmountOut',
         type: 'int256',
       },
     ],
