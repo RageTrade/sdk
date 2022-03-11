@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -16,7 +16,8 @@
     "build": "tsdx build && yarn update:pools",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "yarn build",
+    "clean": "rm -r dist",
+    "prepare": "yarn clean && yarn build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
