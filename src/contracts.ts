@@ -71,7 +71,7 @@ export async function getContractsWithChainId(
   return getContractsWithDeployments(signerOrProvider, d);
 }
 
-interface Deployments {
+export interface Deployments {
   AccountLibraryDeployment: ContractDeployment;
   ClearingHouseDeployment: ContractDeployment;
   ClearingHouseLogicDeployment: ContractDeployment;

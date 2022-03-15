@@ -5,7 +5,7 @@ import { fromQ128, fromQ96, Q96, toQ128, toQ96 } from './fixed-point';
 
 export declare type ERC20Decimals = { decimals(): Promise<number> } | number;
 
-async function getDecimals(contractOrValue: ERC20Decimals) {
+export async function getDecimals(contractOrValue: ERC20Decimals) {
   if (typeof contractOrValue === 'number') {
     return contractOrValue;
   } else {
@@ -200,8 +200,8 @@ export async function priceToNearestPriceX128(
   );
 }
 
-const ONE = BigNumber.from(1);
-const TWO = BigNumber.from(2);
+export const ONE = BigNumber.from(1);
+export const TWO = BigNumber.from(2);
 
 function sqrt(value: BigNumberish) {
   const x = BigNumber.from(value);

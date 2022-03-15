@@ -64,6 +64,6 @@ export function fromQ96(val: BigNumber, jsDecimals?: number): number {
     : roundToNearest(formatted, jsDecimals);
 }
 
-function roundToNearest(num: number, nearest: number) {
+export function roundToNearest(num: number, nearest: number) {
   return Math.round(num / nearest) * nearest;
 }
