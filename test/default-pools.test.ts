@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import pools from '../dist/pools.json';
 
 import { config } from 'dotenv';
+import { parseName, parseSymbol } from '../dist';
 config();
 
 describe('default pools', () => {
@@ -36,5 +37,10 @@ describe('default pools', () => {
     expect(
       ethers.utils.isHexString(pools.poolsList.arbtest[0].vPoolAddress)
     ).toBeTruthy();
+  });
+
+  it('parseName', async () => {
+    expect(parseName(pools.defaultPool.arbtest.name)).toEqual('ETH');
+    expect(parseSymbol(pools.defaultPool.arbtest.symbol)).toEqual('ETH');
   });
 });

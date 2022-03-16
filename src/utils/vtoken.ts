@@ -7,3 +7,11 @@ export function truncate(address: string) {
 
   return '0x' + temp;
 }
+
+export function parseName(name: string) {
+  return name.slice(8).slice(0, -13);
+}
+
+export function parseSymbol(symbol: string) {
+  return symbol.slice(1);
+}
