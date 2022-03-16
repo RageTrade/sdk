@@ -25,7 +25,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
-    UNISWAP_V3_DEFAULT_FEE_TIER: BigNumberish;
   };
 
   export type InitializeVPoolWrapperParamsStructOutput = [
@@ -33,7 +32,6 @@ export declare namespace IVPoolWrapper {
     string,
     string,
     string,
-    number,
     number,
     number
   ] & {
@@ -43,7 +41,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: number;
     protocolFeePips: number;
-    UNISWAP_V3_DEFAULT_FEE_TIER: number;
   };
 
   export type WrapperValuesInsideStruct = {
@@ -69,7 +66,7 @@ export declare namespace IVPoolWrapper {
 export interface VPoolWrapperInterface extends utils.Interface {
   contractName: 'VPoolWrapper';
   functions: {
-    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24))': FunctionFragment;
     'accruedProtocolFee()': FunctionFragment;
     'burn(int24,int24,uint128)': FunctionFragment;
     'clearingHouse()': FunctionFragment;
@@ -88,7 +85,6 @@ export interface VPoolWrapperInterface extends utils.Interface {
     'sumFeeGlobalX128()': FunctionFragment;
     'swap(bool,int256,uint160)': FunctionFragment;
     'ticksExtended(int24)': FunctionFragment;
-    'uniswapFeePips()': FunctionFragment;
     'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment;
     'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment;
     'updateGlobalFundingState()': FunctionFragment;
@@ -168,10 +164,6 @@ export interface VPoolWrapperInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'uniswapFeePips',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'uniswapV3MintCallback',
     values: [BigNumberish, BigNumberish, BytesLike]
   ): string;
@@ -246,10 +238,6 @@ export interface VPoolWrapperInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'swap', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'ticksExtended',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'uniswapFeePips',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -481,8 +469,6 @@ export interface VPoolWrapper extends BaseContract {
       }
     >;
 
-    uniswapFeePips(overrides?: CallOverrides): Promise<[number]>;
-
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
       vQuoteAmount: BigNumberish,
@@ -606,8 +592,6 @@ export interface VPoolWrapper extends BaseContract {
       sumFeeOutsideX128: BigNumber;
     }
   >;
-
-  uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
   uniswapV3MintCallback(
     vTokenAmount: BigNumberish,
@@ -747,8 +731,6 @@ export interface VPoolWrapper extends BaseContract {
         sumFeeOutsideX128: BigNumber;
       }
     >;
-
-    uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
@@ -921,8 +903,6 @@ export interface VPoolWrapper extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    uniswapFeePips(overrides?: CallOverrides): Promise<BigNumber>;
-
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,
       vQuoteAmount: BigNumberish,
@@ -1035,8 +1015,6 @@ export interface VPoolWrapper extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    uniswapFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     uniswapV3MintCallback(
       vTokenAmount: BigNumberish,

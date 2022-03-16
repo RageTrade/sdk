@@ -95,7 +95,7 @@ const _abi = [
     outputs: [
       {
         internalType: 'uint128',
-        name: '_liquidity',
+        name: 'liquidity',
         type: 'uint128',
       },
       {

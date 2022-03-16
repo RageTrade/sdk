@@ -250,7 +250,7 @@ export interface ClearingHouseViewInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
-    'getTwapPrices(address)': FunctionFragment;
+    'getTwapPrices(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
     'insuranceFund()': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
@@ -321,7 +321,7 @@ export interface ClearingHouseViewInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapPrices',
-    values: [string]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
@@ -755,7 +755,7 @@ export interface ClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
+        marketValue: BigNumber;
         requiredMargin: BigNumber;
       }
     >;
@@ -782,7 +782,7 @@ export interface ClearingHouseView extends BaseContract {
     ): Promise<[IClearingHouseStructures.PoolStructOutput]>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -999,7 +999,7 @@ export interface ClearingHouseView extends BaseContract {
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
-      accountMarketValue: BigNumber;
+      marketValue: BigNumber;
       requiredMargin: BigNumber;
     }
   >;
@@ -1026,7 +1026,7 @@ export interface ClearingHouseView extends BaseContract {
   ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
   getTwapPrices(
-    vToken: string,
+    poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -1241,7 +1241,7 @@ export interface ClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
+        marketValue: BigNumber;
         requiredMargin: BigNumber;
       }
     >;
@@ -1268,7 +1268,7 @@ export interface ClearingHouseView extends BaseContract {
     ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -1573,7 +1573,7 @@ export interface ClearingHouseView extends BaseContract {
     ): Promise<BigNumber>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1780,7 +1780,7 @@ export interface ClearingHouseView extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

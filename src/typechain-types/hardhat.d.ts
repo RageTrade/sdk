@@ -157,6 +157,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUniswapV3PoolDerivedState__factory>;
     getContractFactory(
+      name: 'IUniswapV3PoolErrors',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IUniswapV3PoolErrors__factory>;
+    getContractFactory(
       name: 'IUniswapV3PoolEvents',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUniswapV3PoolEvents__factory>;
@@ -172,6 +176,10 @@ declare module 'hardhat/types/runtime' {
       name: 'IUniswapV3PoolState',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUniswapV3PoolState__factory>;
+    getContractFactory(
+      name: 'TickMath',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TickMath__factory>;
     getContractFactory(
       name: 'IMulticall',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -441,13 +449,17 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SignedFullMathTest__factory>;
     getContractFactory(
+      name: 'SignedMathTest',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SignedMathTest__factory>;
+    getContractFactory(
       name: 'SimulateSwapTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SimulateSwapTest__factory>;
     getContractFactory(
-      name: 'TickTest',
+      name: 'TickExtendedTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TickTest__factory>;
+    ): Promise<Contracts.TickExtendedTest__factory>;
     getContractFactory(
       name: 'Uint32L8ArrayTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -690,6 +702,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.IUniswapV3PoolDerivedState>;
     getContractAt(
+      name: 'IUniswapV3PoolErrors',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IUniswapV3PoolErrors>;
+    getContractAt(
       name: 'IUniswapV3PoolEvents',
       address: string,
       signer?: ethers.Signer
@@ -709,6 +726,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IUniswapV3PoolState>;
+    getContractAt(
+      name: 'TickMath',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TickMath>;
     getContractAt(
       name: 'IMulticall',
       address: string,
@@ -1045,15 +1067,20 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.SignedFullMathTest>;
     getContractAt(
+      name: 'SignedMathTest',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SignedMathTest>;
+    getContractAt(
       name: 'SimulateSwapTest',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SimulateSwapTest>;
     getContractAt(
-      name: 'TickTest',
+      name: 'TickExtendedTest',
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.TickTest>;
+    ): Promise<Contracts.TickExtendedTest>;
     getContractAt(
       name: 'Uint32L8ArrayTest',
       address: string,

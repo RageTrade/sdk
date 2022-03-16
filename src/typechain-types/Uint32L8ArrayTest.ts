@@ -26,6 +26,7 @@ export interface Uint32L8ArrayTestInterface extends utils.Interface {
     'getterAll()': FunctionFragment;
     'include(uint32)': FunctionFragment;
     'length()': FunctionFragment;
+    'numberOfNonZeroElements()': FunctionFragment;
     'setter(uint8,uint32)': FunctionFragment;
   };
 
@@ -48,6 +49,10 @@ export interface Uint32L8ArrayTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'length', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'numberOfNonZeroElements',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setter',
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -58,6 +63,10 @@ export interface Uint32L8ArrayTestInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'getterAll', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'include', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'length', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'numberOfNonZeroElements',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'setter', data: BytesLike): Result;
 
   events: {};
@@ -112,6 +121,8 @@ export interface Uint32L8ArrayTest extends BaseContract {
 
     length(overrides?: CallOverrides): Promise<[number] & { len: number }>;
 
+    numberOfNonZeroElements(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     setter(
       index: BigNumberish,
       element: BigNumberish,
@@ -137,6 +148,8 @@ export interface Uint32L8ArrayTest extends BaseContract {
 
   length(overrides?: CallOverrides): Promise<number>;
 
+  numberOfNonZeroElements(overrides?: CallOverrides): Promise<BigNumber>;
+
   setter(
     index: BigNumberish,
     element: BigNumberish,
@@ -155,6 +168,8 @@ export interface Uint32L8ArrayTest extends BaseContract {
     include(element: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     length(overrides?: CallOverrides): Promise<number>;
+
+    numberOfNonZeroElements(overrides?: CallOverrides): Promise<BigNumber>;
 
     setter(
       index: BigNumberish,
@@ -187,6 +202,8 @@ export interface Uint32L8ArrayTest extends BaseContract {
 
     length(overrides?: CallOverrides): Promise<BigNumber>;
 
+    numberOfNonZeroElements(overrides?: CallOverrides): Promise<BigNumber>;
+
     setter(
       index: BigNumberish,
       element: BigNumberish,
@@ -218,6 +235,10 @@ export interface Uint32L8ArrayTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     length(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    numberOfNonZeroElements(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     setter(
       index: BigNumberish,

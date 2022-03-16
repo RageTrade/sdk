@@ -133,7 +133,7 @@ export interface IUniswapV3PoolState extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        _liquidity: BigNumber;
+        liquidity: BigNumber;
         feeGrowthInside0LastX128: BigNumber;
         feeGrowthInside1LastX128: BigNumber;
         tokensOwed0: BigNumber;
@@ -215,7 +215,7 @@ export interface IUniswapV3PoolState extends BaseContract {
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-      _liquidity: BigNumber;
+      liquidity: BigNumber;
       feeGrowthInside0LastX128: BigNumber;
       feeGrowthInside1LastX128: BigNumber;
       tokensOwed0: BigNumber;
@@ -295,7 +295,7 @@ export interface IUniswapV3PoolState extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        _liquidity: BigNumber;
+        liquidity: BigNumber;
         feeGrowthInside0LastX128: BigNumber;
         feeGrowthInside1LastX128: BigNumber;
         tokensOwed0: BigNumber;

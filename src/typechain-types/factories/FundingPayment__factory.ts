@@ -40,6 +40,18 @@ const _abi = [
         name: 'fundingPayment',
         type: 'tuple',
       },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'realPriceX128',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'virtualPriceX128',
+        type: 'uint256',
+      },
     ],
     name: 'FundingPaymentStateUpdated',
     type: 'event',
@@ -47,7 +59,7 @@ const _abi = [
 ];
 
 const _bytecode =
-  '0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122009445c63d22202caf789d4a0ab225a2616df9efb7f686dc8345b79a24522cc1c64736f6c634300080c0033';
+  '0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220923d317a210ba04d101981c076ce5607816b2d0d3d559ef1243dfa9822096d1c64736f6c634300080c0033';
 
 type FundingPaymentConstructorParams =
   | [signer?: Signer]

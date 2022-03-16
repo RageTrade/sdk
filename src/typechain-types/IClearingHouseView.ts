@@ -180,7 +180,7 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
-    'getTwapPrices(address)': FunctionFragment;
+    'getTwapPrices(uint32)': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
     'protocolInfo()': FunctionFragment;
   };
@@ -211,7 +211,7 @@ export interface IClearingHouseViewInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapPrices',
-    values: [string]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'isPoolIdAvailable',
@@ -340,7 +340,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<[IClearingHouseStructures.PoolStructOutput]>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -423,7 +423,7 @@ export interface IClearingHouseView extends BaseContract {
   ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
   getTwapPrices(
-    vToken: string,
+    poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -506,7 +506,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -575,7 +575,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<BigNumber>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -621,7 +621,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

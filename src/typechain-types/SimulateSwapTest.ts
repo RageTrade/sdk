@@ -18,22 +18,26 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace SimulateSwap {
-  export type SwapCacheStruct = {
+  export type CacheStruct = {
     sqrtPriceX96Start: BigNumberish;
     tickStart: BigNumberish;
     feeProtocol: BigNumberish;
     liquidityStart: BigNumberish;
     tickSpacing: BigNumberish;
     fee: BigNumberish;
+    realPriceX128: BigNumberish;
+    virtualPriceX128: BigNumberish;
   };
 
-  export type SwapCacheStructOutput = [
+  export type CacheStructOutput = [
     BigNumber,
     number,
     number,
     BigNumber,
     number,
-    number
+    number,
+    BigNumber,
+    BigNumber
   ] & {
     sqrtPriceX96Start: BigNumber;
     tickStart: number;
@@ -41,9 +45,11 @@ export declare namespace SimulateSwap {
     liquidityStart: BigNumber;
     tickSpacing: number;
     fee: number;
+    realPriceX128: BigNumber;
+    virtualPriceX128: BigNumber;
   };
 
-  export type SwapStateStruct = {
+  export type StateStruct = {
     amountSpecifiedRemaining: BigNumberish;
     amountCalculated: BigNumberish;
     sqrtPriceX96: BigNumberish;
@@ -53,7 +59,7 @@ export declare namespace SimulateSwap {
     liquidity: BigNumberish;
   };
 
-  export type SwapStateStructOutput = [
+  export type StateStructOutput = [
     BigNumber,
     BigNumber,
     BigNumber,
@@ -71,7 +77,7 @@ export declare namespace SimulateSwap {
     liquidity: BigNumber;
   };
 
-  export type StepComputationsStruct = {
+  export type StepStruct = {
     sqrtPriceStartX96: BigNumberish;
     tickNext: BigNumberish;
     initialized: boolean;
@@ -81,7 +87,7 @@ export declare namespace SimulateSwap {
     feeAmount: BigNumberish;
   };
 
-  export type StepComputationsStructOutput = [
+  export type StepStructOutput = [
     BigNumber,
     number,
     boolean,
@@ -102,16 +108,16 @@ export declare namespace SimulateSwap {
 
 export declare namespace SimulateSwapTest {
   export type SwapStepStruct = {
-    state: SimulateSwap.SwapStateStruct;
-    step: SimulateSwap.StepComputationsStruct;
+    state: SimulateSwap.StateStruct;
+    step: SimulateSwap.StepStruct;
   };
 
   export type SwapStepStructOutput = [
-    SimulateSwap.SwapStateStructOutput,
-    SimulateSwap.StepComputationsStructOutput
+    SimulateSwap.StateStructOutput,
+    SimulateSwap.StepStructOutput
   ] & {
-    state: SimulateSwap.SwapStateStructOutput;
-    step: SimulateSwap.StepComputationsStructOutput;
+    state: SimulateSwap.StateStructOutput;
+    step: SimulateSwap.StepStructOutput;
   };
 }
 
@@ -399,12 +405,12 @@ export interface SimulateSwapTest extends BaseContract {
       [
         BigNumber,
         BigNumber,
-        SimulateSwap.SwapCacheStructOutput,
+        SimulateSwap.CacheStructOutput,
         SimulateSwapTest.SwapStepStructOutput[]
       ] & {
         amount0: BigNumber;
         amount1: BigNumber;
-        cache: SimulateSwap.SwapCacheStructOutput;
+        cache: SimulateSwap.CacheStructOutput;
         steps: SimulateSwapTest.SwapStepStructOutput[];
       }
     >;

@@ -185,11 +185,6 @@ const _abi = [
             name: 'protocolFeePips',
             type: 'uint24',
           },
-          {
-            internalType: 'uint24',
-            name: 'UNISWAP_V3_DEFAULT_FEE_TIER',
-            type: 'uint24',
-          },
         ],
         internalType: 'struct IVPoolWrapper.InitializeVPoolWrapperParams',
         name: 'params',
@@ -512,19 +507,6 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'uniswapFeePips',
-    outputs: [
-      {
-        internalType: 'uint24',
-        name: '',
-        type: 'uint24',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

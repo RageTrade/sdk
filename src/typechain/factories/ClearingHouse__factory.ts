@@ -181,6 +181,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'T',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -766,7 +771,7 @@ const _abi = [
     outputs: [
       {
         internalType: 'int256',
-        name: 'accountMarketValue',
+        name: 'marketValue',
         type: 'int256',
       },
       {
@@ -945,9 +950,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'contract IVToken',
-        name: 'vToken',
-        type: 'address',
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
       },
     ],
     name: 'getTwapPrices',

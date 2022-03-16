@@ -42,6 +42,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'R',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint128',
@@ -61,6 +66,11 @@ const _abi = [
       },
     ],
     name: 'SafeCast_Int256Overflow',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'T',
     type: 'error',
   },
   {
@@ -244,11 +254,6 @@ const _abi = [
           {
             internalType: 'uint24',
             name: 'protocolFeePips',
-            type: 'uint24',
-          },
-          {
-            internalType: 'uint24',
-            name: 'UNISWAP_V3_DEFAULT_FEE_TIER',
             type: 'uint24',
           },
         ],
@@ -735,19 +740,6 @@ const _abi = [
         internalType: 'uint256',
         name: 'sumFeeOutsideX128',
         type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'uniswapFeePips',
-    outputs: [
-      {
-        internalType: 'uint24',
-        name: '',
-        type: 'uint24',
       },
     ],
     stateMutability: 'view',

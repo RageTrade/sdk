@@ -42,22 +42,26 @@ export declare namespace IClearingHouseStructures {
 }
 
 export declare namespace SimulateSwap {
-  export type SwapCacheStruct = {
+  export type CacheStruct = {
     sqrtPriceX96Start: BigNumberish;
     tickStart: BigNumberish;
     feeProtocol: BigNumberish;
     liquidityStart: BigNumberish;
     tickSpacing: BigNumberish;
     fee: BigNumberish;
+    realPriceX128: BigNumberish;
+    virtualPriceX128: BigNumberish;
   };
 
-  export type SwapCacheStructOutput = [
+  export type CacheStructOutput = [
     BigNumber,
     number,
     number,
     BigNumber,
     number,
-    number
+    number,
+    BigNumber,
+    BigNumber
   ] & {
     sqrtPriceX96Start: BigNumber;
     tickStart: number;
@@ -65,37 +69,11 @@ export declare namespace SimulateSwap {
     liquidityStart: BigNumber;
     tickSpacing: number;
     fee: number;
+    realPriceX128: BigNumber;
+    virtualPriceX128: BigNumber;
   };
 
-  export type SwapStateStruct = {
-    amountSpecifiedRemaining: BigNumberish;
-    amountCalculated: BigNumberish;
-    sqrtPriceX96: BigNumberish;
-    tick: BigNumberish;
-    feeGrowthGlobalIncreaseX128: BigNumberish;
-    protocolFee: BigNumberish;
-    liquidity: BigNumberish;
-  };
-
-  export type SwapStateStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    amountSpecifiedRemaining: BigNumber;
-    amountCalculated: BigNumber;
-    sqrtPriceX96: BigNumber;
-    tick: number;
-    feeGrowthGlobalIncreaseX128: BigNumber;
-    protocolFee: BigNumber;
-    liquidity: BigNumber;
-  };
-
-  export type StepComputationsStruct = {
+  export type StepStruct = {
     sqrtPriceStartX96: BigNumberish;
     tickNext: BigNumberish;
     initialized: boolean;
@@ -105,7 +83,7 @@ export declare namespace SimulateSwap {
     feeAmount: BigNumberish;
   };
 
-  export type StepComputationsStructOutput = [
+  export type StepStructOutput = [
     BigNumber,
     number,
     boolean,
@@ -122,20 +100,48 @@ export declare namespace SimulateSwap {
     amountOut: BigNumber;
     feeAmount: BigNumber;
   };
+
+  export type StateStruct = {
+    amountSpecifiedRemaining: BigNumberish;
+    amountCalculated: BigNumberish;
+    sqrtPriceX96: BigNumberish;
+    tick: BigNumberish;
+    feeGrowthGlobalIncreaseX128: BigNumberish;
+    protocolFee: BigNumberish;
+    liquidity: BigNumberish;
+  };
+
+  export type StateStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    number,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    amountSpecifiedRemaining: BigNumber;
+    amountCalculated: BigNumber;
+    sqrtPriceX96: BigNumber;
+    tick: number;
+    feeGrowthGlobalIncreaseX128: BigNumber;
+    protocolFee: BigNumber;
+    liquidity: BigNumber;
+  };
 }
 
 export declare namespace SwapSimulator {
-  export type SwapStepStruct = {
-    state: SimulateSwap.SwapStateStruct;
-    step: SimulateSwap.StepComputationsStruct;
+  export type SwapStepAndStateStruct = {
+    step: SimulateSwap.StepStruct;
+    state: SimulateSwap.StateStruct;
   };
 
-  export type SwapStepStructOutput = [
-    SimulateSwap.SwapStateStructOutput,
-    SimulateSwap.StepComputationsStructOutput
+  export type SwapStepAndStateStructOutput = [
+    SimulateSwap.StepStructOutput,
+    SimulateSwap.StateStructOutput
   ] & {
-    state: SimulateSwap.SwapStateStructOutput;
-    step: SimulateSwap.StepComputationsStructOutput;
+    step: SimulateSwap.StepStructOutput;
+    state: SimulateSwap.StateStructOutput;
   };
 }
 
@@ -217,13 +223,13 @@ export interface SwapSimulator extends BaseContract {
       [
         IClearingHouseStructures.SwapValuesStructOutput,
         BigNumber,
-        SimulateSwap.SwapCacheStructOutput,
-        SwapSimulator.SwapStepStructOutput[]
+        SimulateSwap.CacheStructOutput,
+        SwapSimulator.SwapStepAndStateStructOutput[]
       ] & {
         swapValues: IClearingHouseStructures.SwapValuesStructOutput;
         sqrtPriceX96End: BigNumber;
-        cache: SimulateSwap.SwapCacheStructOutput;
-        steps: SwapSimulator.SwapStepStructOutput[];
+        cache: SimulateSwap.CacheStructOutput;
+        steps: SwapSimulator.SwapStepAndStateStructOutput[];
       }
     >;
   };

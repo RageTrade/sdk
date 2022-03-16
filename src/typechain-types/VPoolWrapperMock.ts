@@ -25,7 +25,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
-    UNISWAP_V3_DEFAULT_FEE_TIER: BigNumberish;
   };
 
   export type InitializeVPoolWrapperParamsStructOutput = [
@@ -33,7 +32,6 @@ export declare namespace IVPoolWrapper {
     string,
     string,
     string,
-    number,
     number,
     number
   ] & {
@@ -43,7 +41,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: number;
     protocolFeePips: number;
-    UNISWAP_V3_DEFAULT_FEE_TIER: number;
   };
 
   export type WrapperValuesInsideStruct = {
@@ -69,7 +66,7 @@ export declare namespace IVPoolWrapper {
 export interface VPoolWrapperMockInterface extends utils.Interface {
   contractName: 'VPoolWrapperMock';
   functions: {
-    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24))': FunctionFragment;
     'burn(int24,int24,uint128)': FunctionFragment;
     'collectAccruedProtocolFee()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;

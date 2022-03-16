@@ -8,6 +8,66 @@ import type { ETHVPool, ETHVPoolInterface } from '../ETHVPool';
 
 const _abi = [
   {
+    inputs: [],
+    name: 'AI',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AS',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'F0',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'F1',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'IIA',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'L',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'LOK',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'M0',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'M1',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TLM',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TLU',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'TUM',
+    type: 'error',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -692,7 +752,7 @@ const _abi = [
     outputs: [
       {
         internalType: 'uint128',
-        name: '_liquidity',
+        name: 'liquidity',
         type: 'uint128',
       },
       {

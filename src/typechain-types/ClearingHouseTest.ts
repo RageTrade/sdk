@@ -275,7 +275,7 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     'getPoolInfo(uint32)': FunctionFragment;
     'getTokenAddressInVTokens(address)': FunctionFragment;
     'getTruncatedTokenAddress(address)': FunctionFragment;
-    'getTwapPrices(address)': FunctionFragment;
+    'getTwapPrices(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
     'insuranceFund()': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
@@ -405,7 +405,7 @@ export interface ClearingHouseTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapPrices',
-    values: [string]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
@@ -1009,7 +1009,7 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
+        marketValue: BigNumber;
         requiredMargin: BigNumber;
       }
     >;
@@ -1084,7 +1084,7 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<[number]>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -1390,7 +1390,7 @@ export interface ClearingHouseTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
-      accountMarketValue: BigNumber;
+      marketValue: BigNumber;
       requiredMargin: BigNumber;
     }
   >;
@@ -1465,7 +1465,7 @@ export interface ClearingHouseTest extends BaseContract {
   ): Promise<number>;
 
   getTwapPrices(
-    vToken: string,
+    poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -1769,7 +1769,7 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        accountMarketValue: BigNumber;
+        marketValue: BigNumber;
         requiredMargin: BigNumber;
       }
     >;
@@ -1844,7 +1844,7 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<number>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -2265,7 +2265,7 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<BigNumber>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2574,7 +2574,7 @@ export interface ClearingHouseTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getTwapPrices(
-      vToken: string,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

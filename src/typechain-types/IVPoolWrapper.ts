@@ -25,7 +25,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: BigNumberish;
     protocolFeePips: BigNumberish;
-    UNISWAP_V3_DEFAULT_FEE_TIER: BigNumberish;
   };
 
   export type InitializeVPoolWrapperParamsStructOutput = [
@@ -33,7 +32,6 @@ export declare namespace IVPoolWrapper {
     string,
     string,
     string,
-    number,
     number,
     number
   ] & {
@@ -43,7 +41,6 @@ export declare namespace IVPoolWrapper {
     vPool: string;
     liquidityFeePips: number;
     protocolFeePips: number;
-    UNISWAP_V3_DEFAULT_FEE_TIER: number;
   };
 
   export type WrapperValuesInsideStruct = {
@@ -69,7 +66,7 @@ export declare namespace IVPoolWrapper {
 export interface IVPoolWrapperInterface extends utils.Interface {
   contractName: 'IVPoolWrapper';
   functions: {
-    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24,uint24))': FunctionFragment;
+    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24))': FunctionFragment;
     'burn(int24,int24,uint128)': FunctionFragment;
     'collectAccruedProtocolFee()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;
@@ -80,7 +77,6 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
     'swap(bool,int256,uint160)': FunctionFragment;
-    'uniswapFeePips()': FunctionFragment;
     'updateGlobalFundingState()': FunctionFragment;
     'vPool()': FunctionFragment;
   };
@@ -130,10 +126,6 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     values: [boolean, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'uniswapFeePips',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
     values?: undefined
   ): string;
@@ -174,10 +166,6 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swap', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'uniswapFeePips',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'updateGlobalFundingState',
     data: BytesLike
@@ -348,8 +336,6 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    uniswapFeePips(overrides?: CallOverrides): Promise<[number]>;
-
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -406,8 +392,6 @@ export interface IVPoolWrapper extends BaseContract {
     sqrtPriceLimitX96: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
   updateGlobalFundingState(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -480,8 +464,6 @@ export interface IVPoolWrapper extends BaseContract {
         vQuoteAmount: BigNumber;
       }
     >;
-
-    uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
     updateGlobalFundingState(overrides?: CallOverrides): Promise<void>;
 
@@ -603,8 +585,6 @@ export interface IVPoolWrapper extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    uniswapFeePips(overrides?: CallOverrides): Promise<BigNumber>;
-
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -664,8 +644,6 @@ export interface IVPoolWrapper extends BaseContract {
       sqrtPriceLimitX96: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    uniswapFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     updateGlobalFundingState(
       overrides?: Overrides & { from?: string | Promise<string> }

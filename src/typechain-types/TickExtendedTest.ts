@@ -33,7 +33,7 @@ export declare namespace FundingPayment {
   };
 }
 
-export declare namespace Tick {
+export declare namespace TickExtended {
   export type InfoStruct = {
     sumALastX128: BigNumberish;
     sumBOutsideX128: BigNumberish;
@@ -54,8 +54,8 @@ export declare namespace Tick {
   };
 }
 
-export interface TickTestInterface extends utils.Interface {
-  contractName: 'TickTest';
+export interface TickExtendedTestInterface extends utils.Interface {
+  contractName: 'TickExtendedTest';
   functions: {
     'cross(int24)': FunctionFragment;
     'fpGlobal()': FunctionFragment;
@@ -105,7 +105,7 @@ export interface TickTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setTick',
-    values: [BigNumberish, Tick.InfoStruct]
+    values: [BigNumberish, TickExtended.InfoStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'sumFeeGlobalX128',
@@ -157,13 +157,13 @@ export interface TickTestInterface extends utils.Interface {
   events: {};
 }
 
-export interface TickTest extends BaseContract {
-  contractName: 'TickTest';
+export interface TickExtendedTest extends BaseContract {
+  contractName: 'TickExtendedTest';
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: TickTestInterface;
+  interface: TickExtendedTestInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -243,7 +243,7 @@ export interface TickTest extends BaseContract {
 
     setTick(
       tickIndex: BigNumberish,
-      tick: Tick.InfoStruct,
+      tick: TickExtended.InfoStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -322,7 +322,7 @@ export interface TickTest extends BaseContract {
 
   setTick(
     tickIndex: BigNumberish,
-    tick: Tick.InfoStruct,
+    tick: TickExtended.InfoStruct,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -398,7 +398,7 @@ export interface TickTest extends BaseContract {
 
     setTick(
       tickIndex: BigNumberish,
-      tick: Tick.InfoStruct,
+      tick: TickExtended.InfoStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -471,7 +471,7 @@ export interface TickTest extends BaseContract {
 
     setTick(
       tickIndex: BigNumberish,
-      tick: Tick.InfoStruct,
+      tick: TickExtended.InfoStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -535,7 +535,7 @@ export interface TickTest extends BaseContract {
 
     setTick(
       tickIndex: BigNumberish,
-      tick: Tick.InfoStruct,
+      tick: TickExtended.InfoStruct,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
