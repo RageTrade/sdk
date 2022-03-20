@@ -18,22 +18,6 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IClearingHouseStructures {
-  export type BalanceAdjustmentsStruct = {
-    vQuoteIncrease: BigNumberish;
-    vTokenIncrease: BigNumberish;
-    traderPositionIncrease: BigNumberish;
-  };
-
-  export type BalanceAdjustmentsStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    vQuoteIncrease: BigNumber;
-    vTokenIncrease: BigNumber;
-    traderPositionIncrease: BigNumber;
-  };
-
   export type SwapParamsStruct = {
     amount: BigNumberish;
     sqrtPriceLimit: BigNumberish;
@@ -85,25 +69,17 @@ export declare namespace IClearingHouseStructures {
 export interface IClearingHouseActionsInterface extends utils.Interface {
   contractName: 'IClearingHouseActions';
   functions: {
-    'addMargin(uint256,uint32,uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
-    'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
-    'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
-    'liquidateTokenPositionWithGasClaim(uint256,uint256,uint32,uint16,uint256)': FunctionFragment;
+    'liquidateTokenPosition(uint256,uint32)': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
-    'removeMargin(uint256,uint32,uint256)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
+    'updateMargin(uint256,uint32,int256)': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: 'addMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
     values?: undefined
@@ -117,40 +93,12 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'liquidateTokenPositionWithGasClaim',
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeLimitOrderWithGasClaim',
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -159,6 +107,10 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
       BigNumberish,
       IClearingHouseStructures.SwapParamsStruct
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateMargin',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProfit',
@@ -173,7 +125,6 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
     ]
   ): string;
 
-  decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
@@ -187,30 +138,18 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'liquidateTokenPosition',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'liquidateTokenPositionWithGasClaim',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'removeLimitOrder',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: 'removeLimitOrderWithGasClaim',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'removeMargin',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateMargin',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'updateProfit',
     data: BytesLike
@@ -251,19 +190,12 @@ export interface IClearingHouseActions extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    addMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -273,26 +205,9 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -304,26 +219,17 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -341,19 +247,12 @@ export interface IClearingHouseActions extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  addMargin(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   createAccount(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   createAccountAndAddMargin(
-    poolId: BigNumberish,
+    collateralId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -363,26 +262,9 @@ export interface IClearingHouseActions extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  liquidateLiquidityPositionsWithGasClaim(
-    accountId: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   liquidateTokenPosition(
-    liquidatorAccountId: BigNumberish,
     targetAccountId: BigNumberish,
     poolId: BigNumberish,
-    liquidationBps: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  liquidateTokenPositionWithGasClaim(
-    liquidatorAccountId: BigNumberish,
-    targetAccountId: BigNumberish,
-    poolId: BigNumberish,
-    liquidationBps: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -394,26 +276,17 @@ export interface IClearingHouseActions extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeLimitOrderWithGasClaim(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  removeMargin(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   swapToken(
     accountId: BigNumberish,
     poolId: BigNumberish,
     swapParams: IClearingHouseStructures.SwapParamsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateMargin(
+    accountId: BigNumberish,
+    collateralId: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -431,17 +304,10 @@ export interface IClearingHouseActions extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -451,50 +317,17 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
+    liquidateTokenPosition(
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.BalanceAdjustmentsStructOutput>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.BalanceAdjustmentsStructOutput>;
 
     removeLimitOrder(
       accountId: BigNumberish,
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -509,6 +342,13 @@ export interface IClearingHouseActions extends BaseContract {
         vQuoteAmountOut: BigNumber;
       }
     >;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     updateProfit(
       accountId: BigNumberish,
@@ -532,19 +372,12 @@ export interface IClearingHouseActions extends BaseContract {
   filters: {};
 
   estimateGas: {
-    addMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -554,26 +387,9 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -585,26 +401,17 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -623,19 +430,12 @@ export interface IClearingHouseActions extends BaseContract {
   };
 
   populateTransaction: {
-    addMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -645,26 +445,9 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -676,26 +459,17 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

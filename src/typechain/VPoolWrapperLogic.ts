@@ -18,6 +18,34 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IVPoolWrapper {
+  export type SwapResultStruct = {
+    amountSpecified: BigNumberish;
+    vTokenIn: BigNumberish;
+    vQuoteIn: BigNumberish;
+    liquidityFees: BigNumberish;
+    protocolFees: BigNumberish;
+    sqrtPriceX96Start: BigNumberish;
+    sqrtPriceX96End: BigNumberish;
+  };
+
+  export type SwapResultStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    amountSpecified: BigNumber;
+    vTokenIn: BigNumber;
+    vQuoteIn: BigNumber;
+    liquidityFees: BigNumber;
+    protocolFees: BigNumber;
+    sqrtPriceX96Start: BigNumber;
+    sqrtPriceX96End: BigNumber;
+  };
+
   export type InitializeVPoolWrapperParamsStruct = {
     clearingHouse: string;
     vToken: string;
@@ -87,7 +115,7 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     'ticksExtended(int24)': FunctionFragment;
     'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment;
     'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment;
-    'updateGlobalFundingState()': FunctionFragment;
+    'updateGlobalFundingState(uint256,uint256)': FunctionFragment;
     'vPool()': FunctionFragment;
     'vQuote()': FunctionFragment;
     'vToken()': FunctionFragment;
@@ -173,7 +201,7 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values?: undefined
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'vQuote', values?: undefined): string;
@@ -262,7 +290,7 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     'LiquidityFeeUpdated(uint24)': EventFragment;
     'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
     'ProtocolFeeUpdated(uint24)': EventFragment;
-    'Swap(int256,int256,uint256,uint256)': EventFragment;
+    'Swap(tuple)': EventFragment;
   };
 
   getEvent(
@@ -323,13 +351,8 @@ export type ProtocolFeeUpdatedEvent = TypedEvent<
 export type ProtocolFeeUpdatedEventFilter = TypedEventFilter<ProtocolFeeUpdatedEvent>;
 
 export type SwapEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber],
-  {
-    vTokenIn: BigNumber;
-    vQuoteIn: BigNumber;
-    liquidityFees: BigNumber;
-    protocolFees: BigNumber;
-  }
+  [IVPoolWrapper.SwapResultStructOutput],
+  { swapResult: IVPoolWrapper.SwapResultStructOutput }
 >;
 
 export type SwapEventFilter = TypedEventFilter<SwapEvent>;
@@ -495,7 +518,12 @@ export interface VPoolWrapperLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Update the global funding state, from clearing house
+     */
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -631,7 +659,12 @@ export interface VPoolWrapperLogic extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Update the global funding state, from clearing house
+   */
   updateGlobalFundingState(
+    realPriceX128: BigNumberish,
+    virtualPriceX128: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -746,12 +779,7 @@ export interface VPoolWrapperLogic extends BaseContract {
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        vTokenAmount: BigNumber;
-        vQuoteAmount: BigNumber;
-      }
-    >;
+    ): Promise<IVPoolWrapper.SwapResultStructOutput>;
 
     ticksExtended(
       arg0: BigNumberish,
@@ -782,7 +810,14 @@ export interface VPoolWrapperLogic extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateGlobalFundingState(overrides?: CallOverrides): Promise<void>;
+    /**
+     * Update the global funding state, from clearing house
+     */
+    updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     vPool(overrides?: CallOverrides): Promise<string>;
 
@@ -841,18 +876,8 @@ export interface VPoolWrapperLogic extends BaseContract {
     ): ProtocolFeeUpdatedEventFilter;
     ProtocolFeeUpdated(protocolFeePips?: null): ProtocolFeeUpdatedEventFilter;
 
-    'Swap(int256,int256,uint256,uint256)'(
-      vTokenIn?: null,
-      vQuoteIn?: null,
-      liquidityFees?: null,
-      protocolFees?: null
-    ): SwapEventFilter;
-    Swap(
-      vTokenIn?: null,
-      vQuoteIn?: null,
-      liquidityFees?: null,
-      protocolFees?: null
-    ): SwapEventFilter;
+    'Swap(tuple)'(swapResult?: null): SwapEventFilter;
+    Swap(swapResult?: null): SwapEventFilter;
   };
 
   estimateGas: {
@@ -965,7 +990,12 @@ export interface VPoolWrapperLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Update the global funding state, from clearing house
+     */
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1090,7 +1120,12 @@ export interface VPoolWrapperLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    /**
+     * Update the global funding state, from clearing house
+     */
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -37,11 +37,6 @@ const _abi = [
         name: 'vQuote',
         type: 'address',
       },
-      {
-        internalType: 'contract IOracle',
-        name: 'nativeOracle',
-        type: 'address',
-      },
     ],
     name: '__initialize_ClearingHouse',
     outputs: [],
@@ -71,12 +66,17 @@ const _abi = [
             components: [
               {
                 internalType: 'uint16',
-                name: 'initialMarginRatio',
+                name: 'initialMarginRatioBps',
                 type: 'uint16',
               },
               {
                 internalType: 'uint16',
-                name: 'maintainanceMarginRatio',
+                name: 'maintainanceMarginRatioBps',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint16',
+                name: 'maxVirtualPriceDeviationRatioBps',
                 type: 'uint16',
               },
               {

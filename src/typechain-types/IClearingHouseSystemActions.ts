@@ -19,8 +19,9 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -31,12 +32,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -66,13 +69,13 @@ export declare namespace IClearingHouseStructures {
 export interface IClearingHouseSystemActionsInterface extends utils.Interface {
   contractName: 'IClearingHouseSystemActions';
   functions: {
-    '__initialize_ClearingHouse(address,address,address,address,address,address)': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    '__initialize_ClearingHouse(address,address,address,address,address)': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: '__initialize_ClearingHouse',
-    values: [string, string, string, string, string, string]
+    values: [string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
@@ -125,7 +128,6 @@ export interface IClearingHouseSystemActions extends BaseContract {
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
       vQuote: string,
-      nativeOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -141,7 +143,6 @@ export interface IClearingHouseSystemActions extends BaseContract {
     defaultCollateralTokenOracle: string,
     insuranceFund: string,
     vQuote: string,
-    nativeOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -157,7 +158,6 @@ export interface IClearingHouseSystemActions extends BaseContract {
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
       vQuote: string,
-      nativeOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -176,7 +176,6 @@ export interface IClearingHouseSystemActions extends BaseContract {
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
       vQuote: string,
-      nativeOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -193,7 +192,6 @@ export interface IClearingHouseSystemActions extends BaseContract {
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
       vQuote: string,
-      nativeOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

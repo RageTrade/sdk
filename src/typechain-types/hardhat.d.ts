@@ -245,10 +245,6 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Bisection__factory>;
     getContractFactory(
-      name: 'Calldata',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Calldata__factory>;
-    getContractFactory(
       name: 'CollateralDeposit',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CollateralDeposit__factory>;
@@ -305,17 +301,9 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ClearingHouse__factory>;
     getContractFactory(
-      name: 'ClearingHouseArbitrum',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ClearingHouseArbitrum__factory>;
-    getContractFactory(
       name: 'ClearingHouseDeployer',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ClearingHouseDeployer__factory>;
-    getContractFactory(
-      name: 'ClearingHouseEthereum',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ClearingHouseEthereum__factory>;
     getContractFactory(
       name: 'ClearingHouseStorage',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -357,17 +345,9 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AccountTest__factory>;
     getContractFactory(
-      name: 'ArbitrumFixFeeTest',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArbitrumFixFeeTest__factory>;
-    getContractFactory(
       name: 'BisectionTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BisectionTest__factory>;
-    getContractFactory(
-      name: 'CalldataTest',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.CalldataTest__factory>;
     getContractFactory(
       name: 'ClearingHouseTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -497,10 +477,6 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Multicall__factory>;
     getContractFactory(
-      name: 'OptimisticGasUsedClaim',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.OptimisticGasUsedClaim__factory>;
-    getContractFactory(
       name: 'ProxyAdminDeployer',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ProxyAdminDeployer__factory>;
@@ -508,10 +484,6 @@ declare module 'hardhat/types/runtime' {
       name: 'SwapSimulator',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SwapSimulator__factory>;
-    getContractFactory(
-      name: 'TxGasPriceLimit',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TxGasPriceLimit__factory>;
     getContractFactory(
       name: 'UniswapV3Pool',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -812,11 +784,6 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.Bisection>;
     getContractAt(
-      name: 'Calldata',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Calldata>;
-    getContractAt(
       name: 'CollateralDeposit',
       address: string,
       signer?: ethers.Signer
@@ -887,20 +854,10 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.ClearingHouse>;
     getContractAt(
-      name: 'ClearingHouseArbitrum',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ClearingHouseArbitrum>;
-    getContractAt(
       name: 'ClearingHouseDeployer',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ClearingHouseDeployer>;
-    getContractAt(
-      name: 'ClearingHouseEthereum',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ClearingHouseEthereum>;
     getContractAt(
       name: 'ClearingHouseStorage',
       address: string,
@@ -952,20 +909,10 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.AccountTest>;
     getContractAt(
-      name: 'ArbitrumFixFeeTest',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ArbitrumFixFeeTest>;
-    getContractAt(
       name: 'BisectionTest',
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BisectionTest>;
-    getContractAt(
-      name: 'CalldataTest',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.CalldataTest>;
     getContractAt(
       name: 'ClearingHouseTest',
       address: string,
@@ -1127,11 +1074,6 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.Multicall>;
     getContractAt(
-      name: 'OptimisticGasUsedClaim',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.OptimisticGasUsedClaim>;
-    getContractAt(
       name: 'ProxyAdminDeployer',
       address: string,
       signer?: ethers.Signer
@@ -1141,11 +1083,6 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SwapSimulator>;
-    getContractAt(
-      name: 'TxGasPriceLimit',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TxGasPriceLimit>;
     getContractAt(
       name: 'UniswapV3Pool',
       address: string,

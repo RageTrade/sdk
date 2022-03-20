@@ -11,29 +11,6 @@ import type {
 
 const _abi = [
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'addMargin',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'createAccount',
     outputs: [
@@ -50,7 +27,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint32',
-        name: 'poolId',
+        name: 'collateralId',
         type: 'uint32',
       },
       {
@@ -87,35 +64,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'liquidateLiquidityPositionsWithGasClaim',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'keeperFee',
-        type: 'int256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'liquidatorAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
         name: 'targetAccountId',
         type: 'uint256',
       },
@@ -123,92 +71,14 @@ const _abi = [
         internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
-      },
-      {
-        internalType: 'uint16',
-        name: 'liquidationBps',
-        type: 'uint16',
       },
     ],
     name: 'liquidateTokenPosition',
     outputs: [
       {
-        components: [
-          {
-            internalType: 'int256',
-            name: 'vQuoteIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'vTokenIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'traderPositionIncrease',
-            type: 'int256',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.BalanceAdjustments',
-        name: 'liquidatorBalanceAdjustments',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'liquidatorAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'targetAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint16',
-        name: 'liquidationBps',
-        type: 'uint16',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'liquidateTokenPositionWithGasClaim',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'int256',
-            name: 'vQuoteIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'vTokenIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'traderPositionIncrease',
-            type: 'int256',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.BalanceAdjustments',
-        name: 'liquidatorBalanceAdjustments',
-        type: 'tuple',
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
       },
     ],
     stateMutability: 'nonpayable',
@@ -238,68 +108,6 @@ const _abi = [
       },
     ],
     name: 'removeLimitOrder',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickLower',
-        type: 'int24',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickUpper',
-        type: 'int24',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeLimitOrderWithGasClaim',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'keeperFee',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeMargin',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -357,6 +165,29 @@ const _abi = [
         type: 'int256',
       },
     ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+      {
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'updateMargin',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },

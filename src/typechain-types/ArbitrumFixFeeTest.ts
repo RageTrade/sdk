@@ -32,8 +32,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -44,12 +45,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -86,7 +89,6 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidityPositionViewStruct = {
-    limitOrderType: BigNumberish;
     tickLower: BigNumberish;
     tickUpper: BigNumberish;
     liquidity: BigNumberish;
@@ -95,20 +97,20 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumberish;
     sumFpInsideLastX128: BigNumberish;
     sumFeeInsideLastX128: BigNumberish;
+    limitOrderType: BigNumberish;
   };
 
   export type LiquidityPositionViewStructOutput = [
     number,
     number,
-    number,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
+    number
   ] & {
-    limitOrderType: number;
     tickLower: number;
     tickUpper: number;
     liquidity: BigNumber;
@@ -117,10 +119,11 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumber;
     sumFpInsideLastX128: BigNumber;
     sumFeeInsideLastX128: BigNumber;
+    limitOrderType: number;
   };
 
   export type VTokenPositionViewStruct = {
-    vToken: string;
+    poolId: BigNumberish;
     balance: BigNumberish;
     netTraderPosition: BigNumberish;
     sumAX128Chkpt: BigNumberish;
@@ -128,13 +131,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type VTokenPositionViewStructOutput = [
-    string,
+    number,
     BigNumber,
     BigNumber,
     BigNumber,
     IClearingHouseStructures.LiquidityPositionViewStructOutput[]
   ] & {
-    vToken: string;
+    poolId: number;
     balance: BigNumber;
     netTraderPosition: BigNumber;
     sumAX128Chkpt: BigNumber;
@@ -251,7 +254,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
   contractName: 'ArbitrumFixFeeTest';
   functions: {
     '__initialize_ClearingHouse(address,address,address,address,address,address)': FunctionFragment;
-    'addMargin(uint256,uint32,uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'emitGasCostWei()': FunctionFragment;
@@ -259,8 +261,8 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     'getAccountInfo(uint256)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
+    'getAccountNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getCollateralInfo(uint32)': FunctionFragment;
-    'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getTwapPrices(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
@@ -274,14 +276,13 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     'multicallWithSingleMarginCheck(uint256,(uint8,bytes)[])': FunctionFragment;
     'nativeOracle()': FunctionFragment;
     'numAccounts()': FunctionFragment;
-    'pause()': FunctionFragment;
+    'pause(uint32[])': FunctionFragment;
     'paused()': FunctionFragment;
     'protocolInfo()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
     'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
-    'removeMargin(uint256,uint32,uint256)': FunctionFragment;
     'setTxGasPriceLimit(uint256)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
@@ -289,9 +290,10 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
     'txGasPriceLimit()': FunctionFragment;
-    'unpause()': FunctionFragment;
+    'unpause(uint32[])': FunctionFragment;
     'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
-    'updatePoolSettings(uint32,(uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
+    'updateMargin(uint256,uint32,int256)': FunctionFragment;
+    'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
     'updateProtocolSettings((uint16,uint16,uint16,uint128),uint256,uint256,uint256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
@@ -301,10 +303,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: '__initialize_ClearingHouse',
     values: [string, string, string, string, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'addMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
@@ -332,12 +330,12 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getCollateralInfo',
-    values: [BigNumberish]
+    functionFragment: 'getAccountNetTokenPosition',
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getNetTokenPosition',
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'getCollateralInfo',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolInfo',
@@ -397,7 +395,10 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     functionFragment: 'numAccounts',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'pause', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'pause',
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'protocolInfo',
@@ -424,10 +425,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
       BigNumberish,
       BigNumberish
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTxGasPriceLimit',
@@ -461,10 +458,17 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     functionFragment: 'txGasPriceLimit',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'unpause',
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
     values: [string, IClearingHouseStructures.CollateralSettingsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateMargin',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updatePoolSettings',
@@ -500,7 +504,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     functionFragment: '__initialize_ClearingHouse',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
@@ -527,11 +530,11 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getCollateralInfo',
+    functionFragment: 'getAccountNetTokenPosition',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getNetTokenPosition',
+    functionFragment: 'getCollateralInfo',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -603,10 +606,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'removeMargin',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'setTxGasPriceLimit',
     data: BytesLike
   ): Result;
@@ -634,6 +633,10 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'updateMargin',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'updatePoolSettings',
     data: BytesLike
   ): Result;
@@ -658,8 +661,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
     'AccountCreated(address,uint256)': EventFragment;
     'CollateralSettingsUpdated(address,tuple)': EventFragment;
     'GovernanceTransferred(address,address)': EventFragment;
-    'MarginAdded(uint256,uint32,uint256)': EventFragment;
-    'MarginRemoved(uint256,uint32,uint256)': EventFragment;
     'Paused(address)': EventFragment;
     'PausedUpdated(bool)': EventFragment;
     'PoolSettingsUpdated(uint32,tuple)': EventFragment;
@@ -672,8 +673,6 @@ export interface ArbitrumFixFeeTestInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginAdded'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginRemoved'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
@@ -706,20 +705,6 @@ export type GovernanceTransferredEvent = TypedEvent<
 >;
 
 export type GovernanceTransferredEventFilter = TypedEventFilter<GovernanceTransferredEvent>;
-
-export type MarginAddedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginAddedEventFilter = TypedEventFilter<MarginAddedEvent>;
-
-export type MarginRemovedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginRemovedEventFilter = TypedEventFilter<MarginRemovedEvent>;
 
 export type PausedEvent = TypedEvent<[string], { account: string }>;
 
@@ -812,19 +797,12 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -876,16 +854,16 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
-
-    getNetTokenPosition(
+    getAccountNetTokenPosition(
       accountId: BigNumberish,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { netPosition: BigNumber }>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -955,6 +933,7 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -965,11 +944,13 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -999,13 +980,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1041,12 +1015,20 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     txGasPriceLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1093,19 +1075,12 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  addMargin(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   createAccount(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   createAccountAndAddMargin(
-    poolId: BigNumberish,
+    collateralId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1157,16 +1132,16 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getCollateralInfo(
-    collateralId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-  getNetTokenPosition(
+  getAccountNetTokenPosition(
     accountId: BigNumberish,
     poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getCollateralInfo(
+    collateralId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
   getPoolInfo(
     poolId: BigNumberish,
@@ -1236,6 +1211,7 @@ export interface ArbitrumFixFeeTest extends BaseContract {
   numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
   pause(
+    allPoolIds: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1246,11 +1222,13 @@ export interface ArbitrumFixFeeTest extends BaseContract {
   ): Promise<
     [
       string,
+      string,
       IClearingHouseStructures.LiquidationParamsStructOutput,
       BigNumber,
       BigNumber,
       BigNumber
     ] & {
+      settlementToken: string;
       vQuote: string;
       liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
@@ -1280,13 +1258,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
     gasComputationUnitsClaim: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  removeMargin(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
-    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1322,12 +1293,20 @@ export interface ArbitrumFixFeeTest extends BaseContract {
   txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
   unpause(
+    allPoolIds: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateCollateralSettings(
     cToken: string,
     collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateMargin(
+    accountId: BigNumberish,
+    collateralId: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1374,17 +1353,10 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1434,16 +1406,16 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-    getNetTokenPosition(
+    getAccountNetTokenPosition(
       accountId: BigNumberish,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -1509,7 +1481,7 @@ export interface ArbitrumFixFeeTest extends BaseContract {
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pause(overrides?: CallOverrides): Promise<void>;
+    pause(allPoolIds: BigNumberish[], overrides?: CallOverrides): Promise<void>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
@@ -1518,11 +1490,13 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -1554,13 +1528,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       gasComputationUnitsClaim: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     setTxGasPriceLimit(
       _txGasPriceLimit: BigNumberish,
@@ -1598,11 +1565,21 @@ export interface ArbitrumFixFeeTest extends BaseContract {
 
     txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
-    unpause(overrides?: CallOverrides): Promise<void>;
+    unpause(
+      allPoolIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1672,28 +1649,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
 
-    'MarginAdded(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-    MarginAdded(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-
-    'MarginRemoved(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
-    MarginRemoved(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
-
     'Paused(address)'(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
@@ -1749,19 +1704,12 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1796,14 +1744,14 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1870,6 +1818,7 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1898,13 +1847,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1940,12 +1882,20 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     txGasPriceLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1993,19 +1943,12 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2040,14 +1983,14 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2114,6 +2057,7 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2144,13 +2088,6 @@ export interface ArbitrumFixFeeTest extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2186,12 +2123,20 @@ export interface ArbitrumFixFeeTest extends BaseContract {
     txGasPriceLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -47,27 +47,40 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    liquidationFeeFraction: BigNumberish;
-    tokenLiquidationPriceDeltaBps: BigNumberish;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
     insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
     maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
     number,
     number,
     number,
+    number,
+    number,
+    number,
+    BigNumber,
     BigNumber
   ] & {
-    liquidationFeeFraction: number;
-    tokenLiquidationPriceDeltaBps: number;
+    rangeLiquidationFeeFraction: number;
+    tokenLiquidationFeeFraction: number;
+    closeFactorMMThresholdBps: number;
+    partialLiquidationCloseFactorBps: number;
     insuranceFundFeeShareBps: number;
+    liquidationSlippageSqrtToleranceBps: number;
     maxRangeLiquidationFees: BigNumber;
+    minNotionalLiquidatable: BigNumber;
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -78,12 +91,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -125,18 +140,17 @@ export interface AccountTestInterface extends utils.Interface {
     'getAccountQuoteBalance(uint256)': FunctionFragment;
     'getAccountTokenDetails(uint256,address)': FunctionFragment;
     'getAccountValueAndRequiredMargin(uint256,bool)': FunctionFragment;
-    'getLiquidationPriceX128AndFee(int256,address)': FunctionFragment;
     'initCollateral(address,address,uint32)': FunctionFragment;
     'initToken(address)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
-    'liquidateTokenPosition(uint256,uint256,address)': FunctionFragment;
+    'liquidateTokenPosition(uint256,address)': FunctionFragment;
     'liquidityChange(uint256,address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,address,int24,int24,uint256)': FunctionFragment;
     'removeMargin(uint256,address,uint256)': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256,address)': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256,uint256,address)': FunctionFragment;
     'setVQuoteAddress(address)': FunctionFragment;
     'swapTokenAmount(uint256,address,int256)': FunctionFragment;
     'swapTokenNotional(uint256,address,int256)': FunctionFragment;
@@ -189,10 +203,6 @@ export interface AccountTestInterface extends utils.Interface {
     values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getLiquidationPriceX128AndFee',
-    values: [BigNumberish, string]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'initCollateral',
     values: [string, string, BigNumberish]
   ): string;
@@ -203,7 +213,7 @@ export interface AccountTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
-    values: [BigNumberish, BigNumberish, string]
+    values: [BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidityChange',
@@ -298,10 +308,6 @@ export interface AccountTestInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getAccountValueAndRequiredMargin',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getLiquidationPriceX128AndFee',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -487,18 +493,6 @@ export interface AccountTest extends BaseContract {
       }
     >;
 
-    getLiquidationPriceX128AndFee(
-      tokensToTrade: BigNumberish,
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        liquidationPriceX128: BigNumber;
-        liquidatorPriceX128: BigNumber;
-        insuranceFundFee: BigNumber;
-      }
-    >;
-
     initCollateral(
       cToken: string,
       oracle: string,
@@ -518,7 +512,6 @@ export interface AccountTest extends BaseContract {
 
     liquidateTokenPosition(
       accountId: BigNumberish,
-      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -706,18 +699,6 @@ export interface AccountTest extends BaseContract {
     }
   >;
 
-  getLiquidationPriceX128AndFee(
-    tokensToTrade: BigNumberish,
-    vToken: string,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      liquidationPriceX128: BigNumber;
-      liquidatorPriceX128: BigNumber;
-      insuranceFundFee: BigNumber;
-    }
-  >;
-
   initCollateral(
     cToken: string,
     oracle: string,
@@ -737,7 +718,6 @@ export interface AccountTest extends BaseContract {
 
   liquidateTokenPosition(
     accountId: BigNumberish,
-    liquidatorAccountId: BigNumberish,
     vToken: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -923,18 +903,6 @@ export interface AccountTest extends BaseContract {
       }
     >;
 
-    getLiquidationPriceX128AndFee(
-      tokensToTrade: BigNumberish,
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        liquidationPriceX128: BigNumber;
-        liquidatorPriceX128: BigNumber;
-        insuranceFundFee: BigNumber;
-      }
-    >;
-
     initCollateral(
       cToken: string,
       oracle: string,
@@ -956,7 +924,6 @@ export interface AccountTest extends BaseContract {
 
     liquidateTokenPosition(
       accountId: BigNumberish,
-      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1111,12 +1078,6 @@ export interface AccountTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getLiquidationPriceX128AndFee(
-      tokensToTrade: BigNumberish,
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     initCollateral(
       cToken: string,
       oracle: string,
@@ -1136,7 +1097,6 @@ export interface AccountTest extends BaseContract {
 
     liquidateTokenPosition(
       accountId: BigNumberish,
-      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1274,12 +1234,6 @@ export interface AccountTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getLiquidationPriceX128AndFee(
-      tokensToTrade: BigNumberish,
-      vToken: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     initCollateral(
       cToken: string,
       oracle: string,
@@ -1299,7 +1253,6 @@ export interface AccountTest extends BaseContract {
 
     liquidateTokenPosition(
       accountId: BigNumberish,
-      liquidatorAccountId: BigNumberish,
       vToken: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

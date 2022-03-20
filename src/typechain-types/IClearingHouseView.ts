@@ -27,7 +27,6 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidityPositionViewStruct = {
-    limitOrderType: BigNumberish;
     tickLower: BigNumberish;
     tickUpper: BigNumberish;
     liquidity: BigNumberish;
@@ -36,20 +35,20 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumberish;
     sumFpInsideLastX128: BigNumberish;
     sumFeeInsideLastX128: BigNumberish;
+    limitOrderType: BigNumberish;
   };
 
   export type LiquidityPositionViewStructOutput = [
     number,
     number,
-    number,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
+    number
   ] & {
-    limitOrderType: number;
     tickLower: number;
     tickUpper: number;
     liquidity: BigNumber;
@@ -58,10 +57,11 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumber;
     sumFpInsideLastX128: BigNumber;
     sumFeeInsideLastX128: BigNumber;
+    limitOrderType: number;
   };
 
   export type VTokenPositionViewStruct = {
-    vToken: string;
+    poolId: BigNumberish;
     balance: BigNumberish;
     netTraderPosition: BigNumberish;
     sumAX128Chkpt: BigNumberish;
@@ -69,13 +69,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type VTokenPositionViewStructOutput = [
-    string,
+    number,
     BigNumber,
     BigNumber,
     BigNumber,
     IClearingHouseStructures.LiquidityPositionViewStructOutput[]
   ] & {
-    vToken: string;
+    poolId: number;
     balance: BigNumber;
     netTraderPosition: BigNumber;
     sumAX128Chkpt: BigNumber;
@@ -108,8 +108,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -120,12 +121,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -152,22 +155,34 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    liquidationFeeFraction: BigNumberish;
-    tokenLiquidationPriceDeltaBps: BigNumberish;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
     insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
     maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
     number,
     number,
     number,
+    number,
+    number,
+    number,
+    BigNumber,
     BigNumber
   ] & {
-    liquidationFeeFraction: number;
-    tokenLiquidationPriceDeltaBps: number;
+    rangeLiquidationFeeFraction: number;
+    tokenLiquidationFeeFraction: number;
+    closeFactorMMThresholdBps: number;
+    partialLiquidationCloseFactorBps: number;
     insuranceFundFeeShareBps: number;
+    liquidationSlippageSqrtToleranceBps: number;
     maxRangeLiquidationFees: BigNumber;
+    minNotionalLiquidatable: BigNumber;
   };
 }
 
@@ -177,8 +192,8 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     'getAccountInfo(uint256)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
+    'getAccountNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getCollateralInfo(uint32)': FunctionFragment;
-    'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getTwapPrices(uint32)': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
@@ -198,12 +213,12 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getCollateralInfo',
-    values: [BigNumberish]
+    functionFragment: 'getAccountNetTokenPosition',
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getNetTokenPosition',
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'getCollateralInfo',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolInfo',
@@ -235,11 +250,11 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getCollateralInfo',
+    functionFragment: 'getAccountNetTokenPosition',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getNetTokenPosition',
+    functionFragment: 'getCollateralInfo',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -323,16 +338,16 @@ export interface IClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
 
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { netPosition: BigNumber }>;
+
     getCollateralInfo(
       collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
-
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      vTokenTruncatedAddess: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { netPosition: BigNumber }>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -350,7 +365,7 @@ export interface IClearingHouseView extends BaseContract {
     >;
 
     isPoolIdAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -359,11 +374,13 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -406,16 +423,16 @@ export interface IClearingHouseView extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getAccountNetTokenPosition(
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getCollateralInfo(
     collateralId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-  getNetTokenPosition(
-    accountId: BigNumberish,
-    vTokenTruncatedAddess: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   getPoolInfo(
     poolId: BigNumberish,
@@ -433,7 +450,7 @@ export interface IClearingHouseView extends BaseContract {
   >;
 
   isPoolIdAvailable(
-    truncated: BigNumberish,
+    poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -442,11 +459,13 @@ export interface IClearingHouseView extends BaseContract {
   ): Promise<
     [
       string,
+      string,
       IClearingHouseStructures.LiquidationParamsStructOutput,
       BigNumber,
       BigNumber,
       BigNumber
     ] & {
+      settlementToken: string;
       vQuote: string;
       liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
@@ -489,16 +508,16 @@ export interface IClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getCollateralInfo(
       collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      vTokenTruncatedAddess: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -516,7 +535,7 @@ export interface IClearingHouseView extends BaseContract {
     >;
 
     isPoolIdAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -525,11 +544,13 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -558,14 +579,14 @@ export interface IClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      vTokenTruncatedAddess: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -580,7 +601,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<BigNumber>;
 
     isPoolIdAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -604,14 +625,14 @@ export interface IClearingHouseView extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      vTokenTruncatedAddess: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -626,7 +647,7 @@ export interface IClearingHouseView extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isPoolIdAvailable(
-      truncated: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

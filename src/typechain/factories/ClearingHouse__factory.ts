@@ -21,22 +21,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'length',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'limit',
-        type: 'uint256',
-      },
-    ],
-    name: 'CalldataLengthExceeded',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint32',
         name: 'collateralId',
         type: 'uint32',
@@ -54,22 +38,6 @@ const _abi = [
       },
     ],
     name: 'CollateralNotAllowedForUse',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'gasUsedClaim',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasUsedActual',
-        type: 'uint256',
-      },
-    ],
-    name: 'ExcessGasUsedClaim',
     type: 'error',
   },
   {
@@ -289,56 +257,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'MarginAdded',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'MarginRemoved',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: false,
         internalType: 'address',
         name: 'account',
@@ -374,12 +292,17 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'initialMarginRatio',
+            name: 'initialMarginRatioBps',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'maintainanceMarginRatio',
+            name: 'maintainanceMarginRatioBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maxVirtualPriceDeviationRatioBps',
             type: 'uint16',
           },
           {
@@ -419,12 +342,22 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'liquidationFeeFraction',
+            name: 'rangeLiquidationFeeFraction',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'tokenLiquidationPriceDeltaBps',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
             type: 'uint16',
           },
           {
@@ -433,9 +366,19 @@ const _abi = [
             type: 'uint16',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
             name: 'maxRangeLiquidationFees',
-            type: 'uint128',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
           },
         ],
         indexed: false,
@@ -524,36 +467,8 @@ const _abi = [
         name: '_vQuote',
         type: 'address',
       },
-      {
-        internalType: 'contract IOracle',
-        name: '_nativeOracle',
-        type: 'address',
-      },
     ],
     name: '__initialize_ClearingHouse',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'addMargin',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -575,7 +490,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint32',
-        name: 'poolId',
+        name: 'collateralId',
         type: 'uint32',
       },
       {
@@ -673,9 +588,9 @@ const _abi = [
       {
         components: [
           {
-            internalType: 'contract IVToken',
-            name: 'vToken',
-            type: 'address',
+            internalType: 'uint32',
+            name: 'poolId',
+            type: 'uint32',
           },
           {
             internalType: 'int256',
@@ -694,11 +609,6 @@ const _abi = [
           },
           {
             components: [
-              {
-                internalType: 'enum IClearingHouseEnums.LimitOrderType',
-                name: 'limitOrderType',
-                type: 'uint8',
-              },
               {
                 internalType: 'int24',
                 name: 'tickLower',
@@ -738,6 +648,11 @@ const _abi = [
                 internalType: 'uint256',
                 name: 'sumFeeInsideLastX128',
                 type: 'uint256',
+              },
+              {
+                internalType: 'enum IClearingHouseEnums.LimitOrderType',
+                name: 'limitOrderType',
+                type: 'uint8',
               },
             ],
             internalType:
@@ -805,6 +720,30 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'getAccountNetTokenPosition',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'netPosition',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint32',
         name: 'collateralId',
         type: 'uint32',
@@ -853,30 +792,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-    ],
-    name: 'getNetTokenPosition',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'netPosition',
-        type: 'int256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
@@ -905,12 +820,17 @@ const _abi = [
             components: [
               {
                 internalType: 'uint16',
-                name: 'initialMarginRatio',
+                name: 'initialMarginRatioBps',
                 type: 'uint16',
               },
               {
                 internalType: 'uint16',
-                name: 'maintainanceMarginRatio',
+                name: 'maintainanceMarginRatioBps',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint16',
+                name: 'maxVirtualPriceDeviationRatioBps',
                 type: 'uint16',
               },
               {
@@ -1033,35 +953,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'liquidateLiquidityPositionsWithGasClaim',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'keeperFee',
-        type: 'int256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'liquidatorAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
         name: 'targetAccountId',
         type: 'uint256',
       },
@@ -1069,92 +960,14 @@ const _abi = [
         internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
-      },
-      {
-        internalType: 'uint16',
-        name: 'liquidationBps',
-        type: 'uint16',
       },
     ],
     name: 'liquidateTokenPosition',
     outputs: [
       {
-        components: [
-          {
-            internalType: 'int256',
-            name: 'vQuoteIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'vTokenIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'traderPositionIncrease',
-            type: 'int256',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.BalanceAdjustments',
-        name: 'liquidatorBalanceAdjustments',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'liquidatorAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'targetAccountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint16',
-        name: 'liquidationBps',
-        type: 'uint16',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'liquidateTokenPositionWithGasClaim',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'int256',
-            name: 'vQuoteIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'vTokenIncrease',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'traderPositionIncrease',
-            type: 'int256',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.BalanceAdjustments',
-        name: 'liquidatorBalanceAdjustments',
-        type: 'tuple',
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
       },
     ],
     stateMutability: 'nonpayable',
@@ -1217,19 +1030,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'nativeOracle',
-    outputs: [
-      {
-        internalType: 'contract IOracle',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'numAccounts',
     outputs: [
       {
@@ -1242,7 +1042,13 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint32[]',
+        name: 'allPoolIds',
+        type: 'uint32[]',
+      },
+    ],
     name: 'pause',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1266,6 +1072,11 @@ const _abi = [
     name: 'protocolInfo',
     outputs: [
       {
+        internalType: 'contract IERC20',
+        name: 'settlementToken',
+        type: 'address',
+      },
+      {
         internalType: 'contract IVQuote',
         name: 'vQuote',
         type: 'address',
@@ -1274,12 +1085,22 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'liquidationFeeFraction',
+            name: 'rangeLiquidationFeeFraction',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'tokenLiquidationPriceDeltaBps',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
             type: 'uint16',
           },
           {
@@ -1288,9 +1109,19 @@ const _abi = [
             type: 'uint16',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
             name: 'maxRangeLiquidationFees',
-            type: 'uint128',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
           },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidationParams',
@@ -1352,12 +1183,17 @@ const _abi = [
             components: [
               {
                 internalType: 'uint16',
-                name: 'initialMarginRatio',
+                name: 'initialMarginRatioBps',
                 type: 'uint16',
               },
               {
                 internalType: 'uint16',
-                name: 'maintainanceMarginRatio',
+                name: 'maintainanceMarginRatioBps',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint16',
+                name: 'maxVirtualPriceDeviationRatioBps',
                 type: 'uint16',
               },
               {
@@ -1420,68 +1256,6 @@ const _abi = [
       },
     ],
     name: 'removeLimitOrder',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickLower',
-        type: 'int24',
-      },
-      {
-        internalType: 'int24',
-        name: 'tickUpper',
-        type: 'int24',
-      },
-      {
-        internalType: 'uint256',
-        name: 'gasComputationUnitsClaim',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeLimitOrderWithGasClaim',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'keeperFee',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeMargin',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1582,7 +1356,13 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint32[]',
+        name: 'allPoolIds',
+        type: 'uint32[]',
+      },
+    ],
     name: 'unpause',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1626,6 +1406,29 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+      {
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'updateMargin',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
@@ -1634,12 +1437,17 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'initialMarginRatio',
+            name: 'initialMarginRatioBps',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'maintainanceMarginRatio',
+            name: 'maintainanceMarginRatioBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maxVirtualPriceDeviationRatioBps',
             type: 'uint16',
           },
           {
@@ -1697,12 +1505,22 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'liquidationFeeFraction',
+            name: 'rangeLiquidationFeeFraction',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'tokenLiquidationPriceDeltaBps',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
             type: 'uint16',
           },
           {
@@ -1711,9 +1529,19 @@ const _abi = [
             type: 'uint16',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
             name: 'maxRangeLiquidationFees',
-            type: 'uint128',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
           },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidationParams',
@@ -2178,6 +2006,31 @@ const _abi = [
         type: 'uint256',
       },
       {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'collateralId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'MarginUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
         indexed: false,
         internalType: 'int256',
         name: 'amount',
@@ -2232,6 +2085,18 @@ const _abi = [
         internalType: 'int256',
         name: 'vQuoteAmountOut',
         type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96Start',
+        type: 'uint160',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96End',
+        type: 'uint160',
       },
     ],
     name: 'TokenPositionChanged',
@@ -2297,27 +2162,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'uint16',
-        name: 'liquidationBps',
-        type: 'uint16',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'liquidationPriceX128',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'liquidatorPriceX128',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'fixFee',
-        type: 'uint256',
+        internalType: 'int256',
+        name: 'keeperFee',
+        type: 'int256',
       },
       {
         indexed: false,
@@ -2327,6 +2174,53 @@ const _abi = [
       },
     ],
     name: 'TokenPositionLiquidated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'sumAX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumBX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'sumFpX128',
+            type: 'int256',
+          },
+          {
+            internalType: 'uint48',
+            name: 'timestampLast',
+            type: 'uint48',
+          },
+        ],
+        indexed: false,
+        internalType: 'struct FundingPayment.Info',
+        name: 'fundingPayment',
+        type: 'tuple',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'realPriceX128',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'virtualPriceX128',
+        type: 'uint256',
+      },
+    ],
+    name: 'FundingPaymentStateUpdated',
     type: 'event',
   },
 ];

@@ -17,16 +17,20 @@ import { FunctionFragment, Result } from '@ethersproject/abi';
 import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
-export declare namespace IClearingHouseStructures {
-  export type SwapValuesStruct = {
+export declare namespace IVPoolWrapper {
+  export type SwapResultStruct = {
     amountSpecified: BigNumberish;
     vTokenIn: BigNumberish;
     vQuoteIn: BigNumberish;
     liquidityFees: BigNumberish;
     protocolFees: BigNumberish;
+    sqrtPriceX96Start: BigNumberish;
+    sqrtPriceX96End: BigNumberish;
   };
 
-  export type SwapValuesStructOutput = [
+  export type SwapResultStructOutput = [
+    BigNumber,
+    BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
@@ -38,6 +42,8 @@ export declare namespace IClearingHouseStructures {
     vQuoteIn: BigNumber;
     liquidityFees: BigNumber;
     protocolFees: BigNumber;
+    sqrtPriceX96Start: BigNumber;
+    sqrtPriceX96End: BigNumber;
   };
 }
 
@@ -221,13 +227,11 @@ export interface SwapSimulator extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [
-        IClearingHouseStructures.SwapValuesStructOutput,
-        BigNumber,
+        IVPoolWrapper.SwapResultStructOutput,
         SimulateSwap.CacheStructOutput,
         SwapSimulator.SwapStepAndStateStructOutput[]
       ] & {
-        swapValues: IClearingHouseStructures.SwapValuesStructOutput;
-        sqrtPriceX96End: BigNumber;
+        swapResult: IVPoolWrapper.SwapResultStructOutput;
         cache: SimulateSwap.CacheStructOutput;
         steps: SwapSimulator.SwapStepAndStateStructOutput[];
       }

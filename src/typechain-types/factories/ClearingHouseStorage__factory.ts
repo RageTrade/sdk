@@ -25,19 +25,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: 'nativeOracle',
-    outputs: [
-      {
-        internalType: 'contract IOracle',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'numAccounts',
     outputs: [
       {

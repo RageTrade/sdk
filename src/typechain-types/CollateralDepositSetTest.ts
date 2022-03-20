@@ -19,27 +19,40 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IClearingHouseStructures {
   export type LiquidationParamsStruct = {
-    liquidationFeeFraction: BigNumberish;
-    tokenLiquidationPriceDeltaBps: BigNumberish;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
     insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
     maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
     number,
     number,
     number,
+    number,
+    number,
+    number,
+    BigNumber,
     BigNumber
   ] & {
-    liquidationFeeFraction: number;
-    tokenLiquidationPriceDeltaBps: number;
+    rangeLiquidationFeeFraction: number;
+    tokenLiquidationFeeFraction: number;
+    closeFactorMMThresholdBps: number;
+    partialLiquidationCloseFactorBps: number;
     insuranceFundFeeShareBps: number;
+    liquidationSlippageSqrtToleranceBps: number;
     maxRangeLiquidationFees: BigNumber;
+    minNotionalLiquidatable: BigNumber;
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -50,12 +63,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -94,8 +109,8 @@ export interface CollateralDepositSetTestInterface extends utils.Interface {
     'init(address,address,uint32)': FunctionFragment;
     'initVToken(address)': FunctionFragment;
     'protocol()': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-    'setAccountStorage((uint16,uint16,uint16,uint128),uint256,uint256,uint256,uint256)': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'setAccountStorage((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVQuoteAddress(address)': FunctionFragment;
     'wrapper()': FunctionFragment;
   };

@@ -33,8 +33,9 @@ export declare namespace VTokenDeployer {
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -45,12 +46,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -87,7 +90,7 @@ export interface RageTradeFactoryInterface extends utils.Interface {
   functions: {
     'clearingHouse()': FunctionFragment;
     'governance()': FunctionFragment;
-    'initializePool(((string,string,uint8),(uint16,uint16,uint32,bool,bool,address),uint24,uint24,uint16))': FunctionFragment;
+    'initializePool(((string,string,uint8),(uint16,uint16,uint16,uint32,bool,bool,address),uint24,uint24,uint16))': FunctionFragment;
     'proxyAdmin()': FunctionFragment;
     'setVPoolWrapperLogicAddress(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;

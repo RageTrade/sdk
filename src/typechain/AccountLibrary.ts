@@ -15,11 +15,12 @@ export interface AccountLibraryInterface extends utils.Interface {
     'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256)': EventFragment;
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': EventFragment;
     'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256)': EventFragment;
+    'MarginUpdated(uint256,uint32,int256)': EventFragment;
     'ProfitUpdated(uint256,int256)': EventFragment;
     'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
-    'TokenPositionChanged(uint256,uint32,int256,int256)': EventFragment;
+    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': EventFragment;
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)': EventFragment;
+    'TokenPositionLiquidated(uint256,uint256,uint32,int256,int256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'FundingPaymentRealized'): EventFragment;
@@ -30,6 +31,7 @@ export interface AccountLibraryInterface extends utils.Interface {
   getEvent(
     nameOrSignatureOrTopic: 'LiquidityPositionsLiquidated'
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'MarginUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProfitUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolFeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TokenPositionChanged'): EventFragment;
@@ -94,6 +96,13 @@ export type LiquidityPositionsLiquidatedEvent = TypedEvent<
 
 export type LiquidityPositionsLiquidatedEventFilter = TypedEventFilter<LiquidityPositionsLiquidatedEvent>;
 
+export type MarginUpdatedEvent = TypedEvent<
+  [BigNumber, number, BigNumber],
+  { accountId: BigNumber; collateralId: number; amount: BigNumber }
+>;
+
+export type MarginUpdatedEventFilter = TypedEventFilter<MarginUpdatedEvent>;
+
 export type ProfitUpdatedEvent = TypedEvent<
   [BigNumber, BigNumber],
   { accountId: BigNumber; amount: BigNumber }
@@ -109,12 +118,14 @@ export type ProtocolFeesWithdrawnEvent = TypedEvent<
 export type ProtocolFeesWithdrawnEventFilter = TypedEventFilter<ProtocolFeesWithdrawnEvent>;
 
 export type TokenPositionChangedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber],
+  [BigNumber, number, BigNumber, BigNumber, BigNumber, BigNumber],
   {
     accountId: BigNumber;
     poolId: number;
     vTokenAmountOut: BigNumber;
     vQuoteAmountOut: BigNumber;
+    sqrtPriceX96Start: BigNumber;
+    sqrtPriceX96End: BigNumber;
   }
 >;
 
@@ -134,24 +145,12 @@ export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
 export type TokenPositionChangedDueToLiquidityChangedEventFilter = TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
 
 export type TokenPositionLiquidatedEvent = TypedEvent<
-  [
-    BigNumber,
-    BigNumber,
-    number,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
+  [BigNumber, BigNumber, number, BigNumber, BigNumber],
   {
     accountId: BigNumber;
     liquidatorAccountId: BigNumber;
     poolId: number;
-    liquidationBps: number;
-    liquidationPriceX128: BigNumber;
-    liquidatorPriceX128: BigNumber;
-    fixFee: BigNumber;
+    keeperFee: BigNumber;
     insuranceFundFee: BigNumber;
   }
 >;
@@ -256,6 +255,17 @@ export interface AccountLibrary extends BaseContract {
       insuranceFundFee?: null
     ): LiquidityPositionsLiquidatedEventFilter;
 
+    'MarginUpdated(uint256,uint32,int256)'(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginUpdatedEventFilter;
+    MarginUpdated(
+      accountId?: BigNumberish | null,
+      collateralId?: BigNumberish | null,
+      amount?: null
+    ): MarginUpdatedEventFilter;
+
     'ProfitUpdated(uint256,int256)'(
       accountId?: BigNumberish | null,
       amount?: null
@@ -274,17 +284,21 @@ export interface AccountLibrary extends BaseContract {
       feeAmount?: null
     ): ProtocolFeesWithdrawnEventFilter;
 
-    'TokenPositionChanged(uint256,uint32,int256,int256)'(
+    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)'(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       vTokenAmountOut?: null,
-      vQuoteAmountOut?: null
+      vQuoteAmountOut?: null,
+      sqrtPriceX96Start?: null,
+      sqrtPriceX96End?: null
     ): TokenPositionChangedEventFilter;
     TokenPositionChanged(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       vTokenAmountOut?: null,
-      vQuoteAmountOut?: null
+      vQuoteAmountOut?: null,
+      sqrtPriceX96Start?: null,
+      sqrtPriceX96End?: null
     ): TokenPositionChangedEventFilter;
 
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
@@ -302,24 +316,18 @@ export interface AccountLibrary extends BaseContract {
       vTokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
 
-    'TokenPositionLiquidated(uint256,uint256,uint32,uint16,uint256,uint256,uint256,int256)'(
+    'TokenPositionLiquidated(uint256,uint256,uint32,int256,int256)'(
       accountId?: BigNumberish | null,
       liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
-      liquidationBps?: null,
-      liquidationPriceX128?: null,
-      liquidatorPriceX128?: null,
-      fixFee?: null,
+      keeperFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
     TokenPositionLiquidated(
       accountId?: BigNumberish | null,
       liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
-      liquidationBps?: null,
-      liquidationPriceX128?: null,
-      liquidatorPriceX128?: null,
-      fixFee?: null,
+      keeperFee?: null,
       insuranceFundFee?: null
     ): TokenPositionLiquidatedEventFilter;
   };

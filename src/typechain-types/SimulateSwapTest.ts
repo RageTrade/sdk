@@ -124,7 +124,7 @@ export declare namespace SimulateSwapTest {
 export interface SimulateSwapTestInterface extends utils.Interface {
   contractName: 'SimulateSwapTest';
   functions: {
-    'clearSwapCache()': FunctionFragment;
+    'clearSwapSteps()': FunctionFragment;
     'extendedFeeGrowthOutsideX128()': FunctionFragment;
     'fpGlobal()': FunctionFragment;
     'simulateSwap1(bool,int256,uint160)': FunctionFragment;
@@ -137,7 +137,7 @@ export interface SimulateSwapTestInterface extends utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: 'clearSwapCache',
+    functionFragment: 'clearSwapSteps',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -172,7 +172,7 @@ export interface SimulateSwapTestInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'clearSwapCache',
+    functionFragment: 'clearSwapSteps',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -234,7 +234,7 @@ export interface SimulateSwapTest extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    clearSwapCache(
+    clearSwapSteps(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -305,7 +305,7 @@ export interface SimulateSwapTest extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  clearSwapCache(
+  clearSwapSteps(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -372,7 +372,7 @@ export interface SimulateSwapTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    clearSwapCache(overrides?: CallOverrides): Promise<void>;
+    clearSwapSteps(overrides?: CallOverrides): Promise<void>;
 
     extendedFeeGrowthOutsideX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -458,7 +458,7 @@ export interface SimulateSwapTest extends BaseContract {
   filters: {};
 
   estimateGas: {
-    clearSwapCache(
+    clearSwapSteps(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -510,7 +510,7 @@ export interface SimulateSwapTest extends BaseContract {
   };
 
   populateTransaction: {
-    clearSwapCache(
+    clearSwapSteps(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

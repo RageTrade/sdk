@@ -50,9 +50,9 @@ const _abi = [
       {
         components: [
           {
-            internalType: 'contract IVToken',
-            name: 'vToken',
-            type: 'address',
+            internalType: 'uint32',
+            name: 'poolId',
+            type: 'uint32',
           },
           {
             internalType: 'int256',
@@ -71,11 +71,6 @@ const _abi = [
           },
           {
             components: [
-              {
-                internalType: 'enum IClearingHouseEnums.LimitOrderType',
-                name: 'limitOrderType',
-                type: 'uint8',
-              },
               {
                 internalType: 'int24',
                 name: 'tickLower',
@@ -115,6 +110,11 @@ const _abi = [
                 internalType: 'uint256',
                 name: 'sumFeeInsideLastX128',
                 type: 'uint256',
+              },
+              {
+                internalType: 'enum IClearingHouseEnums.LimitOrderType',
+                name: 'limitOrderType',
+                type: 'uint8',
               },
             ],
             internalType:
@@ -182,6 +182,30 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'getAccountNetTokenPosition',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'netPosition',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
         internalType: 'uint32',
         name: 'collateralId',
         type: 'uint32',
@@ -230,30 +254,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint32',
-        name: 'vTokenTruncatedAddess',
-        type: 'uint32',
-      },
-    ],
-    name: 'getNetTokenPosition',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'netPosition',
-        type: 'int256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
@@ -282,12 +282,17 @@ const _abi = [
             components: [
               {
                 internalType: 'uint16',
-                name: 'initialMarginRatio',
+                name: 'initialMarginRatioBps',
                 type: 'uint16',
               },
               {
                 internalType: 'uint16',
-                name: 'maintainanceMarginRatio',
+                name: 'maintainanceMarginRatioBps',
+                type: 'uint16',
+              },
+              {
+                internalType: 'uint16',
+                name: 'maxVirtualPriceDeviationRatioBps',
                 type: 'uint16',
               },
               {
@@ -352,7 +357,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint32',
-        name: 'truncated',
+        name: 'poolId',
         type: 'uint32',
       },
     ],
@@ -372,6 +377,11 @@ const _abi = [
     name: 'protocolInfo',
     outputs: [
       {
+        internalType: 'contract IERC20',
+        name: 'settlementToken',
+        type: 'address',
+      },
+      {
         internalType: 'contract IVQuote',
         name: 'vQuote',
         type: 'address',
@@ -380,12 +390,22 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'liquidationFeeFraction',
+            name: 'rangeLiquidationFeeFraction',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'tokenLiquidationPriceDeltaBps',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
             type: 'uint16',
           },
           {
@@ -394,9 +414,19 @@ const _abi = [
             type: 'uint16',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
             name: 'maxRangeLiquidationFees',
-            type: 'uint128',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
           },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidationParams',

@@ -18,6 +18,34 @@ import { Listener, Provider } from '@ethersproject/providers';
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from './common';
 
 export declare namespace IVPoolWrapper {
+  export type SwapResultStruct = {
+    amountSpecified: BigNumberish;
+    vTokenIn: BigNumberish;
+    vQuoteIn: BigNumberish;
+    liquidityFees: BigNumberish;
+    protocolFees: BigNumberish;
+    sqrtPriceX96Start: BigNumberish;
+    sqrtPriceX96End: BigNumberish;
+  };
+
+  export type SwapResultStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    amountSpecified: BigNumber;
+    vTokenIn: BigNumber;
+    vQuoteIn: BigNumber;
+    liquidityFees: BigNumber;
+    protocolFees: BigNumber;
+    sqrtPriceX96Start: BigNumber;
+    sqrtPriceX96End: BigNumber;
+  };
+
   export type InitializeVPoolWrapperParamsStruct = {
     clearingHouse: string;
     vToken: string;
@@ -77,7 +105,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
     'swap(bool,int256,uint160)': FunctionFragment;
-    'updateGlobalFundingState()': FunctionFragment;
+    'updateGlobalFundingState(uint256,uint256)': FunctionFragment;
     'vPool()': FunctionFragment;
   };
 
@@ -127,7 +155,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values?: undefined
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
 
@@ -178,7 +206,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     'LiquidityFeeUpdated(uint24)': EventFragment;
     'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
     'ProtocolFeeUpdated(uint24)': EventFragment;
-    'Swap(int256,int256,uint256,uint256)': EventFragment;
+    'Swap(tuple)': EventFragment;
   };
 
   getEvent(
@@ -239,13 +267,8 @@ export type ProtocolFeeUpdatedEvent = TypedEvent<
 export type ProtocolFeeUpdatedEventFilter = TypedEventFilter<ProtocolFeeUpdatedEvent>;
 
 export type SwapEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber],
-  {
-    vTokenIn: BigNumber;
-    vQuoteIn: BigNumber;
-    liquidityFees: BigNumber;
-    protocolFees: BigNumber;
-  }
+  [IVPoolWrapper.SwapResultStructOutput],
+  { swapResult: IVPoolWrapper.SwapResultStructOutput }
 >;
 
 export type SwapEventFilter = TypedEventFilter<SwapEvent>;
@@ -337,6 +360,8 @@ export interface IVPoolWrapper extends BaseContract {
     ): Promise<ContractTransaction>;
 
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -394,6 +419,8 @@ export interface IVPoolWrapper extends BaseContract {
   ): Promise<ContractTransaction>;
 
   updateGlobalFundingState(
+    realPriceX128: BigNumberish,
+    virtualPriceX128: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -458,14 +485,13 @@ export interface IVPoolWrapper extends BaseContract {
       amountSpecified: BigNumberish,
       sqrtPriceLimitX96: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        vTokenAmount: BigNumber;
-        vQuoteAmount: BigNumber;
-      }
-    >;
+    ): Promise<IVPoolWrapper.SwapResultStructOutput>;
 
-    updateGlobalFundingState(overrides?: CallOverrides): Promise<void>;
+    updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     vPool(overrides?: CallOverrides): Promise<string>;
   };
@@ -520,18 +546,8 @@ export interface IVPoolWrapper extends BaseContract {
     ): ProtocolFeeUpdatedEventFilter;
     ProtocolFeeUpdated(protocolFeePips?: null): ProtocolFeeUpdatedEventFilter;
 
-    'Swap(int256,int256,uint256,uint256)'(
-      vTokenIn?: null,
-      vQuoteIn?: null,
-      liquidityFees?: null,
-      protocolFees?: null
-    ): SwapEventFilter;
-    Swap(
-      vTokenIn?: null,
-      vQuoteIn?: null,
-      liquidityFees?: null,
-      protocolFees?: null
-    ): SwapEventFilter;
+    'Swap(tuple)'(swapResult?: null): SwapEventFilter;
+    Swap(swapResult?: null): SwapEventFilter;
   };
 
   estimateGas: {
@@ -586,6 +602,8 @@ export interface IVPoolWrapper extends BaseContract {
     ): Promise<BigNumber>;
 
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -646,6 +664,8 @@ export interface IVPoolWrapper extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateGlobalFundingState(
+      realPriceX128: BigNumberish,
+      virtualPriceX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

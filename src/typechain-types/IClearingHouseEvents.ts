@@ -20,8 +20,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -32,12 +33,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -45,22 +48,34 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    liquidationFeeFraction: BigNumberish;
-    tokenLiquidationPriceDeltaBps: BigNumberish;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
     insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
     maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
     number,
     number,
     number,
+    number,
+    number,
+    number,
+    BigNumber,
     BigNumber
   ] & {
-    liquidationFeeFraction: number;
-    tokenLiquidationPriceDeltaBps: number;
+    rangeLiquidationFeeFraction: number;
+    tokenLiquidationFeeFraction: number;
+    closeFactorMMThresholdBps: number;
+    partialLiquidationCloseFactorBps: number;
     insuranceFundFeeShareBps: number;
+    liquidationSlippageSqrtToleranceBps: number;
     maxRangeLiquidationFees: BigNumber;
+    minNotionalLiquidatable: BigNumber;
   };
 }
 
@@ -71,8 +86,6 @@ export interface IClearingHouseEventsInterface extends utils.Interface {
   events: {
     'AccountCreated(address,uint256)': EventFragment;
     'CollateralSettingsUpdated(address,tuple)': EventFragment;
-    'MarginAdded(uint256,uint32,uint256)': EventFragment;
-    'MarginRemoved(uint256,uint32,uint256)': EventFragment;
     'PausedUpdated(bool)': EventFragment;
     'PoolSettingsUpdated(uint32,tuple)': EventFragment;
     'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': EventFragment;
@@ -80,8 +93,6 @@ export interface IClearingHouseEventsInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginAdded'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginRemoved'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolSettingsUpdated'): EventFragment;
@@ -103,20 +114,6 @@ export type CollateralSettingsUpdatedEvent = TypedEvent<
 >;
 
 export type CollateralSettingsUpdatedEventFilter = TypedEventFilter<CollateralSettingsUpdatedEvent>;
-
-export type MarginAddedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginAddedEventFilter = TypedEventFilter<MarginAddedEvent>;
-
-export type MarginRemovedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginRemovedEventFilter = TypedEventFilter<MarginRemovedEvent>;
 
 export type PausedUpdatedEvent = TypedEvent<[boolean], { paused: boolean }>;
 
@@ -198,28 +195,6 @@ export interface IClearingHouseEvents extends BaseContract {
       cToken?: null,
       cTokenInfo?: null
     ): CollateralSettingsUpdatedEventFilter;
-
-    'MarginAdded(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-    MarginAdded(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-
-    'MarginRemoved(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
-    MarginRemoved(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
 
     'PausedUpdated(bool)'(paused?: null): PausedUpdatedEventFilter;
     PausedUpdated(paused?: null): PausedUpdatedEventFilter;

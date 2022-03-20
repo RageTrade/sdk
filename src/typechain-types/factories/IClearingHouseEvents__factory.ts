@@ -69,56 +69,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'MarginAdded',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'MarginRemoved',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: false,
         internalType: 'bool',
         name: 'paused',
@@ -141,12 +91,17 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'initialMarginRatio',
+            name: 'initialMarginRatioBps',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'maintainanceMarginRatio',
+            name: 'maintainanceMarginRatioBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maxVirtualPriceDeviationRatioBps',
             type: 'uint16',
           },
           {
@@ -186,12 +141,22 @@ const _abi = [
         components: [
           {
             internalType: 'uint16',
-            name: 'liquidationFeeFraction',
+            name: 'rangeLiquidationFeeFraction',
             type: 'uint16',
           },
           {
             internalType: 'uint16',
-            name: 'tokenLiquidationPriceDeltaBps',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
             type: 'uint16',
           },
           {
@@ -200,9 +165,19 @@ const _abi = [
             type: 'uint16',
           },
           {
-            internalType: 'uint128',
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
             name: 'maxRangeLiquidationFees',
-            type: 'uint128',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
           },
         ],
         indexed: false,

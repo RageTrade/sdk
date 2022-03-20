@@ -18,17 +18,12 @@ export interface ClearingHouseStorageInterface extends utils.Interface {
   contractName: 'ClearingHouseStorage';
   functions: {
     'insuranceFund()': FunctionFragment;
-    'nativeOracle()': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: 'insuranceFund',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'nativeOracle',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -42,10 +37,6 @@ export interface ClearingHouseStorageInterface extends utils.Interface {
 
   decodeFunctionResult(
     functionFragment: 'insuranceFund',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'nativeOracle',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -90,8 +81,6 @@ export interface ClearingHouseStorage extends BaseContract {
   functions: {
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<[string]>;
-
     numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
@@ -99,16 +88,12 @@ export interface ClearingHouseStorage extends BaseContract {
 
   insuranceFund(overrides?: CallOverrides): Promise<string>;
 
-  nativeOracle(overrides?: CallOverrides): Promise<string>;
-
   numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
   rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-    nativeOracle(overrides?: CallOverrides): Promise<string>;
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -120,8 +105,6 @@ export interface ClearingHouseStorage extends BaseContract {
   estimateGas: {
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<BigNumber>;
-
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
     rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
@@ -129,8 +112,6 @@ export interface ClearingHouseStorage extends BaseContract {
 
   populateTransaction: {
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    nativeOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

@@ -13,6 +13,17 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: 'uint160',
+        name: 'sqrtPriceLimitX96',
+        type: 'uint160',
+      },
+    ],
+    name: 'InvalidSqrtPriceLimit',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
         internalType: 'int24',
         name: 'tickLower',
         type: 'int24',
@@ -195,28 +206,47 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        components: [
+          {
+            internalType: 'int256',
+            name: 'amountSpecified',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vTokenIn',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vQuoteIn',
+            type: 'int256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'liquidityFees',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'protocolFees',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint160',
+            name: 'sqrtPriceX96Start',
+            type: 'uint160',
+          },
+          {
+            internalType: 'uint160',
+            name: 'sqrtPriceX96End',
+            type: 'uint160',
+          },
+        ],
         indexed: false,
-        internalType: 'int256',
-        name: 'vTokenIn',
-        type: 'int256',
-      },
-      {
-        indexed: false,
-        internalType: 'int256',
-        name: 'vQuoteIn',
-        type: 'int256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'liquidityFees',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'protocolFees',
-        type: 'uint256',
+        internalType: 'struct IVPoolWrapper.SwapResult',
+        name: 'swapResult',
+        type: 'tuple',
       },
     ],
     name: 'Swap',
@@ -698,14 +728,46 @@ const _abi = [
     name: 'swap',
     outputs: [
       {
-        internalType: 'int256',
-        name: 'vTokenAmount',
-        type: 'int256',
-      },
-      {
-        internalType: 'int256',
-        name: 'vQuoteAmount',
-        type: 'int256',
+        components: [
+          {
+            internalType: 'int256',
+            name: 'amountSpecified',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vTokenIn',
+            type: 'int256',
+          },
+          {
+            internalType: 'int256',
+            name: 'vQuoteIn',
+            type: 'int256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'liquidityFees',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'protocolFees',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint160',
+            name: 'sqrtPriceX96Start',
+            type: 'uint160',
+          },
+          {
+            internalType: 'uint160',
+            name: 'sqrtPriceX96End',
+            type: 'uint160',
+          },
+        ],
+        internalType: 'struct IVPoolWrapper.SwapResult',
+        name: 'swapResult',
+        type: 'tuple',
       },
     ],
     stateMutability: 'nonpayable',
@@ -792,7 +854,18 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'realPriceX128',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'virtualPriceX128',
+        type: 'uint256',
+      },
+    ],
     name: 'updateGlobalFundingState',
     outputs: [],
     stateMutability: 'nonpayable',

@@ -18,7 +18,6 @@ function removeMetadataFromDir(currentDirPath) {
   const dirs = readdirSync(currentDirPath);
   dirs.forEach((childDirName) => {
     const childPath = _path.resolve(currentDirPath, childDirName);
-    console.log(1);
     if (childDirName === 'solcInputs') {
       removeSync(childPath);
       return;
@@ -50,26 +49,71 @@ function copyAccountEventsErrorsToClearingHouse(deploymentsDirPath, fn) {
   dirs.forEach((childDirName) => {
     const childDeploymentPath = _path.resolve(deploymentsDirPath, childDirName);
     if (lstatSync(childDeploymentPath).isDirectory()) {
-      const AccountLibraryData = readJsonSync(
-        _path.resolve(childDeploymentPath, 'AccountLibrary.json')
-      );
+      // Including events of Account Library in Clearing House
       const ClearingHouseData = readJsonSync(
         _path.resolve(childDeploymentPath, 'ClearingHouse.json')
       );
-      for (const accAbiEl of AccountLibraryData.abi) {
-        if (['error', 'event'].includes(accAbiEl.type)) {
-          if (
-            !ClearingHouseData.abi.find(
-              (chAbiEL) =>
-                chAbiEL.type + '-' + chAbiEL.name ===
-                accAbiEl.type + '-' + accAbiEl.name
-            )
-          ) {
-            console.log(accAbiEl.name);
-            ClearingHouseData.abi.push(accAbiEl);
-          }
-        }
-      }
+      const AccountLibraryData = readJsonSync(
+        _path.resolve(childDeploymentPath, 'AccountLibrary.json')
+      );
+      pushAbi(ClearingHouseData, AccountLibraryData);
+
+      // Including events of FundingPayment Library in PoolWrapper
+      const VPoolWrapperData = readJsonSync(
+        _path.resolve(childDeploymentPath, 'VPoolWrapperLogic.json')
+      );
+      pushAbi(ClearingHouseData, {
+        abi: [
+          {
+            anonymous: false,
+            inputs: [
+              {
+                components: [
+                  {
+                    internalType: 'int256',
+                    name: 'sumAX128',
+                    type: 'int256',
+                  },
+                  {
+                    internalType: 'int256',
+                    name: 'sumBX128',
+                    type: 'int256',
+                  },
+                  {
+                    internalType: 'int256',
+                    name: 'sumFpX128',
+                    type: 'int256',
+                  },
+                  {
+                    internalType: 'uint48',
+                    name: 'timestampLast',
+                    type: 'uint48',
+                  },
+                ],
+                indexed: false,
+                internalType: 'struct FundingPayment.Info',
+                name: 'fundingPayment',
+                type: 'tuple',
+              },
+              {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'realPriceX128',
+                type: 'uint256',
+              },
+              {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'virtualPriceX128',
+                type: 'uint256',
+              },
+            ],
+            name: 'FundingPaymentStateUpdated',
+            type: 'event',
+          },
+        ],
+      });
+
       writeJsonSync(
         _path.resolve(childDeploymentPath, 'ClearingHouse.json'),
         ClearingHouseData,
@@ -77,6 +121,23 @@ function copyAccountEventsErrorsToClearingHouse(deploymentsDirPath, fn) {
       );
     }
   });
+}
+
+function pushAbi(mainContractDataMutable, otherContractDataRead) {
+  for (const ocAbiEl of otherContractDataRead.abi) {
+    if (['error', 'event'].includes(ocAbiEl.type)) {
+      if (
+        !mainContractDataMutable.abi.find(
+          (mcAbiEL) =>
+            mcAbiEL.type + '-' + mcAbiEL.name ===
+            ocAbiEl.type + '-' + ocAbiEl.name
+        )
+      ) {
+        console.log(ocAbiEl.name);
+        mainContractDataMutable.abi.push(ocAbiEl);
+      }
+    }
+  }
 }
 
 main().catch(console.error);

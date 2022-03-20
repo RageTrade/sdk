@@ -32,8 +32,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatio: BigNumberish;
-    maintainanceMarginRatio: BigNumberish;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
     twapDuration: BigNumberish;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -44,12 +45,14 @@ export declare namespace IClearingHouseStructures {
     number,
     number,
     number,
+    number,
     boolean,
     boolean,
     string
   ] & {
-    initialMarginRatio: number;
-    maintainanceMarginRatio: number;
+    initialMarginRatioBps: number;
+    maintainanceMarginRatioBps: number;
+    maxVirtualPriceDeviationRatioBps: number;
     twapDuration: number;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
@@ -57,22 +60,34 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    liquidationFeeFraction: BigNumberish;
-    tokenLiquidationPriceDeltaBps: BigNumberish;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
     insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
     maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
     number,
     number,
     number,
+    number,
+    number,
+    number,
+    BigNumber,
     BigNumber
   ] & {
-    liquidationFeeFraction: number;
-    tokenLiquidationPriceDeltaBps: number;
+    rangeLiquidationFeeFraction: number;
+    tokenLiquidationFeeFraction: number;
+    closeFactorMMThresholdBps: number;
+    partialLiquidationCloseFactorBps: number;
     insuranceFundFeeShareBps: number;
+    liquidationSlippageSqrtToleranceBps: number;
     maxRangeLiquidationFees: BigNumber;
+    minNotionalLiquidatable: BigNumber;
   };
 
   export type CollateralDepositViewStruct = {
@@ -86,7 +101,6 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidityPositionViewStruct = {
-    limitOrderType: BigNumberish;
     tickLower: BigNumberish;
     tickUpper: BigNumberish;
     liquidity: BigNumberish;
@@ -95,20 +109,20 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumberish;
     sumFpInsideLastX128: BigNumberish;
     sumFeeInsideLastX128: BigNumberish;
+    limitOrderType: BigNumberish;
   };
 
   export type LiquidityPositionViewStructOutput = [
     number,
     number,
-    number,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
-    BigNumber
+    BigNumber,
+    number
   ] & {
-    limitOrderType: number;
     tickLower: number;
     tickUpper: number;
     liquidity: BigNumber;
@@ -117,10 +131,11 @@ export declare namespace IClearingHouseStructures {
     sumBInsideLastX128: BigNumber;
     sumFpInsideLastX128: BigNumber;
     sumFeeInsideLastX128: BigNumber;
+    limitOrderType: number;
   };
 
   export type VTokenPositionViewStruct = {
-    vToken: string;
+    poolId: BigNumberish;
     balance: BigNumberish;
     netTraderPosition: BigNumberish;
     sumAX128Chkpt: BigNumberish;
@@ -128,13 +143,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type VTokenPositionViewStructOutput = [
-    string,
+    number,
     BigNumber,
     BigNumber,
     BigNumber,
     IClearingHouseStructures.LiquidityPositionViewStructOutput[]
   ] & {
-    vToken: string;
+    poolId: number;
     balance: BigNumber;
     netTraderPosition: BigNumber;
     sumAX128Chkpt: BigNumber;
@@ -171,22 +186,6 @@ export declare namespace IClearingHouseStructures {
     vPool: string;
     vPoolWrapper: string;
     settings: IClearingHouseStructures.PoolSettingsStructOutput;
-  };
-
-  export type BalanceAdjustmentsStruct = {
-    vQuoteIncrease: BigNumberish;
-    vTokenIncrease: BigNumberish;
-    traderPositionIncrease: BigNumberish;
-  };
-
-  export type BalanceAdjustmentsStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    vQuoteIncrease: BigNumber;
-    vTokenIncrease: BigNumber;
-    traderPositionIncrease: BigNumber;
   };
 
   export type MulticallOperationStruct = {
@@ -250,58 +249,49 @@ export declare namespace IClearingHouseStructures {
 export interface ClearingHouseDummyInterface extends utils.Interface {
   contractName: 'ClearingHouseDummy';
   functions: {
-    '__initialize_ClearingHouse(address,address,address,address,address,address)': FunctionFragment;
-    'addMargin(uint256,uint32,uint256)': FunctionFragment;
+    '__initialize_ClearingHouse(address,address,address,address,address)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'getAccountInfo(uint256)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
+    'getAccountNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getCollateralInfo(uint32)': FunctionFragment;
-    'getNetTokenPosition(uint256,uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getTwapPrices(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
     'insuranceFund()': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
-    'liquidateLiquidityPositionsWithGasClaim(uint256,uint256)': FunctionFragment;
-    'liquidateTokenPosition(uint256,uint256,uint32,uint16)': FunctionFragment;
-    'liquidateTokenPositionWithGasClaim(uint256,uint256,uint32,uint16,uint256)': FunctionFragment;
+    'liquidateTokenPosition(uint256,uint32)': FunctionFragment;
     'multicall(bytes[])': FunctionFragment;
     'multicallWithSingleMarginCheck(uint256,(uint8,bytes)[])': FunctionFragment;
-    'nativeOracle()': FunctionFragment;
     'newMethodAdded()': FunctionFragment;
     'numAccounts()': FunctionFragment;
-    'pause()': FunctionFragment;
+    'pause(uint32[])': FunctionFragment;
     'paused()': FunctionFragment;
     'protocolInfo()': FunctionFragment;
     'rageTradeFactoryAddress()': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
+    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'removeLimitOrderWithGasClaim(uint256,uint32,int24,int24,uint256)': FunctionFragment;
-    'removeMargin(uint256,uint32,uint256)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
-    'unpause()': FunctionFragment;
+    'unpause(uint32[])': FunctionFragment;
     'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
-    'updatePoolSettings(uint32,(uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
+    'updateMargin(uint256,uint32,int256)': FunctionFragment;
+    'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
-    'updateProtocolSettings((uint16,uint16,uint16,uint128),uint256,uint256,uint256)': FunctionFragment;
+    'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
     'withdrawProtocolFee(address[])': FunctionFragment;
   };
 
   encodeFunctionData(
     functionFragment: '__initialize_ClearingHouse',
-    values: [string, string, string, string, string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'addMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
@@ -325,12 +315,12 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getCollateralInfo',
-    values: [BigNumberish]
+    functionFragment: 'getAccountNetTokenPosition',
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getNetTokenPosition',
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'getCollateralInfo',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolInfo',
@@ -357,22 +347,8 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'liquidateTokenPositionWithGasClaim',
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'multicall',
@@ -383,10 +359,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     values: [BigNumberish, IClearingHouseStructures.MulticallOperationStruct[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'nativeOracle',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'newMethodAdded',
     values?: undefined
   ): string;
@@ -394,7 +366,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     functionFragment: 'numAccounts',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'pause', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'pause',
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'protocolInfo',
@@ -411,20 +386,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeLimitOrderWithGasClaim',
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'removeMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -446,10 +407,17 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     functionFragment: 'transferTeamMultisig',
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'unpause',
+    values: [BigNumberish[]]
+  ): string;
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
     values: [string, IClearingHouseStructures.CollateralSettingsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateMargin',
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updatePoolSettings',
@@ -485,7 +453,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     functionFragment: '__initialize_ClearingHouse',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'addMargin', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
@@ -508,11 +475,11 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getCollateralInfo',
+    functionFragment: 'getAccountNetTokenPosition',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getNetTokenPosition',
+    functionFragment: 'getCollateralInfo',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -537,24 +504,12 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'liquidateLiquidityPositionsWithGasClaim',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'liquidateTokenPosition',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'liquidateTokenPositionWithGasClaim',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'multicallWithSingleMarginCheck',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'nativeOracle',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -583,14 +538,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     functionFragment: 'removeLimitOrder',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: 'removeLimitOrderWithGasClaim',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'removeMargin',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'teamMultisig',
@@ -607,6 +554,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'unpause', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'updateCollateralSettings',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateMargin',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -634,8 +585,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     'AccountCreated(address,uint256)': EventFragment;
     'CollateralSettingsUpdated(address,tuple)': EventFragment;
     'GovernanceTransferred(address,address)': EventFragment;
-    'MarginAdded(uint256,uint32,uint256)': EventFragment;
-    'MarginRemoved(uint256,uint32,uint256)': EventFragment;
     'Paused(address)': EventFragment;
     'PausedUpdated(bool)': EventFragment;
     'PoolSettingsUpdated(uint32,tuple)': EventFragment;
@@ -647,8 +596,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginAdded'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginRemoved'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
@@ -680,20 +627,6 @@ export type GovernanceTransferredEvent = TypedEvent<
 >;
 
 export type GovernanceTransferredEventFilter = TypedEventFilter<GovernanceTransferredEvent>;
-
-export type MarginAddedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginAddedEventFilter = TypedEventFilter<MarginAddedEvent>;
-
-export type MarginRemovedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
-  { accountId: BigNumber; collateralId: number; amount: BigNumber }
->;
-
-export type MarginRemovedEventFilter = TypedEventFilter<MarginRemovedEvent>;
 
 export type PausedEvent = TypedEvent<[string], { account: string }>;
 
@@ -775,14 +708,6 @@ export interface ClearingHouseDummy extends BaseContract {
       _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vQuote: string,
-      _nativeOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -791,7 +716,7 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<ContractTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -839,16 +764,16 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
-
-    getNetTokenPosition(
+    getAccountNetTokenPosition(
       accountId: BigNumberish,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { netPosition: BigNumber }>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -879,26 +804,9 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -913,13 +821,12 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<[string]>;
-
     newMethodAdded(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -930,11 +837,13 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -958,22 +867,6 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
@@ -994,12 +887,20 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<ContractTransaction>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1042,14 +943,6 @@ export interface ClearingHouseDummy extends BaseContract {
     _defaultCollateralTokenOracle: string,
     _insuranceFund: string,
     _vQuote: string,
-    _nativeOracle: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  addMargin(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
-    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1058,7 +951,7 @@ export interface ClearingHouseDummy extends BaseContract {
   ): Promise<ContractTransaction>;
 
   createAccountAndAddMargin(
-    poolId: BigNumberish,
+    collateralId: BigNumberish,
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1106,16 +999,16 @@ export interface ClearingHouseDummy extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getCollateralInfo(
-    collateralId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-  getNetTokenPosition(
+  getAccountNetTokenPosition(
     accountId: BigNumberish,
     poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getCollateralInfo(
+    collateralId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
   getPoolInfo(
     poolId: BigNumberish,
@@ -1146,26 +1039,9 @@ export interface ClearingHouseDummy extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  liquidateLiquidityPositionsWithGasClaim(
-    accountId: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   liquidateTokenPosition(
-    liquidatorAccountId: BigNumberish,
     targetAccountId: BigNumberish,
     poolId: BigNumberish,
-    liquidationBps: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  liquidateTokenPositionWithGasClaim(
-    liquidatorAccountId: BigNumberish,
-    targetAccountId: BigNumberish,
-    poolId: BigNumberish,
-    liquidationBps: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1180,13 +1056,12 @@ export interface ClearingHouseDummy extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  nativeOracle(overrides?: CallOverrides): Promise<string>;
-
   newMethodAdded(overrides?: CallOverrides): Promise<BigNumber>;
 
   numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
   pause(
+    allPoolIds: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1197,11 +1072,13 @@ export interface ClearingHouseDummy extends BaseContract {
   ): Promise<
     [
       string,
+      string,
       IClearingHouseStructures.LiquidationParamsStructOutput,
       BigNumber,
       BigNumber,
       BigNumber
     ] & {
+      settlementToken: string;
       vQuote: string;
       liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
       minRequiredMargin: BigNumber;
@@ -1225,22 +1102,6 @@ export interface ClearingHouseDummy extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  removeLimitOrderWithGasClaim(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    gasComputationUnitsClaim: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  removeMargin(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   swapToken(
     accountId: BigNumberish,
     poolId: BigNumberish,
@@ -1261,12 +1122,20 @@ export interface ClearingHouseDummy extends BaseContract {
   ): Promise<ContractTransaction>;
 
   unpause(
+    allPoolIds: BigNumberish[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   updateCollateralSettings(
     cToken: string,
     collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateMargin(
+    accountId: BigNumberish,
+    collateralId: BigNumberish,
+    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1309,21 +1178,13 @@ export interface ClearingHouseDummy extends BaseContract {
       _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vQuote: string,
-      _nativeOracle: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1371,16 +1232,16 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-    getNetTokenPosition(
+    getAccountNetTokenPosition(
       accountId: BigNumberish,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getCollateralInfo(
+      collateralId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
     getPoolInfo(
       poolId: BigNumberish,
@@ -1411,28 +1272,11 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
+    liquidateTokenPosition(
+      targetAccountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.BalanceAdjustmentsStructOutput>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.BalanceAdjustmentsStructOutput>;
 
     multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
 
@@ -1442,13 +1286,11 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<string>;
-
     newMethodAdded(overrides?: CallOverrides): Promise<BigNumber>;
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
-    pause(overrides?: CallOverrides): Promise<void>;
+    pause(allPoolIds: BigNumberish[], overrides?: CallOverrides): Promise<void>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
@@ -1457,11 +1299,13 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<
       [
         string,
+        string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
         BigNumber,
         BigNumber,
         BigNumber
       ] & {
+        settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
         minRequiredMargin: BigNumber;
@@ -1482,22 +1326,6 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1525,11 +1353,21 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    unpause(overrides?: CallOverrides): Promise<void>;
+    unpause(
+      allPoolIds: BigNumberish[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1599,28 +1437,6 @@ export interface ClearingHouseDummy extends BaseContract {
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
 
-    'MarginAdded(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-    MarginAdded(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginAddedEventFilter;
-
-    'MarginRemoved(uint256,uint32,uint256)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
-    MarginRemoved(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
-      amount?: null
-    ): MarginRemovedEventFilter;
-
     'Paused(address)'(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
 
@@ -1669,14 +1485,6 @@ export interface ClearingHouseDummy extends BaseContract {
       _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vQuote: string,
-      _nativeOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1685,7 +1493,7 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1716,14 +1524,14 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1751,26 +1559,9 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1785,13 +1576,12 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<BigNumber>;
-
     newMethodAdded(overrides?: CallOverrides): Promise<BigNumber>;
 
     numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1811,22 +1601,6 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1850,12 +1624,20 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<BigNumber>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1899,14 +1681,6 @@ export interface ClearingHouseDummy extends BaseContract {
       _defaultCollateralTokenOracle: string,
       _insuranceFund: string,
       _vQuote: string,
-      _nativeOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    addMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1915,7 +1689,7 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createAccountAndAddMargin(
-      poolId: BigNumberish,
+      collateralId: BigNumberish,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1946,14 +1720,14 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
+    getAccountNetTokenPosition(
+      accountId: BigNumberish,
+      poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+    getCollateralInfo(
+      collateralId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1981,26 +1755,9 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    liquidateLiquidityPositionsWithGasClaim(
-      accountId: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     liquidateTokenPosition(
-      liquidatorAccountId: BigNumberish,
       targetAccountId: BigNumberish,
       poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidateTokenPositionWithGasClaim(
-      liquidatorAccountId: BigNumberish,
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      liquidationBps: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2015,13 +1772,12 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    nativeOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     newMethodAdded(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2046,22 +1802,6 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    removeLimitOrderWithGasClaim(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      gasComputationUnitsClaim: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
@@ -2082,12 +1822,20 @@ export interface ClearingHouseDummy extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     unpause(
+      allPoolIds: BigNumberish[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     updateCollateralSettings(
       cToken: string,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateMargin(
+      accountId: BigNumberish,
+      collateralId: BigNumberish,
+      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
