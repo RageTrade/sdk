@@ -66,7 +66,7 @@ const _abi = [
           },
           {
             internalType: 'int256',
-            name: 'sumAX128Chkpt',
+            name: 'sumALastX128',
             type: 'int256',
           },
           {

@@ -1,5 +1,5 @@
 {
-  "address": "0xF9C251f607E80C08b59a4a7AAC8daC6462158248",
+  "address": "0x0a9397967521C012ddFC7A3CE748A03229f4C010",
   "abi": [
     {
       "inputs": [
@@ -598,7 +598,7 @@
             },
             {
               "internalType": "int256",
-              "name": "sumAX128Chkpt",
+              "name": "sumALastX128",
               "type": "int256"
             },
             {
@@ -1852,43 +1852,6 @@
         },
         {
           "indexed": false,
-          "internalType": "int256",
-          "name": "amount",
-          "type": "int256"
-        }
-      ],
-      "name": "FundingPaymentRealized",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "accountId",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint32",
-          "name": "poolId",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "internalType": "int24",
-          "name": "tickLower",
-          "type": "int24"
-        },
-        {
-          "indexed": false,
-          "internalType": "int24",
-          "name": "tickUpper",
-          "type": "int24"
-        },
-        {
-          "indexed": false,
           "internalType": "int128",
           "name": "liquidityDelta",
           "type": "int128"
@@ -1950,6 +1913,67 @@
         }
       ],
       "name": "LiquidityPositionEarningsRealized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "accountId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint32",
+          "name": "poolId",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickLower",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int24",
+          "name": "tickUpper",
+          "type": "int24"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "amount",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "sumALastX128",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "sumBInsideLastX128",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "sumFpInsideLastX128",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "sumFeeInsideLastX128",
+          "type": "uint256"
+        }
+      ],
+      "name": "LiquidityPositionFundingPaymentRealized",
       "type": "event"
     },
     {
@@ -2130,6 +2154,37 @@
         }
       ],
       "name": "TokenPositionChangedDueToLiquidityChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "accountId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint32",
+          "name": "poolId",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "amount",
+          "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "int256",
+          "name": "sumALastX128",
+          "type": "int256"
+        }
+      ],
+      "name": "TokenPositionFundingPaymentRealized",
       "type": "event"
     },
     {

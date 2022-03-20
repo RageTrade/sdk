@@ -604,7 +604,7 @@ const _abi = [
           },
           {
             internalType: 'int256',
-            name: 'sumAX128Chkpt',
+            name: 'sumALastX128',
             type: 'int256',
           },
           {
@@ -1859,43 +1859,6 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'int256',
-        name: 'amount',
-        type: 'int256',
-      },
-    ],
-    name: 'FundingPaymentRealized',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-      {
-        indexed: false,
-        internalType: 'int24',
-        name: 'tickLower',
-        type: 'int24',
-      },
-      {
-        indexed: false,
-        internalType: 'int24',
-        name: 'tickUpper',
-        type: 'int24',
-      },
-      {
-        indexed: false,
         internalType: 'int128',
         name: 'liquidityDelta',
         type: 'int128',
@@ -1957,6 +1920,67 @@ const _abi = [
       },
     ],
     name: 'LiquidityPositionEarningsRealized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumALastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumBInsideLastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumFpInsideLastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'sumFeeInsideLastX128',
+        type: 'uint256',
+      },
+    ],
+    name: 'LiquidityPositionFundingPaymentRealized',
     type: 'event',
   },
   {
@@ -2137,6 +2161,37 @@ const _abi = [
       },
     ],
     name: 'TokenPositionChangedDueToLiquidityChanged',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumALastX128',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionFundingPaymentRealized',
     type: 'event',
   },
   {

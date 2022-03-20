@@ -13,18 +13,6 @@ import * as Contracts from '.';
 declare module 'hardhat/types/runtime' {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: 'ArbAggregator',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArbAggregator__factory>;
-    getContractFactory(
-      name: 'ArbGasInfo',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArbGasInfo__factory>;
-    getContractFactory(
-      name: 'ArbSys',
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ArbSys__factory>;
-    getContractFactory(
       name: 'AggregatorV3Interface',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AggregatorV3Interface__factory>;
@@ -493,21 +481,6 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUniswapV3PoolDeployer__factory>;
 
-    getContractAt(
-      name: 'ArbAggregator',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ArbAggregator>;
-    getContractAt(
-      name: 'ArbGasInfo',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ArbGasInfo>;
-    getContractAt(
-      name: 'ArbSys',
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ArbSys>;
     getContractAt(
       name: 'AggregatorV3Interface',
       address: string,

@@ -64,7 +64,7 @@ export declare namespace IClearingHouseStructures {
     poolId: BigNumberish;
     balance: BigNumberish;
     netTraderPosition: BigNumberish;
-    sumAX128Chkpt: BigNumberish;
+    sumALastX128: BigNumberish;
     liquidityPositions: IClearingHouseStructures.LiquidityPositionViewStruct[];
   };
 
@@ -78,7 +78,7 @@ export declare namespace IClearingHouseStructures {
     poolId: number;
     balance: BigNumber;
     netTraderPosition: BigNumber;
-    sumAX128Chkpt: BigNumber;
+    sumALastX128: BigNumber;
     liquidityPositions: IClearingHouseStructures.LiquidityPositionViewStructOutput[];
   };
 

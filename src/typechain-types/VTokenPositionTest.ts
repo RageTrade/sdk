@@ -88,7 +88,7 @@ export interface VTokenPositionTest extends BaseContract {
     init(
       _balance: BigNumberish,
       _netTraderPosition: BigNumberish,
-      _sumAChkpt: BigNumberish,
+      _sumALastX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -107,7 +107,7 @@ export interface VTokenPositionTest extends BaseContract {
   init(
     _balance: BigNumberish,
     _netTraderPosition: BigNumberish,
-    _sumAChkpt: BigNumberish,
+    _sumALastX128: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -126,7 +126,7 @@ export interface VTokenPositionTest extends BaseContract {
     init(
       _balance: BigNumberish,
       _netTraderPosition: BigNumberish,
-      _sumAChkpt: BigNumberish,
+      _sumALastX128: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -148,7 +148,7 @@ export interface VTokenPositionTest extends BaseContract {
     init(
       _balance: BigNumberish,
       _netTraderPosition: BigNumberish,
-      _sumAChkpt: BigNumberish,
+      _sumALastX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -168,7 +168,7 @@ export interface VTokenPositionTest extends BaseContract {
     init(
       _balance: BigNumberish,
       _netTraderPosition: BigNumberish,
-      _sumAChkpt: BigNumberish,
+      _sumALastX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

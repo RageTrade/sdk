@@ -478,7 +478,7 @@ export interface AccountTest extends BaseContract {
       [BigNumber, BigNumber, BigNumber] & {
         balance: BigNumber;
         netTraderPosition: BigNumber;
-        sumAChkpt: BigNumber;
+        sumALast: BigNumber;
       }
     >;
 
@@ -684,7 +684,7 @@ export interface AccountTest extends BaseContract {
     [BigNumber, BigNumber, BigNumber] & {
       balance: BigNumber;
       netTraderPosition: BigNumber;
-      sumAChkpt: BigNumber;
+      sumALast: BigNumber;
     }
   >;
 
@@ -888,7 +888,7 @@ export interface AccountTest extends BaseContract {
       [BigNumber, BigNumber, BigNumber] & {
         balance: BigNumber;
         netTraderPosition: BigNumber;
-        sumAChkpt: BigNumber;
+        sumALast: BigNumber;
       }
     >;
 

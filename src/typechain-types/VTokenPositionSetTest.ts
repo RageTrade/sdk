@@ -281,7 +281,7 @@ export interface VTokenPositionSetTest extends BaseContract {
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         balance: BigNumber;
-        sumACkhpt: BigNumber;
+        sumALastX128: BigNumber;
         netTraderPosition: BigNumber;
       }
     >;
@@ -383,7 +383,7 @@ export interface VTokenPositionSetTest extends BaseContract {
   ): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       balance: BigNumber;
-      sumACkhpt: BigNumber;
+      sumALastX128: BigNumber;
       netTraderPosition: BigNumber;
     }
   >;
@@ -483,7 +483,7 @@ export interface VTokenPositionSetTest extends BaseContract {
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         balance: BigNumber;
-        sumACkhpt: BigNumber;
+        sumALastX128: BigNumber;
         netTraderPosition: BigNumber;
       }
     >;
