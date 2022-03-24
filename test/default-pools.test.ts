@@ -40,7 +40,7 @@ describe('default pools', () => {
   });
 
   it('parseName', async () => {
-    expect(parseName(pools.defaultPool.arbtest.name)).toEqual('ETH');
+    expect(parseName(pools.defaultPool.arbtest.name)).toEqual('Ether');
     expect(parseSymbol(pools.defaultPool.arbtest.symbol)).toEqual('ETH');
   });
 });
