@@ -11,6 +11,9 @@
   "engines": {
     "node": ">=10"
   },
+  "bin": {
+    "ragetradesdk": "./cli.sh"
+  },
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build && yarn update:pools",
