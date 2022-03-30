@@ -1,0 +1,12 @@
+.github
+.vscode
+scripts
+test
+.env
+.env.example
+.gitignore
+.npmignore
+.prettierrc
+fetch-pools.js
+processAbi.js
+tsconfig.json
