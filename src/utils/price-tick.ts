@@ -106,10 +106,13 @@ export async function priceX128ToPrice(
   vToken: ERC20Decimals
 ): Promise<number> {
   priceX128 = BigNumber.from(priceX128);
-  let price: number = fromQ128(priceX128);
   const vBaseDecimals = await getDecimals(vBase);
   const vTokenDecimals = await getDecimals(vToken);
-  price /= 10 ** (vBaseDecimals - vTokenDecimals);
+  let price: number = fromQ128(
+    priceX128
+      .mul(BigNumber.from(10).pow(vTokenDecimals))
+      .div(BigNumber.from(10).pow(vBaseDecimals))
+  );
   return price;
 }
 
