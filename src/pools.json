@@ -1,13 +1,13 @@
 {
   "defaultPool": {
     "arbtest": {
-      "poolId": "0x7c569B7a",
+      "poolId": "0x2Da6f22e",
       "name": "Virtual Ether (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
-      "vTokenAddress": "0x7D8c84e9d0A0a0DdfFfB082FF7a6fC2f7c569B7a",
-      "vPoolAddress": "0x7D72529fBE96fCF09979af8B4a47794177206DD0",
-      "vPoolWrapperAddress": "0x974C67f87aFF828d01Cbc7dAe93B7d68f961f3ed"
+      "vTokenAddress": "0xD2Cf7c0f0A25f832519914f8a7320C5B2Da6f22e",
+      "vPoolAddress": "0x2783116582AaE4E469722FBDf7A48ae73d14EcD9",
+      "vPoolWrapperAddress": "0xA8c9590b4aD8038961BEdFF5bb87EEAfE06706b8"
     }
   },
   "poolsList": {
@@ -16,13 +16,13 @@
     "arbmain": [],
     "arbtest": [
       {
-        "poolId": "0x7c569B7a",
+        "poolId": "0x2Da6f22e",
         "name": "Virtual Ether (Rage Trade)",
         "symbol": "vETH",
         "decimals": 18,
-        "vTokenAddress": "0x7D8c84e9d0A0a0DdfFfB082FF7a6fC2f7c569B7a",
-        "vPoolAddress": "0x7D72529fBE96fCF09979af8B4a47794177206DD0",
-        "vPoolWrapperAddress": "0x974C67f87aFF828d01Cbc7dAe93B7d68f961f3ed"
+        "vTokenAddress": "0xD2Cf7c0f0A25f832519914f8a7320C5B2Da6f22e",
+        "vPoolAddress": "0x2783116582AaE4E469722FBDf7A48ae73d14EcD9",
+        "vPoolWrapperAddress": "0xA8c9590b4aD8038961BEdFF5bb87EEAfE06706b8"
       }
     ],
     "opmain": [],

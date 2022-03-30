@@ -77,7 +77,6 @@ export interface Deployments {
   ClearingHouseLogicDeployment: ContractDeployment;
   InsuranceFundDeployment: ContractDeployment;
   InsuranceFundLogicDeployment: ContractDeployment;
-  NativeOracleDeployment: ContractDeployment;
   ProxyAdminDeployment: ContractDeployment;
   RageTradeFactoryDeployment: ContractDeployment;
   SettlementTokenDeployment: ContractDeployment;
@@ -113,10 +112,6 @@ export async function getContractsWithDeployments(
     ),
     insuranceFundLogic: InsuranceFund__factory.connect(
       deployments.InsuranceFundLogicDeployment.address,
-      signerOrProvider
-    ),
-    nativeOracle: IOracle__factory.connect(
-      deployments.NativeOracleDeployment.address,
       signerOrProvider
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
@@ -198,7 +193,6 @@ export async function getDeployments(
     network,
     'InsuranceFundLogic'
   );
-  const NativeOracleDeployment = await getDeployment(network, 'NativeOracle');
   const ProxyAdminDeployment = await getDeployment(network, 'ProxyAdmin');
   const RageTradeFactoryDeployment = await getDeployment(
     network,
@@ -228,7 +222,6 @@ export async function getDeployments(
     ClearingHouseLogicDeployment,
     InsuranceFundDeployment,
     InsuranceFundLogicDeployment,
-    NativeOracleDeployment,
     ProxyAdminDeployment,
     RageTradeFactoryDeployment,
     SettlementTokenDeployment,

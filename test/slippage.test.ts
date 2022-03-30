@@ -6,10 +6,8 @@ describe('slippage', () => {
     const sqrtPriceCurrent = '0x036b55100d8147fc7ac63a';
     const priceCurrent = await sqrtPriceX96ToPrice(sqrtPriceCurrent, 6, 18);
     const slippage = 0.001;
-    const {
-      sqrtPriceLimitX96ForBuy,
-      sqrtPriceLimitX96ForSell,
-    } = slippageToSqrtPriceLimit(slippage, sqrtPriceCurrent);
+    const { sqrtPriceLimitX96ForBuy, sqrtPriceLimitX96ForSell } =
+      slippageToSqrtPriceLimit(slippage, sqrtPriceCurrent);
 
     const priceLimitBuy = await sqrtPriceX96ToPrice(
       sqrtPriceLimitX96ForBuy,

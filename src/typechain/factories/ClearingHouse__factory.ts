@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Signer, utils } from 'ethers';
-import { Provider } from '@ethersproject/providers';
+import type { Provider } from '@ethersproject/providers';
 import type { ClearingHouse, ClearingHouseInterface } from '../ClearingHouse';
 
 const _abi = [
@@ -151,17 +151,6 @@ const _abi = [
   {
     inputs: [],
     name: 'T',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: 'period',
-        type: 'uint32',
-      },
-    ],
-    name: 'UV3PH_IllegalTwapDuration',
     type: 'error',
   },
   {
@@ -868,6 +857,86 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'getProtocolInfo',
+    outputs: [
+      {
+        internalType: 'contract IERC20',
+        name: 'settlementToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
+        type: 'address',
+      },
+      {
+        components: [
+          {
+            internalType: 'uint16',
+            name: 'rangeLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'tokenLiquidationFeeFraction',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'closeFactorMMThresholdBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'partialLiquidationCloseFactorBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'insuranceFundFeeShareBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'liquidationSlippageSqrtToleranceBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint64',
+            name: 'maxRangeLiquidationFees',
+            type: 'uint64',
+          },
+          {
+            internalType: 'uint64',
+            name: 'minNotionalLiquidatable',
+            type: 'uint64',
+          },
+        ],
+        internalType: 'struct IClearingHouseStructures.LiquidationParams',
+        name: 'liquidationParams',
+        type: 'tuple',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minRequiredMargin',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'removeLimitOrderFee',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'minimumOrderNotional',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -1062,86 +1131,6 @@ const _abi = [
         internalType: 'bool',
         name: '',
         type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'protocolInfo',
-    outputs: [
-      {
-        internalType: 'contract IERC20',
-        name: 'settlementToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IVQuote',
-        name: 'vQuote',
-        type: 'address',
-      },
-      {
-        components: [
-          {
-            internalType: 'uint16',
-            name: 'rangeLiquidationFeeFraction',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'tokenLiquidationFeeFraction',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'closeFactorMMThresholdBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'partialLiquidationCloseFactorBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'insuranceFundFeeShareBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'liquidationSlippageSqrtToleranceBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint64',
-            name: 'maxRangeLiquidationFees',
-            type: 'uint64',
-          },
-          {
-            internalType: 'uint64',
-            name: 'minNotionalLiquidatable',
-            type: 'uint64',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.LiquidationParams',
-        name: 'liquidationParams',
-        type: 'tuple',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minRequiredMargin',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'removeLimitOrderFee',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minimumOrderNotional',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -1671,7 +1660,7 @@ const _abi = [
         type: 'int256',
       },
     ],
-    name: 'InvalidLiquidationAccountAbovewater',
+    name: 'InvalidLiquidationAccountAboveWater',
     type: 'error',
   },
   {
@@ -1762,6 +1751,27 @@ const _abi = [
   {
     inputs: [],
     name: 'LP_IneligibleLimitOrderRemoval',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'y_target',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint160',
+        name: 'x_lower',
+        type: 'uint160',
+      },
+      {
+        internalType: 'uint160',
+        name: 'x_upper',
+        type: 'uint160',
+      },
+    ],
+    name: 'SolutionOutOfBounds',
     type: 'error',
   },
   {
@@ -2016,6 +2026,12 @@ const _abi = [
         name: 'insuranceFundFee',
         type: 'int256',
       },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'accountMarketValueFinal',
+        type: 'int256',
+      },
     ],
     name: 'LiquidityPositionsLiquidated',
     type: 'event',
@@ -2225,6 +2241,12 @@ const _abi = [
         indexed: false,
         internalType: 'int256',
         name: 'insuranceFundFee',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'accountMarketValueFinal',
         type: 'int256',
       },
     ],

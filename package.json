@@ -23,8 +23,8 @@
     "format": "prettier --check src test",
     "format:fix": "prettier --write src test",
     "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn build",
-    "update:deployments": "rm -rf deployments && mkdir deployments && cp -r ../perpswap/deployments/ deployments/ && node processAbi.js",
-    "update:types": "rm -rf src/typechain-types && mkdir src/typechain-types && cp -r ../perpswap/typechain-types/ src/typechain-types/ && yarn format:fix",
+    "update:deployments": "rm -rf deployments && mkdir deployments && cp -r ../ragetrade-core/deployments/ deployments/ && node processAbi.js",
+    "update:types": "rm -rf src/typechain-types && mkdir src/typechain-types && cp -r ../ragetrade-core/typechain-types/ src/typechain-types/ && yarn typechain && yarn format:fix",
     "update:pools": "node fetch-pools.js",
     "typechain": "rm -rf src/typechain && typechain --target ethers-v5 --out-dir src/typechain './deployments/arbtest/*.json' && yarn format:fix"
   },
@@ -56,23 +56,23 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^7.0.5",
-    "@typechain/ethers-v5": "^9.0.0",
+    "@typechain/ethers-v5": "^10.0.0",
     "@types/fs-extra": "^9.0.13",
     "dotenv": "^16.0.0",
     "fs-extra": "^10.0.0",
     "husky": "^7.0.4",
-    "prettier": "2.2.1",
+    "prettier": "^2.6.1",
     "size-limit": "^7.0.5",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
-    "typechain": "^7.0.0",
-    "typescript": "^4.5.4"
+    "typechain": "^8.0.0",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
     "@uniswap/v3-sdk": "^3.8.1",
-    "ethers": "^5.5.3"
+    "ethers": "^5.6.2"
   },
   "resolutions": {
-    "tsdx/typescript": "^4.5.4"
+    "tsdx/typescript": "^4.6.3"
   }
 }

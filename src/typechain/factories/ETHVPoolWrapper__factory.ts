@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Signer, utils } from 'ethers';
-import { Provider } from '@ethersproject/providers';
+import type { Provider } from '@ethersproject/providers';
 import type {
   ETHVPoolWrapper,
   ETHVPoolWrapperInterface,
@@ -137,6 +137,19 @@ const _abi = [
       },
     ],
     name: 'Burn',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'fundingRateOverrideX128',
+        type: 'int256',
+      },
+    ],
+    name: 'FundingRateOverrideUpdated',
     type: 'event',
   },
   {
@@ -465,6 +478,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'fundingRateOverrideX128',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: '',
+        type: 'int256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'getExtrapolatedSumAX128',
     outputs: [
       {
@@ -666,6 +692,19 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'int256',
+        name: 'fundingRateOverrideX128_',
+        type: 'int256',
+      },
+    ],
+    name: 'setFundingRateOverride',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {

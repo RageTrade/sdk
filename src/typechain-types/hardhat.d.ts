@@ -201,6 +201,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IClearingHouse__factory>;
     getContractFactory(
+      name: 'IExtsload',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IExtsload__factory>;
+    getContractFactory(
       name: 'IGovernable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGovernable__factory>;
@@ -336,6 +340,14 @@ declare module 'hardhat/types/runtime' {
       name: 'BisectionTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BisectionTest__factory>;
+    getContractFactory(
+      name: 'Bytes32Test',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Bytes32Test__factory>;
+    getContractFactory(
+      name: 'ClearingHouseExtsloadTest',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ClearingHouseExtsloadTest__factory>;
     getContractFactory(
       name: 'ClearingHouseTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -717,6 +729,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.IClearingHouse>;
     getContractAt(
+      name: 'IExtsload',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IExtsload>;
+    getContractAt(
       name: 'IGovernable',
       address: string,
       signer?: ethers.Signer
@@ -886,6 +903,16 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BisectionTest>;
+    getContractAt(
+      name: 'Bytes32Test',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Bytes32Test>;
+    getContractAt(
+      name: 'ClearingHouseExtsloadTest',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ClearingHouseExtsloadTest>;
     getContractAt(
       name: 'ClearingHouseTest',
       address: string,
