@@ -1,3 +1,5 @@
+import { BigNumberish, BigNumber } from 'ethers';
+
 export function truncate(address: string) {
   let temp = address.slice(34, 42);
 
@@ -15,3 +17,6 @@ export function parseName(name: string) {
 export function parseSymbol(symbol: string) {
   return symbol.slice(1);
 }
+
+export const parseTokenAmount = (value: BigNumberish, decimals: number) =>
+  BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(decimals)));
