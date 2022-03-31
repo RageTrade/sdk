@@ -12,7 +12,7 @@
     "node": ">=10"
   },
   "bin": {
-    "ragetradesdk": "./cli.sh"
+    "ragetradesdk": "./cli.js"
   },
   "scripts": {
     "start": "tsdx watch",
@@ -73,7 +73,8 @@
   },
   "dependencies": {
     "@uniswap/v3-sdk": "^3.8.2",
-    "ethers": "^5.6.2"
+    "ethers": "^5.6.2",
+    "ethers-repl": "^1.0.3"
   },
   "resolutions": {
     "tsdx/typescript": "^4.6.3",
