@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, BigNumberish } from 'ethers';
 
 // TODO: add tests for this stuff as well
 
@@ -17,7 +17,8 @@ export function toQ128(num: number): BigNumber {
   );
 }
 
-export function fromQ128(val: BigNumber): number {
+export function fromQ128(val: BigNumberish): number {
+  val = BigNumber.from(val);
   let formatted = val.shr(128).toNumber();
   formatted +=
     val
@@ -50,7 +51,8 @@ export function toQ96(num: number): BigNumber {
  * @param jsDecimals The number of decimal places to round to
  * @returns A number rounded to the nearest jsDecimals
  */
-export function fromQ96(val: BigNumber, jsDecimals?: number): number {
+export function fromQ96(val: BigNumberish, jsDecimals?: number): number {
+  val = BigNumber.from(val);
   let formatted = val.shr(96).toNumber();
   formatted +=
     val
