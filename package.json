@@ -13,6 +13,7 @@
     "node": ">=10"
   },
   "bin": {
+    "ragetrade": "./cli.js",
     "ragetradesdk": "./cli.js"
   },
   "scripts": {
