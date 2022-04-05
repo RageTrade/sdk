@@ -67,7 +67,9 @@ async function getPoolsList() {
           }))
         );
       } catch (e) {
-        console.error(e);
+        if (!e.message.includes('does not contain the deployment')) {
+          console.error(e);
+        }
       }
     }
     poolsList[chainName] = poolsListForChain;

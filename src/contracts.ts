@@ -269,7 +269,7 @@ export async function getDeployment(
   try {
     return await import(`../deployments/${networkName}/${name}.json`);
   } catch (e) {
-    console.error(e);
+    // console.error(e);
     throw new Error(
       `Network ${networkName} does not contain the deployment ${name}. Make sure deployments are updated.`
     );

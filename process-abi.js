@@ -97,9 +97,9 @@ function copyAccountEventsErrorsToClearingHouse(deploymentsDirPath, fn) {
               },
               {
                 indexed: false,
-                internalType: 'uint256',
-                name: 'realPriceX128',
-                type: 'uint256',
+                internalType: 'int256',
+                name: 'fundingRateX128',
+                type: 'int256',
               },
               {
                 indexed: false,
