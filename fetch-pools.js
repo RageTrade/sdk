@@ -80,7 +80,10 @@ async function getPoolsList() {
 
 function getProvider(chainName) {
   try {
-    return providers.getDefaultProvider(chainName);
+    return new providers.AlchemyProvider(
+      chainName,
+      process.env.ALCHEMY_API_KEY
+    );
   } catch {}
 
   if (!process.env.ALCHEMY_KEY) {

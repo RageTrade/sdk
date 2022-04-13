@@ -202,7 +202,8 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getProtocolInfo()': FunctionFragment;
-    'getTwapPrices(uint32)': FunctionFragment;
+    'getRealTwapPriceX128(uint32)': FunctionFragment;
+    'getVirtualTwapPriceX128(uint32)': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
   };
 
@@ -217,7 +218,8 @@ export interface IClearingHouseViewInterface extends utils.Interface {
       | 'getCollateralInfo'
       | 'getPoolInfo'
       | 'getProtocolInfo'
-      | 'getTwapPrices'
+      | 'getRealTwapPriceX128'
+      | 'getVirtualTwapPriceX128'
       | 'isPoolIdAvailable'
   ): FunctionFragment;
 
@@ -258,7 +260,11 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getRealTwapPriceX128',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getVirtualTwapPriceX128',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -303,7 +309,11 @@ export interface IClearingHouseViewInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getRealTwapPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getVirtualTwapPriceX128',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -418,15 +428,15 @@ export interface IClearingHouseView extends BaseContract {
       }
     >;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<[BigNumber] & { realPriceX128: BigNumber }>;
+
+    getVirtualTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { virtualPriceX128: BigNumber }>;
 
     isPoolIdAvailable(
       poolId: BigNumberish,
@@ -511,15 +521,15 @@ export interface IClearingHouseView extends BaseContract {
     }
   >;
 
-  getTwapPrices(
+  getRealTwapPriceX128(
     poolId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      realPriceX128: BigNumber;
-      virtualPriceX128: BigNumber;
-    }
-  >;
+  ): Promise<BigNumber>;
+
+  getVirtualTwapPriceX128(
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   isPoolIdAvailable(
     poolId: BigNumberish,
@@ -604,15 +614,15 @@ export interface IClearingHouseView extends BaseContract {
       }
     >;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<BigNumber>;
+
+    getVirtualTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isPoolIdAvailable(
       poolId: BigNumberish,
@@ -667,7 +677,12 @@ export interface IClearingHouseView extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -723,7 +738,12 @@ export interface IClearingHouseView extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

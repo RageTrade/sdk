@@ -8,6 +8,8 @@ export type { nodeModules };
 export * as factories from './factories';
 export type { AggregatorV3Interface } from './artifacts/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface';
 export { AggregatorV3Interface__factory } from './factories/artifacts/@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface__factory';
+export type { FlagsInterface } from './artifacts/@chainlink/contracts/src/v0.8/interfaces/FlagsInterface';
+export { FlagsInterface__factory } from './factories/artifacts/@chainlink/contracts/src/v0.8/interfaces/FlagsInterface__factory';
 export type { PausableUpgradeable } from './artifacts/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable';
 export { PausableUpgradeable__factory } from './factories/artifacts/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable__factory';
 export type { ERC20Upgradeable } from './artifacts/@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable';
@@ -26,6 +28,8 @@ export type { IAccessControlEnumerable } from './artifacts/@openzeppelin/contrac
 export { IAccessControlEnumerable__factory } from './factories/artifacts/@openzeppelin/contracts/access/IAccessControlEnumerable__factory';
 export type { Ownable } from './artifacts/@openzeppelin/contracts/access/Ownable';
 export { Ownable__factory } from './factories/artifacts/@openzeppelin/contracts/access/Ownable__factory';
+export type { TimelockController } from './artifacts/@openzeppelin/contracts/governance/TimelockController';
+export { TimelockController__factory } from './factories/artifacts/@openzeppelin/contracts/governance/TimelockController__factory';
 export type { IERC1822Proxiable } from './artifacts/@openzeppelin/contracts/interfaces/draft-IERC1822.sol/IERC1822Proxiable';
 export { IERC1822Proxiable__factory } from './factories/artifacts/@openzeppelin/contracts/interfaces/draft-IERC1822.sol/IERC1822Proxiable__factory';
 export type { IBeacon } from './artifacts/@openzeppelin/contracts/proxy/beacon/IBeacon';
@@ -220,6 +224,8 @@ export type { SimulateSwapTest } from './artifacts/contracts/test/SimulateSwapTe
 export { SimulateSwapTest__factory } from './factories/artifacts/contracts/test/SimulateSwapTest__factory';
 export type { TickExtendedTest } from './artifacts/contracts/test/TickExtendedTest';
 export { TickExtendedTest__factory } from './factories/artifacts/contracts/test/TickExtendedTest__factory';
+export type { TimelockControllerWithMinDelayOverrideTest } from './artifacts/contracts/test/TimelockControllerWithMinDelayOverrideTest';
+export { TimelockControllerWithMinDelayOverrideTest__factory } from './factories/artifacts/contracts/test/TimelockControllerWithMinDelayOverrideTest__factory';
 export type { Uint32L8ArrayTest } from './artifacts/contracts/test/Uint32L8ArrayTest';
 export { Uint32L8ArrayTest__factory } from './factories/artifacts/contracts/test/Uint32L8ArrayTest__factory';
 export type { Uint48L5ArrayTest } from './artifacts/contracts/test/Uint48L5ArrayTest';
@@ -242,5 +248,7 @@ export type { ProxyAdminDeployer } from './artifacts/contracts/utils/ProxyAdminD
 export { ProxyAdminDeployer__factory } from './factories/artifacts/contracts/utils/ProxyAdminDeployer__factory';
 export type { SwapSimulator } from './artifacts/contracts/utils/SwapSimulator';
 export { SwapSimulator__factory } from './factories/artifacts/contracts/utils/SwapSimulator__factory';
+export type { TimelockControllerWithMinDelayOverride } from './artifacts/contracts/utils/TimelockControllerWithMinDelayOverride';
+export { TimelockControllerWithMinDelayOverride__factory } from './factories/artifacts/contracts/utils/TimelockControllerWithMinDelayOverride__factory';
 export type { UniswapV3Pool } from './node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool';
 export { UniswapV3Pool__factory } from './factories/node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool__factory';

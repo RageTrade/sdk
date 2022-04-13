@@ -28,7 +28,6 @@ import type {
 
 export interface InsuranceFundLogicInterface extends utils.Interface {
   functions: {
-    '__initialize_InsuranceFund(address,address,string,string)': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
@@ -38,6 +37,7 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256)': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
+    'initialize(address,address,string,string)': FunctionFragment;
     'name()': FunctionFragment;
     'settlementToken()': FunctionFragment;
     'symbol()': FunctionFragment;
@@ -49,7 +49,6 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | '__initialize_InsuranceFund'
       | 'allowance'
       | 'approve'
       | 'balanceOf'
@@ -59,6 +58,7 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
       | 'decreaseAllowance'
       | 'deposit'
       | 'increaseAllowance'
+      | 'initialize'
       | 'name'
       | 'settlementToken'
       | 'symbol'
@@ -68,10 +68,6 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
       | 'withdraw'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: '__initialize_InsuranceFund',
-    values: [string, string, string, string]
-  ): string;
   encodeFunctionData(
     functionFragment: 'allowance',
     values: [string, string]
@@ -99,6 +95,10 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
     functionFragment: 'increaseAllowance',
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: 'initialize',
+    values: [string, string, string, string]
+  ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'settlementToken',
@@ -122,10 +122,6 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_InsuranceFund',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
@@ -144,6 +140,7 @@ export interface InsuranceFundLogicInterface extends utils.Interface {
     functionFragment: 'increaseAllowance',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'settlementToken',
@@ -221,17 +218,6 @@ export interface InsuranceFundLogic extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    /**
-     * Initializer for Insurance Fund
-     */
-    __initialize_InsuranceFund(
-      _settlementToken: string,
-      _clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -272,6 +258,17 @@ export interface InsuranceFundLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    /**
+     * Initializer for Insurance Fund
+     */
+    initialize(
+      _settlementToken: string,
+      _clearingHouse: string,
+      name: string,
+      symbol: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     settlementToken(overrides?: CallOverrides): Promise<[string]>;
@@ -298,17 +295,6 @@ export interface InsuranceFundLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  /**
-   * Initializer for Insurance Fund
-   */
-  __initialize_InsuranceFund(
-    _settlementToken: string,
-    _clearingHouse: string,
-    name: string,
-    symbol: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   allowance(
     owner: string,
@@ -350,6 +336,17 @@ export interface InsuranceFundLogic extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  /**
+   * Initializer for Insurance Fund
+   */
+  initialize(
+    _settlementToken: string,
+    _clearingHouse: string,
+    name: string,
+    symbol: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   settlementToken(overrides?: CallOverrides): Promise<string>;
@@ -377,17 +374,6 @@ export interface InsuranceFundLogic extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    /**
-     * Initializer for Insurance Fund
-     */
-    __initialize_InsuranceFund(
-      _settlementToken: string,
-      _clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     allowance(
       owner: string,
       spender: string,
@@ -421,6 +407,17 @@ export interface InsuranceFundLogic extends BaseContract {
       addedValue: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    /**
+     * Initializer for Insurance Fund
+     */
+    initialize(
+      _settlementToken: string,
+      _clearingHouse: string,
+      name: string,
+      symbol: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -471,17 +468,6 @@ export interface InsuranceFundLogic extends BaseContract {
   };
 
   estimateGas: {
-    /**
-     * Initializer for Insurance Fund
-     */
-    __initialize_InsuranceFund(
-      _settlementToken: string,
-      _clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     allowance(
       owner: string,
       spender: string,
@@ -522,6 +508,17 @@ export interface InsuranceFundLogic extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    /**
+     * Initializer for Insurance Fund
+     */
+    initialize(
+      _settlementToken: string,
+      _clearingHouse: string,
+      name: string,
+      symbol: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     settlementToken(overrides?: CallOverrides): Promise<BigNumber>;
@@ -550,17 +547,6 @@ export interface InsuranceFundLogic extends BaseContract {
   };
 
   populateTransaction: {
-    /**
-     * Initializer for Insurance Fund
-     */
-    __initialize_InsuranceFund(
-      _settlementToken: string,
-      _clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     allowance(
       owner: string,
       spender: string,
@@ -601,6 +587,17 @@ export interface InsuranceFundLogic extends BaseContract {
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Initializer for Insurance Fund
+     */
+    initialize(
+      _settlementToken: string,
+      _clearingHouse: string,
+      name: string,
+      symbol: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

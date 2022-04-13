@@ -349,39 +349,6 @@ const _abi = [
     type: 'event',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'rageTradeFactoryAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'defaultCollateralToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IOracle',
-        name: 'defaultCollateralTokenOracle',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IInsuranceFund',
-        name: 'insuranceFund',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IVQuote',
-        name: 'vQuote',
-        type: 'address',
-      },
-    ],
-    name: '__initialize_ClearingHouse',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'createAccount',
     outputs: [
@@ -863,13 +830,27 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'getTwapPrices',
+    name: 'getRealTwapPriceX128',
     outputs: [
       {
         internalType: 'uint256',
         name: 'realPriceX128',
         type: 'uint256',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'getVirtualTwapPriceX128',
+    outputs: [
       {
         internalType: 'uint256',
         name: 'virtualPriceX128',
@@ -890,6 +871,39 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'rageTradeFactoryAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'defaultCollateralToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IOracle',
+        name: 'defaultCollateralTokenOracle',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IInsuranceFund',
+        name: 'insuranceFund',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IVQuote',
+        name: 'vQuote',
+        type: 'address',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -1094,6 +1108,19 @@ const _abi = [
         name: 'accountId',
         type: 'uint256',
       },
+    ],
+    name: 'settleProfit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
       {
         internalType: 'uint32',
         name: 'poolId',
@@ -1119,6 +1146,11 @@ const _abi = [
           {
             internalType: 'bool',
             name: 'isPartialAllowed',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
             type: 'bool',
           },
         ],
@@ -1431,6 +1463,11 @@ const _abi = [
             internalType: 'enum IClearingHouseEnums.LimitOrderType',
             name: 'limitOrderType',
             type: 'uint8',
+          },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
+            type: 'bool',
           },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidityChangeParams',

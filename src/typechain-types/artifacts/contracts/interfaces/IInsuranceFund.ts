@@ -24,25 +24,20 @@ import type {
 
 export interface IInsuranceFundInterface extends utils.Interface {
   functions: {
-    '__initialize_InsuranceFund(address,address,string,string)': FunctionFragment;
     'claim(uint256)': FunctionFragment;
+    'initialize(address,address,string,string)': FunctionFragment;
   };
 
-  getFunction(
-    nameOrSignatureOrTopic: '__initialize_InsuranceFund' | 'claim'
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'claim' | 'initialize'): FunctionFragment;
 
+  encodeFunctionData(functionFragment: 'claim', values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: '__initialize_InsuranceFund',
+    functionFragment: 'initialize',
     values: [string, string, string, string]
   ): string;
-  encodeFunctionData(functionFragment: 'claim', values: [BigNumberish]): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_InsuranceFund',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
 
   events: {};
 }
@@ -74,21 +69,26 @@ export interface IInsuranceFund extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_InsuranceFund(
+    claim(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initialize(
       settlementToken: string,
       clearingHouse: string,
       name: string,
       symbol: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    claim(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
 
-  __initialize_InsuranceFund(
+  claim(
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initialize(
     settlementToken: string,
     clearingHouse: string,
     name: string,
@@ -96,51 +96,46 @@ export interface IInsuranceFund extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  claim(
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    __initialize_InsuranceFund(
+    claim(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    initialize(
       settlementToken: string,
       clearingHouse: string,
       name: string,
       symbol: string,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    claim(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    __initialize_InsuranceFund(
+    claim(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initialize(
       settlementToken: string,
       clearingHouse: string,
       name: string,
       symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    claim(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    __initialize_InsuranceFund(
+    claim(
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
       settlementToken: string,
       clearingHouse: string,
       name: string,
       symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claim(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -18,6 +18,7 @@ export { SignedFullMathTest__factory } from './SignedFullMathTest__factory';
 export { SignedMathTest__factory } from './SignedMathTest__factory';
 export { SimulateSwapTest__factory } from './SimulateSwapTest__factory';
 export { TickExtendedTest__factory } from './TickExtendedTest__factory';
+export { TimelockControllerWithMinDelayOverrideTest__factory } from './TimelockControllerWithMinDelayOverrideTest__factory';
 export { Uint32L8ArrayTest__factory } from './Uint32L8ArrayTest__factory';
 export { Uint48L5ArrayTest__factory } from './Uint48L5ArrayTest__factory';
 export { Uint48Test__factory } from './Uint48Test__factory';

@@ -27,9 +27,7 @@ export interface FundingPaymentTestInterface extends utils.Interface {
     'extrapolatedSumAX128(int256,uint48,uint48,uint256,uint256)': FunctionFragment;
     'extrapolatedSumFpX128(int256,int256,int256,int256)': FunctionFragment;
     'fpGlobal()': FunctionFragment;
-    'fundingRateOverrideX128()': FunctionFragment;
     'nextAX128(uint48,uint48,uint256,uint256)': FunctionFragment;
-    'setFundingRateOverrideX128(int256)': FunctionFragment;
     'update(int256,uint256,uint48,uint256,uint256)': FunctionFragment;
   };
 
@@ -38,9 +36,7 @@ export interface FundingPaymentTestInterface extends utils.Interface {
       | 'extrapolatedSumAX128'
       | 'extrapolatedSumFpX128'
       | 'fpGlobal'
-      | 'fundingRateOverrideX128'
       | 'nextAX128'
-      | 'setFundingRateOverrideX128'
       | 'update'
   ): FunctionFragment;
 
@@ -60,16 +56,8 @@ export interface FundingPaymentTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'fpGlobal', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: 'fundingRateOverrideX128',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'nextAX128',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setFundingRateOverrideX128',
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'update',
@@ -91,15 +79,7 @@ export interface FundingPaymentTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'fpGlobal', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'fundingRateOverrideX128',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'nextAX128', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'setFundingRateOverrideX128',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'update', data: BytesLike): Result;
 
   events: {};
@@ -158,8 +138,6 @@ export interface FundingPaymentTest extends BaseContract {
       }
     >;
 
-    fundingRateOverrideX128(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     nextAX128(
       timestampLast: BigNumberish,
       blockTimestamp: BigNumberish,
@@ -167,11 +145,6 @@ export interface FundingPaymentTest extends BaseContract {
       virtualPriceX128: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    setFundingRateOverrideX128(
-      _fundingRateOverrideX128: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     update(
       vTokenAmount: BigNumberish,
@@ -209,8 +182,6 @@ export interface FundingPaymentTest extends BaseContract {
     }
   >;
 
-  fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
-
   nextAX128(
     timestampLast: BigNumberish,
     blockTimestamp: BigNumberish,
@@ -218,11 +189,6 @@ export interface FundingPaymentTest extends BaseContract {
     virtualPriceX128: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  setFundingRateOverrideX128(
-    _fundingRateOverrideX128: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   update(
     vTokenAmount: BigNumberish,
@@ -260,8 +226,6 @@ export interface FundingPaymentTest extends BaseContract {
       }
     >;
 
-    fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
-
     nextAX128(
       timestampLast: BigNumberish,
       blockTimestamp: BigNumberish,
@@ -269,11 +233,6 @@ export interface FundingPaymentTest extends BaseContract {
       virtualPriceX128: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    setFundingRateOverrideX128(
-      _fundingRateOverrideX128: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     update(
       vTokenAmount: BigNumberish,
@@ -307,19 +266,12 @@ export interface FundingPaymentTest extends BaseContract {
 
     fpGlobal(overrides?: CallOverrides): Promise<BigNumber>;
 
-    fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
-
     nextAX128(
       timestampLast: BigNumberish,
       blockTimestamp: BigNumberish,
       realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setFundingRateOverrideX128(
-      _fundingRateOverrideX128: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     update(
@@ -352,21 +304,12 @@ export interface FundingPaymentTest extends BaseContract {
 
     fpGlobal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    fundingRateOverrideX128(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     nextAX128(
       timestampLast: BigNumberish,
       blockTimestamp: BigNumberish,
       realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setFundingRateOverrideX128(
-      _fundingRateOverrideX128: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     update(

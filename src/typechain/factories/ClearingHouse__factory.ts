@@ -430,39 +430,6 @@ const _abi = [
     type: 'event',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_rageTradeFactoryAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: '_defaultCollateralToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IOracle',
-        name: '_defaultCollateralTokenOracle',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IInsuranceFund',
-        name: '_insuranceFund',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IVQuote',
-        name: '_vQuote',
-        type: 'address',
-      },
-    ],
-    name: '__initialize_ClearingHouse',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'createAccount',
     outputs: [
@@ -944,13 +911,27 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'getTwapPrices',
+    name: 'getRealTwapPriceX128',
     outputs: [
       {
         internalType: 'uint256',
         name: 'realPriceX128',
         type: 'uint256',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'getVirtualTwapPriceX128',
+    outputs: [
       {
         internalType: 'uint256',
         name: 'virtualPriceX128',
@@ -971,6 +952,39 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_rageTradeFactoryAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: '_defaultCollateralToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IOracle',
+        name: '_defaultCollateralTokenOracle',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IInsuranceFund',
+        name: '_insuranceFund',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IVQuote',
+        name: '_vQuote',
+        type: 'address',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -1256,6 +1270,19 @@ const _abi = [
         name: 'accountId',
         type: 'uint256',
       },
+    ],
+    name: 'settleProfit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
       {
         internalType: 'uint32',
         name: 'poolId',
@@ -1281,6 +1308,11 @@ const _abi = [
           {
             internalType: 'bool',
             name: 'isPartialAllowed',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
             type: 'bool',
           },
         ],
@@ -1607,6 +1639,11 @@ const _abi = [
             name: 'limitOrderType',
             type: 'uint8',
           },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
+            type: 'bool',
+          },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidityChangeParams',
         name: 'liquidityChangeParams',
@@ -1890,6 +1927,12 @@ const _abi = [
         internalType: 'int256',
         name: 'vQuoteAmountOut',
         type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96',
+        type: 'uint160',
       },
     ],
     name: 'LiquidityChanged',
@@ -2286,9 +2329,9 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: 'uint256',
-        name: 'realPriceX128',
-        type: 'uint256',
+        internalType: 'int256',
+        name: 'fundingRateX128',
+        type: 'int256',
       },
       {
         indexed: false,

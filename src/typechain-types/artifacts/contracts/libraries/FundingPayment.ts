@@ -37,7 +37,7 @@ export interface FundingPaymentInterface extends utils.Interface {
   functions: {};
 
   events: {
-    'FundingPaymentStateUpdated(tuple,uint256,uint256)': EventFragment;
+    'FundingPaymentStateUpdated(tuple,int256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'FundingPaymentStateUpdated'): EventFragment;
@@ -45,7 +45,7 @@ export interface FundingPaymentInterface extends utils.Interface {
 
 export interface FundingPaymentStateUpdatedEventObject {
   fundingPayment: FundingPayment.InfoStructOutput;
-  realPriceX128: BigNumber;
+  fundingRateX128: BigNumber;
   virtualPriceX128: BigNumber;
 }
 export type FundingPaymentStateUpdatedEvent = TypedEvent<
@@ -87,14 +87,14 @@ export interface FundingPayment extends BaseContract {
   callStatic: {};
 
   filters: {
-    'FundingPaymentStateUpdated(tuple,uint256,uint256)'(
+    'FundingPaymentStateUpdated(tuple,int256,uint256)'(
       fundingPayment?: null,
-      realPriceX128?: null,
+      fundingRateX128?: null,
       virtualPriceX128?: null
     ): FundingPaymentStateUpdatedEventFilter;
     FundingPaymentStateUpdated(
       fundingPayment?: null,
-      realPriceX128?: null,
+      fundingRateX128?: null,
       virtualPriceX128?: null
     ): FundingPaymentStateUpdatedEventFilter;
   };

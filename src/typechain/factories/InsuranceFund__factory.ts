@@ -65,34 +65,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'contract IERC20',
-        name: '_settlementToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IClearingHouse',
-        name: '_clearingHouse',
-        type: 'address',
-      },
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: 'symbol',
-        type: 'string',
-      },
-    ],
-    name: '__initialize_InsuranceFund',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'address',
         name: 'owner',
         type: 'address',
@@ -254,6 +226,34 @@ const _abi = [
         type: 'bool',
       },
     ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract IERC20',
+        name: '_settlementToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IClearingHouse',
+        name: '_clearingHouse',
+        type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: 'name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'symbol',
+        type: 'string',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },

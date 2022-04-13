@@ -189,51 +189,6 @@ const _abi = [
   {
     inputs: [
       {
-        components: [
-          {
-            internalType: 'contract IClearingHouse',
-            name: 'clearingHouse',
-            type: 'address',
-          },
-          {
-            internalType: 'contract IVToken',
-            name: 'vToken',
-            type: 'address',
-          },
-          {
-            internalType: 'contract IVQuote',
-            name: 'vQuote',
-            type: 'address',
-          },
-          {
-            internalType: 'contract IUniswapV3Pool',
-            name: 'vPool',
-            type: 'address',
-          },
-          {
-            internalType: 'uint24',
-            name: 'liquidityFeePips',
-            type: 'uint24',
-          },
-          {
-            internalType: 'uint24',
-            name: 'protocolFeePips',
-            type: 'uint24',
-          },
-        ],
-        internalType: 'struct IVPoolWrapper.InitializeVPoolWrapperParams',
-        name: 'params',
-        type: 'tuple',
-      },
-    ],
-    name: '__initialize_VPoolWrapper',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'int24',
         name: 'tickLower',
         type: 'int24',
@@ -424,6 +379,51 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: 'contract IClearingHouse',
+            name: 'clearingHouse',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IVToken',
+            name: 'vToken',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IVQuote',
+            name: 'vQuote',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IUniswapV3Pool',
+            name: 'vPool',
+            type: 'address',
+          },
+          {
+            internalType: 'uint24',
+            name: 'liquidityFeePips',
+            type: 'uint24',
+          },
+          {
+            internalType: 'uint24',
+            name: 'protocolFeePips',
+            type: 'uint24',
+          },
+        ],
+        internalType: 'struct IVPoolWrapper.InitializeVPoolWrapperParams',
+        name: 'params',
+        type: 'tuple',
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'liquidityFeePips',
     outputs: [
@@ -579,14 +579,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'realPriceX128',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'virtualPriceX128',
-        type: 'uint256',
+        internalType: 'bool',
+        name: 'useZeroFundingRate',
+        type: 'bool',
       },
     ],
     name: 'updateGlobalFundingState',

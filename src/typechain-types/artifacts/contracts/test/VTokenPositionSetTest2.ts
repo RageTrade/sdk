@@ -31,6 +31,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: BigNumberish;
     closeTokenPosition: boolean;
     limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -40,7 +41,8 @@ export declare namespace IClearingHouseStructures {
     BigNumber,
     number,
     boolean,
-    number
+    number,
+    boolean
   ] & {
     tickLower: number;
     tickUpper: number;
@@ -49,6 +51,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: number;
     closeTokenPosition: boolean;
     limitOrderType: number;
+    settleProfit: boolean;
   };
 
   export type LiquidationParamsStruct = {
@@ -134,11 +137,13 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumberish;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type SwapParamsStructOutput = [
     BigNumber,
     BigNumber,
+    boolean,
     boolean,
     boolean
   ] & {
@@ -146,6 +151,7 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumber;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type BalanceAdjustmentsStruct = {
@@ -171,12 +177,12 @@ export interface VTokenPositionSetTest2Interface extends utils.Interface {
     'getAllTokenPositionValue()': FunctionFragment;
     'getRequiredMargin(bool)': FunctionFragment;
     'init(address)': FunctionFragment;
-    'liquidityChange(address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'liquidityChange(address,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
     'protocol()': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'setAccountStorage((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256,uint256)': FunctionFragment;
     'setVQuoteAddress(address)': FunctionFragment;
-    'swap(address,(int256,uint160,bool,bool))': FunctionFragment;
+    'swap(address,(int256,uint160,bool,bool,bool))': FunctionFragment;
     'update((int256,int256,int256),address)': FunctionFragment;
   };
 

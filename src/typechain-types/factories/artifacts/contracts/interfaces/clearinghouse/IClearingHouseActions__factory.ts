@@ -119,6 +119,19 @@ const _abi = [
         name: 'accountId',
         type: 'uint256',
       },
+    ],
+    name: 'settleProfit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
       {
         internalType: 'uint32',
         name: 'poolId',
@@ -144,6 +157,11 @@ const _abi = [
           {
             internalType: 'bool',
             name: 'isPartialAllowed',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
             type: 'bool',
           },
         ],
@@ -257,6 +275,11 @@ const _abi = [
             internalType: 'enum IClearingHouseEnums.LimitOrderType',
             name: 'limitOrderType',
             type: 'uint8',
+          },
+          {
+            internalType: 'bool',
+            name: 'settleProfit',
+            type: 'bool',
           },
         ],
         internalType: 'struct IClearingHouseStructures.LiquidityChangeParams',

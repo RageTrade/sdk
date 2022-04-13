@@ -28,11 +28,13 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumberish;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type SwapParamsStructOutput = [
     BigNumber,
     BigNumber,
+    boolean,
     boolean,
     boolean
   ] & {
@@ -40,6 +42,7 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumber;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStruct = {
@@ -50,6 +53,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: BigNumberish;
     closeTokenPosition: boolean;
     limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -59,7 +63,8 @@ export declare namespace IClearingHouseStructures {
     BigNumber,
     number,
     boolean,
-    number
+    number,
+    boolean
   ] & {
     tickLower: number;
     tickUpper: number;
@@ -68,6 +73,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: number;
     closeTokenPosition: boolean;
     limitOrderType: number;
+    settleProfit: boolean;
   };
 }
 
@@ -78,10 +84,11 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint32)': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
+    'settleProfit(uint256)': FunctionFragment;
+    'swapToken(uint256,uint32,(int256,uint160,bool,bool,bool))': FunctionFragment;
     'updateMargin(uint256,uint32,int256)': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
-    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
   };
 
   getFunction(
@@ -91,6 +98,7 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
       | 'liquidateLiquidityPositions'
       | 'liquidateTokenPosition'
       | 'removeLimitOrder'
+      | 'settleProfit'
       | 'swapToken'
       | 'updateMargin'
       | 'updateProfit'
@@ -116,6 +124,10 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'settleProfit',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -160,6 +172,10 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'removeLimitOrder',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'settleProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -235,6 +251,11 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    settleProfit(
+      accountId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
@@ -292,6 +313,11 @@ export interface IClearingHouseActions extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  settleProfit(
+    accountId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   swapToken(
     accountId: BigNumberish,
     poolId: BigNumberish,
@@ -344,6 +370,11 @@ export interface IClearingHouseActions extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -417,6 +448,11 @@ export interface IClearingHouseActions extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    settleProfit(
+      accountId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     swapToken(
       accountId: BigNumberish,
       poolId: BigNumberish,
@@ -472,6 +508,11 @@ export interface IClearingHouseActions extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -212,11 +212,13 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumberish;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type SwapParamsStructOutput = [
     BigNumber,
     BigNumber,
+    boolean,
     boolean,
     boolean
   ] & {
@@ -224,6 +226,7 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumber;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStruct = {
@@ -234,6 +237,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: BigNumberish;
     closeTokenPosition: boolean;
     limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -243,7 +247,8 @@ export declare namespace IClearingHouseStructures {
     BigNumber,
     number,
     boolean,
-    number
+    number,
+    boolean
   ] & {
     tickLower: number;
     tickUpper: number;
@@ -252,12 +257,12 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: number;
     closeTokenPosition: boolean;
     limitOrderType: number;
+    settleProfit: boolean;
   };
 }
 
 export interface ClearingHouseTestInterface extends utils.Interface {
   functions: {
-    '__initialize_ClearingHouse(address,address,address,address,address)': FunctionFragment;
     'cleanDeposits(uint256)': FunctionFragment;
     'cleanPositions(uint256)': FunctionFragment;
     'createAccount()': FunctionFragment;
@@ -280,10 +285,12 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getProtocolInfo()': FunctionFragment;
+    'getRealTwapPriceX128(uint32)': FunctionFragment;
     'getTokenAddressInVTokens(address)': FunctionFragment;
     'getTruncatedTokenAddress(address)': FunctionFragment;
-    'getTwapPrices(uint32)': FunctionFragment;
+    'getVirtualTwapPriceX128(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
+    'initialize(address,address,address,address,address)': FunctionFragment;
     'insuranceFund()': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
@@ -296,7 +303,8 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     'rageTradeFactoryAddress()': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
+    'settleProfit(uint256)': FunctionFragment;
+    'swapToken(uint256,uint32,(int256,uint160,bool,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
@@ -306,13 +314,12 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
     'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
-    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
     'withdrawProtocolFee(address[])': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | '__initialize_ClearingHouse'
       | 'cleanDeposits'
       | 'cleanPositions'
       | 'createAccount'
@@ -335,10 +342,12 @@ export interface ClearingHouseTestInterface extends utils.Interface {
       | 'getCollateralInfo'
       | 'getPoolInfo'
       | 'getProtocolInfo'
+      | 'getRealTwapPriceX128'
       | 'getTokenAddressInVTokens'
       | 'getTruncatedTokenAddress'
-      | 'getTwapPrices'
+      | 'getVirtualTwapPriceX128'
       | 'governance'
+      | 'initialize'
       | 'insuranceFund'
       | 'isPoolIdAvailable'
       | 'liquidateLiquidityPositions'
@@ -351,6 +360,7 @@ export interface ClearingHouseTestInterface extends utils.Interface {
       | 'rageTradeFactoryAddress'
       | 'registerPool'
       | 'removeLimitOrder'
+      | 'settleProfit'
       | 'swapToken'
       | 'teamMultisig'
       | 'transferGovernance'
@@ -365,10 +375,6 @@ export interface ClearingHouseTestInterface extends utils.Interface {
       | 'withdrawProtocolFee'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: '__initialize_ClearingHouse',
-    values: [string, string, string, string, string]
-  ): string;
   encodeFunctionData(
     functionFragment: 'cleanDeposits',
     values: [BigNumberish]
@@ -458,6 +464,10 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'getRealTwapPriceX128',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getTokenAddressInVTokens',
     values: [string]
   ): string;
@@ -466,12 +476,16 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getVirtualTwapPriceX128',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initialize',
+    values: [string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'insuranceFund',
@@ -517,6 +531,10 @@ export interface ClearingHouseTestInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'settleProfit',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -580,10 +598,6 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     values: [string[]]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_ClearingHouse',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'cleanDeposits',
     data: BytesLike
@@ -673,6 +687,10 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getRealTwapPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getTokenAddressInVTokens',
     data: BytesLike
   ): Result;
@@ -681,10 +699,11 @@ export interface ClearingHouseTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getVirtualTwapPriceX128',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'insuranceFund',
     data: BytesLike
@@ -722,6 +741,10 @@ export interface ClearingHouseTestInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'removeLimitOrder',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'settleProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -919,15 +942,6 @@ export interface ClearingHouseTest extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     cleanDeposits(
       accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1114,6 +1128,11 @@ export interface ClearingHouseTest extends BaseContract {
       }
     >;
 
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { realPriceX128: BigNumber }>;
+
     getTokenAddressInVTokens(
       vToken: string,
       overrides?: CallOverrides
@@ -1124,17 +1143,21 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[number]>;
 
-    getTwapPrices(
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<[BigNumber] & { virtualPriceX128: BigNumber }>;
 
     governance(overrides?: CallOverrides): Promise<[string]>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1186,6 +1209,11 @@ export interface ClearingHouseTest extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1258,15 +1286,6 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  __initialize_ClearingHouse(
-    _rageTradeFactoryAddress: string,
-    _defaultCollateralToken: string,
-    _defaultCollateralTokenOracle: string,
-    _insuranceFund: string,
-    _vQuote: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   cleanDeposits(
     accountId: BigNumberish,
@@ -1454,6 +1473,11 @@ export interface ClearingHouseTest extends BaseContract {
     }
   >;
 
+  getRealTwapPriceX128(
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getTokenAddressInVTokens(
     vToken: string,
     overrides?: CallOverrides
@@ -1464,17 +1488,21 @@ export interface ClearingHouseTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<number>;
 
-  getTwapPrices(
+  getVirtualTwapPriceX128(
     poolId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      realPriceX128: BigNumber;
-      virtualPriceX128: BigNumber;
-    }
-  >;
+  ): Promise<BigNumber>;
 
   governance(overrides?: CallOverrides): Promise<string>;
+
+  initialize(
+    _rageTradeFactoryAddress: string,
+    _defaultCollateralToken: string,
+    _defaultCollateralTokenOracle: string,
+    _insuranceFund: string,
+    _vQuote: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   insuranceFund(overrides?: CallOverrides): Promise<string>;
 
@@ -1526,6 +1554,11 @@ export interface ClearingHouseTest extends BaseContract {
     poolId: BigNumberish,
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  settleProfit(
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1599,15 +1632,6 @@ export interface ClearingHouseTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     cleanDeposits(
       accountId: BigNumberish,
       overrides?: CallOverrides
@@ -1792,6 +1816,11 @@ export interface ClearingHouseTest extends BaseContract {
       }
     >;
 
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTokenAddressInVTokens(
       vToken: string,
       overrides?: CallOverrides
@@ -1802,17 +1831,21 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<number>;
 
-    getTwapPrices(
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<string>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     insuranceFund(overrides?: CallOverrides): Promise<string>;
 
@@ -1858,6 +1891,11 @@ export interface ClearingHouseTest extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2011,15 +2049,6 @@ export interface ClearingHouseTest extends BaseContract {
   };
 
   estimateGas: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     cleanDeposits(
       accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2138,6 +2167,11 @@ export interface ClearingHouseTest extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTokenAddressInVTokens(
       vToken: string,
       overrides?: CallOverrides
@@ -2148,12 +2182,21 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getTwapPrices(
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2205,6 +2248,11 @@ export interface ClearingHouseTest extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -2279,15 +2327,6 @@ export interface ClearingHouseTest extends BaseContract {
   };
 
   populateTransaction: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     cleanDeposits(
       accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2406,6 +2445,11 @@ export interface ClearingHouseTest extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getTokenAddressInVTokens(
       vToken: string,
       overrides?: CallOverrides
@@ -2416,12 +2460,21 @@ export interface ClearingHouseTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getTwapPrices(
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2475,6 +2528,11 @@ export interface ClearingHouseTest extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -30,8 +30,8 @@ export declare namespace SimulateSwap {
     liquidityStart: BigNumberish;
     tickSpacing: BigNumberish;
     fee: BigNumberish;
-    realPriceX128: BigNumberish;
-    virtualPriceX128: BigNumberish;
+    value1: BigNumberish;
+    value2: BigNumberish;
   };
 
   export type CacheStructOutput = [
@@ -50,8 +50,8 @@ export declare namespace SimulateSwap {
     liquidityStart: BigNumber;
     tickSpacing: number;
     fee: number;
-    realPriceX128: BigNumber;
-    virtualPriceX128: BigNumber;
+    value1: BigNumber;
+    value2: BigNumber;
   };
 
   export type StateStruct = {

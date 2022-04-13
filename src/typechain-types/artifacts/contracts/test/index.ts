@@ -19,6 +19,7 @@ export type { SignedFullMathTest } from './SignedFullMathTest';
 export type { SignedMathTest } from './SignedMathTest';
 export type { SimulateSwapTest } from './SimulateSwapTest';
 export type { TickExtendedTest } from './TickExtendedTest';
+export type { TimelockControllerWithMinDelayOverrideTest } from './TimelockControllerWithMinDelayOverrideTest';
 export type { Uint32L8ArrayTest } from './Uint32L8ArrayTest';
 export type { Uint48L5ArrayTest } from './Uint48L5ArrayTest';
 export type { Uint48Test } from './Uint48Test';

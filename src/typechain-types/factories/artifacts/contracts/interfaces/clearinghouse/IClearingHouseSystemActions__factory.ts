@@ -38,7 +38,7 @@ const _abi = [
         type: 'address',
       },
     ],
-    name: '__initialize_ClearingHouse',
+    name: 'initialize',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

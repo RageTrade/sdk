@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AggregatorV3Interface } from './AggregatorV3Interface';
+export type { FlagsInterface } from './FlagsInterface';

@@ -31,6 +31,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: BigNumberish;
     closeTokenPosition: boolean;
     limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -40,7 +41,8 @@ export declare namespace IClearingHouseStructures {
     BigNumber,
     number,
     boolean,
-    number
+    number,
+    boolean
   ] & {
     tickLower: number;
     tickUpper: number;
@@ -49,6 +51,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: number;
     closeTokenPosition: boolean;
     limitOrderType: number;
+    settleProfit: boolean;
   };
 
   export type LiquidationParamsStruct = {
@@ -148,7 +151,7 @@ export interface AccountTestInterface extends utils.Interface {
     'initToken(address)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,address)': FunctionFragment;
-    'liquidityChange(uint256,address,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'liquidityChange(uint256,address,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
     'numAccounts()': FunctionFragment;
     'protocol()': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;

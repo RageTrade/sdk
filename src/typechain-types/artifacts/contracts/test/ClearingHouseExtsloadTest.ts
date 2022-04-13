@@ -24,51 +24,48 @@ import type {
 
 export interface ClearingHouseExtsloadTestInterface extends utils.Interface {
   functions: {
-    'check_pools_vPool_and_settings_twapDuration(address,uint32)': FunctionFragment;
-    'pools_settings(address,uint32)': FunctionFragment;
-    'pools_vPool(address,uint32)': FunctionFragment;
-    'pools_vPool_and_settings_twapDuration(address,uint32)': FunctionFragment;
+    'checkVPoolAndTwapDuration(address,uint32)': FunctionFragment;
+    'getPoolSettings(address,uint32)': FunctionFragment;
+    'getVPool(address,uint32)': FunctionFragment;
+    'getVPoolAndTwapDuration(address,uint32)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'check_pools_vPool_and_settings_twapDuration'
-      | 'pools_settings'
-      | 'pools_vPool'
-      | 'pools_vPool_and_settings_twapDuration'
+      | 'checkVPoolAndTwapDuration'
+      | 'getPoolSettings'
+      | 'getVPool'
+      | 'getVPoolAndTwapDuration'
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'check_pools_vPool_and_settings_twapDuration',
+    functionFragment: 'checkVPoolAndTwapDuration',
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'pools_settings',
+    functionFragment: 'getPoolSettings',
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'pools_vPool',
+    functionFragment: 'getVPool',
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'pools_vPool_and_settings_twapDuration',
+    functionFragment: 'getVPoolAndTwapDuration',
     values: [string, BigNumberish]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: 'check_pools_vPool_and_settings_twapDuration',
+    functionFragment: 'checkVPoolAndTwapDuration',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'pools_settings',
+    functionFragment: 'getPoolSettings',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'getVPool', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'pools_vPool',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'pools_vPool_and_settings_twapDuration',
+    functionFragment: 'getVPoolAndTwapDuration',
     data: BytesLike
   ): Result;
 
@@ -102,13 +99,13 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    check_pools_vPool_and_settings_twapDuration(
+    checkVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    pools_settings(
+    getPoolSettings(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -124,26 +121,26 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
       }
     >;
 
-    pools_vPool(
+    getVPool(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string] & { vPool: string }>;
 
-    pools_vPool_and_settings_twapDuration(
+    getVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
   };
 
-  check_pools_vPool_and_settings_twapDuration(
+  checkVPoolAndTwapDuration(
     clearingHouse: string,
     poolId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  pools_settings(
+  getPoolSettings(
     clearingHouse: string,
     poolId: BigNumberish,
     overrides?: CallOverrides
@@ -159,26 +156,26 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
     }
   >;
 
-  pools_vPool(
+  getVPool(
     clearingHouse: string,
     poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
 
-  pools_vPool_and_settings_twapDuration(
+  getVPoolAndTwapDuration(
     clearingHouse: string,
     poolId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
 
   callStatic: {
-    check_pools_vPool_and_settings_twapDuration(
+    checkVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
 
-    pools_settings(
+    getPoolSettings(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -194,13 +191,13 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
       }
     >;
 
-    pools_vPool(
+    getVPool(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
 
-    pools_vPool_and_settings_twapDuration(
+    getVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -210,25 +207,25 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
   filters: {};
 
   estimateGas: {
-    check_pools_vPool_and_settings_twapDuration(
+    checkVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    pools_settings(
+    getPoolSettings(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    pools_vPool(
+    getVPool(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    pools_vPool_and_settings_twapDuration(
+    getVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -236,25 +233,25 @@ export interface ClearingHouseExtsloadTest extends BaseContract {
   };
 
   populateTransaction: {
-    check_pools_vPool_and_settings_twapDuration(
+    checkVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    pools_settings(
+    getPoolSettings(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    pools_vPool(
+    getVPool(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    pools_vPool_and_settings_twapDuration(
+    getVPoolAndTwapDuration(
       clearingHouse: string,
       poolId: BigNumberish,
       overrides?: CallOverrides

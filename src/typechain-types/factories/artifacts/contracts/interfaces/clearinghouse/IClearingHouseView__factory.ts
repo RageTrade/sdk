@@ -455,13 +455,27 @@ const _abi = [
         type: 'uint32',
       },
     ],
-    name: 'getTwapPrices',
+    name: 'getRealTwapPriceX128',
     outputs: [
       {
         internalType: 'uint256',
         name: 'realPriceX128',
         type: 'uint256',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+    ],
+    name: 'getVirtualTwapPriceX128',
+    outputs: [
       {
         internalType: 'uint256',
         name: 'virtualPriceX128',

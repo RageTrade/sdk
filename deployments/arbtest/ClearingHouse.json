@@ -1,5 +1,5 @@
 {
-  "address": "0x2969960AC552B3E9e79b7e5105D4996fFc40cB8c",
+  "address": "0xB9F870bfe77982a9956D9D155b2A26f7B2a01E8F",
   "abi": [
     {
       "inputs": [
@@ -422,39 +422,6 @@
       ],
       "name": "Unpaused",
       "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_rageTradeFactoryAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "contract IERC20",
-          "name": "_defaultCollateralToken",
-          "type": "address"
-        },
-        {
-          "internalType": "contract IOracle",
-          "name": "_defaultCollateralTokenOracle",
-          "type": "address"
-        },
-        {
-          "internalType": "contract IInsuranceFund",
-          "name": "_insuranceFund",
-          "type": "address"
-        },
-        {
-          "internalType": "contract IVQuote",
-          "name": "_vQuote",
-          "type": "address"
-        }
-      ],
-      "name": "__initialize_ClearingHouse",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "inputs": [],
@@ -937,13 +904,27 @@
           "type": "uint32"
         }
       ],
-      "name": "getTwapPrices",
+      "name": "getRealTwapPriceX128",
       "outputs": [
         {
           "internalType": "uint256",
           "name": "realPriceX128",
           "type": "uint256"
-        },
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "poolId",
+          "type": "uint32"
+        }
+      ],
+      "name": "getVirtualTwapPriceX128",
+      "outputs": [
         {
           "internalType": "uint256",
           "name": "virtualPriceX128",
@@ -964,6 +945,39 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_rageTradeFactoryAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IERC20",
+          "name": "_defaultCollateralToken",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IOracle",
+          "name": "_defaultCollateralTokenOracle",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IInsuranceFund",
+          "name": "_insuranceFund",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IVQuote",
+          "name": "_vQuote",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -1248,6 +1262,19 @@
           "internalType": "uint256",
           "name": "accountId",
           "type": "uint256"
+        }
+      ],
+      "name": "settleProfit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "accountId",
+          "type": "uint256"
         },
         {
           "internalType": "uint32",
@@ -1274,6 +1301,11 @@
             {
               "internalType": "bool",
               "name": "isPartialAllowed",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "settleProfit",
               "type": "bool"
             }
           ],
@@ -1599,6 +1631,11 @@
               "internalType": "enum IClearingHouseEnums.LimitOrderType",
               "name": "limitOrderType",
               "type": "uint8"
+            },
+            {
+              "internalType": "bool",
+              "name": "settleProfit",
+              "type": "bool"
             }
           ],
           "internalType": "struct IClearingHouseStructures.LiquidityChangeParams",
@@ -1883,6 +1920,12 @@
           "internalType": "int256",
           "name": "vQuoteAmountOut",
           "type": "int256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint160",
+          "name": "sqrtPriceX96",
+          "type": "uint160"
         }
       ],
       "name": "LiquidityChanged",
@@ -2279,9 +2322,9 @@
         },
         {
           "indexed": false,
-          "internalType": "uint256",
-          "name": "realPriceX128",
-          "type": "uint256"
+          "internalType": "int256",
+          "name": "fundingRateX128",
+          "type": "int256"
         },
         {
           "indexed": false,
@@ -2294,5 +2337,5 @@
       "type": "event"
     }
   ],
-  "numDeployments": 1
+  "numDeployments": 2
 }

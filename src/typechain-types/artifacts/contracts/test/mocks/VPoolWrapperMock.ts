@@ -55,6 +55,25 @@ export declare namespace IVPoolWrapper {
     sqrtPriceX96End: BigNumber;
   };
 
+  export type WrapperValuesInsideStruct = {
+    sumAX128: BigNumberish;
+    sumBInsideX128: BigNumberish;
+    sumFpInsideX128: BigNumberish;
+    sumFeeInsideX128: BigNumberish;
+  };
+
+  export type WrapperValuesInsideStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    sumAX128: BigNumber;
+    sumBInsideX128: BigNumber;
+    sumFpInsideX128: BigNumber;
+    sumFeeInsideX128: BigNumber;
+  };
+
   export type InitializeVPoolWrapperParamsStruct = {
     clearingHouse: string;
     vToken: string;
@@ -79,36 +98,17 @@ export declare namespace IVPoolWrapper {
     liquidityFeePips: number;
     protocolFeePips: number;
   };
-
-  export type WrapperValuesInsideStruct = {
-    sumAX128: BigNumberish;
-    sumBInsideX128: BigNumberish;
-    sumFpInsideX128: BigNumberish;
-    sumFeeInsideX128: BigNumberish;
-  };
-
-  export type WrapperValuesInsideStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    sumAX128: BigNumber;
-    sumBInsideX128: BigNumber;
-    sumFpInsideX128: BigNumber;
-    sumFeeInsideX128: BigNumber;
-  };
 }
 
 export interface VPoolWrapperMockInterface extends utils.Interface {
   functions: {
-    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24))': FunctionFragment;
     'burn(int24,int24,uint128)': FunctionFragment;
     'collectAccruedProtocolFee()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;
     'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
+    'initialize((address,address,address,address,uint24,uint24))': FunctionFragment;
     'liquidityFeePips()': FunctionFragment;
     'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
@@ -119,19 +119,19 @@ export interface VPoolWrapperMockInterface extends utils.Interface {
     'swapTokenAmount(int256)': FunctionFragment;
     'swapTokenNotional(int256)': FunctionFragment;
     'uniswapFeePips()': FunctionFragment;
-    'updateGlobalFundingState(uint256,uint256)': FunctionFragment;
+    'updateGlobalFundingState(bool)': FunctionFragment;
     'vPool()': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | '__initialize_VPoolWrapper'
       | 'burn'
       | 'collectAccruedProtocolFee'
       | 'getExtrapolatedSumAX128'
       | 'getExtrapolatedValuesInside'
       | 'getSumAX128'
       | 'getValuesInside'
+      | 'initialize'
       | 'liquidityFeePips'
       | 'mint'
       | 'protocolFeePips'
@@ -146,10 +146,6 @@ export interface VPoolWrapperMockInterface extends utils.Interface {
       | 'vPool'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: '__initialize_VPoolWrapper',
-    values: [IVPoolWrapper.InitializeVPoolWrapperParamsStruct]
-  ): string;
   encodeFunctionData(
     functionFragment: 'burn',
     values: [BigNumberish, BigNumberish, BigNumberish]
@@ -173,6 +169,10 @@ export interface VPoolWrapperMockInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'getValuesInside',
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initialize',
+    values: [IVPoolWrapper.InitializeVPoolWrapperParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidityFeePips',
@@ -220,14 +220,10 @@ export interface VPoolWrapperMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values: [BigNumberish, BigNumberish]
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_VPoolWrapper',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'burn', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'collectAccruedProtocolFee',
@@ -249,6 +245,7 @@ export interface VPoolWrapperMockInterface extends utils.Interface {
     functionFragment: 'getValuesInside',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'liquidityFeePips',
     data: BytesLike
@@ -416,11 +413,6 @@ export interface VPoolWrapperMock extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     burn(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -455,6 +447,11 @@ export interface VPoolWrapperMock extends BaseContract {
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
     >;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
 
@@ -514,18 +511,12 @@ export interface VPoolWrapperMock extends BaseContract {
     uniswapFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     vPool(overrides?: CallOverrides): Promise<[string]>;
   };
-
-  __initialize_VPoolWrapper(
-    params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   burn(
     tickLower: BigNumberish,
@@ -551,6 +542,11 @@ export interface VPoolWrapperMock extends BaseContract {
     tickUpper: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
+
+  initialize(
+    params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -606,19 +602,13 @@ export interface VPoolWrapperMock extends BaseContract {
   uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
   updateGlobalFundingState(
-    realPriceX128: BigNumberish,
-    virtualPriceX128: BigNumberish,
+    useZeroFundingRate: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   vPool(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     burn(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -649,6 +639,11 @@ export interface VPoolWrapperMock extends BaseContract {
       tickUpper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -707,8 +702,7 @@ export interface VPoolWrapperMock extends BaseContract {
     uniswapFeePips(overrides?: CallOverrides): Promise<number>;
 
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -777,11 +771,6 @@ export interface VPoolWrapperMock extends BaseContract {
   };
 
   estimateGas: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     burn(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -805,6 +794,11 @@ export interface VPoolWrapperMock extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
@@ -861,8 +855,7 @@ export interface VPoolWrapperMock extends BaseContract {
     uniswapFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -870,11 +863,6 @@ export interface VPoolWrapperMock extends BaseContract {
   };
 
   populateTransaction: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     burn(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
@@ -902,6 +890,11 @@ export interface VPoolWrapperMock extends BaseContract {
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -958,8 +951,7 @@ export interface VPoolWrapperMock extends BaseContract {
     uniswapFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

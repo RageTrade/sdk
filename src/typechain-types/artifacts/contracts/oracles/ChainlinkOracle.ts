@@ -23,15 +23,20 @@ import type {
 export interface ChainlinkOracleInterface extends utils.Interface {
   functions: {
     'aggregator()': FunctionFragment;
+    'chainlinkFlags()': FunctionFragment;
     'getTwapPriceX128(uint32)': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'aggregator' | 'getTwapPriceX128'
+    nameOrSignatureOrTopic: 'aggregator' | 'chainlinkFlags' | 'getTwapPriceX128'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'aggregator',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'chainlinkFlags',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -40,6 +45,10 @@ export interface ChainlinkOracleInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: 'aggregator', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'chainlinkFlags',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getTwapPriceX128',
     data: BytesLike
@@ -77,6 +86,8 @@ export interface ChainlinkOracle extends BaseContract {
   functions: {
     aggregator(overrides?: CallOverrides): Promise<[string]>;
 
+    chainlinkFlags(overrides?: CallOverrides): Promise<[string]>;
+
     getTwapPriceX128(
       twapDuration: BigNumberish,
       overrides?: CallOverrides
@@ -85,6 +96,8 @@ export interface ChainlinkOracle extends BaseContract {
 
   aggregator(overrides?: CallOverrides): Promise<string>;
 
+  chainlinkFlags(overrides?: CallOverrides): Promise<string>;
+
   getTwapPriceX128(
     twapDuration: BigNumberish,
     overrides?: CallOverrides
@@ -92,6 +105,8 @@ export interface ChainlinkOracle extends BaseContract {
 
   callStatic: {
     aggregator(overrides?: CallOverrides): Promise<string>;
+
+    chainlinkFlags(overrides?: CallOverrides): Promise<string>;
 
     getTwapPriceX128(
       twapDuration: BigNumberish,
@@ -104,6 +119,8 @@ export interface ChainlinkOracle extends BaseContract {
   estimateGas: {
     aggregator(overrides?: CallOverrides): Promise<BigNumber>;
 
+    chainlinkFlags(overrides?: CallOverrides): Promise<BigNumber>;
+
     getTwapPriceX128(
       twapDuration: BigNumberish,
       overrides?: CallOverrides
@@ -112,6 +129,8 @@ export interface ChainlinkOracle extends BaseContract {
 
   populateTransaction: {
     aggregator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    chainlinkFlags(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTwapPriceX128(
       twapDuration: BigNumberish,

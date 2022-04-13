@@ -73,16 +73,16 @@ export declare namespace IClearingHouseStructures {
 
 export interface IClearingHouseSystemActionsInterface extends utils.Interface {
   functions: {
-    '__initialize_ClearingHouse(address,address,address,address,address)': FunctionFragment;
+    'initialize(address,address,address,address,address)': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: '__initialize_ClearingHouse' | 'registerPool'
+    nameOrSignatureOrTopic: 'initialize' | 'registerPool'
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: '__initialize_ClearingHouse',
+    functionFragment: 'initialize',
     values: [string, string, string, string, string]
   ): string;
   encodeFunctionData(
@@ -90,10 +90,7 @@ export interface IClearingHouseSystemActionsInterface extends utils.Interface {
     values: [IClearingHouseStructures.PoolStruct]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_ClearingHouse',
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'registerPool',
     data: BytesLike
@@ -129,7 +126,7 @@ export interface IClearingHouseSystemActions extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_ClearingHouse(
+    initialize(
       rageTradeFactoryAddress: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
@@ -144,7 +141,7 @@ export interface IClearingHouseSystemActions extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  __initialize_ClearingHouse(
+  initialize(
     rageTradeFactoryAddress: string,
     defaultCollateralToken: string,
     defaultCollateralTokenOracle: string,
@@ -159,7 +156,7 @@ export interface IClearingHouseSystemActions extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __initialize_ClearingHouse(
+    initialize(
       rageTradeFactoryAddress: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
@@ -177,7 +174,7 @@ export interface IClearingHouseSystemActions extends BaseContract {
   filters: {};
 
   estimateGas: {
-    __initialize_ClearingHouse(
+    initialize(
       rageTradeFactoryAddress: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
@@ -193,7 +190,7 @@ export interface IClearingHouseSystemActions extends BaseContract {
   };
 
   populateTransaction: {
-    __initialize_ClearingHouse(
+    initialize(
       rageTradeFactoryAddress: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,

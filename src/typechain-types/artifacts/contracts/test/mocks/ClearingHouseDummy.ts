@@ -212,11 +212,13 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumberish;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type SwapParamsStructOutput = [
     BigNumber,
     BigNumber,
+    boolean,
     boolean,
     boolean
   ] & {
@@ -224,6 +226,7 @@ export declare namespace IClearingHouseStructures {
     sqrtPriceLimit: BigNumber;
     isNotional: boolean;
     isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStruct = {
@@ -234,6 +237,7 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: BigNumberish;
     closeTokenPosition: boolean;
     limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -243,7 +247,8 @@ export declare namespace IClearingHouseStructures {
     BigNumber,
     number,
     boolean,
-    number
+    number,
+    boolean
   ] & {
     tickLower: number;
     tickUpper: number;
@@ -252,12 +257,12 @@ export declare namespace IClearingHouseStructures {
     slippageToleranceBps: number;
     closeTokenPosition: boolean;
     limitOrderType: number;
+    settleProfit: boolean;
   };
 }
 
 export interface ClearingHouseDummyInterface extends utils.Interface {
   functions: {
-    '__initialize_ClearingHouse(address,address,address,address,address)': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
@@ -269,8 +274,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     'getCollateralInfo(uint32)': FunctionFragment;
     'getPoolInfo(uint32)': FunctionFragment;
     'getProtocolInfo()': FunctionFragment;
-    'getTwapPrices(uint32)': FunctionFragment;
+    'getRealTwapPriceX128(uint32)': FunctionFragment;
+    'getVirtualTwapPriceX128(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
+    'initialize(address,address,address,address,address)': FunctionFragment;
     'insuranceFund()': FunctionFragment;
     'isPoolIdAvailable(uint32)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
@@ -284,7 +291,8 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     'rageTradeFactoryAddress()': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
     'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'swapToken(uint256,uint32,(int256,uint160,bool,bool))': FunctionFragment;
+    'settleProfit(uint256)': FunctionFragment;
+    'swapToken(uint256,uint32,(int256,uint160,bool,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
     'transferGovernance(address)': FunctionFragment;
     'transferTeamMultisig(address)': FunctionFragment;
@@ -294,13 +302,12 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
     'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
-    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8))': FunctionFragment;
+    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
     'withdrawProtocolFee(address[])': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | '__initialize_ClearingHouse'
       | 'createAccount'
       | 'createAccountAndAddMargin'
       | 'extsload(bytes32)'
@@ -312,8 +319,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
       | 'getCollateralInfo'
       | 'getPoolInfo'
       | 'getProtocolInfo'
-      | 'getTwapPrices'
+      | 'getRealTwapPriceX128'
+      | 'getVirtualTwapPriceX128'
       | 'governance'
+      | 'initialize'
       | 'insuranceFund'
       | 'isPoolIdAvailable'
       | 'liquidateLiquidityPositions'
@@ -327,6 +336,7 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
       | 'rageTradeFactoryAddress'
       | 'registerPool'
       | 'removeLimitOrder'
+      | 'settleProfit'
       | 'swapToken'
       | 'teamMultisig'
       | 'transferGovernance'
@@ -341,10 +351,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
       | 'withdrawProtocolFee'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: '__initialize_ClearingHouse',
-    values: [string, string, string, string, string]
-  ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
     values?: undefined
@@ -390,12 +396,20 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getRealTwapPriceX128',
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getVirtualTwapPriceX128',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initialize',
+    values: [string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'insuranceFund',
@@ -445,6 +459,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
     values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'settleProfit',
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
@@ -509,10 +527,6 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: '__initialize_ClearingHouse',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
   ): Result;
@@ -557,10 +571,15 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getTwapPrices',
+    functionFragment: 'getRealTwapPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getVirtualTwapPriceX128',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'insuranceFund',
     data: BytesLike
@@ -602,6 +621,10 @@ export interface ClearingHouseDummyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'removeLimitOrder',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'settleProfit',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -799,15 +822,6 @@ export interface ClearingHouseDummy extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -895,17 +909,26 @@ export interface ClearingHouseDummy extends BaseContract {
       }
     >;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<[BigNumber] & { realPriceX128: BigNumber }>;
+
+    getVirtualTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { virtualPriceX128: BigNumber }>;
 
     governance(overrides?: CallOverrides): Promise<[string]>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     insuranceFund(overrides?: CallOverrides): Promise<[string]>;
 
@@ -959,6 +982,11 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1031,15 +1059,6 @@ export interface ClearingHouseDummy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
-
-  __initialize_ClearingHouse(
-    _rageTradeFactoryAddress: string,
-    _defaultCollateralToken: string,
-    _defaultCollateralTokenOracle: string,
-    _insuranceFund: string,
-    _vQuote: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   createAccount(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1128,17 +1147,26 @@ export interface ClearingHouseDummy extends BaseContract {
     }
   >;
 
-  getTwapPrices(
+  getRealTwapPriceX128(
     poolId: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      realPriceX128: BigNumber;
-      virtualPriceX128: BigNumber;
-    }
-  >;
+  ): Promise<BigNumber>;
+
+  getVirtualTwapPriceX128(
+    poolId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   governance(overrides?: CallOverrides): Promise<string>;
+
+  initialize(
+    _rageTradeFactoryAddress: string,
+    _defaultCollateralToken: string,
+    _defaultCollateralTokenOracle: string,
+    _insuranceFund: string,
+    _vQuote: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   insuranceFund(overrides?: CallOverrides): Promise<string>;
 
@@ -1192,6 +1220,11 @@ export interface ClearingHouseDummy extends BaseContract {
     poolId: BigNumberish,
     tickLower: BigNumberish,
     tickUpper: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  settleProfit(
+    accountId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1265,15 +1298,6 @@ export interface ClearingHouseDummy extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
@@ -1359,17 +1383,26 @@ export interface ClearingHouseDummy extends BaseContract {
       }
     >;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        realPriceX128: BigNumber;
-        virtualPriceX128: BigNumber;
-      }
-    >;
+    ): Promise<BigNumber>;
+
+    getVirtualTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<string>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     insuranceFund(overrides?: CallOverrides): Promise<string>;
 
@@ -1417,6 +1450,11 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1570,15 +1608,6 @@ export interface ClearingHouseDummy extends BaseContract {
   };
 
   estimateGas: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1633,12 +1662,26 @@ export interface ClearingHouseDummy extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1692,6 +1735,11 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1766,15 +1814,6 @@ export interface ClearingHouseDummy extends BaseContract {
   };
 
   populateTransaction: {
-    __initialize_ClearingHouse(
-      _rageTradeFactoryAddress: string,
-      _defaultCollateralToken: string,
-      _defaultCollateralTokenOracle: string,
-      _insuranceFund: string,
-      _vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1829,12 +1868,26 @@ export interface ClearingHouseDummy extends BaseContract {
 
     getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getTwapPrices(
+    getRealTwapPriceX128(
+      poolId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getVirtualTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    initialize(
+      _rageTradeFactoryAddress: string,
+      _defaultCollateralToken: string,
+      _defaultCollateralTokenOracle: string,
+      _insuranceFund: string,
+      _vQuote: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1890,6 +1943,11 @@ export interface ClearingHouseDummy extends BaseContract {
       poolId: BigNumberish,
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    settleProfit(
+      accountId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

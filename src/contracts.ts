@@ -22,6 +22,7 @@ import {
 export type NetworkName =
   | 'mainnet'
   | 'rinkeby'
+  | 'kovan'
   | 'arbmain'
   | 'arbtest'
   | 'opmain'
@@ -30,6 +31,7 @@ export type NetworkName =
 export const chainIds = {
   mainnet: 1,
   rinkeby: 4,
+  kovan: 42,
   arbmain: 42161,
   arbtest: 421611,
   opmain: 10,

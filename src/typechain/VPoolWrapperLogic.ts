@@ -55,6 +55,25 @@ export declare namespace IVPoolWrapper {
     sqrtPriceX96End: BigNumber;
   };
 
+  export type WrapperValuesInsideStruct = {
+    sumAX128: BigNumberish;
+    sumBInsideX128: BigNumberish;
+    sumFpInsideX128: BigNumberish;
+    sumFeeInsideX128: BigNumberish;
+  };
+
+  export type WrapperValuesInsideStructOutput = [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ] & {
+    sumAX128: BigNumber;
+    sumBInsideX128: BigNumber;
+    sumFpInsideX128: BigNumber;
+    sumFeeInsideX128: BigNumber;
+  };
+
   export type InitializeVPoolWrapperParamsStruct = {
     clearingHouse: string;
     vToken: string;
@@ -79,30 +98,10 @@ export declare namespace IVPoolWrapper {
     liquidityFeePips: number;
     protocolFeePips: number;
   };
-
-  export type WrapperValuesInsideStruct = {
-    sumAX128: BigNumberish;
-    sumBInsideX128: BigNumberish;
-    sumFpInsideX128: BigNumberish;
-    sumFeeInsideX128: BigNumberish;
-  };
-
-  export type WrapperValuesInsideStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ] & {
-    sumAX128: BigNumber;
-    sumBInsideX128: BigNumber;
-    sumFpInsideX128: BigNumber;
-    sumFeeInsideX128: BigNumber;
-  };
 }
 
 export interface VPoolWrapperLogicInterface extends utils.Interface {
   functions: {
-    '__initialize_VPoolWrapper((address,address,address,address,uint24,uint24))': FunctionFragment;
     'accruedProtocolFee()': FunctionFragment;
     'burn(int24,int24,uint128)': FunctionFragment;
     'clearingHouse()': FunctionFragment;
@@ -113,8 +112,10 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     'fundingRateOverrideX128()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;
     'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
+    'getFundingRateAndVirtualPrice()': FunctionFragment;
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
+    'initialize((address,address,address,address,uint24,uint24))': FunctionFragment;
     'liquidityFeePips()': FunctionFragment;
     'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
@@ -126,7 +127,7 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     'ticksExtended(int24)': FunctionFragment;
     'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment;
     'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment;
-    'updateGlobalFundingState(uint256,uint256)': FunctionFragment;
+    'updateGlobalFundingState(bool)': FunctionFragment;
     'vPool()': FunctionFragment;
     'vQuote()': FunctionFragment;
     'vToken()': FunctionFragment;
@@ -134,7 +135,6 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | '__initialize_VPoolWrapper'
       | 'accruedProtocolFee'
       | 'burn'
       | 'clearingHouse'
@@ -145,8 +145,10 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
       | 'fundingRateOverrideX128'
       | 'getExtrapolatedSumAX128'
       | 'getExtrapolatedValuesInside'
+      | 'getFundingRateAndVirtualPrice'
       | 'getSumAX128'
       | 'getValuesInside'
+      | 'initialize'
       | 'liquidityFeePips'
       | 'mint'
       | 'protocolFeePips'
@@ -164,10 +166,6 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
       | 'vToken'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: '__initialize_VPoolWrapper',
-    values: [IVPoolWrapper.InitializeVPoolWrapperParamsStruct]
-  ): string;
   encodeFunctionData(
     functionFragment: 'accruedProtocolFee',
     values?: undefined
@@ -206,12 +204,20 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: 'getFundingRateAndVirtualPrice',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getSumAX128',
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'getValuesInside',
     values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initialize',
+    values: [IVPoolWrapper.InitializeVPoolWrapperParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidityFeePips',
@@ -259,16 +265,12 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values: [BigNumberish, BigNumberish]
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'vQuote', values?: undefined): string;
   encodeFunctionData(functionFragment: 'vToken', values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: '__initialize_VPoolWrapper',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'accruedProtocolFee',
     data: BytesLike
@@ -304,6 +306,10 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getFundingRateAndVirtualPrice',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getSumAX128',
     data: BytesLike
   ): Result;
@@ -311,6 +317,7 @@ export interface VPoolWrapperLogicInterface extends utils.Interface {
     functionFragment: 'getValuesInside',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'liquidityFeePips',
     data: BytesLike
@@ -487,11 +494,6 @@ export interface VPoolWrapperLogic extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     accruedProtocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     burn(
@@ -503,6 +505,9 @@ export interface VPoolWrapperLogic extends BaseContract {
 
     clearingHouse(overrides?: CallOverrides): Promise<[string]>;
 
+    /**
+     * Used by clearing house to know how much protocol fee was collected.
+     */
     collectAccruedProtocolFee(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -549,6 +554,13 @@ export interface VPoolWrapperLogic extends BaseContract {
     /**
      * VIEW METHODS
      */
+    getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        fundingRateX128: BigNumber;
+        virtualPriceX128: BigNumber;
+      }
+    >;
+
     getSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getValuesInside(
@@ -560,6 +572,11 @@ export interface VPoolWrapperLogic extends BaseContract {
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
     >;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
 
@@ -635,8 +652,7 @@ export interface VPoolWrapperLogic extends BaseContract {
      * Update the global funding state, from clearing house
      */
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -646,11 +662,6 @@ export interface VPoolWrapperLogic extends BaseContract {
 
     vToken(overrides?: CallOverrides): Promise<[string]>;
   };
-
-  __initialize_VPoolWrapper(
-    params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -663,6 +674,9 @@ export interface VPoolWrapperLogic extends BaseContract {
 
   clearingHouse(overrides?: CallOverrides): Promise<string>;
 
+  /**
+   * Used by clearing house to know how much protocol fee was collected.
+   */
   collectAccruedProtocolFee(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -705,6 +719,13 @@ export interface VPoolWrapperLogic extends BaseContract {
   /**
    * VIEW METHODS
    */
+  getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+    [BigNumber, BigNumber] & {
+      fundingRateX128: BigNumber;
+      virtualPriceX128: BigNumber;
+    }
+  >;
+
   getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getValuesInside(
@@ -712,6 +733,11 @@ export interface VPoolWrapperLogic extends BaseContract {
     tickUpper: BigNumberish,
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
+
+  initialize(
+    params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -787,8 +813,7 @@ export interface VPoolWrapperLogic extends BaseContract {
    * Update the global funding state, from clearing house
    */
   updateGlobalFundingState(
-    realPriceX128: BigNumberish,
-    virtualPriceX128: BigNumberish,
+    useZeroFundingRate: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -799,11 +824,6 @@ export interface VPoolWrapperLogic extends BaseContract {
   vToken(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(
@@ -821,6 +841,9 @@ export interface VPoolWrapperLogic extends BaseContract {
 
     clearingHouse(overrides?: CallOverrides): Promise<string>;
 
+    /**
+     * Used by clearing house to know how much protocol fee was collected.
+     */
     collectAccruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
@@ -861,6 +884,13 @@ export interface VPoolWrapperLogic extends BaseContract {
     /**
      * VIEW METHODS
      */
+    getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        fundingRateX128: BigNumber;
+        virtualPriceX128: BigNumber;
+      }
+    >;
+
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getValuesInside(
@@ -868,6 +898,11 @@ export interface VPoolWrapperLogic extends BaseContract {
       tickUpper: BigNumberish,
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
@@ -949,8 +984,7 @@ export interface VPoolWrapperLogic extends BaseContract {
      * Update the global funding state, from clearing house
      */
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1023,11 +1057,6 @@ export interface VPoolWrapperLogic extends BaseContract {
   };
 
   estimateGas: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     accruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     burn(
@@ -1039,6 +1068,9 @@ export interface VPoolWrapperLogic extends BaseContract {
 
     clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Used by clearing house to know how much protocol fee was collected.
+     */
     collectAccruedProtocolFee(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1074,12 +1106,21 @@ export interface VPoolWrapperLogic extends BaseContract {
     /**
      * VIEW METHODS
      */
+    getFundingRateAndVirtualPrice(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getValuesInside(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1149,8 +1190,7 @@ export interface VPoolWrapperLogic extends BaseContract {
      * Update the global funding state, from clearing house
      */
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1162,11 +1202,6 @@ export interface VPoolWrapperLogic extends BaseContract {
   };
 
   populateTransaction: {
-    __initialize_VPoolWrapper(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     accruedProtocolFee(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1180,6 +1215,9 @@ export interface VPoolWrapperLogic extends BaseContract {
 
     clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Used by clearing house to know how much protocol fee was collected.
+     */
     collectAccruedProtocolFee(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1219,12 +1257,21 @@ export interface VPoolWrapperLogic extends BaseContract {
     /**
      * VIEW METHODS
      */
+    getFundingRateAndVirtualPrice(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getSumAX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getValuesInside(
       tickLower: BigNumberish,
       tickUpper: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1294,8 +1341,7 @@ export interface VPoolWrapperLogic extends BaseContract {
      * Update the global funding state, from clearing house
      */
     updateGlobalFundingState(
-      realPriceX128: BigNumberish,
-      virtualPriceX128: BigNumberish,
+      useZeroFundingRate: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

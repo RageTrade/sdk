@@ -21,7 +21,7 @@ export interface AccountLibraryInterface extends utils.Interface {
   functions: {};
 
   events: {
-    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256)': EventFragment;
+    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)': EventFragment;
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': EventFragment;
     'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)': EventFragment;
     'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': EventFragment;
@@ -66,9 +66,20 @@ export interface LiquidityChangedEventObject {
   limitOrderType: number;
   vTokenAmountOut: BigNumber;
   vQuoteAmountOut: BigNumber;
+  sqrtPriceX96: BigNumber;
 }
 export type LiquidityChangedEvent = TypedEvent<
-  [BigNumber, number, number, number, BigNumber, number, BigNumber, BigNumber],
+  [
+    BigNumber,
+    number,
+    number,
+    number,
+    BigNumber,
+    number,
+    BigNumber,
+    BigNumber,
+    BigNumber
+  ],
   LiquidityChangedEventObject
 >;
 
@@ -262,7 +273,7 @@ export interface AccountLibrary extends BaseContract {
   callStatic: {};
 
   filters: {
-    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256)'(
+    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)'(
       accountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       tickLower?: null,
@@ -270,7 +281,8 @@ export interface AccountLibrary extends BaseContract {
       liquidityDelta?: null,
       limitOrderType?: null,
       vTokenAmountOut?: null,
-      vQuoteAmountOut?: null
+      vQuoteAmountOut?: null,
+      sqrtPriceX96?: null
     ): LiquidityChangedEventFilter;
     LiquidityChanged(
       accountId?: BigNumberish | null,
@@ -280,7 +292,8 @@ export interface AccountLibrary extends BaseContract {
       liquidityDelta?: null,
       limitOrderType?: null,
       vTokenAmountOut?: null,
-      vQuoteAmountOut?: null
+      vQuoteAmountOut?: null,
+      sqrtPriceX96?: null
     ): LiquidityChangedEventFilter;
 
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)'(

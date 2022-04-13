@@ -17,6 +17,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AggregatorV3Interface__factory>;
     getContractFactory(
+      name: 'FlagsInterface',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FlagsInterface__factory>;
+    getContractFactory(
       name: 'PausableUpgradeable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PausableUpgradeable__factory>;
@@ -52,6 +56,10 @@ declare module 'hardhat/types/runtime' {
       name: 'Ownable',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
+      name: 'TimelockController',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockController__factory>;
     getContractFactory(
       name: 'IERC1822Proxiable',
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -441,6 +449,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TickExtendedTest__factory>;
     getContractFactory(
+      name: 'TimelockControllerWithMinDelayOverrideTest',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockControllerWithMinDelayOverrideTest__factory>;
+    getContractFactory(
       name: 'Uint32L8ArrayTest',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Uint32L8ArrayTest__factory>;
@@ -485,6 +497,10 @@ declare module 'hardhat/types/runtime' {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SwapSimulator__factory>;
     getContractFactory(
+      name: 'TimelockControllerWithMinDelayOverride',
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockControllerWithMinDelayOverride__factory>;
+    getContractFactory(
       name: 'UniswapV3Pool',
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UniswapV3Pool__factory>;
@@ -498,6 +514,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.AggregatorV3Interface>;
+    getContractAt(
+      name: 'FlagsInterface',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FlagsInterface>;
     getContractAt(
       name: 'PausableUpgradeable',
       address: string,
@@ -543,6 +564,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: 'TimelockController',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockController>;
     getContractAt(
       name: 'IERC1822Proxiable',
       address: string,
@@ -1029,6 +1055,11 @@ declare module 'hardhat/types/runtime' {
       signer?: ethers.Signer
     ): Promise<Contracts.TickExtendedTest>;
     getContractAt(
+      name: 'TimelockControllerWithMinDelayOverrideTest',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockControllerWithMinDelayOverrideTest>;
+    getContractAt(
       name: 'Uint32L8ArrayTest',
       address: string,
       signer?: ethers.Signer
@@ -1083,6 +1114,11 @@ declare module 'hardhat/types/runtime' {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SwapSimulator>;
+    getContractAt(
+      name: 'TimelockControllerWithMinDelayOverride',
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockControllerWithMinDelayOverride>;
     getContractAt(
       name: 'UniswapV3Pool',
       address: string,

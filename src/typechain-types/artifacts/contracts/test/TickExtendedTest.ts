@@ -66,7 +66,7 @@ export interface TickExtendedTestInterface extends utils.Interface {
     'getFeeGrowthInside(int24,int24,int24)': FunctionFragment;
     'getFundingPaymentGrowthInside(int24,int24,int24)': FunctionFragment;
     'getNetPositionInside(int24,int24,int24)': FunctionFragment;
-    'registerTrade(int256,uint256,uint48,uint256,uint256)': FunctionFragment;
+    'registerTrade(int256,uint256,uint48,uint256,int256)': FunctionFragment;
     'setFeeGrowthOutsideX128(uint256)': FunctionFragment;
     'setFpGlobal((int256,int256,int256,uint48))': FunctionFragment;
     'setTick(int24,(int256,int256,int256,uint256))': FunctionFragment;
@@ -243,8 +243,8 @@ export interface TickExtendedTest extends BaseContract {
       vTokenAmount: BigNumberish,
       liquidity: BigNumberish,
       blockTimestamp: BigNumberish,
-      realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
+      fundingRateX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -320,8 +320,8 @@ export interface TickExtendedTest extends BaseContract {
     vTokenAmount: BigNumberish,
     liquidity: BigNumberish,
     blockTimestamp: BigNumberish,
-    realPriceX128: BigNumberish,
     virtualPriceX128: BigNumberish,
+    fundingRateX128: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -394,8 +394,8 @@ export interface TickExtendedTest extends BaseContract {
       vTokenAmount: BigNumberish,
       liquidity: BigNumberish,
       blockTimestamp: BigNumberish,
-      realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
+      fundingRateX128: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -467,8 +467,8 @@ export interface TickExtendedTest extends BaseContract {
       vTokenAmount: BigNumberish,
       liquidity: BigNumberish,
       blockTimestamp: BigNumberish,
-      realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
+      fundingRateX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -531,8 +531,8 @@ export interface TickExtendedTest extends BaseContract {
       vTokenAmount: BigNumberish,
       liquidity: BigNumberish,
       blockTimestamp: BigNumberish,
-      realPriceX128: BigNumberish,
       virtualPriceX128: BigNumberish,
+      fundingRateX128: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
