@@ -1,23 +1,20 @@
 import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from 'ethers';
 import {
-  AccountLibrary__factory,
+  Account__factory,
   ClearingHouse__factory,
-  InsuranceFund__factory,
-  ProxyAdmin__factory,
-  RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
-  VQuote__factory,
-} from './typechain';
-import {
-  IERC20Metadata__factory,
-  IOracle__factory,
-  IUniswapV3Pool__factory,
-  OracleMock__factory,
   VPoolWrapper__factory,
+  VQuote__factory,
   VToken__factory,
-} from './typechain-types';
+} from './typechain/core';
+import { RageTradeFactory } from './typechain/core/contracts/protocol/RageTradeFactory';
+import { ProxyAdmin__factory } from './typechain/core/factories/@openzeppelin/contracts/proxy/transparent';
+import { IERC20Metadata__factory } from './typechain/core/factories/@openzeppelin/contracts/token/ERC20/extensions';
+import { IOracle__factory } from './typechain/core/factories/contracts/interfaces';
+import { InsuranceFund__factory } from './typechain/core/factories/contracts/protocol/insurancefund';
+import { IUniswapV3Pool__factory } from './typechain/uniswap';
 
 export type NetworkName =
   | 'mainnet'
@@ -96,7 +93,7 @@ export async function getContractsWithDeployments(
   deployments: Deployments
 ) {
   return {
-    accountLib: AccountLibrary__factory.connect(
+    accountLib: Account__factory.connect(
       deployments.AccountLibraryDeployment.address,
       signerOrProvider
     ),
@@ -182,34 +179,56 @@ export async function getDeployments(
   network: NetworkName
 ): Promise<Deployments> {
   const AccountLibraryDeployment = await getDeployment(
+    'core',
     network,
     'AccountLibrary'
   );
-  const ClearingHouseDeployment = await getDeployment(network, 'ClearingHouse');
+  const ClearingHouseDeployment = await getDeployment(
+    'core',
+    network,
+    'ClearingHouse'
+  );
   const ClearingHouseLogicDeployment = await getDeployment(
+    'core',
     network,
     'ClearingHouseLogic'
   );
-  const InsuranceFundDeployment = await getDeployment(network, 'InsuranceFund');
+  const InsuranceFundDeployment = await getDeployment(
+    'core',
+    network,
+    'InsuranceFund'
+  );
   const InsuranceFundLogicDeployment = await getDeployment(
+    'core',
     network,
     'InsuranceFundLogic'
   );
-  const ProxyAdminDeployment = await getDeployment(network, 'ProxyAdmin');
+  const ProxyAdminDeployment = await getDeployment(
+    'core',
+    network,
+    'ProxyAdmin'
+  );
   const RageTradeFactoryDeployment = await getDeployment(
+    'core',
     network,
     'RageTradeFactory'
   );
   const SettlementTokenDeployment = await getDeployment(
+    'core',
     network,
     'SettlementToken'
   );
-  const VQuoteDeployment = await getDeployment(network, 'VQuote');
+  const VQuoteDeployment = await getDeployment('core', network, 'VQuote');
   const VPoolWrapperLogicDeployment = await getDeployment(
+    'core',
     network,
     'VPoolWrapperLogic'
   );
-  const SwapSimulatorDeployment = await getDeployment(network, 'SwapSimulator');
+  const SwapSimulatorDeployment = await getDeployment(
+    'core',
+    network,
+    'SwapSimulator'
+  );
 
   const [
     ETH_vTokenDeployment,
@@ -242,19 +261,19 @@ export async function getPoolDeployments(
   tokenSymbol: string
 ) {
   return await Promise.all([
-    getDeployment(network, tokenSymbol + '-vToken'),
-    getDeployment(network, tokenSymbol + '-vPool'),
-    getDeployment(network, tokenSymbol + '-vPoolWrapper'),
-    getDeployment(network, tokenSymbol + '-IndexOracle'),
+    getDeployment('core', network, tokenSymbol + '-vToken'),
+    getDeployment('core', network, tokenSymbol + '-vPool'),
+    getDeployment('core', network, tokenSymbol + '-vPoolWrapper'),
+    getDeployment('core', network, tokenSymbol + '-IndexOracle'),
   ]);
 }
 
 export function getEthersInterfaces() {
   return [
-    AccountLibrary__factory.createInterface(),
+    Account__factory.createInterface(),
     ClearingHouse__factory.createInterface(),
     InsuranceFund__factory.createInterface(),
-    OracleMock__factory.createInterface(),
+    IOracle__factory.createInterface(),
     ProxyAdmin__factory.createInterface(),
     RageTradeFactory__factory.createInterface(),
     VQuote__factory.createInterface(),
@@ -265,11 +284,12 @@ export function getEthersInterfaces() {
 }
 
 export async function getDeployment(
+  repo: string,
   networkName: NetworkName,
   name: string
 ): Promise<ContractDeployment> {
   try {
-    return await import(`../deployments/${networkName}/${name}.json`);
+    return await import(`../deployments/${repo}/${networkName}/${name}.json`);
   } catch (e) {
     // console.error(e);
     throw new Error(

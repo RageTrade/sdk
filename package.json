@@ -27,11 +27,15 @@
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
     "format:fix": "prettier --write src test",
-    "update": "yarn update:deployments && yarn update:types && yarn typechain && yarn build",
-    "update:deployments": "rm -rf deployments && mkdir deployments && cp -r ../ragetrade-core/deployments/ deployments/ && node process-abi.js",
-    "update:types": "rm -rf src/typechain-types && mkdir src/typechain-types && cp -r ../ragetrade-core/typechain-types/ src/typechain-types/ && yarn typechain && yarn format:fix",
+    "update": "yarn update:flush && yarn update:deployments && node process-abi.js && yarn typechain && yarn build",
+    "update:flush": "rm -rf deployments src/typechain/core src/typechain/vaults src/typechain/uniswap && mkdir -p deployments/core deployments/vaults src/typechain/core src/typechain/vaults src/typechain/uniswap",
+    "update:deployments": "cp -r node_modules/@ragetrade/core/deployments/ deployments/core && cp -r node_modules/@ragetrade/vaults/deployments/ deployments/vaults",
+    "update:uniswap": "cp -r node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json deployments/uniswap/UniswapV3Pool.json",
     "update:pools": "node fetch-pools.js",
-    "typechain": "rm -rf src/typechain && typechain --target ethers-v5 --out-dir src/typechain './deployments/arbtest/*.json' && yarn format:fix"
+    "typechain": "yarn typechain:core && yarn typechain:vaults && yarn typechain:uniswap && yarn format:fix",
+    "typechain:core": "typechain --target ethers-v5 --out-dir src/typechain/core './node_modules/@ragetrade/core/artifacts/**/*.sol/!(*.dbg.json)'",
+    "typechain:vaults": "typechain --target ethers-v5 --out-dir src/typechain/vaults './node_modules/@ragetrade/vaults/artifacts/**/*.sol/!(*.dbg.json)'",
+    "typechain:uniswap": "typechain --target ethers-v5 --out-dir src/typechain/uniswap './node_modules/@uniswap/v3-core/artifacts/**/*.sol/!(*.dbg.json)'"
   },
   "peerDependencies": {},
   "husky": {
@@ -60,6 +64,8 @@
     }
   ],
   "devDependencies": {
+    "@ragetrade/core": "^1.0.1",
+    "@ragetrade/vaults": "^1.0.0",
     "@size-limit/preset-small-lib": "^7.0.5",
     "@typechain/ethers-v5": "^10.0.0",
     "@types/fs-extra": "^9.0.13",

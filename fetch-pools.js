@@ -37,7 +37,9 @@ async function getDefaultPool() {
           vPoolAddress: contracts.eth_vPool.address,
           vPoolWrapperAddress: contracts.eth_vPoolWrapper.address,
         };
-      } catch {}
+      } catch (e) {
+        // console.log(e);
+      }
     }
 
     defaultPool[chainName] = defaultPoolForChain;

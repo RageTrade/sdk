@@ -1,3 +1,4 @@
+const { existsSync } = require('fs');
 const {
   readdirSync,
   removeSync,
@@ -11,7 +12,9 @@ async function main() {
   const deploymentsDirPath = _path.resolve(__dirname, 'deployments');
   removeMetadataFromDir(deploymentsDirPath);
 
-  copyAccountEventsErrorsToClearingHouse(deploymentsDirPath);
+  copyAccountEventsErrorsToClearingHouse(
+    _path.resolve(deploymentsDirPath, 'core')
+  );
 }
 
 function removeMetadataFromDir(currentDirPath) {
@@ -22,10 +25,10 @@ function removeMetadataFromDir(currentDirPath) {
       removeSync(childPath);
       return;
     }
-    if (childDirName === '.chainId') {
-      removeSync(childPath);
-      return;
-    }
+    // if (childDirName === '.chainId') {
+    //   removeSync(childPath);
+    //   return;
+    // }
 
     if (lstatSync(childPath).isDirectory()) {
       removeMetadataFromDir(childPath);
@@ -49,6 +52,8 @@ function copyAccountEventsErrorsToClearingHouse(deploymentsDirPath, fn) {
   dirs.forEach((childDirName) => {
     const childDeploymentPath = _path.resolve(deploymentsDirPath, childDirName);
     if (lstatSync(childDeploymentPath).isDirectory()) {
+      const nextPath = _path.resolve(childDeploymentPath, '.chainId');
+
       // Including events of Account Library in Clearing House
       const ClearingHouseData = readJsonSync(
         _path.resolve(childDeploymentPath, 'ClearingHouse.json')
