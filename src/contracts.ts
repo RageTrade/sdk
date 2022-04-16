@@ -15,6 +15,7 @@ import { IERC20Metadata__factory } from './typechain/core/factories/@openzeppeli
 import { IOracle__factory } from './typechain/core/factories/contracts/interfaces';
 import { InsuranceFund__factory } from './typechain/core/factories/contracts/protocol/insurancefund';
 import { IUniswapV3Pool__factory } from './typechain/uniswap';
+import { CurveYieldStrategy__factory } from './typechain/vaults';
 
 export type NetworkName =
   | 'mainnet'
@@ -86,6 +87,7 @@ export interface Deployments {
   ETH_vPoolDeployment: ContractDeployment;
   ETH_vPoolWrapperDeployment: ContractDeployment;
   ETH_IndexOracleDeployment: ContractDeployment;
+  CurveYieldStrategyDeployment: ContractDeployment;
 }
 
 export async function getContractsWithDeployments(
@@ -152,6 +154,10 @@ export async function getContractsWithDeployments(
     ),
     eth_oracle: IOracle__factory.connect(
       deployments.ETH_IndexOracleDeployment.address,
+      signerOrProvider
+    ),
+    curveYieldStrategy: CurveYieldStrategy__factory.connect(
+      deployments.CurveYieldStrategyDeployment.address,
       signerOrProvider
     ),
   };
@@ -237,6 +243,12 @@ export async function getDeployments(
     ETH_IndexOracleDeployment,
   ] = await getPoolDeployments(network, 'ETH');
 
+  const CurveYieldStrategyDeployment = await getDeployment(
+    'vaults',
+    network,
+    'CurveYieldStrategy'
+  );
+
   return {
     AccountLibraryDeployment,
     ClearingHouseDeployment,
@@ -253,6 +265,7 @@ export async function getDeployments(
     ETH_vPoolDeployment,
     ETH_vPoolWrapperDeployment,
     ETH_IndexOracleDeployment,
+    CurveYieldStrategyDeployment,
   };
 }
 
@@ -280,6 +293,7 @@ export function getEthersInterfaces() {
     VToken__factory.createInterface(),
     VPoolWrapper__factory.createInterface(),
     SwapSimulator__factory.createInterface(),
+    CurveYieldStrategy__factory.createInterface(),
   ];
 }
 
