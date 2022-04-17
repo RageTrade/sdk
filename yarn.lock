@@ -1715,10 +1715,10 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#36bc9101b91e2b8b5690f59e0911a85deb2d2480"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/vaults@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@ragetrade/vaults/-/vaults-1.0.0.tgz#91129b9797c6c136a31373dd857396131b82190a"
-  integrity sha512-DmhLcnpmH5nZZggnH85xKOmx1JOq6LJeMUFH3WntzlMvhHO+4d1TpLf7QcikV0gFwK/cwNpCYgo/kqDnpmoliA==
+"@ragetrade/vaults@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/vaults/-/vaults-1.0.1.tgz#12e6b4e0b13640b8ea7ac4ff409ccccaa314db1e"
+  integrity sha512-otbk7zDU1xMpN+65+j/aIAUAtFSd3v/Gg/94snPvh3qlQVcNLny79eMFgtjOKCNVXiqocWHmU28lABFjai92xA==
   dependencies:
     "@134dd3v/arbos-precompiles" "^1.0.4"
     "@openzeppelin/contracts" "^4.0.0"

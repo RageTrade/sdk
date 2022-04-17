@@ -27,7 +27,8 @@
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
     "format:fix": "prettier --write src test",
-    "update": "yarn update:flush && yarn update:deployments && node process-abi.js && yarn typechain && yarn build",
+    "update": "yarn update:pkg && yarn update:flush && yarn update:deployments && node process-abi.js && yarn typechain && yarn build",
+    "update:pkg": "yarn add @ragetrade/core@latest @ragetrade/vaults@latest",
     "update:flush": "rm -rf deployments src/typechain/core src/typechain/vaults src/typechain/uniswap && mkdir -p deployments/core deployments/vaults src/typechain/core src/typechain/vaults src/typechain/uniswap",
     "update:deployments": "cp -r node_modules/@ragetrade/core/deployments/ deployments/core && cp -r node_modules/@ragetrade/vaults/deployments/ deployments/vaults",
     "update:uniswap": "cp -r node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json deployments/uniswap/UniswapV3Pool.json",
@@ -65,7 +66,7 @@
   ],
   "devDependencies": {
     "@ragetrade/core": "^1.0.1",
-    "@ragetrade/vaults": "^1.0.0",
+    "@ragetrade/vaults": "^1.0.1",
     "@size-limit/preset-small-lib": "^7.0.5",
     "@typechain/ethers-v5": "^10.0.0",
     "@types/fs-extra": "^9.0.13",

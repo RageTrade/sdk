@@ -71,7 +71,7 @@ export async function getContractsWithChainId(
   return getContractsWithDeployments(signerOrProvider, d);
 }
 
-export interface Deployments {
+export interface CoreDeployments {
   AccountLibraryDeployment: ContractDeployment;
   ClearingHouseDeployment: ContractDeployment;
   ClearingHouseLogicDeployment: ContractDeployment;
@@ -87,12 +87,11 @@ export interface Deployments {
   ETH_vPoolDeployment: ContractDeployment;
   ETH_vPoolWrapperDeployment: ContractDeployment;
   ETH_IndexOracleDeployment: ContractDeployment;
-  CurveYieldStrategyDeployment: ContractDeployment;
 }
 
 export async function getContractsWithDeployments(
   signerOrProvider: Signer | Provider,
-  deployments: Deployments
+  deployments: CoreDeployments
 ) {
   return {
     accountLib: Account__factory.connect(
@@ -156,10 +155,6 @@ export async function getContractsWithDeployments(
       deployments.ETH_IndexOracleDeployment.address,
       signerOrProvider
     ),
-    curveYieldStrategy: CurveYieldStrategy__factory.connect(
-      deployments.CurveYieldStrategyDeployment.address,
-      signerOrProvider
-    ),
   };
 }
 
@@ -183,7 +178,7 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
 
 export async function getDeployments(
   network: NetworkName
-): Promise<Deployments> {
+): Promise<CoreDeployments> {
   const AccountLibraryDeployment = await getDeployment(
     'core',
     network,
@@ -243,12 +238,6 @@ export async function getDeployments(
     ETH_IndexOracleDeployment,
   ] = await getPoolDeployments(network, 'ETH');
 
-  const CurveYieldStrategyDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveYieldStrategy'
-  );
-
   return {
     AccountLibraryDeployment,
     ClearingHouseDeployment,
@@ -265,7 +254,6 @@ export async function getDeployments(
     ETH_vPoolDeployment,
     ETH_vPoolWrapperDeployment,
     ETH_IndexOracleDeployment,
-    CurveYieldStrategyDeployment,
   };
 }
 
