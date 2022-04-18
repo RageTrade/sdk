@@ -100,6 +100,22 @@ export declare namespace IVPoolWrapper {
   };
 }
 
+export declare namespace FundingPayment {
+  export type InfoStruct = {
+    sumAX128: BigNumberish;
+    sumBX128: BigNumberish;
+    sumFpX128: BigNumberish;
+    timestampLast: BigNumberish;
+  };
+
+  export type InfoStructOutput = [BigNumber, BigNumber, BigNumber, number] & {
+    sumAX128: BigNumber;
+    sumBX128: BigNumber;
+    sumFpX128: BigNumber;
+    timestampLast: number;
+  };
+}
+
 export interface VPoolWrapperInterface extends utils.Interface {
   functions: {
     'accruedProtocolFee()': FunctionFragment;
@@ -372,6 +388,7 @@ export interface VPoolWrapperInterface extends utils.Interface {
     'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
     'ProtocolFeeUpdated(uint24)': EventFragment;
     'Swap(tuple)': EventFragment;
+    'FundingPaymentStateUpdated(tuple,int256,uint256)': EventFragment;
   };
 
   getEvent(
@@ -383,6 +400,7 @@ export interface VPoolWrapperInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Swap'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FundingPaymentStateUpdated'): EventFragment;
 }
 
 export interface AccruedProtocolFeeCollectedEventObject {
@@ -466,6 +484,19 @@ export type SwapEvent = TypedEvent<
 >;
 
 export type SwapEventFilter = TypedEventFilter<SwapEvent>;
+
+export interface FundingPaymentStateUpdatedEventObject {
+  fundingPayment: FundingPayment.InfoStructOutput;
+  fundingRateX128: BigNumber;
+  virtualPriceX128: BigNumber;
+}
+export type FundingPaymentStateUpdatedEvent = TypedEvent<
+  [FundingPayment.InfoStructOutput, BigNumber, BigNumber],
+  FundingPaymentStateUpdatedEventObject
+>;
+
+export type FundingPaymentStateUpdatedEventFilter =
+  TypedEventFilter<FundingPaymentStateUpdatedEvent>;
 
 export interface VPoolWrapper extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -982,6 +1013,17 @@ export interface VPoolWrapper extends BaseContract {
 
     'Swap(tuple)'(swapResult?: null): SwapEventFilter;
     Swap(swapResult?: null): SwapEventFilter;
+
+    'FundingPaymentStateUpdated(tuple,int256,uint256)'(
+      fundingPayment?: null,
+      fundingRateX128?: null,
+      virtualPriceX128?: null
+    ): FundingPaymentStateUpdatedEventFilter;
+    FundingPaymentStateUpdated(
+      fundingPayment?: null,
+      fundingRateX128?: null,
+      virtualPriceX128?: null
+    ): FundingPaymentStateUpdatedEventFilter;
   };
 
   estimateGas: {
