@@ -5,5 +5,6 @@ export * as base from './base';
 export * as interfaces from './interfaces';
 export * as libraries from './libraries';
 export * as rangeStrategy from './rangeStrategy';
+export * as test from './test';
 export * as utils from './utils';
 export * as yieldStrategy from './yieldStrategy';

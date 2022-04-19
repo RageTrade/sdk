@@ -23,9 +23,9 @@ export interface VaultDeployments {
   CurveGaugeDeployment: ContractDeployment;
   CurveTokenDeployment: ContractDeployment;
   CurveTriCryptoDeployment: ContractDeployment;
-  USDCDeployment: ContractDeployment;
-  USDTDeployment: ContractDeployment;
   WETHDeployment: ContractDeployment;
+  WBTCDeployment: ContractDeployment;
+  USDTDeployment: ContractDeployment;
 }
 
 export async function getVaultContractsWithDeployments(
@@ -50,7 +50,7 @@ export async function getVaultContractsWithDeployments(
       signerOrProvider
     ),
     usdc: IERC20Metadata__factory.connect(
-      deployments.USDCDeployment.address,
+      deployments.WBTCDeployment.address,
       signerOrProvider
     ),
     usdt: IERC20Metadata__factory.connect(
@@ -107,15 +107,15 @@ export async function getVaultDeployments(
     network,
     'CurveTriCrypto'
   );
-  const USDCDeployment = await getDeployment('vaults', network, 'USDC');
-  const USDTDeployment = await getDeployment('vaults', network, 'USDT');
   const WETHDeployment = await getDeployment('vaults', network, 'WETH');
+  const WBTCDeployment = await getDeployment('vaults', network, 'WBTC');
+  const USDTDeployment = await getDeployment('vaults', network, 'USDT');
   return {
     CurveYieldStrategyDeployment,
     CurveGaugeDeployment,
     CurveTokenDeployment,
     CurveTriCryptoDeployment,
-    USDCDeployment,
+    WBTCDeployment,
     USDTDeployment,
     WETHDeployment,
   };

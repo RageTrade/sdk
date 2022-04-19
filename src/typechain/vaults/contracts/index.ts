@@ -9,6 +9,8 @@ import type * as libraries from './libraries';
 export type { libraries };
 import type * as rangeStrategy from './rangeStrategy';
 export type { rangeStrategy };
+import type * as test from './test';
+export type { test };
 import type * as utils from './utils';
 export type { utils };
 import type * as yieldStrategy from './yieldStrategy';
