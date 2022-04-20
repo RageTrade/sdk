@@ -1,3 +1,5 @@
+import { SettlementTokenMock__factory } from './vaults/factories/contracts/test/mocks';
+
 export * as core from './core';
 export * as uniswap from './uniswap';
 export * as vaults from './vaults';

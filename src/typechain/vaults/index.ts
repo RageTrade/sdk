@@ -236,6 +236,8 @@ export type { OracleMock } from './contracts/test/mocks/OracleMock';
 export { OracleMock__factory } from './factories/contracts/test/mocks/OracleMock__factory';
 export type { SettlementTokenMock } from './contracts/test/mocks/SettlementTokenMock';
 export { SettlementTokenMock__factory } from './factories/contracts/test/mocks/SettlementTokenMock__factory';
+export type { TokenMock } from './contracts/test/mocks/TokenMock';
+export { TokenMock__factory } from './factories/contracts/test/mocks/TokenMock__factory';
 export type { VPoolWrapperMockRealistic } from './contracts/test/mocks/VPoolWrapperMockRealistic';
 export { VPoolWrapperMockRealistic__factory } from './factories/contracts/test/mocks/VPoolWrapperMockRealistic__factory';
 export type { ERC4626Upgradeable } from './contracts/utils/ERC4626Upgradeable';
