@@ -4,3 +4,4 @@
 export * as curve from './curve';
 export { IBaseVault__factory } from './IBaseVault__factory';
 export { IBaseYieldStrategy__factory } from './IBaseYieldStrategy__factory';
+export { IERC4626__factory } from './IERC4626__factory';

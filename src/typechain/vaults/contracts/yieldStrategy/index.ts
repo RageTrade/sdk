@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { CurveYieldStrategy } from './CurveYieldStrategy';
+export type { VaultPeriphery } from './VaultPeriphery';
