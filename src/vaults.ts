@@ -10,9 +10,13 @@ import {
 } from './contracts';
 import {
   CurveYieldStrategy__factory,
+  ERC20PresetMinterPauser__factory,
   ICurveGauge__factory,
   ICurveStableSwap__factory,
   IERC20Metadata__factory,
+  Logic__factory,
+  SwapManager__factory,
+  VaultPeriphery__factory,
 } from './typechain';
 
 export const vaultMetaData = {
@@ -21,6 +25,10 @@ export const vaultMetaData = {
 };
 
 export interface VaultDeployments {
+  CollateralTokenDeployment: ContractDeployment;
+  LogicLibraryDeployment: ContractDeployment;
+  SwapManagerLibraryDeployment: ContractDeployment;
+  VaultPeripheryDeployment: ContractDeployment;
   CurveYieldStrategyDeployment: ContractDeployment;
   CurveGaugeDeployment: ContractDeployment;
   CurveTokenDeployment: ContractDeployment;
@@ -36,6 +44,22 @@ export async function getVaultContractsWithDeployments(
   deployments: VaultDeployments
 ) {
   return {
+    collateralToken: IERC20Metadata__factory.connect(
+      deployments.CollateralTokenDeployment.address,
+      signerOrProvider
+    ),
+    logicLibrary: Logic__factory.connect(
+      deployments.LogicLibraryDeployment.address,
+      signerOrProvider
+    ),
+    swapManagerLibrary: SwapManager__factory.connect(
+      deployments.SwapManagerLibraryDeployment.address,
+      signerOrProvider
+    ),
+    vaultPeriphery: VaultPeriphery__factory.connect(
+      deployments.VaultPeripheryDeployment.address,
+      signerOrProvider
+    ),
     curveYieldStrategy: CurveYieldStrategy__factory.connect(
       deployments.CurveYieldStrategyDeployment.address,
       signerOrProvider
@@ -56,16 +80,20 @@ export async function getVaultContractsWithDeployments(
       deployments.CurveTriCryptoLpTokenDeployment.address,
       signerOrProvider
     ),
-    usdc: IERC20Metadata__factory.connect(
+    usdc: ERC20PresetMinterPauser__factory.connect(
       deployments.WBTCDeployment.address,
       signerOrProvider
     ),
-    usdt: IERC20Metadata__factory.connect(
+    usdt: ERC20PresetMinterPauser__factory.connect(
       deployments.USDTDeployment.address,
       signerOrProvider
     ),
-    weth: IERC20Metadata__factory.connect(
+    weth: ERC20PresetMinterPauser__factory.connect(
       deployments.WETHDeployment.address,
+      signerOrProvider
+    ),
+    wbtc: ERC20PresetMinterPauser__factory.connect(
+      deployments.WBTCDeployment.address,
       signerOrProvider
     ),
   };
@@ -94,6 +122,26 @@ export async function getVaultContractsWithChainId(
 export async function getVaultDeployments(
   network: NetworkName
 ): Promise<VaultDeployments> {
+  const CollateralTokenDeployment = await getDeployment(
+    'vaults',
+    network,
+    'CollateralToken'
+  );
+  const LogicLibraryDeployment = await getDeployment(
+    'vaults',
+    network,
+    'LogicLibrary'
+  );
+  const SwapManagerLibraryDeployment = await getDeployment(
+    'vaults',
+    network,
+    'SwapManagerLibrary'
+  );
+  const VaultPeripheryDeployment = await getDeployment(
+    'vaults',
+    network,
+    'VaultPeriphery'
+  );
   const CurveYieldStrategyDeployment = await getDeployment(
     'vaults',
     network,
@@ -123,11 +171,17 @@ export async function getVaultDeployments(
   const WBTCDeployment = await getDeployment('vaults', network, 'WBTC');
   const USDTDeployment = await getDeployment('vaults', network, 'USDT');
   return {
+    CollateralTokenDeployment,
+    LogicLibraryDeployment,
+    SwapManagerLibraryDeployment,
+    VaultPeripheryDeployment,
+
     CurveYieldStrategyDeployment,
     CurveGaugeDeployment,
     CurveTokenDeployment,
     CurveTriCryptoPoolDeployment,
     CurveTriCryptoLpTokenDeployment,
+
     WBTCDeployment,
     USDTDeployment,
     WETHDeployment,

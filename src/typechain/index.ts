@@ -38,4 +38,7 @@ export { IUniswapV3Pool__factory } from './uniswap';
 export {
   CurveYieldStrategy__factory,
   ICurveStableSwap__factory,
+  Logic__factory,
+  SwapManager__factory,
+  VaultPeriphery__factory,
 } from './vaults';

@@ -1,9 +1,7 @@
 import { ethers } from 'ethers';
 
 import { config } from 'dotenv';
-
-import { getVaultContracts } from '../dist';
-import type { CurveYieldStrategy } from '../dist';
+import { CurveYieldStrategy, getVaultContracts } from '../dist';
 
 let curveYieldStrategy: CurveYieldStrategy;
 

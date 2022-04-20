@@ -259,10 +259,7 @@ export async function getDeployments(
   };
 }
 
-export function getPoolDeployments(
-  network: NetworkName,
-  tokenSymbol: string
-) {
+export function getPoolDeployments(network: NetworkName, tokenSymbol: string) {
   return Promise.all([
     getDeployment('core', network, tokenSymbol + '-vToken'),
     getDeployment('core', network, tokenSymbol + '-vPool'),
