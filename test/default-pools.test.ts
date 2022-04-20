@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
 // import { getDefaultPoolContracts } from '../src/';
 
-import pools from '../dist/pools.json';
+import defaultPools from '../dist/default_pools.json';
+import allPools from '../dist/pools.json';
 
 import { config } from 'dotenv';
 import { parseName, parseSymbol } from '../dist';
@@ -24,23 +25,23 @@ describe('default pools', () => {
 
   it('defaultPool', async () => {
     expect(
-      ethers.utils.isHexString(pools.defaultPool.arbtest.vTokenAddress)
+      ethers.utils.isHexString(defaultPools.arbtest.vTokenAddress)
     ).toBeTruthy();
     expect(
-      ethers.utils.isHexString(pools.defaultPool.arbtest.vPoolAddress)
+      ethers.utils.isHexString(defaultPools.arbtest.vPoolAddress)
     ).toBeTruthy();
   });
   it('defaultPool', async () => {
     expect(
-      ethers.utils.isHexString(pools.poolsList.arbtest[0].vTokenAddress)
+      ethers.utils.isHexString(allPools.arbtest[0].vTokenAddress)
     ).toBeTruthy();
     expect(
-      ethers.utils.isHexString(pools.poolsList.arbtest[0].vPoolAddress)
+      ethers.utils.isHexString(allPools.arbtest[0].vPoolAddress)
     ).toBeTruthy();
   });
 
   it('parseName', async () => {
-    expect(parseName(pools.defaultPool.arbtest.name)).toEqual('Ether');
-    expect(parseSymbol(pools.defaultPool.arbtest.symbol)).toEqual('ETH');
+    expect(parseName(defaultPools.arbtest.name)).toEqual('Ether');
+    expect(parseSymbol(defaultPools.arbtest.symbol)).toEqual('ETH');
   });
 });
