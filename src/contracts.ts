@@ -62,7 +62,7 @@ export async function getContracts(signerOrProvider: Signer | Provider) {
   }
 
   const network = await provider.getNetwork();
-  return await getContractsWithChainId(signerOrProvider, network.chainId);
+  return getContractsWithChainId(signerOrProvider, network.chainId);
 }
 
 export async function getContractsWithChainId(
@@ -259,11 +259,11 @@ export async function getDeployments(
   };
 }
 
-export async function getPoolDeployments(
+export function getPoolDeployments(
   network: NetworkName,
   tokenSymbol: string
 ) {
-  return await Promise.all([
+  return Promise.all([
     getDeployment('core', network, tokenSymbol + '-vToken'),
     getDeployment('core', network, tokenSymbol + '-vPool'),
     getDeployment('core', network, tokenSymbol + '-vPoolWrapper'),

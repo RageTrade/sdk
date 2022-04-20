@@ -7,13 +7,13 @@ const { writeJson } = require('fs-extra');
 config();
 
 async function main() {
-  const defaultPool = await getDefaultPool();
-  const poolsList = await getPoolsList();
+  const [defaultPool, poolsList] = await Promise.all([getDefaultPool(), getPoolsList()]) 
 
-  const result = { defaultPool, poolsList };
-
-  await writeJson('./src/pools.json', result, { spaces: 2 });
-  await writeJson('./dist/pools.json', result, { spaces: 2 });
+  await writeJson('./src/default_pools.json', defaultPool, { spaces: 2 });
+  await writeJson('./dist/default_pools.json', defaultPool, { spaces: 2 });
+  
+  await writeJson('./src/pools.json', poolsList, { spaces: 2 });
+  await writeJson('./dist/pools.json', poolsList, { spaces: 2 });
 }
 
 main().catch(console.error);

@@ -5,11 +5,11 @@ import { fromQ128, fromQ96, Q96, toQ128, toQ96 } from './fixed-point';
 
 export declare type ERC20Decimals = { decimals(): Promise<number> } | number;
 
-export async function getDecimals(contractOrValue: ERC20Decimals) {
+export function getDecimals(contractOrValue: ERC20Decimals) {
   if (typeof contractOrValue === 'number') {
     return contractOrValue;
   } else {
-    return await contractOrValue.decimals();
+    return contractOrValue.decimals();
   }
 }
 
