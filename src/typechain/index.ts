@@ -1,5 +1,3 @@
-import { SettlementTokenMock__factory } from './vaults/factories/contracts/test/mocks';
-
 export * as core from './core';
 export * as uniswap from './uniswap';
 export * as vaults from './vaults';
@@ -19,6 +17,8 @@ export { IOracle } from './core/contracts/interfaces';
 export { InsuranceFund } from './core/contracts/protocol/insurancefund';
 export { IUniswapV3Pool } from './uniswap';
 export { CurveYieldStrategy } from './vaults';
+export { ERC20PresetMinterPauser } from './core/@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser';
+export { ERC20PresetMinterPauser__factory } from './core/factories/@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser__factory';
 export { ICurveGauge__factory } from './vaults';
 
 export {
