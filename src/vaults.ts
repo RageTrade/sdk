@@ -1,5 +1,6 @@
-import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from 'ethers';
+
+import { Provider } from '@ethersproject/abstract-provider';
 
 import {
   ContractDeployment,
@@ -7,11 +8,12 @@ import {
   getNetworkNameFromChainId,
   NetworkName,
 } from './contracts';
-import { IERC20Metadata__factory } from './typechain/core/factories/@openzeppelin/contracts/token/ERC20/extensions';
 import {
   CurveYieldStrategy__factory,
   ICurveGauge__factory,
-} from './typechain/vaults';
+  ICurveStableSwap__factory,
+  IERC20Metadata__factory,
+} from './typechain';
 
 export const vaultMetaData = {
   name: '80-20 TriCrypto Strategy',
@@ -22,7 +24,8 @@ export interface VaultDeployments {
   CurveYieldStrategyDeployment: ContractDeployment;
   CurveGaugeDeployment: ContractDeployment;
   CurveTokenDeployment: ContractDeployment;
-  CurveTriCryptoDeployment: ContractDeployment;
+  CurveTriCryptoPoolDeployment: ContractDeployment;
+  CurveTriCryptoLpTokenDeployment: ContractDeployment;
   WETHDeployment: ContractDeployment;
   WBTCDeployment: ContractDeployment;
   USDTDeployment: ContractDeployment;
@@ -45,8 +48,12 @@ export async function getVaultContractsWithDeployments(
       deployments.CurveTokenDeployment.address,
       signerOrProvider
     ),
-    curveTriCrypto: IERC20Metadata__factory.connect(
-      deployments.CurveTriCryptoDeployment.address,
+    curveTriCryptoPool: ICurveStableSwap__factory.connect(
+      deployments.CurveTriCryptoPoolDeployment.address,
+      signerOrProvider
+    ),
+    curveTriCryptoLpToken: IERC20Metadata__factory.connect(
+      deployments.CurveTriCryptoLpTokenDeployment.address,
       signerOrProvider
     ),
     usdc: IERC20Metadata__factory.connect(
@@ -102,10 +109,15 @@ export async function getVaultDeployments(
     network,
     'CurveToken'
   );
-  const CurveTriCryptoDeployment = await getDeployment(
+  const CurveTriCryptoPoolDeployment = await getDeployment(
     'vaults',
     network,
-    'CurveTriCrypto'
+    'CurveTriCryptoPool'
+  );
+  const CurveTriCryptoLpTokenDeployment = await getDeployment(
+    'vaults',
+    network,
+    'CurveTriCryptoLpToken'
   );
   const WETHDeployment = await getDeployment('vaults', network, 'WETH');
   const WBTCDeployment = await getDeployment('vaults', network, 'WBTC');
@@ -114,7 +126,8 @@ export async function getVaultDeployments(
     CurveYieldStrategyDeployment,
     CurveGaugeDeployment,
     CurveTokenDeployment,
-    CurveTriCryptoDeployment,
+    CurveTriCryptoPoolDeployment,
+    CurveTriCryptoLpTokenDeployment,
     WBTCDeployment,
     USDTDeployment,
     WETHDeployment,

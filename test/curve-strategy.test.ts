@@ -3,6 +3,9 @@ import { ethers } from 'ethers';
 import { config } from 'dotenv';
 
 import { getVaultContracts } from '../dist';
+import type { CurveYieldStrategy } from '../dist';
+
+let curveYieldStrategy: CurveYieldStrategy;
 
 config();
 
@@ -12,7 +15,7 @@ describe('curve strategy', () => {
   );
 
   it('works', async () => {
-    const { curveYieldStrategy } = await getVaultContracts(provider);
+    ({ curveYieldStrategy } = await getVaultContracts(provider));
     const fee = await curveYieldStrategy.FEE();
     expect(fee.toNumber()).toEqual(0);
   });

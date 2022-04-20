@@ -1,21 +1,23 @@
-import { Provider } from '@ethersproject/abstract-provider';
 import { Signer } from 'ethers';
+
+import { Provider } from '@ethersproject/abstract-provider';
+
 import {
   Account__factory,
   ClearingHouse__factory,
+  CurveYieldStrategy__factory,
+  IERC20Metadata__factory,
+  InsuranceFund__factory,
+  IOracle__factory,
+  IUniswapV3Pool__factory,
+  ProxyAdmin__factory,
+  RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
-} from './typechain/core';
-import { RageTradeFactory } from './typechain/core/contracts/protocol/RageTradeFactory';
-import { ProxyAdmin__factory } from './typechain/core/factories/@openzeppelin/contracts/proxy/transparent';
-import { IERC20Metadata__factory } from './typechain/core/factories/@openzeppelin/contracts/token/ERC20/extensions';
-import { IOracle__factory } from './typechain/core/factories/contracts/interfaces';
-import { InsuranceFund__factory } from './typechain/core/factories/contracts/protocol/insurancefund';
-import { IUniswapV3Pool__factory } from './typechain/uniswap';
-import { CurveYieldStrategy__factory } from './typechain/vaults';
+} from './typechain';
 
 export type NetworkName =
   | 'mainnet'
