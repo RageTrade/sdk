@@ -80,7 +80,7 @@ export async function getVaultContracts(signerOrProvider: Signer | Provider) {
   }
 
   const network = await provider.getNetwork();
-  return await getVaultContractsWithChainId(signerOrProvider, network.chainId);
+  return getVaultContractsWithChainId(signerOrProvider, network.chainId);
 }
 
 export async function getVaultContractsWithChainId(
