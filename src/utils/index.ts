@@ -9,4 +9,4 @@ export * from './price-tick';
 export * from './random';
 export * from './slippage';
 export * from './vtoken';
-export * from './find-old-block';
+export * from './find-block-by-timestamp';
