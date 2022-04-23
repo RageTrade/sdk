@@ -14,6 +14,7 @@ import {
   RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
+  VaultPeriphery__factory,
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
@@ -281,6 +282,7 @@ export function getEthersInterfaces() {
     VPoolWrapper__factory.createInterface(),
     SwapSimulator__factory.createInterface(),
     CurveYieldStrategy__factory.createInterface(),
+    VaultPeriphery__factory.createInterface(),
   ];
 }
 

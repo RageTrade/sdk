@@ -167,9 +167,13 @@ export interface VaultPeripheryInterface extends utils.Interface {
 
   events: {
     'OwnershipTransferred(address,address)': EventFragment;
+    'SlippageToleranceBreachedEvent(uint256,uint256,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'SlippageToleranceBreachedEvent'
+  ): EventFragment;
 }
 
 export interface OwnershipTransferredEventObject {
@@ -183,6 +187,21 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface SlippageToleranceBreachedEventEventObject {
+  balance: BigNumber;
+  breforeSwapLpPrice: BigNumber;
+  amount: BigNumber;
+  MAX_BPS: BigNumber;
+  MAX_TOLERANCE: BigNumber;
+}
+export type SlippageToleranceBreachedEventEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
+  SlippageToleranceBreachedEventEventObject
+>;
+
+export type SlippageToleranceBreachedEventEventFilter =
+  TypedEventFilter<SlippageToleranceBreachedEventEvent>;
 
 export interface VaultPeriphery extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -416,6 +435,21 @@ export interface VaultPeriphery extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
+
+    'SlippageToleranceBreachedEvent(uint256,uint256,uint256,uint256,uint256)'(
+      balance?: null,
+      breforeSwapLpPrice?: null,
+      amount?: null,
+      MAX_BPS?: null,
+      MAX_TOLERANCE?: null
+    ): SlippageToleranceBreachedEventEventFilter;
+    SlippageToleranceBreachedEvent(
+      balance?: null,
+      breforeSwapLpPrice?: null,
+      amount?: null,
+      MAX_BPS?: null,
+      MAX_TOLERANCE?: null
+    ): SlippageToleranceBreachedEventEventFilter;
   };
 
   estimateGas: {
