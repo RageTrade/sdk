@@ -5,3 +5,4 @@ export type { OracleMock } from './OracleMock';
 export type { SettlementTokenMock } from './SettlementTokenMock';
 export type { TokenMock } from './TokenMock';
 export type { VPoolWrapperMockRealistic } from './VPoolWrapperMockRealistic';
+export type { Weth9Mock } from './Weth9Mock';

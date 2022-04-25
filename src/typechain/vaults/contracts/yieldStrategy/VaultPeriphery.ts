@@ -9,6 +9,7 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -28,6 +29,7 @@ import type {
 
 export interface VaultPeripheryInterface extends utils.Interface {
   functions: {
+    'depositEth()': FunctionFragment;
     'depositUsdc(uint256)': FunctionFragment;
     'depositWeth(uint256)': FunctionFragment;
     'initialize(address,address,address,address,address,address,address,address,address)': FunctionFragment;
@@ -49,6 +51,7 @@ export interface VaultPeripheryInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'depositEth'
       | 'depositUsdc'
       | 'depositWeth'
       | 'initialize'
@@ -68,6 +71,10 @@ export interface VaultPeripheryInterface extends utils.Interface {
       | 'weth'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'depositEth',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'depositUsdc',
     values: [BigNumberish]
@@ -126,6 +133,7 @@ export interface VaultPeripheryInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'vault', values?: undefined): string;
   encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: 'depositEth', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'depositUsdc',
     data: BytesLike
@@ -230,6 +238,10 @@ export interface VaultPeriphery extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    depositEth(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     depositUsdc(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -295,6 +307,10 @@ export interface VaultPeriphery extends BaseContract {
 
     weth(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  depositEth(
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   depositUsdc(
     amount: BigNumberish,
@@ -362,6 +378,8 @@ export interface VaultPeriphery extends BaseContract {
   weth(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    depositEth(overrides?: CallOverrides): Promise<BigNumber>;
+
     depositUsdc(
       amount: BigNumberish,
       overrides?: CallOverrides
@@ -453,6 +471,10 @@ export interface VaultPeriphery extends BaseContract {
   };
 
   estimateGas: {
+    depositEth(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     depositUsdc(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -520,6 +542,10 @@ export interface VaultPeriphery extends BaseContract {
   };
 
   populateTransaction: {
+    depositEth(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     depositUsdc(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }

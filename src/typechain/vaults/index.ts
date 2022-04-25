@@ -240,6 +240,8 @@ export type { TokenMock } from './contracts/test/mocks/TokenMock';
 export { TokenMock__factory } from './factories/contracts/test/mocks/TokenMock__factory';
 export type { VPoolWrapperMockRealistic } from './contracts/test/mocks/VPoolWrapperMockRealistic';
 export { VPoolWrapperMockRealistic__factory } from './factories/contracts/test/mocks/VPoolWrapperMockRealistic__factory';
+export type { Weth9Mock } from './contracts/test/mocks/Weth9Mock';
+export { Weth9Mock__factory } from './factories/contracts/test/mocks/Weth9Mock__factory';
 export type { ERC4626Upgradeable } from './contracts/utils/ERC4626Upgradeable';
 export { ERC4626Upgradeable__factory } from './factories/contracts/utils/ERC4626Upgradeable__factory';
 export type { CurveYieldStrategy } from './contracts/yieldStrategy/CurveYieldStrategy';
