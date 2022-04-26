@@ -19,6 +19,8 @@ export function toQ128(num: number): BigNumber {
 
 export function fromQ128(val: BigNumberish): number {
   val = BigNumber.from(val);
+  const isNegative = val.isNegative();
+  val = val.abs();
   let formatted = val.shr(128).toNumber();
   formatted +=
     val
@@ -27,6 +29,7 @@ export function fromQ128(val: BigNumberish): number {
       .div(Q128)
       .toNumber() /
     (Number.MAX_SAFE_INTEGER - 1);
+  if (isNegative) formatted *= -1;
   return formatted;
 }
 
@@ -53,6 +56,8 @@ export function toQ96(num: number): BigNumber {
  */
 export function fromQ96(val: BigNumberish, jsDecimals?: number): number {
   val = BigNumber.from(val);
+  const isNegative = val.isNegative();
+  val = val.abs();
   let formatted = val.shr(96).toNumber();
   formatted +=
     val
@@ -61,6 +66,8 @@ export function fromQ96(val: BigNumberish, jsDecimals?: number): number {
       .div(Q96)
       .toNumber() /
     (Number.MAX_SAFE_INTEGER - 1);
+
+  if (isNegative) formatted *= -1;
   return typeof jsDecimals === 'undefined'
     ? formatted
     : roundToNearest(formatted, jsDecimals);
