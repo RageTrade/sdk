@@ -624,6 +624,20 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     'OwnershipTransferred(address,address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
+    'CrvOracleUpdated(address)': EventFragment;
+    'CrvSwapSlippageToleranceUpdated(uint256)': EventFragment;
+    'DepositCapUpdated(uint256)': EventFragment;
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
+    'FeesUpdated(uint256)': EventFragment;
+    'FeesWithdrawn(uint256)': EventFragment;
+    'Harvested(uint256)': EventFragment;
+    'KeeperUpdated(address)': EventFragment;
+    'NotionalCrvHarvestThresholdUpdated(uint256)': EventFragment;
+    'Rebalance()': EventFragment;
+    'RebalanceThresholdUpdated(uint32,uint16)': EventFragment;
+    'Staked(uint256,address)': EventFragment;
+    'StateInfo(uint256)': EventFragment;
+    'TokenPositionClosed()': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
@@ -631,6 +645,24 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CrvOracleUpdated'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'CrvSwapSlippageToleranceUpdated'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EightyTwentyParamsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeesUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Harvested'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: 'NotionalCrvHarvestThresholdUpdated'
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Rebalance'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RebalanceThresholdUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Staked'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'StateInfo'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TokenPositionClosed'): EventFragment;
 }
 
 export interface ApprovalEventObject {
@@ -695,6 +727,135 @@ export type WithdrawEvent = TypedEvent<
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
+
+export interface CrvOracleUpdatedEventObject {
+  oracle: string;
+}
+export type CrvOracleUpdatedEvent = TypedEvent<
+  [string],
+  CrvOracleUpdatedEventObject
+>;
+
+export type CrvOracleUpdatedEventFilter =
+  TypedEventFilter<CrvOracleUpdatedEvent>;
+
+export interface CrvSwapSlippageToleranceUpdatedEventObject {
+  tolerance: BigNumber;
+}
+export type CrvSwapSlippageToleranceUpdatedEvent = TypedEvent<
+  [BigNumber],
+  CrvSwapSlippageToleranceUpdatedEventObject
+>;
+
+export type CrvSwapSlippageToleranceUpdatedEventFilter =
+  TypedEventFilter<CrvSwapSlippageToleranceUpdatedEvent>;
+
+export interface DepositCapUpdatedEventObject {
+  depositCap: BigNumber;
+}
+export type DepositCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DepositCapUpdatedEventObject
+>;
+
+export type DepositCapUpdatedEventFilter =
+  TypedEventFilter<DepositCapUpdatedEvent>;
+
+export interface EightyTwentyParamsUpdatedEventObject {
+  closePositionSlippageSqrtToleranceBps: number;
+  resetPositionThresholdBps: number;
+  minNotionalPositionToCloseThreshold: BigNumber;
+}
+export type EightyTwentyParamsUpdatedEvent = TypedEvent<
+  [number, number, BigNumber],
+  EightyTwentyParamsUpdatedEventObject
+>;
+
+export type EightyTwentyParamsUpdatedEventFilter =
+  TypedEventFilter<EightyTwentyParamsUpdatedEvent>;
+
+export interface FeesUpdatedEventObject {
+  fee: BigNumber;
+}
+export type FeesUpdatedEvent = TypedEvent<[BigNumber], FeesUpdatedEventObject>;
+
+export type FeesUpdatedEventFilter = TypedEventFilter<FeesUpdatedEvent>;
+
+export interface FeesWithdrawnEventObject {
+  total: BigNumber;
+}
+export type FeesWithdrawnEvent = TypedEvent<
+  [BigNumber],
+  FeesWithdrawnEventObject
+>;
+
+export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
+
+export interface HarvestedEventObject {
+  crvAmount: BigNumber;
+}
+export type HarvestedEvent = TypedEvent<[BigNumber], HarvestedEventObject>;
+
+export type HarvestedEventFilter = TypedEventFilter<HarvestedEvent>;
+
+export interface KeeperUpdatedEventObject {
+  keeper: string;
+}
+export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
+
+export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
+
+export interface NotionalCrvHarvestThresholdUpdatedEventObject {
+  threshold: BigNumber;
+}
+export type NotionalCrvHarvestThresholdUpdatedEvent = TypedEvent<
+  [BigNumber],
+  NotionalCrvHarvestThresholdUpdatedEventObject
+>;
+
+export type NotionalCrvHarvestThresholdUpdatedEventFilter =
+  TypedEventFilter<NotionalCrvHarvestThresholdUpdatedEvent>;
+
+export interface RebalanceEventObject {}
+export type RebalanceEvent = TypedEvent<[], RebalanceEventObject>;
+
+export type RebalanceEventFilter = TypedEventFilter<RebalanceEvent>;
+
+export interface RebalanceThresholdUpdatedEventObject {
+  rebalanceTimeThreshold: number;
+  rebalancePriceThresholdBps: number;
+}
+export type RebalanceThresholdUpdatedEvent = TypedEvent<
+  [number, number],
+  RebalanceThresholdUpdatedEventObject
+>;
+
+export type RebalanceThresholdUpdatedEventFilter =
+  TypedEventFilter<RebalanceThresholdUpdatedEvent>;
+
+export interface StakedEventObject {
+  amount: BigNumber;
+  depositor: string;
+}
+export type StakedEvent = TypedEvent<[BigNumber, string], StakedEventObject>;
+
+export type StakedEventFilter = TypedEventFilter<StakedEvent>;
+
+export interface StateInfoEventObject {
+  lpPrice: BigNumber;
+}
+export type StateInfoEvent = TypedEvent<[BigNumber], StateInfoEventObject>;
+
+export type StateInfoEventFilter = TypedEventFilter<StateInfoEvent>;
+
+export interface TokenPositionClosedEventObject {}
+export type TokenPositionClosedEvent = TypedEvent<
+  [],
+  TokenPositionClosedEventObject
+>;
+
+export type TokenPositionClosedEventFilter =
+  TypedEventFilter<TokenPositionClosedEvent>;
 
 export interface CurveYieldStrategy extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1487,6 +1648,77 @@ export interface CurveYieldStrategy extends BaseContract {
       assets?: null,
       shares?: null
     ): WithdrawEventFilter;
+
+    'CrvOracleUpdated(address)'(
+      oracle?: string | null
+    ): CrvOracleUpdatedEventFilter;
+    CrvOracleUpdated(oracle?: string | null): CrvOracleUpdatedEventFilter;
+
+    'CrvSwapSlippageToleranceUpdated(uint256)'(
+      tolerance?: null
+    ): CrvSwapSlippageToleranceUpdatedEventFilter;
+    CrvSwapSlippageToleranceUpdated(
+      tolerance?: null
+    ): CrvSwapSlippageToleranceUpdatedEventFilter;
+
+    'DepositCapUpdated(uint256)'(
+      depositCap?: null
+    ): DepositCapUpdatedEventFilter;
+    DepositCapUpdated(depositCap?: null): DepositCapUpdatedEventFilter;
+
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)'(
+      closePositionSlippageSqrtToleranceBps?: null,
+      resetPositionThresholdBps?: null,
+      minNotionalPositionToCloseThreshold?: null
+    ): EightyTwentyParamsUpdatedEventFilter;
+    EightyTwentyParamsUpdated(
+      closePositionSlippageSqrtToleranceBps?: null,
+      resetPositionThresholdBps?: null,
+      minNotionalPositionToCloseThreshold?: null
+    ): EightyTwentyParamsUpdatedEventFilter;
+
+    'FeesUpdated(uint256)'(fee?: null): FeesUpdatedEventFilter;
+    FeesUpdated(fee?: null): FeesUpdatedEventFilter;
+
+    'FeesWithdrawn(uint256)'(total?: null): FeesWithdrawnEventFilter;
+    FeesWithdrawn(total?: null): FeesWithdrawnEventFilter;
+
+    'Harvested(uint256)'(crvAmount?: null): HarvestedEventFilter;
+    Harvested(crvAmount?: null): HarvestedEventFilter;
+
+    'KeeperUpdated(address)'(keeper?: null): KeeperUpdatedEventFilter;
+    KeeperUpdated(keeper?: null): KeeperUpdatedEventFilter;
+
+    'NotionalCrvHarvestThresholdUpdated(uint256)'(
+      threshold?: null
+    ): NotionalCrvHarvestThresholdUpdatedEventFilter;
+    NotionalCrvHarvestThresholdUpdated(
+      threshold?: null
+    ): NotionalCrvHarvestThresholdUpdatedEventFilter;
+
+    'Rebalance()'(): RebalanceEventFilter;
+    Rebalance(): RebalanceEventFilter;
+
+    'RebalanceThresholdUpdated(uint32,uint16)'(
+      rebalanceTimeThreshold?: null,
+      rebalancePriceThresholdBps?: null
+    ): RebalanceThresholdUpdatedEventFilter;
+    RebalanceThresholdUpdated(
+      rebalanceTimeThreshold?: null,
+      rebalancePriceThresholdBps?: null
+    ): RebalanceThresholdUpdatedEventFilter;
+
+    'Staked(uint256,address)'(
+      amount?: null,
+      depositor?: string | null
+    ): StakedEventFilter;
+    Staked(amount?: null, depositor?: string | null): StakedEventFilter;
+
+    'StateInfo(uint256)'(lpPrice?: null): StateInfoEventFilter;
+    StateInfo(lpPrice?: null): StateInfoEventFilter;
+
+    'TokenPositionClosed()'(): TokenPositionClosedEventFilter;
+    TokenPositionClosed(): TokenPositionClosedEventFilter;
   };
 
   estimateGas: {

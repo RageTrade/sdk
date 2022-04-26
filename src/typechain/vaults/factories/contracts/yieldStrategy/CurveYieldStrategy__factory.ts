@@ -1305,6 +1305,213 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
+  {
+    inputs: [],
+    name: 'R',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'T',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'oracle',
+        type: 'address',
+      },
+    ],
+    name: 'CrvOracleUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'tolerance',
+        type: 'uint256',
+      },
+    ],
+    name: 'CrvSwapSlippageToleranceUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'depositCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'DepositCapUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'closePositionSlippageSqrtToleranceBps',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'resetPositionThresholdBps',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint64',
+        name: 'minNotionalPositionToCloseThreshold',
+        type: 'uint64',
+      },
+    ],
+    name: 'EightyTwentyParamsUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'fee',
+        type: 'uint256',
+      },
+    ],
+    name: 'FeesUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'total',
+        type: 'uint256',
+      },
+    ],
+    name: 'FeesWithdrawn',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'crvAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'Harvested',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'keeper',
+        type: 'address',
+      },
+    ],
+    name: 'KeeperUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'threshold',
+        type: 'uint256',
+      },
+    ],
+    name: 'NotionalCrvHarvestThresholdUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'Rebalance',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint32',
+        name: 'rebalanceTimeThreshold',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'rebalancePriceThresholdBps',
+        type: 'uint16',
+      },
+    ],
+    name: 'RebalanceThresholdUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'depositor',
+        type: 'address',
+      },
+    ],
+    name: 'Staked',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'lpPrice',
+        type: 'uint256',
+      },
+    ],
+    name: 'StateInfo',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'TokenPositionClosed',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'CYS_NEGATIVE_CRV_PRICE',
+    type: 'error',
+  },
 ];
 
 const _bytecode =
