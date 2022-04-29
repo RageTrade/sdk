@@ -80,10 +80,6 @@ export async function getVaultContractsWithDeployments(
       deployments.CurveTriCryptoLpTokenDeployment.address,
       signerOrProvider
     ),
-    usdc: ERC20PresetMinterPauser__factory.connect(
-      deployments.WBTCDeployment.address,
-      signerOrProvider
-    ),
     usdt: ERC20PresetMinterPauser__factory.connect(
       deployments.USDTDeployment.address,
       signerOrProvider
