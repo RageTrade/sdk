@@ -21,6 +21,9 @@ const state = {
 state.sdk.getContracts(arbtest).then((cc) => {
   state.c.c = cc;
 });
+state.sdk.getVaultContracts(arbtest).then((cc) => {
+  state.c.v = cc;
+});
 
 const myRepl = repl.start('ragetrade> ');
 
