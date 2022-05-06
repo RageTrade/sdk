@@ -15,7 +15,7 @@ export function parseName(name: string) {
 }
 
 export function parseSymbol(symbol: string) {
-  return symbol.slice(1);
+  return symbol.slice(0, 1) === 'v' ? symbol.slice(1) : symbol;
 }
 
 export const parseTokenAmount = (value: BigNumberish, decimals: number) =>
