@@ -34,13 +34,13 @@
   "arbmain": [],
   "arbtest": [
     {
-      "poolId": "0x52e8A3c9",
+      "poolId": "0x4dF70692",
       "name": "Virtual Ether (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
-      "vTokenAddress": "0x2E36bCF86EB14c45bd3c65BbC25D738252e8A3c9",
-      "vPoolAddress": "0xF01867CA5c5E89086f34d753b12883615Ddd6A49",
-      "vPoolWrapperAddress": "0xe80eD95cf4BFB8d1D15280902f0e900F3459Ec99"
+      "vTokenAddress": "0x71ca73E7ae25513b97B8D915D95C2a944dF70692",
+      "vPoolAddress": "0xaaD40b3fedE8A7e618800183870bcE9569925764",
+      "vPoolWrapperAddress": "0xF184cF709cf30Ba78F66BAcfA7b8926eb830132F"
     }
   ],
   "opmain": [],
