@@ -18,6 +18,7 @@ import {
   SwapManager__factory,
   VaultPeriphery__factory,
 } from './typechain';
+import { ILPPriceGetter__factory } from './typechain/vaults';
 
 export const vaultMetaData = {
   name: '80-20 TriCrypto Strategy',
@@ -34,6 +35,7 @@ export interface VaultDeployments {
   CurveTokenDeployment: ContractDeployment;
   CurveTriCryptoPoolDeployment: ContractDeployment;
   CurveTriCryptoLpTokenDeployment: ContractDeployment;
+  CurveQuoterDeployment: ContractDeployment;
   WETHDeployment: ContractDeployment;
   WBTCDeployment: ContractDeployment;
   USDTDeployment: ContractDeployment;
@@ -78,6 +80,10 @@ export async function getVaultContractsWithDeployments(
     ),
     curveTriCryptoLpToken: IERC20Metadata__factory.connect(
       deployments.CurveTriCryptoLpTokenDeployment.address,
+      signerOrProvider
+    ),
+    curveQuoter: ILPPriceGetter__factory.connect(
+      deployments.CurveQuoterDeployment.address,
       signerOrProvider
     ),
     usdt: ERC20PresetMinterPauser__factory.connect(
@@ -163,6 +169,11 @@ export async function getVaultDeployments(
     network,
     'CurveTriCryptoLpToken'
   );
+  const CurveQuoterDeployment = await getDeployment(
+    'vaults',
+    network,
+    'CurveQuoter'
+  );
   const WETHDeployment = await getDeployment('vaults', network, 'WETH');
   const WBTCDeployment = await getDeployment('vaults', network, 'WBTC');
   const USDTDeployment = await getDeployment('vaults', network, 'USDT');
@@ -177,6 +188,7 @@ export async function getVaultDeployments(
     CurveTokenDeployment,
     CurveTriCryptoPoolDeployment,
     CurveTriCryptoLpTokenDeployment,
+    CurveQuoterDeployment,
 
     WBTCDeployment,
     USDTDeployment,
