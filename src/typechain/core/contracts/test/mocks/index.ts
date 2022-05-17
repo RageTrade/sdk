@@ -6,6 +6,7 @@ export type { mockAggregatorV2Sol };
 import type * as realTokenMock1Sol from './RealTokenMock1.sol';
 export type { realTokenMock1Sol };
 export type { AccountProtocolInfoMock } from './AccountProtocolInfoMock';
+export type { ArbSysMock } from './ArbSysMock';
 export type { ClearingHouseDummy } from './ClearingHouseDummy';
 export type { OracleMock } from './OracleMock';
 export type { RealTokenMock } from './RealTokenMock';

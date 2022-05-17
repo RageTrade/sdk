@@ -136,6 +136,8 @@ export type { LiquidityPositionSet } from './contracts/libraries/LiquidityPositi
 export { LiquidityPositionSet__factory } from './factories/contracts/libraries/LiquidityPositionSet__factory';
 export type { PriceMath } from './contracts/libraries/PriceMath';
 export { PriceMath__factory } from './factories/contracts/libraries/PriceMath__factory';
+export type { ArbSys } from './contracts/libraries/Protocol.sol/ArbSys';
+export { ArbSys__factory } from './factories/contracts/libraries/Protocol.sol/ArbSys__factory';
 export type { SafeCast } from './contracts/libraries/SafeCast';
 export { SafeCast__factory } from './factories/contracts/libraries/SafeCast__factory';
 export type { SimulateSwap } from './contracts/libraries/SimulateSwap';
@@ -198,6 +200,8 @@ export type { LiquidityPositionTest } from './contracts/test/LiquidityPositionTe
 export { LiquidityPositionTest__factory } from './factories/contracts/test/LiquidityPositionTest__factory';
 export type { AccountProtocolInfoMock } from './contracts/test/mocks/AccountProtocolInfoMock';
 export { AccountProtocolInfoMock__factory } from './factories/contracts/test/mocks/AccountProtocolInfoMock__factory';
+export type { ArbSysMock } from './contracts/test/mocks/ArbSysMock';
+export { ArbSysMock__factory } from './factories/contracts/test/mocks/ArbSysMock__factory';
 export type { ClearingHouseDummy } from './contracts/test/mocks/ClearingHouseDummy';
 export { ClearingHouseDummy__factory } from './factories/contracts/test/mocks/ClearingHouseDummy__factory';
 export type { MockAggregatorV3 } from './contracts/test/mocks/MockAggregatorV2.sol/MockAggregatorV3';

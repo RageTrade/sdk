@@ -4,6 +4,7 @@
 export * as mockAggregatorV2Sol from './MockAggregatorV2.sol';
 export * as realTokenMock1Sol from './RealTokenMock1.sol';
 export { AccountProtocolInfoMock__factory } from './AccountProtocolInfoMock__factory';
+export { ArbSysMock__factory } from './ArbSysMock__factory';
 export { ClearingHouseDummy__factory } from './ClearingHouseDummy__factory';
 export { OracleMock__factory } from './OracleMock__factory';
 export { RealTokenMock__factory } from './RealTokenMock__factory';

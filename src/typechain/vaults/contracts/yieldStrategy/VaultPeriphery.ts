@@ -174,15 +174,32 @@ export interface VaultPeripheryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
 
   events: {
+    'DepositPeriphery(address,address,uint256,uint256,uint256)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'SlippageToleranceBreachedEvent(uint256,uint256,uint256,uint256,uint256)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'DepositPeriphery'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: 'SlippageToleranceBreachedEvent'
   ): EventFragment;
 }
+
+export interface DepositPeripheryEventObject {
+  owner: string;
+  token: string;
+  amount: BigNumber;
+  asset: BigNumber;
+  shares: BigNumber;
+}
+export type DepositPeripheryEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber, BigNumber],
+  DepositPeripheryEventObject
+>;
+
+export type DepositPeripheryEventFilter =
+  TypedEventFilter<DepositPeripheryEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -445,6 +462,21 @@ export interface VaultPeriphery extends BaseContract {
   };
 
   filters: {
+    'DepositPeriphery(address,address,uint256,uint256,uint256)'(
+      owner?: string | null,
+      token?: string | null,
+      amount?: null,
+      asset?: null,
+      shares?: null
+    ): DepositPeripheryEventFilter;
+    DepositPeriphery(
+      owner?: string | null,
+      token?: string | null,
+      amount?: null,
+      asset?: null,
+      shares?: null
+    ): DepositPeripheryEventFilter;
+
     'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
       newOwner?: string | null
