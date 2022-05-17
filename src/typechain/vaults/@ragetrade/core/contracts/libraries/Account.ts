@@ -25,7 +25,7 @@ export interface AccountInterface extends utils.Interface {
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': EventFragment;
     'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)': EventFragment;
     'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': EventFragment;
-    'MarginUpdated(uint256,uint32,int256)': EventFragment;
+    'MarginUpdated(uint256,uint32,int256,bool)': EventFragment;
     'ProfitUpdated(uint256,int256)': EventFragment;
     'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
     'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': EventFragment;
@@ -150,9 +150,10 @@ export interface MarginUpdatedEventObject {
   accountId: BigNumber;
   collateralId: number;
   amount: BigNumber;
+  isSettleProfit: boolean;
 }
 export type MarginUpdatedEvent = TypedEvent<
-  [BigNumber, number, BigNumber],
+  [BigNumber, number, BigNumber, boolean],
   MarginUpdatedEventObject
 >;
 
@@ -351,15 +352,17 @@ export interface Account extends BaseContract {
       accountMarketValueFinal?: null
     ): LiquidityPositionsLiquidatedEventFilter;
 
-    'MarginUpdated(uint256,uint32,int256)'(
+    'MarginUpdated(uint256,uint32,int256,bool)'(
       accountId?: BigNumberish | null,
       collateralId?: BigNumberish | null,
-      amount?: null
+      amount?: null,
+      isSettleProfit?: null
     ): MarginUpdatedEventFilter;
     MarginUpdated(
       accountId?: BigNumberish | null,
       collateralId?: BigNumberish | null,
-      amount?: null
+      amount?: null,
+      isSettleProfit?: null
     ): MarginUpdatedEventFilter;
 
     'ProfitUpdated(uint256,int256)'(

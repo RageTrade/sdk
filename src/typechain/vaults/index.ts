@@ -112,6 +112,8 @@ export type { LiquidityPositionSet } from './@ragetrade/core/contracts/libraries
 export { LiquidityPositionSet__factory } from './factories/@ragetrade/core/contracts/libraries/LiquidityPositionSet__factory';
 export type { PriceMath } from './@ragetrade/core/contracts/libraries/PriceMath';
 export { PriceMath__factory } from './factories/@ragetrade/core/contracts/libraries/PriceMath__factory';
+export type { ArbSys } from './@ragetrade/core/contracts/libraries/Protocol.sol/ArbSys';
+export { ArbSys__factory } from './factories/@ragetrade/core/contracts/libraries/Protocol.sol/ArbSys__factory';
 export type { SafeCast } from './@ragetrade/core/contracts/libraries/SafeCast';
 export { SafeCast__factory } from './factories/@ragetrade/core/contracts/libraries/SafeCast__factory';
 export type { SimulateSwap } from './@ragetrade/core/contracts/libraries/SimulateSwap';

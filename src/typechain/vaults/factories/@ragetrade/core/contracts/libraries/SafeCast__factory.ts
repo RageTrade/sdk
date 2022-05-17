@@ -31,6 +31,17 @@ const _abi = [
     name: 'SafeCast_Int256Overflow',
     type: 'error',
   },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'value',
+        type: 'uint256',
+      },
+    ],
+    name: 'SafeCast_UInt224Overflow',
+    type: 'error',
+  },
 ];
 
 const _bytecode =
