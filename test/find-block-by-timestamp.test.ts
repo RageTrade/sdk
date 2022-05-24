@@ -20,4 +20,22 @@ describe('find block by timestamp', () => {
     const block = await findBlockByTimestamp(arbtest, target);
     expect(Math.abs(block.timestamp - target)).toBeLessThan(100);
   }, 20000);
+
+  it('works on arbiturm 3', async () => {
+    const target = 2650186554; // very future timestamp
+    try {
+      await findBlockByTimestamp(arbtest, target);
+    } catch (error: any) {
+      expect(error.message).toEqual('Timestamp is in the future');
+    }
+  }, 20000);
+
+  it('works on arbiturm 4', async () => {
+    const target = 2650186554; // very future timestamp
+    const block = await findBlockByTimestamp(arbtest, target, {
+      allowFutureTimestamp: true,
+    });
+    const blockLatest = await arbtest.getBlock('latest');
+    expect(Math.abs(block.timestamp - blockLatest.timestamp)).toBeLessThan(100);
+  }, 20000);
 });

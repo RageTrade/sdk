@@ -1,13 +1,18 @@
 import { ethers } from 'ethers';
 
+export interface FindBlockByTimestampOptions {
+  avgBlockTime?: number;
+  allowFutureTimestamp?: boolean;
+}
+
 export async function findBlockByTimestamp(
   provider: ethers.providers.Provider,
   timestampTarget: number,
-  avgBlockTime?: number
+  { avgBlockTime, allowFutureTimestamp }: FindBlockByTimestampOptions = {}
 ) {
   const latestBlock = await provider.getBlock('latest');
 
-  if (latestBlock.timestamp < timestampTarget) {
+  if (!allowFutureTimestamp && latestBlock.timestamp < timestampTarget) {
     throw new Error('Timestamp is in the future');
   }
 
