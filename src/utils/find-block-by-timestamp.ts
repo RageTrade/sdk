@@ -12,8 +12,12 @@ export async function findBlockByTimestamp(
 ) {
   const latestBlock = await provider.getBlock('latest');
 
-  if (!allowFutureTimestamp && latestBlock.timestamp < timestampTarget) {
-    throw new Error('Timestamp is in the future');
+  if (latestBlock.timestamp < timestampTarget) {
+    if (allowFutureTimestamp) {
+      return latestBlock;
+    } else {
+      throw new Error('Timestamp is in the future');
+    }
   }
 
   if (avgBlockTime === undefined) {
