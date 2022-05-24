@@ -1,5 +1,10 @@
 import { BigNumberish, BigNumber } from 'ethers';
-import { Q128 } from './fixed-point';
+import { fromQ128, Q128 } from './fixed-point';
+
+export function formatFundingRate(fundingRateX128: BigNumberish) {
+  fundingRateX128 = BigNumber.from(fundingRateX128);
+  return fromQ128(fundingRateX128) * 3600 * 100;
+}
 
 export function getFundingRate(
   realPriceX128: BigNumberish,
