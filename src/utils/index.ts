@@ -12,3 +12,4 @@ export * from './vtoken';
 export * from './find-block-by-timestamp';
 export * from './funding-payment';
 export * from './lp-fees';
+export * from './deployment-helpers';
