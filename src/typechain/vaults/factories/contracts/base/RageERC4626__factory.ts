@@ -332,6 +332,26 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'maxAssets',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '_maxAssets',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxAssetsAlwaysReverts',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -386,6 +406,19 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'maxShares',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {

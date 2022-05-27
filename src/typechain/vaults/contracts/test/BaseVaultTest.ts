@@ -50,9 +50,12 @@ export interface BaseVaultTestInterface extends utils.Interface {
     'isValidRebalanceTime()': FunctionFragment;
     'keeper()': FunctionFragment;
     'lastRebalanceTS()': FunctionFragment;
+    'maxAssets()': FunctionFragment;
+    'maxAssetsAlwaysReverts()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
+    'maxShares()': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
@@ -104,9 +107,12 @@ export interface BaseVaultTestInterface extends utils.Interface {
       | 'isValidRebalanceTime'
       | 'keeper'
       | 'lastRebalanceTS'
+      | 'maxAssets'
+      | 'maxAssetsAlwaysReverts'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
+      | 'maxShares'
       | 'maxWithdraw'
       | 'mint'
       | 'name'
@@ -210,9 +216,15 @@ export interface BaseVaultTestInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: 'maxAssets', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'maxAssetsAlwaysReverts',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'maxDeposit', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
+  encodeFunctionData(functionFragment: 'maxShares', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'mint',
@@ -360,9 +372,15 @@ export interface BaseVaultTestInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'maxAssets', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'maxAssetsAlwaysReverts',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxMint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxRedeem', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'maxShares', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'maxWithdraw',
     data: BytesLike
@@ -632,11 +650,23 @@ export interface BaseVaultTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    maxAssets(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    maxAssetsAlwaysReverts(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    maxShares(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -830,11 +860,23 @@ export interface BaseVaultTest extends BaseContract {
 
   lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
+  maxAssets(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  maxAssetsAlwaysReverts(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  maxShares(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1024,11 +1066,17 @@ export interface BaseVaultTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    maxAssets(overrides?: CallOverrides): Promise<BigNumber>;
+
+    maxAssetsAlwaysReverts(overrides?: CallOverrides): Promise<void>;
+
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    maxShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1280,11 +1328,23 @@ export interface BaseVaultTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
+    maxAssets(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    maxAssetsAlwaysReverts(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    maxShares(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1486,6 +1546,14 @@ export interface BaseVaultTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    maxAssets(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    maxAssetsAlwaysReverts(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     maxDeposit(
       arg0: string,
       overrides?: CallOverrides
@@ -1499,6 +1567,10 @@ export interface BaseVaultTest extends BaseContract {
     maxRedeem(
       owner: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    maxShares(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     maxWithdraw(

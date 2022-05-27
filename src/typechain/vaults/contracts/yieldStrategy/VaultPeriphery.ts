@@ -29,6 +29,8 @@ import type {
 
 export interface VaultPeripheryInterface extends utils.Interface {
   functions: {
+    'MAX_BPS()': FunctionFragment;
+    'MAX_TOLERANCE()': FunctionFragment;
     'depositEth()': FunctionFragment;
     'depositUsdc(uint256)': FunctionFragment;
     'depositWeth(uint256)': FunctionFragment;
@@ -51,6 +53,8 @@ export interface VaultPeripheryInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'MAX_BPS'
+      | 'MAX_TOLERANCE'
       | 'depositEth'
       | 'depositUsdc'
       | 'depositWeth'
@@ -71,6 +75,11 @@ export interface VaultPeripheryInterface extends utils.Interface {
       | 'weth'
   ): FunctionFragment;
 
+  encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'MAX_TOLERANCE',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'depositEth',
     values?: undefined
@@ -133,6 +142,11 @@ export interface VaultPeripheryInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'vault', values?: undefined): string;
   encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: 'MAX_BPS', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'MAX_TOLERANCE',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'depositEth', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'depositUsdc',
@@ -176,14 +190,10 @@ export interface VaultPeripheryInterface extends utils.Interface {
   events: {
     'DepositPeriphery(address,address,uint256,uint256,uint256)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
-    'SlippageToleranceBreachedEvent(uint256,uint256,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'DepositPeriphery'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'SlippageToleranceBreachedEvent'
-  ): EventFragment;
 }
 
 export interface DepositPeripheryEventObject {
@@ -213,21 +223,6 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface SlippageToleranceBreachedEventEventObject {
-  balance: BigNumber;
-  breforeSwapLpPrice: BigNumber;
-  amount: BigNumber;
-  MAX_BPS: BigNumber;
-  MAX_TOLERANCE: BigNumber;
-}
-export type SlippageToleranceBreachedEventEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  SlippageToleranceBreachedEventEventObject
->;
-
-export type SlippageToleranceBreachedEventEventFilter =
-  TypedEventFilter<SlippageToleranceBreachedEventEvent>;
-
 export interface VaultPeriphery extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -255,6 +250,10 @@ export interface VaultPeriphery extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    MAX_BPS(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    MAX_TOLERANCE(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     depositEth(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -324,6 +323,10 @@ export interface VaultPeriphery extends BaseContract {
 
     weth(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+
+  MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
 
   depositEth(
     overrides?: PayableOverrides & { from?: string | Promise<string> }
@@ -395,6 +398,10 @@ export interface VaultPeriphery extends BaseContract {
   weth(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
+
     depositEth(overrides?: CallOverrides): Promise<BigNumber>;
 
     depositUsdc(
@@ -485,24 +492,13 @@ export interface VaultPeriphery extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
-
-    'SlippageToleranceBreachedEvent(uint256,uint256,uint256,uint256,uint256)'(
-      balance?: null,
-      breforeSwapLpPrice?: null,
-      amount?: null,
-      MAX_BPS?: null,
-      MAX_TOLERANCE?: null
-    ): SlippageToleranceBreachedEventEventFilter;
-    SlippageToleranceBreachedEvent(
-      balance?: null,
-      breforeSwapLpPrice?: null,
-      amount?: null,
-      MAX_BPS?: null,
-      MAX_TOLERANCE?: null
-    ): SlippageToleranceBreachedEventEventFilter;
   };
 
   estimateGas: {
+    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+
+    MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
+
     depositEth(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -574,6 +570,10 @@ export interface VaultPeriphery extends BaseContract {
   };
 
   populateTransaction: {
+    MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    MAX_TOLERANCE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     depositEth(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;

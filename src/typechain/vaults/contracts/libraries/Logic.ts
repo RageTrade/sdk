@@ -95,7 +95,9 @@ export interface LogicInterface extends utils.Interface {
   ): Result;
 
   events: {
+    'CrvHarvestThresholdUpdated(uint256)': EventFragment;
     'CrvOracleUpdated(address)': EventFragment;
+    'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
     'CrvSwapSlippageToleranceUpdated(uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
@@ -103,7 +105,6 @@ export interface LogicInterface extends utils.Interface {
     'FeesWithdrawn(uint256)': EventFragment;
     'Harvested(uint256)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
-    'NotionalCrvHarvestThresholdUpdated(uint256)': EventFragment;
     'Rebalance()': EventFragment;
     'RebalanceThresholdUpdated(uint32,uint16)': EventFragment;
     'Staked(uint256,address)': EventFragment;
@@ -111,7 +112,9 @@ export interface LogicInterface extends utils.Interface {
     'TokenPositionClosed()': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'CrvHarvestThresholdUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'CrvOracleUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CrvSwapFailedDueToSlippage'): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: 'CrvSwapSlippageToleranceUpdated'
   ): EventFragment;
@@ -121,15 +124,23 @@ export interface LogicInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Harvested'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'NotionalCrvHarvestThresholdUpdated'
-  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Rebalance'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RebalanceThresholdUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Staked'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'StateInfo'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TokenPositionClosed'): EventFragment;
 }
+
+export interface CrvHarvestThresholdUpdatedEventObject {
+  threshold: BigNumber;
+}
+export type CrvHarvestThresholdUpdatedEvent = TypedEvent<
+  [BigNumber],
+  CrvHarvestThresholdUpdatedEventObject
+>;
+
+export type CrvHarvestThresholdUpdatedEventFilter =
+  TypedEventFilter<CrvHarvestThresholdUpdatedEvent>;
 
 export interface CrvOracleUpdatedEventObject {
   oracle: string;
@@ -141,6 +152,17 @@ export type CrvOracleUpdatedEvent = TypedEvent<
 
 export type CrvOracleUpdatedEventFilter =
   TypedEventFilter<CrvOracleUpdatedEvent>;
+
+export interface CrvSwapFailedDueToSlippageEventObject {
+  crvSlippageTolerance: BigNumber;
+}
+export type CrvSwapFailedDueToSlippageEvent = TypedEvent<
+  [BigNumber],
+  CrvSwapFailedDueToSlippageEventObject
+>;
+
+export type CrvSwapFailedDueToSlippageEventFilter =
+  TypedEventFilter<CrvSwapFailedDueToSlippageEvent>;
 
 export interface CrvSwapSlippageToleranceUpdatedEventObject {
   tolerance: BigNumber;
@@ -207,17 +229,6 @@ export interface KeeperUpdatedEventObject {
 export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
 export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
-
-export interface NotionalCrvHarvestThresholdUpdatedEventObject {
-  threshold: BigNumber;
-}
-export type NotionalCrvHarvestThresholdUpdatedEvent = TypedEvent<
-  [BigNumber],
-  NotionalCrvHarvestThresholdUpdatedEventObject
->;
-
-export type NotionalCrvHarvestThresholdUpdatedEventFilter =
-  TypedEventFilter<NotionalCrvHarvestThresholdUpdatedEvent>;
 
 export interface RebalanceEventObject {}
 export type RebalanceEvent = TypedEvent<[], RebalanceEventObject>;
@@ -426,10 +437,24 @@ export interface Logic extends BaseContract {
   };
 
   filters: {
+    'CrvHarvestThresholdUpdated(uint256)'(
+      threshold?: null
+    ): CrvHarvestThresholdUpdatedEventFilter;
+    CrvHarvestThresholdUpdated(
+      threshold?: null
+    ): CrvHarvestThresholdUpdatedEventFilter;
+
     'CrvOracleUpdated(address)'(
       oracle?: string | null
     ): CrvOracleUpdatedEventFilter;
     CrvOracleUpdated(oracle?: string | null): CrvOracleUpdatedEventFilter;
+
+    'CrvSwapFailedDueToSlippage(uint256)'(
+      crvSlippageTolerance?: null
+    ): CrvSwapFailedDueToSlippageEventFilter;
+    CrvSwapFailedDueToSlippage(
+      crvSlippageTolerance?: null
+    ): CrvSwapFailedDueToSlippageEventFilter;
 
     'CrvSwapSlippageToleranceUpdated(uint256)'(
       tolerance?: null
@@ -465,13 +490,6 @@ export interface Logic extends BaseContract {
 
     'KeeperUpdated(address)'(keeper?: null): KeeperUpdatedEventFilter;
     KeeperUpdated(keeper?: null): KeeperUpdatedEventFilter;
-
-    'NotionalCrvHarvestThresholdUpdated(uint256)'(
-      threshold?: null
-    ): NotionalCrvHarvestThresholdUpdatedEventFilter;
-    NotionalCrvHarvestThresholdUpdated(
-      threshold?: null
-    ): NotionalCrvHarvestThresholdUpdatedEventFilter;
 
     'Rebalance()'(): RebalanceEventFilter;
     Rebalance(): RebalanceEventFilter;

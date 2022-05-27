@@ -51,6 +51,43 @@ const _abi = [
     name: 'LPS_InactiveRange',
     type: 'error',
   },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vTokenAmountOut',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionChangedDueToLiquidityChanged',
+    type: 'event',
+  },
 ];
 
 const _bytecode =

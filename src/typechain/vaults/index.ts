@@ -112,8 +112,6 @@ export type { LiquidityPositionSet } from './@ragetrade/core/contracts/libraries
 export { LiquidityPositionSet__factory } from './factories/@ragetrade/core/contracts/libraries/LiquidityPositionSet__factory';
 export type { PriceMath } from './@ragetrade/core/contracts/libraries/PriceMath';
 export { PriceMath__factory } from './factories/@ragetrade/core/contracts/libraries/PriceMath__factory';
-export type { ArbSys } from './@ragetrade/core/contracts/libraries/Protocol.sol/ArbSys';
-export { ArbSys__factory } from './factories/@ragetrade/core/contracts/libraries/Protocol.sol/ArbSys__factory';
 export type { SafeCast } from './@ragetrade/core/contracts/libraries/SafeCast';
 export { SafeCast__factory } from './factories/@ragetrade/core/contracts/libraries/SafeCast__factory';
 export type { SimulateSwap } from './@ragetrade/core/contracts/libraries/SimulateSwap';
@@ -216,6 +214,8 @@ export type { IBaseYieldStrategy } from './contracts/interfaces/IBaseYieldStrate
 export { IBaseYieldStrategy__factory } from './factories/contracts/interfaces/IBaseYieldStrategy__factory';
 export type { IERC4626 } from './contracts/interfaces/IERC4626';
 export { IERC4626__factory } from './factories/contracts/interfaces/IERC4626__factory';
+export type { IWETH9 } from './contracts/interfaces/IWETH9';
+export { IWETH9__factory } from './factories/contracts/interfaces/IWETH9__factory';
 export type { Logic } from './contracts/libraries/Logic';
 export { Logic__factory } from './factories/contracts/libraries/Logic__factory';
 export type { SwapManager } from './contracts/libraries/SwapManager';

@@ -36,6 +36,80 @@ const _abi = [
     name: 'VPS_TokenInactive',
     type: 'error',
   },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vTokenAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vQuoteAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96Start',
+        type: 'uint160',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96End',
+        type: 'uint160',
+      },
+    ],
+    name: 'TokenPositionChanged',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumALastX128',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionFundingPaymentRealized',
+    type: 'event',
+  },
 ];
 
 const _bytecode =
