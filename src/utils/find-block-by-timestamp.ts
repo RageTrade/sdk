@@ -29,6 +29,9 @@ export async function findBlockByTimestamp(
   let blockAtHint = latestBlock;
   let hint = latestBlock.number;
 
+  let ceiling = latestBlock.number;
+  let floor = 0;
+
   let deltaPrevious = Number.MAX_SAFE_INTEGER;
   let deltaPreviousPrevious = Number.MAX_SAFE_INTEGER;
 
@@ -44,7 +47,11 @@ export async function findBlockByTimestamp(
       break;
     }
 
-    const hintNew = hint + delta;
+    let hintNew = hint + delta;
+
+    // cap hint between floor and ceiling
+    hintNew = Math.max(Math.min(hintNew, ceiling), floor);
+
     const blockAtHintNew = await provider.getBlock(hintNew);
 
     if (!blockAtHintNew) {
@@ -52,6 +59,13 @@ export async function findBlockByTimestamp(
         (latestBlock.timestamp - blockAtHint.timestamp) /
         (latestBlock.number - blockAtHint.number);
     } else {
+      if (timestampTarget > blockAtHintNew.timestamp) {
+        floor = hintNew;
+      }
+      if (timestampTarget < blockAtHintNew.timestamp) {
+        ceiling = hintNew;
+      }
+
       if (
         Math.abs(blockAtHintNew.number - blockAtHint.number) > 0 &&
         Math.abs(blockAtHintNew.timestamp - blockAtHint.timestamp) > 0

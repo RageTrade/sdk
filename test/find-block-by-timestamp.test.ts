@@ -9,6 +9,12 @@ const arbtest = new ethers.providers.StaticJsonRpcProvider(
 );
 
 describe('find block by timestamp', () => {
+  it.only('works on arbitrum 24 hr', async () => {
+    const target = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
+    const block = await findBlockByTimestamp(arbtest, target);
+    expect(Math.abs(block.timestamp - target)).toBeLessThan(1000);
+  }, 20000);
+
   it('works on arbitrum', async () => {
     const target = 1648524243;
     const block = await findBlockByTimestamp(arbtest, target);
