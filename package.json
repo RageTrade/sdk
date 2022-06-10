@@ -33,10 +33,11 @@
     "update:deployments": "cp -r node_modules/@ragetrade/core/deployments/ deployments/core && cp -r node_modules/@ragetrade/vaults/deployments/ deployments/vaults",
     "update:uniswap": "cp -r node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json deployments/uniswap/UniswapV3Pool.json",
     "update:pools": "node fetch-pools.js",
-    "typechain": "yarn typechain:core && yarn typechain:vaults && yarn typechain:uniswap && yarn format:fix",
+    "typechain": "yarn typechain:core && yarn typechain:vaults && yarn typechain:uniswap:core && yarn typechain:uniswap:periphery && yarn format:fix",
     "typechain:core": "typechain --target ethers-v5 --out-dir src/typechain/core './node_modules/@ragetrade/core/artifacts/**/*.sol/!(*.dbg.json)'",
     "typechain:vaults": "typechain --target ethers-v5 --out-dir src/typechain/vaults './node_modules/@ragetrade/vaults/artifacts/**/*.sol/!(*.dbg.json)'",
-    "typechain:uniswap": "typechain --target ethers-v5 --out-dir src/typechain/uniswap './node_modules/@uniswap/v3-core/artifacts/**/*.sol/!(*.dbg.json)'"
+    "typechain:uniswap:core": "typechain --target ethers-v5 --out-dir src/typechain/uniswap-core './node_modules/@uniswap/v3-core/artifacts/**/*.sol/!(*.dbg.json)'",
+    "typechain:uniswap:periphery": "typechain --target ethers-v5 --out-dir src/typechain/uniswap-periphery './node_modules/@uniswap/v3-periphery/artifacts/**/*.sol/!(*.dbg.json)'"
   },
   "peerDependencies": {},
   "husky": {
