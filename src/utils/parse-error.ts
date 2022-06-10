@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { getEthersInterfaces } from '../contracts';
+import { getEthersInterfaces } from '../contracts/index';
 
 const interfaces = getEthersInterfaces();
 

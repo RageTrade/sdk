@@ -5,7 +5,6 @@ import { Provider } from '@ethersproject/abstract-provider';
 import {
   Account__factory,
   ClearingHouse__factory,
-  CurveYieldStrategy__factory,
   IERC20Metadata__factory,
   InsuranceFund__factory,
   IOracle__factory,
@@ -14,40 +13,16 @@ import {
   RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
-  VaultPeriphery__factory,
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
-} from './typechain';
-
-export type NetworkName =
-  | 'mainnet'
-  | 'rinkeby'
-  | 'kovan'
-  | 'arbmain'
-  | 'arbtest'
-  | 'opmain'
-  | 'optest';
-
-export const chainIds = {
-  mainnet: 1,
-  rinkeby: 4,
-  kovan: 42,
-  arbmain: 42161,
-  arbtest: 421611,
-  opmain: 10,
-  optest: 69,
-};
-
-export function getNetworkNameFromChainId(chainId: number): NetworkName {
-  for (const [key, val] of Object.entries(chainIds)) {
-    if (val === chainId) {
-      return key as NetworkName;
-    }
-  }
-
-  throw new Error(`chainId ${chainId} not recognized`);
-}
+} from '../typechain';
+import {
+  ContractDeployment,
+  getDeployment,
+  getNetworkNameFromChainId,
+  NetworkName,
+} from './common';
 
 /**
  * This method can be used to get contract instances
@@ -267,40 +242,4 @@ export function getPoolDeployments(network: NetworkName, tokenSymbol: string) {
     getDeployment('core', network, tokenSymbol + '-vPoolWrapper'),
     getDeployment('core', network, tokenSymbol + '-IndexOracle'),
   ]);
-}
-
-export function getEthersInterfaces() {
-  return [
-    Account__factory.createInterface(),
-    ClearingHouse__factory.createInterface(),
-    InsuranceFund__factory.createInterface(),
-    IOracle__factory.createInterface(),
-    ProxyAdmin__factory.createInterface(),
-    RageTradeFactory__factory.createInterface(),
-    VQuote__factory.createInterface(),
-    VToken__factory.createInterface(),
-    VPoolWrapper__factory.createInterface(),
-    SwapSimulator__factory.createInterface(),
-    CurveYieldStrategy__factory.createInterface(),
-    VaultPeriphery__factory.createInterface(),
-  ];
-}
-
-export async function getDeployment(
-  repo: string,
-  networkName: NetworkName,
-  name: string
-): Promise<ContractDeployment> {
-  try {
-    return await import(`../deployments/${repo}/${networkName}/${name}.json`);
-  } catch (e) {
-    // console.error(e);
-    throw new Error(
-      `Network ${networkName} does not contain the deployment ${name}. Make sure deployments are updated.`
-    );
-  }
-}
-
-export interface ContractDeployment {
-  address: string;
 }

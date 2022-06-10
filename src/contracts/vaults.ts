@@ -7,7 +7,7 @@ import {
   getDeployment,
   getNetworkNameFromChainId,
   NetworkName,
-} from './contracts';
+} from './common';
 import {
   CurveYieldStrategy__factory,
   ERC20PresetMinterPauser__factory,
@@ -17,8 +17,8 @@ import {
   Logic__factory,
   SwapManager__factory,
   VaultPeriphery__factory,
-} from './typechain';
-import { ILPPriceGetter__factory } from './typechain/vaults';
+  ILPPriceGetter__factory,
+} from '../typechain';
 
 export const vaultMetaData = {
   name: '80-20 TriCrypto Strategy',

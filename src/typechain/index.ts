@@ -44,4 +44,5 @@ export {
   Logic__factory,
   SwapManager__factory,
   VaultPeriphery__factory,
+  ILPPriceGetter__factory,
 } from './vaults';
