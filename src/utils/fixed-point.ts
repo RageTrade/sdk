@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberish } from 'ethers';
+import { formatUnits } from 'ethers/lib/utils';
 
 // TODO: add tests for this stuff as well
 
@@ -21,14 +22,20 @@ export function fromQ128(val: BigNumberish): number {
   val = BigNumber.from(val);
   const isNegative = val.isNegative();
   val = val.abs();
-  let formatted = val.shr(128).toNumber();
-  formatted +=
-    val
-      .mod(Q128)
-      .mul(Number.MAX_SAFE_INTEGER - 1)
-      .div(Q128)
-      .toNumber() /
-    (Number.MAX_SAFE_INTEGER - 1);
+  let formatted;
+  try {
+    formatted = val.shr(128).toNumber();
+    formatted +=
+      val
+        .mod(Q128)
+        .mul(Number.MAX_SAFE_INTEGER - 1)
+        .div(Q128)
+        .toNumber() /
+      (Number.MAX_SAFE_INTEGER - 1);
+  } catch {
+    formatted = Number(formatUnits(val.shr(128), 0));
+  }
+
   if (isNegative) formatted *= -1;
   return formatted;
 }
@@ -58,15 +65,19 @@ export function fromQ96(val: BigNumberish, jsDecimals?: number): number {
   val = BigNumber.from(val);
   const isNegative = val.isNegative();
   val = val.abs();
-  let formatted = val.shr(96).toNumber();
-  formatted +=
-    val
-      .mod(Q96)
-      .mul(Number.MAX_SAFE_INTEGER - 1)
-      .div(Q96)
-      .toNumber() /
-    (Number.MAX_SAFE_INTEGER - 1);
-
+  let formatted;
+  try {
+    formatted = val.shr(96).toNumber();
+    formatted +=
+      val
+        .mod(Q96)
+        .mul(Number.MAX_SAFE_INTEGER - 1)
+        .div(Q96)
+        .toNumber() /
+      (Number.MAX_SAFE_INTEGER - 1);
+  } catch {
+    formatted = Number(formatUnits(val.shr(128), 0));
+  }
   if (isNegative) formatted *= -1;
   return typeof jsDecimals === 'undefined'
     ? formatted
