@@ -13,8 +13,6 @@ export function getDecimals(contractOrValue: ERC20Decimals) {
   }
 }
 
-const tickSpacing = 10;
-
 export async function priceToTick(
   price: number,
   vQuote: ERC20Decimals,
@@ -46,7 +44,10 @@ export function sqrtPriceX96ToTick(
   }
 }
 
-export function tickToNearestInitializableTick(tick: number): number {
+export function tickToNearestInitializableTick(
+  tick: number,
+  tickSpacing: number = 10
+): number {
   const tickRoundedDown = Math.floor(tick / tickSpacing) * tickSpacing;
   const roundUp = tick % tickSpacing >= tickSpacing / 2;
   return roundUp ? tickRoundedDown + tickSpacing : tickRoundedDown;
