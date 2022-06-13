@@ -98,85 +98,6 @@ export declare namespace IClearingHouseStructures {
     minNotionalLiquidatable: BigNumber;
   };
 
-  export type CollateralDepositViewStruct = {
-    collateral: string;
-    balance: BigNumberish;
-  };
-
-  export type CollateralDepositViewStructOutput = [string, BigNumber] & {
-    collateral: string;
-    balance: BigNumber;
-  };
-
-  export type LiquidityPositionViewStruct = {
-    tickLower: BigNumberish;
-    tickUpper: BigNumberish;
-    liquidity: BigNumberish;
-    vTokenAmountIn: BigNumberish;
-    sumALastX128: BigNumberish;
-    sumBInsideLastX128: BigNumberish;
-    sumFpInsideLastX128: BigNumberish;
-    sumFeeInsideLastX128: BigNumberish;
-    limitOrderType: BigNumberish;
-  };
-
-  export type LiquidityPositionViewStructOutput = [
-    number,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number
-  ] & {
-    tickLower: number;
-    tickUpper: number;
-    liquidity: BigNumber;
-    vTokenAmountIn: BigNumber;
-    sumALastX128: BigNumber;
-    sumBInsideLastX128: BigNumber;
-    sumFpInsideLastX128: BigNumber;
-    sumFeeInsideLastX128: BigNumber;
-    limitOrderType: number;
-  };
-
-  export type VTokenPositionViewStruct = {
-    poolId: BigNumberish;
-    balance: BigNumberish;
-    netTraderPosition: BigNumberish;
-    sumALastX128: BigNumberish;
-    liquidityPositions: IClearingHouseStructures.LiquidityPositionViewStruct[];
-  };
-
-  export type VTokenPositionViewStructOutput = [
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    IClearingHouseStructures.LiquidityPositionViewStructOutput[]
-  ] & {
-    poolId: number;
-    balance: BigNumber;
-    netTraderPosition: BigNumber;
-    sumALastX128: BigNumber;
-    liquidityPositions: IClearingHouseStructures.LiquidityPositionViewStructOutput[];
-  };
-
-  export type CollateralStruct = {
-    token: string;
-    settings: IClearingHouseStructures.CollateralSettingsStruct;
-  };
-
-  export type CollateralStructOutput = [
-    string,
-    IClearingHouseStructures.CollateralSettingsStructOutput
-  ] & {
-    token: string;
-    settings: IClearingHouseStructures.CollateralSettingsStructOutput;
-  };
-
   export type PoolStruct = {
     vToken: string;
     vPool: string;
@@ -252,22 +173,22 @@ export declare namespace IClearingHouseStructures {
 
 export interface IClearingHouseInterface extends utils.Interface {
   functions: {
+    'acceptGovernanceTransfer()': FunctionFragment;
+    'acceptTeamMultisigTransfer()': FunctionFragment;
     'createAccount()': FunctionFragment;
     'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'extsload(bytes32[])': FunctionFragment;
-    'getAccountInfo(uint256)': FunctionFragment;
     'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
     'getAccountNetProfit(uint256)': FunctionFragment;
     'getAccountNetTokenPosition(uint256,uint32)': FunctionFragment;
-    'getCollateralInfo(uint32)': FunctionFragment;
-    'getPoolInfo(uint32)': FunctionFragment;
-    'getProtocolInfo()': FunctionFragment;
     'getRealTwapPriceX128(uint32)': FunctionFragment;
     'getVirtualTwapPriceX128(uint32)': FunctionFragment;
     'governance()': FunctionFragment;
-    'initialize(address,address,address,address,address)': FunctionFragment;
-    'isPoolIdAvailable(uint32)': FunctionFragment;
+    'governancePending()': FunctionFragment;
+    'initialize(address,address,address,address,address,address,address)': FunctionFragment;
+    'initiateGovernanceTransfer(address)': FunctionFragment;
+    'initiateTeamMultisigTransfer(address)': FunctionFragment;
     'liquidateLiquidityPositions(uint256)': FunctionFragment;
     'liquidateTokenPosition(uint256,uint32)': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
@@ -275,35 +196,34 @@ export interface IClearingHouseInterface extends utils.Interface {
     'settleProfit(uint256)': FunctionFragment;
     'swapToken(uint256,uint32,(int256,uint160,bool,bool,bool))': FunctionFragment;
     'teamMultisig()': FunctionFragment;
-    'transferGovernance(address)': FunctionFragment;
-    'transferTeamMultisig(address)': FunctionFragment;
+    'teamMultisigPending()': FunctionFragment;
     'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
     'updateMargin(uint256,uint32,int256)': FunctionFragment;
     'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProfit(uint256,int256)': FunctionFragment;
     'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
     'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
-    'withdrawProtocolFee(address[])': FunctionFragment;
+    'withdrawProtocolFee(uint256)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'acceptGovernanceTransfer'
+      | 'acceptTeamMultisigTransfer'
       | 'createAccount'
       | 'createAccountAndAddMargin'
       | 'extsload(bytes32)'
       | 'extsload(bytes32[])'
-      | 'getAccountInfo'
       | 'getAccountMarketValueAndRequiredMargin'
       | 'getAccountNetProfit'
       | 'getAccountNetTokenPosition'
-      | 'getCollateralInfo'
-      | 'getPoolInfo'
-      | 'getProtocolInfo'
       | 'getRealTwapPriceX128'
       | 'getVirtualTwapPriceX128'
       | 'governance'
+      | 'governancePending'
       | 'initialize'
-      | 'isPoolIdAvailable'
+      | 'initiateGovernanceTransfer'
+      | 'initiateTeamMultisigTransfer'
       | 'liquidateLiquidityPositions'
       | 'liquidateTokenPosition'
       | 'registerPool'
@@ -311,8 +231,7 @@ export interface IClearingHouseInterface extends utils.Interface {
       | 'settleProfit'
       | 'swapToken'
       | 'teamMultisig'
-      | 'transferGovernance'
-      | 'transferTeamMultisig'
+      | 'teamMultisigPending'
       | 'updateCollateralSettings'
       | 'updateMargin'
       | 'updatePoolSettings'
@@ -322,6 +241,14 @@ export interface IClearingHouseInterface extends utils.Interface {
       | 'withdrawProtocolFee'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'acceptGovernanceTransfer',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'acceptTeamMultisigTransfer',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'createAccount',
     values?: undefined
@@ -339,10 +266,6 @@ export interface IClearingHouseInterface extends utils.Interface {
     values: [BytesLike[]]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getAccountInfo',
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
     values: [BigNumberish, boolean]
   ): string;
@@ -353,18 +276,6 @@ export interface IClearingHouseInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'getAccountNetTokenPosition',
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getCollateralInfo',
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getPoolInfo',
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getProtocolInfo',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'getRealTwapPriceX128',
@@ -379,12 +290,20 @@ export interface IClearingHouseInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'initialize',
-    values: [string, string, string, string, string]
+    functionFragment: 'governancePending',
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'isPoolIdAvailable',
-    values: [BigNumberish]
+    functionFragment: 'initialize',
+    values: [string, string, string, string, string, string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initiateGovernanceTransfer',
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initiateTeamMultisigTransfer',
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateLiquidityPositions',
@@ -419,12 +338,8 @@ export interface IClearingHouseInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'transferGovernance',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'transferTeamMultisig',
-    values: [string]
+    functionFragment: 'teamMultisigPending',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
@@ -461,9 +376,17 @@ export interface IClearingHouseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
-    values: [string[]]
+    values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'acceptGovernanceTransfer',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'acceptTeamMultisigTransfer',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'createAccount',
     data: BytesLike
@@ -481,10 +404,6 @@ export interface IClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getAccountInfo',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
     data: BytesLike
   ): Result;
@@ -497,18 +416,6 @@ export interface IClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'getCollateralInfo',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getPoolInfo',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getProtocolInfo',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'getRealTwapPriceX128',
     data: BytesLike
   ): Result;
@@ -517,9 +424,17 @@ export interface IClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'governancePending',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'isPoolIdAvailable',
+    functionFragment: 'initiateGovernanceTransfer',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'initiateTeamMultisigTransfer',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -548,11 +463,7 @@ export interface IClearingHouseInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'transferGovernance',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'transferTeamMultisig',
+    functionFragment: 'teamMultisigPending',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -690,6 +601,14 @@ export interface IClearingHouse extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    acceptGovernanceTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    acceptTeamMultisigTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -709,23 +628,6 @@ export interface IClearingHouse extends BaseContract {
       slots: BytesLike[],
       overrides?: CallOverrides
     ): Promise<[string[]]>;
-
-    getAccountInfo(
-      accountId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        string,
-        BigNumber,
-        IClearingHouseStructures.CollateralDepositViewStructOutput[],
-        IClearingHouseStructures.VTokenPositionViewStructOutput[]
-      ] & {
-        owner: string;
-        vQuoteBalance: BigNumber;
-        collateralDeposits: IClearingHouseStructures.CollateralDepositViewStructOutput[];
-        tokenPositions: IClearingHouseStructures.VTokenPositionViewStructOutput[];
-      }
-    >;
 
     getAccountMarketValueAndRequiredMargin(
       accountId: BigNumberish,
@@ -749,34 +651,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { netPosition: BigNumber }>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
-
-    getPoolInfo(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[IClearingHouseStructures.PoolStructOutput]>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<
-      [
-        string,
-        string,
-        IClearingHouseStructures.LiquidationParamsStructOutput,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        settlementToken: string;
-        vQuote: string;
-        liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-        minRequiredMargin: BigNumber;
-        removeLimitOrderFee: BigNumber;
-        minimumOrderNotional: BigNumber;
-      }
-    >;
-
     getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -789,8 +663,12 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<[string]>;
 
+    governancePending(overrides?: CallOverrides): Promise<[string]>;
+
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -798,10 +676,15 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    isPoolIdAvailable(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     liquidateLiquidityPositions(
       accountId: BigNumberish,
@@ -841,15 +724,7 @@ export interface IClearingHouse extends BaseContract {
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<[string]>;
 
     updateCollateralSettings(
       cToken: string,
@@ -892,10 +767,18 @@ export interface IClearingHouse extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  acceptGovernanceTransfer(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  acceptTeamMultisigTransfer(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   createAccount(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -916,23 +799,6 @@ export interface IClearingHouse extends BaseContract {
     slots: BytesLike[],
     overrides?: CallOverrides
   ): Promise<string[]>;
-
-  getAccountInfo(
-    accountId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      string,
-      BigNumber,
-      IClearingHouseStructures.CollateralDepositViewStructOutput[],
-      IClearingHouseStructures.VTokenPositionViewStructOutput[]
-    ] & {
-      owner: string;
-      vQuoteBalance: BigNumber;
-      collateralDeposits: IClearingHouseStructures.CollateralDepositViewStructOutput[];
-      tokenPositions: IClearingHouseStructures.VTokenPositionViewStructOutput[];
-    }
-  >;
 
   getAccountMarketValueAndRequiredMargin(
     accountId: BigNumberish,
@@ -956,34 +822,6 @@ export interface IClearingHouse extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getCollateralInfo(
-    collateralId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-  getPoolInfo(
-    poolId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.PoolStructOutput>;
-
-  getProtocolInfo(overrides?: CallOverrides): Promise<
-    [
-      string,
-      string,
-      IClearingHouseStructures.LiquidationParamsStructOutput,
-      BigNumber,
-      BigNumber,
-      BigNumber
-    ] & {
-      settlementToken: string;
-      vQuote: string;
-      liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-      minRequiredMargin: BigNumber;
-      removeLimitOrderFee: BigNumber;
-      minimumOrderNotional: BigNumber;
-    }
-  >;
-
   getRealTwapPriceX128(
     poolId: BigNumberish,
     overrides?: CallOverrides
@@ -996,8 +834,12 @@ export interface IClearingHouse extends BaseContract {
 
   governance(overrides?: CallOverrides): Promise<string>;
 
+  governancePending(overrides?: CallOverrides): Promise<string>;
+
   initialize(
     rageTradeFactoryAddress: string,
+    initialGovernance: string,
+    initialTeamMultisig: string,
     defaultCollateralToken: string,
     defaultCollateralTokenOracle: string,
     insuranceFund: string,
@@ -1005,10 +847,15 @@ export interface IClearingHouse extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  isPoolIdAvailable(
-    poolId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  initiateGovernanceTransfer(
+    newGovernancePending: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initiateTeamMultisigTransfer(
+    newTeamMultisigPending: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   liquidateLiquidityPositions(
     accountId: BigNumberish,
@@ -1048,15 +895,7 @@ export interface IClearingHouse extends BaseContract {
 
   teamMultisig(overrides?: CallOverrides): Promise<string>;
 
-  transferGovernance(
-    newGovernance: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferTeamMultisig(
-    newTeamMultisig: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  teamMultisigPending(overrides?: CallOverrides): Promise<string>;
 
   updateCollateralSettings(
     cToken: string,
@@ -1099,11 +938,15 @@ export interface IClearingHouse extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdrawProtocolFee(
-    wrapperAddresses: string[],
+    numberOfPoolsToUpdateInThisTx: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    acceptGovernanceTransfer(overrides?: CallOverrides): Promise<void>;
+
+    acceptTeamMultisigTransfer(overrides?: CallOverrides): Promise<void>;
+
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
@@ -1121,23 +964,6 @@ export interface IClearingHouse extends BaseContract {
       slots: BytesLike[],
       overrides?: CallOverrides
     ): Promise<string[]>;
-
-    getAccountInfo(
-      accountId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        string,
-        BigNumber,
-        IClearingHouseStructures.CollateralDepositViewStructOutput[],
-        IClearingHouseStructures.VTokenPositionViewStructOutput[]
-      ] & {
-        owner: string;
-        vQuoteBalance: BigNumber;
-        collateralDeposits: IClearingHouseStructures.CollateralDepositViewStructOutput[];
-        tokenPositions: IClearingHouseStructures.VTokenPositionViewStructOutput[];
-      }
-    >;
 
     getAccountMarketValueAndRequiredMargin(
       accountId: BigNumberish,
@@ -1161,34 +987,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-    getPoolInfo(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.PoolStructOutput>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<
-      [
-        string,
-        string,
-        IClearingHouseStructures.LiquidationParamsStructOutput,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        settlementToken: string;
-        vQuote: string;
-        liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-        minRequiredMargin: BigNumber;
-        removeLimitOrderFee: BigNumber;
-        minimumOrderNotional: BigNumber;
-      }
-    >;
-
     getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -1201,8 +999,12 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<string>;
 
+    governancePending(overrides?: CallOverrides): Promise<string>;
+
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -1210,10 +1012,15 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    isPoolIdAvailable(
-      poolId: BigNumberish,
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<void>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     liquidateLiquidityPositions(
       accountId: BigNumberish,
@@ -1258,15 +1065,7 @@ export interface IClearingHouse extends BaseContract {
 
     teamMultisig(overrides?: CallOverrides): Promise<string>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<string>;
 
     updateCollateralSettings(
       cToken: string,
@@ -1314,7 +1113,7 @@ export interface IClearingHouse extends BaseContract {
     >;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -1365,6 +1164,14 @@ export interface IClearingHouse extends BaseContract {
   };
 
   estimateGas: {
+    acceptGovernanceTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    acceptTeamMultisigTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1385,11 +1192,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getAccountInfo(
-      accountId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getAccountMarketValueAndRequiredMargin(
       accountId: BigNumberish,
       isInitialMargin: boolean,
@@ -1407,18 +1209,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPoolInfo(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
-
     getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -1431,8 +1221,12 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
 
+    governancePending(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -1440,9 +1234,14 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    isPoolIdAvailable(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositions(
@@ -1483,15 +1282,7 @@ export interface IClearingHouse extends BaseContract {
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<BigNumber>;
 
     updateCollateralSettings(
       cToken: string,
@@ -1534,12 +1325,20 @@ export interface IClearingHouse extends BaseContract {
     ): Promise<BigNumber>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    acceptGovernanceTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    acceptTeamMultisigTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     createAccount(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1560,11 +1359,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getAccountInfo(
-      accountId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getAccountMarketValueAndRequiredMargin(
       accountId: BigNumberish,
       isInitialMargin: boolean,
@@ -1582,18 +1376,6 @@ export interface IClearingHouse extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCollateralInfo(
-      collateralId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPoolInfo(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getRealTwapPriceX128(
       poolId: BigNumberish,
       overrides?: CallOverrides
@@ -1606,8 +1388,12 @@ export interface IClearingHouse extends BaseContract {
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -1615,9 +1401,14 @@ export interface IClearingHouse extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    isPoolIdAvailable(
-      poolId: BigNumberish,
-      overrides?: CallOverrides
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateLiquidityPositions(
@@ -1658,14 +1449,8 @@ export interface IClearingHouse extends BaseContract {
 
     teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    teamMultisigPending(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     updateCollateralSettings(
@@ -1709,7 +1494,7 @@ export interface IClearingHouse extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

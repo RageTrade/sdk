@@ -31,7 +31,7 @@ const _abi = [
         type: 'address',
       },
       {
-        internalType: 'contract IClearingHouse',
+        internalType: 'address',
         name: 'clearingHouse',
         type: 'address',
       },

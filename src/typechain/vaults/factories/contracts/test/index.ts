@@ -4,5 +4,6 @@
 export * as curveMocks from './curve-mocks';
 export * as mocks from './mocks';
 export { BaseVaultTest__factory } from './BaseVaultTest__factory';
+export { ChainlinkMock__factory } from './ChainlinkMock__factory';
 export { CurveYieldStrategyTest__factory } from './CurveYieldStrategyTest__factory';
 export { EightyTwentyRangeStrategyVaultTest__factory } from './EightyTwentyRangeStrategyVaultTest__factory';

@@ -44,7 +44,9 @@ export declare namespace BaseVault {
   export type BaseVaultInitParamsStruct = {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStruct;
     ethPoolId: BigNumberish;
+    swapSimulator: string;
     rageClearingHouse: string;
+    clearingHouseLens: string;
     rageCollateralToken: string;
     rageSettlementToken: string;
   };
@@ -54,11 +56,15 @@ export declare namespace BaseVault {
     number,
     string,
     string,
+    string,
+    string,
     string
   ] & {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStructOutput;
     ethPoolId: number;
+    swapSimulator: string;
     rageClearingHouse: string;
+    clearingHouseLens: string;
     rageCollateralToken: string;
     rageSettlementToken: string;
   };
@@ -132,7 +138,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'baseLiquidity()': FunctionFragment;
     'baseTickLower()': FunctionFragment;
     'baseTickUpper()': FunctionFragment;
-    'changeFee(uint256)': FunctionFragment;
+    'closePositionSlippageSqrtToleranceBps()': FunctionFragment;
     'closeTokenPosition()': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
     'convertToShares(uint256)': FunctionFragment;
@@ -141,6 +147,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
     'depositUsdc(uint256)': FunctionFragment;
+    'ethPoolId()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'extsload(bytes32[])': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
@@ -149,18 +156,16 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'grantAllowances()': FunctionFragment;
     'harvestFees()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(((((address,string,string),uint32,address,address,address),uint16,uint16,uint64),address,address,address,address,address,address,address,address))': FunctionFragment;
+    'initialize(((((address,string,string),uint32,address,address,address,address,address),uint16,uint16,uint64),address,address,address,address,address,address,address,address))': FunctionFragment;
     'isReset()': FunctionFragment;
     'isValidRebalance(int256)': FunctionFragment;
     'keeper()': FunctionFragment;
     'lastRebalanceTS()': FunctionFragment;
-    'maxAssets()': FunctionFragment;
-    'maxAssetsAlwaysReverts()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
-    'maxShares()': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
+    'minNotionalPositionToCloseThreshold()': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
     'owner()': FunctionFragment;
@@ -169,25 +174,24 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'rageAccountNo()': FunctionFragment;
+    'rageClearingHouse()': FunctionFragment;
+    'rageVPool()': FunctionFragment;
     'rebalance()': FunctionFragment;
     'rebalancePriceThresholdBps()': FunctionFragment;
     'rebalanceTimeThreshold()': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setCrvOracle(address)': FunctionFragment;
-    'setCrvSwapSlippageTolerance(uint256)': FunctionFragment;
     'setEightTwentyParams(uint16,uint16,uint64)': FunctionFragment;
-    'setKeeper(address)': FunctionFragment;
-    'setRebalanceThreshold(uint32,uint16)': FunctionFragment;
-    'setcrvHarvestThreshold(uint256)': FunctionFragment;
     'stake(uint256)': FunctionFragment;
+    'swapSimulator()': FunctionFragment;
     'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
-    'updateDepositCap(uint256)': FunctionFragment;
+    'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
+    'updateCurveParams(uint256,uint256,uint256,uint256,address)': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
     'withdrawFees()': FunctionFragment;
     'withdrawUsdc(uint256)': FunctionFragment;
@@ -204,7 +208,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
       | 'baseLiquidity'
       | 'baseTickLower'
       | 'baseTickUpper'
-      | 'changeFee'
+      | 'closePositionSlippageSqrtToleranceBps'
       | 'closeTokenPosition'
       | 'convertToAssets'
       | 'convertToShares'
@@ -213,6 +217,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
       | 'deposit'
       | 'depositCap'
       | 'depositUsdc'
+      | 'ethPoolId'
       | 'extsload(bytes32)'
       | 'extsload(bytes32[])'
       | 'getMarketValue'
@@ -226,13 +231,11 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
       | 'isValidRebalance'
       | 'keeper'
       | 'lastRebalanceTS'
-      | 'maxAssets'
-      | 'maxAssetsAlwaysReverts'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
-      | 'maxShares'
       | 'maxWithdraw'
+      | 'minNotionalPositionToCloseThreshold'
       | 'mint'
       | 'name'
       | 'owner'
@@ -241,25 +244,24 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'rageAccountNo'
+      | 'rageClearingHouse'
+      | 'rageVPool'
       | 'rebalance'
       | 'rebalancePriceThresholdBps'
       | 'rebalanceTimeThreshold'
       | 'redeem'
       | 'renounceOwnership'
-      | 'setCrvOracle'
-      | 'setCrvSwapSlippageTolerance'
       | 'setEightTwentyParams'
-      | 'setKeeper'
-      | 'setRebalanceThreshold'
-      | 'setcrvHarvestThreshold'
       | 'stake'
+      | 'swapSimulator'
       | 'symbol'
       | 'totalAssets'
       | 'totalSupply'
       | 'transfer'
       | 'transferFrom'
       | 'transferOwnership'
-      | 'updateDepositCap'
+      | 'updateBaseParams'
+      | 'updateCurveParams'
       | 'withdraw'
       | 'withdrawFees'
       | 'withdrawUsdc'
@@ -290,8 +292,8 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'changeFee',
-    values: [BigNumberish]
+    functionFragment: 'closePositionSlippageSqrtToleranceBps',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'closeTokenPosition',
@@ -322,6 +324,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'depositUsdc',
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: 'ethPoolId', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
     values: [BytesLike]
@@ -368,16 +371,14 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'maxAssets', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: 'maxDeposit', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
-  encodeFunctionData(functionFragment: 'maxShares', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
+  encodeFunctionData(
+    functionFragment: 'minNotionalPositionToCloseThreshold',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'mint',
     values: [BigNumberish, string]
@@ -404,6 +405,11 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'rageAccountNo',
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: 'rageClearingHouse',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'rageVPool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'rebalancePriceThresholdBps',
@@ -422,27 +428,14 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'setCrvOracle',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setCrvSwapSlippageTolerance',
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'setEightTwentyParams',
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: 'setKeeper', values: [string]): string;
-  encodeFunctionData(
-    functionFragment: 'setRebalanceThreshold',
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setcrvHarvestThreshold',
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: 'stake', values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: 'swapSimulator',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'totalAssets',
@@ -465,8 +458,12 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'updateDepositCap',
-    values: [BigNumberish]
+    functionFragment: 'updateBaseParams',
+    values: [BigNumberish, string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'updateCurveParams',
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
@@ -499,7 +496,10 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'baseTickUpper',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'changeFee', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'closePositionSlippageSqrtToleranceBps',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'closeTokenPosition',
     data: BytesLike
@@ -523,6 +523,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'depositUsdc',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'ethPoolId', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'extsload(bytes32)',
     data: BytesLike
@@ -566,17 +567,15 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'maxAssets', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxMint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxRedeem', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'maxShares', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'maxWithdraw',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'minNotionalPositionToCloseThreshold',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
@@ -602,6 +601,11 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'rageAccountNo',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: 'rageClearingHouse',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'rageVPool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'rebalance', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rebalancePriceThresholdBps',
@@ -617,27 +621,14 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setCrvOracle',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setCrvSwapSlippageTolerance',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'setEightTwentyParams',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'setRebalanceThreshold',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setcrvHarvestThreshold',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'stake', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'swapSimulator',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'totalAssets',
@@ -657,7 +648,11 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'updateDepositCap',
+    functionFragment: 'updateBaseParams',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'updateCurveParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
@@ -673,6 +668,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
   events: {
     'Approval(address,address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
@@ -680,6 +676,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
@@ -709,6 +706,13 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -801,10 +805,9 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     baseTickUpper(overrides?: CallOverrides): Promise<[number]>;
 
-    changeFee(
-      bps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    closePositionSlippageSqrtToleranceBps(
+      overrides?: CallOverrides
+    ): Promise<[number]>;
 
     closeTokenPosition(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -840,6 +843,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<[number]>;
 
     'extsload(bytes32)'(
       slot: BytesLike,
@@ -894,25 +899,17 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    minNotionalPositionToCloseThreshold(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     mint(
       shares: BigNumberish,
@@ -946,6 +943,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
+
+    rageVPool(overrides?: CallOverrides): Promise<[string]>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -965,16 +966,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setCrvOracle(
-      _crvOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setCrvSwapSlippageTolerance(
-      _slippageTolerance: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setEightTwentyParams(
       _closePositionSlippageSqrtToleranceBps: BigNumberish,
       _resetPositionThresholdBps: BigNumberish,
@@ -982,26 +973,12 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setcrvHarvestThreshold(
-      _crvHarvestThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     stake(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1027,8 +1004,20 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    updateCurveParams(
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1075,10 +1064,9 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
   baseTickUpper(overrides?: CallOverrides): Promise<number>;
 
-  changeFee(
-    bps: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  closePositionSlippageSqrtToleranceBps(
+    overrides?: CallOverrides
+  ): Promise<number>;
 
   closeTokenPosition(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1114,6 +1102,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  ethPoolId(overrides?: CallOverrides): Promise<number>;
 
   'extsload(bytes32)'(
     slot: BytesLike,
@@ -1164,25 +1154,17 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
   lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-  maxAssets(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  maxAssetsAlwaysReverts(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  maxShares(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  minNotionalPositionToCloseThreshold(
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   mint(
     shares: BigNumberish,
@@ -1216,6 +1198,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
   rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+  rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+  rageVPool(overrides?: CallOverrides): Promise<string>;
+
   rebalance(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1235,16 +1221,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setCrvOracle(
-    _crvOracle: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setCrvSwapSlippageTolerance(
-    _slippageTolerance: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setEightTwentyParams(
     _closePositionSlippageSqrtToleranceBps: BigNumberish,
     _resetPositionThresholdBps: BigNumberish,
@@ -1252,26 +1228,12 @@ export interface CurveYieldStrategyTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setKeeper(
-    newKeeperAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setRebalanceThreshold(
-    _rebalanceTimeThreshold: BigNumberish,
-    _rebalancePriceThresholdBps: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setcrvHarvestThreshold(
-    _crvHarvestThreshold: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   stake(
     amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  swapSimulator(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1297,8 +1259,20 @@ export interface CurveYieldStrategyTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateDepositCap(
+  updateBaseParams(
     newDepositCap: BigNumberish,
+    newKeeperAddress: string,
+    _rebalanceTimeThreshold: BigNumberish,
+    _rebalancePriceThresholdBps: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  updateCurveParams(
+    _feeBps: BigNumberish,
+    _stablecoinSlippage: BigNumberish,
+    _crvHarvestThreshold: BigNumberish,
+    _crvSlippageTolerance: BigNumberish,
+    _crvOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1345,7 +1319,9 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     baseTickUpper(overrides?: CallOverrides): Promise<number>;
 
-    changeFee(bps: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    closePositionSlippageSqrtToleranceBps(
+      overrides?: CallOverrides
+    ): Promise<number>;
 
     closeTokenPosition(overrides?: CallOverrides): Promise<void>;
 
@@ -1376,6 +1352,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     depositUsdc(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<number>;
 
     'extsload(bytes32)'(
       slot: BytesLike,
@@ -1422,19 +1400,17 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(overrides?: CallOverrides): Promise<void>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxShares(overrides?: CallOverrides): Promise<BigNumber>;
-
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    minNotionalPositionToCloseThreshold(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     mint(
       shares: BigNumberish,
@@ -1468,6 +1444,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+    rageVPool(overrides?: CallOverrides): Promise<string>;
+
     rebalance(overrides?: CallOverrides): Promise<void>;
 
     rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<number>;
@@ -1483,13 +1463,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setCrvOracle(_crvOracle: string, overrides?: CallOverrides): Promise<void>;
-
-    setCrvSwapSlippageTolerance(
-      _slippageTolerance: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setEightTwentyParams(
       _closePositionSlippageSqrtToleranceBps: BigNumberish,
       _resetPositionThresholdBps: BigNumberish,
@@ -1497,23 +1470,9 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setcrvHarvestThreshold(
-      _crvHarvestThreshold: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     stake(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1539,8 +1498,20 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    updateCurveParams(
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _crvOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1583,6 +1554,9 @@ export interface CurveYieldStrategyTest extends BaseContract {
       assets?: null,
       shares?: null
     ): DepositEventFilter;
+
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
@@ -1647,9 +1621,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     baseTickUpper(overrides?: CallOverrides): Promise<BigNumber>;
 
-    changeFee(
-      bps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    closePositionSlippageSqrtToleranceBps(
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     closeTokenPosition(
@@ -1686,6 +1659,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<BigNumber>;
 
     'extsload(bytes32)'(
       slot: BytesLike,
@@ -1736,25 +1711,17 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    minNotionalPositionToCloseThreshold(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     mint(
       shares: BigNumberish,
@@ -1788,6 +1755,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageVPool(overrides?: CallOverrides): Promise<BigNumber>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1807,16 +1778,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setCrvOracle(
-      _crvOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setCrvSwapSlippageTolerance(
-      _slippageTolerance: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setEightTwentyParams(
       _closePositionSlippageSqrtToleranceBps: BigNumberish,
       _resetPositionThresholdBps: BigNumberish,
@@ -1824,26 +1785,12 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setcrvHarvestThreshold(
-      _crvHarvestThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     stake(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1869,8 +1816,20 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    updateCurveParams(
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1921,9 +1880,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     baseTickUpper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    changeFee(
-      bps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    closePositionSlippageSqrtToleranceBps(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     closeTokenPosition(
@@ -1960,6 +1918,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     'extsload(bytes32)'(
       slot: BytesLike,
@@ -2012,14 +1972,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     maxDeposit(
       arg0: string,
       overrides?: CallOverrides
@@ -2035,12 +1987,12 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     maxWithdraw(
       owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2076,6 +2028,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rageVPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2099,16 +2055,6 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setCrvOracle(
-      _crvOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCrvSwapSlippageTolerance(
-      _slippageTolerance: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setEightTwentyParams(
       _closePositionSlippageSqrtToleranceBps: BigNumberish,
       _resetPositionThresholdBps: BigNumberish,
@@ -2116,26 +2062,12 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setcrvHarvestThreshold(
-      _crvHarvestThreshold: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     stake(
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -2161,8 +2093,20 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateCurveParams(
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

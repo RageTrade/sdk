@@ -189,11 +189,19 @@ export interface VaultPeripheryInterface extends utils.Interface {
 
   events: {
     'DepositPeriphery(address,address,uint256,uint256,uint256)': EventFragment;
+    'EthOracleUpdated(address,address)': EventFragment;
+    'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
+    'SlippageToleranceUpdated(uint256,uint256)': EventFragment;
+    'SwapRouterUpdated(address,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'DepositPeriphery'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EthOracleUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'SlippageToleranceUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'SwapRouterUpdated'): EventFragment;
 }
 
 export interface DepositPeripheryEventObject {
@@ -211,6 +219,25 @@ export type DepositPeripheryEvent = TypedEvent<
 export type DepositPeripheryEventFilter =
   TypedEventFilter<DepositPeripheryEvent>;
 
+export interface EthOracleUpdatedEventObject {
+  oldEthOracle: string;
+  newEthOracle: string;
+}
+export type EthOracleUpdatedEvent = TypedEvent<
+  [string, string],
+  EthOracleUpdatedEventObject
+>;
+
+export type EthOracleUpdatedEventFilter =
+  TypedEventFilter<EthOracleUpdatedEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
   newOwner: string;
@@ -222,6 +249,30 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface SlippageToleranceUpdatedEventObject {
+  oldTolerance: BigNumber;
+  newTolerance: BigNumber;
+}
+export type SlippageToleranceUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  SlippageToleranceUpdatedEventObject
+>;
+
+export type SlippageToleranceUpdatedEventFilter =
+  TypedEventFilter<SlippageToleranceUpdatedEvent>;
+
+export interface SwapRouterUpdatedEventObject {
+  oldSwapRouter: string;
+  newSwapRouter: string;
+}
+export type SwapRouterUpdatedEvent = TypedEvent<
+  [string, string],
+  SwapRouterUpdatedEventObject
+>;
+
+export type SwapRouterUpdatedEventFilter =
+  TypedEventFilter<SwapRouterUpdatedEvent>;
 
 export interface VaultPeriphery extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -484,6 +535,18 @@ export interface VaultPeriphery extends BaseContract {
       shares?: null
     ): DepositPeripheryEventFilter;
 
+    'EthOracleUpdated(address,address)'(
+      oldEthOracle?: string | null,
+      newEthOracle?: string | null
+    ): EthOracleUpdatedEventFilter;
+    EthOracleUpdated(
+      oldEthOracle?: string | null,
+      newEthOracle?: string | null
+    ): EthOracleUpdatedEventFilter;
+
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -492,6 +555,24 @@ export interface VaultPeriphery extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
+
+    'SlippageToleranceUpdated(uint256,uint256)'(
+      oldTolerance?: null,
+      newTolerance?: null
+    ): SlippageToleranceUpdatedEventFilter;
+    SlippageToleranceUpdated(
+      oldTolerance?: null,
+      newTolerance?: null
+    ): SlippageToleranceUpdatedEventFilter;
+
+    'SwapRouterUpdated(address,address)'(
+      oldSwapRouter?: string | null,
+      newSwapRouter?: string | null
+    ): SwapRouterUpdatedEventFilter;
+    SwapRouterUpdated(
+      oldSwapRouter?: string | null,
+      newSwapRouter?: string | null
+    ): SwapRouterUpdatedEventFilter;
   };
 
   estimateGas: {

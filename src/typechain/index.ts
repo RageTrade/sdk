@@ -19,8 +19,10 @@ export { InsuranceFund } from './core/contracts/protocol/insurancefund';
 export { IUniswapV3Pool } from './uniswap-core';
 export { IQuoter, IQuoterV2 } from './uniswap-periphery';
 export { CurveYieldStrategy } from './vaults';
-export { ERC20PresetMinterPauser } from './core/@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser';
-export { ERC20PresetMinterPauser__factory } from './core/factories/@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser__factory';
+export {
+  ERC20PresetMinterPauser,
+  ERC20PresetMinterPauser__factory,
+} from './vaults';
 export { ICurveGauge__factory } from './vaults';
 
 export {

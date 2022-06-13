@@ -100,7 +100,7 @@ export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
     'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
     'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
     'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
-    'withdrawProtocolFee(address[])': FunctionFragment;
+    'withdrawProtocolFee(uint256)': FunctionFragment;
   };
 
   getFunction(
@@ -130,7 +130,7 @@ export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
-    values: [string[]]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -201,7 +201,7 @@ export interface IClearingHouseOwnerActions extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -227,7 +227,7 @@ export interface IClearingHouseOwnerActions extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdrawProtocolFee(
-    wrapperAddresses: string[],
+    numberOfPoolsToUpdateInThisTx: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -253,7 +253,7 @@ export interface IClearingHouseOwnerActions extends BaseContract {
     ): Promise<void>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -282,7 +282,7 @@ export interface IClearingHouseOwnerActions extends BaseContract {
     ): Promise<BigNumber>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -309,7 +309,7 @@ export interface IClearingHouseOwnerActions extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdrawProtocolFee(
-      wrapperAddresses: string[],
+      numberOfPoolsToUpdateInThisTx: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

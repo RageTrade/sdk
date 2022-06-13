@@ -22,6 +22,16 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'CannotPauseIfUnpauseInProgress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'CannotUnpauseIfPauseInProgress',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -82,6 +92,17 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'errorCode',
+        type: 'uint256',
+      },
+    ],
+    name: 'InvalidSetting',
+    type: 'error',
+  },
+  {
     inputs: [],
     name: 'InvalidTokenLiquidationParameters',
     type: 'error',
@@ -109,6 +130,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'NotRageTradeFactory',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -133,6 +159,11 @@ const _abi = [
   {
     inputs: [],
     name: 'SlippageBeyondTolerance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroAmount',
     type: 'error',
   },
   {
@@ -334,6 +365,20 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'acceptGovernanceTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'acceptTeamMultisigTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'createAccount',
     outputs: [
       {
@@ -402,127 +447,6 @@ const _abi = [
         internalType: 'bytes32[]',
         name: '',
         type: 'bytes32[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'accountId',
-        type: 'uint256',
-      },
-    ],
-    name: 'getAccountInfo',
-    outputs: [
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        internalType: 'int256',
-        name: 'vQuoteBalance',
-        type: 'int256',
-      },
-      {
-        components: [
-          {
-            internalType: 'contract IERC20',
-            name: 'collateral',
-            type: 'address',
-          },
-          {
-            internalType: 'uint256',
-            name: 'balance',
-            type: 'uint256',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.CollateralDepositView[]',
-        name: 'collateralDeposits',
-        type: 'tuple[]',
-      },
-      {
-        components: [
-          {
-            internalType: 'uint32',
-            name: 'poolId',
-            type: 'uint32',
-          },
-          {
-            internalType: 'int256',
-            name: 'balance',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'netTraderPosition',
-            type: 'int256',
-          },
-          {
-            internalType: 'int256',
-            name: 'sumALastX128',
-            type: 'int256',
-          },
-          {
-            components: [
-              {
-                internalType: 'int24',
-                name: 'tickLower',
-                type: 'int24',
-              },
-              {
-                internalType: 'int24',
-                name: 'tickUpper',
-                type: 'int24',
-              },
-              {
-                internalType: 'uint128',
-                name: 'liquidity',
-                type: 'uint128',
-              },
-              {
-                internalType: 'int256',
-                name: 'vTokenAmountIn',
-                type: 'int256',
-              },
-              {
-                internalType: 'int256',
-                name: 'sumALastX128',
-                type: 'int256',
-              },
-              {
-                internalType: 'int256',
-                name: 'sumBInsideLastX128',
-                type: 'int256',
-              },
-              {
-                internalType: 'int256',
-                name: 'sumFpInsideLastX128',
-                type: 'int256',
-              },
-              {
-                internalType: 'uint256',
-                name: 'sumFeeInsideLastX128',
-                type: 'uint256',
-              },
-              {
-                internalType: 'enum IClearingHouseEnums.LimitOrderType',
-                name: 'limitOrderType',
-                type: 'uint8',
-              },
-            ],
-            internalType:
-              'struct IClearingHouseStructures.LiquidityPositionView[]',
-            name: 'liquidityPositions',
-            type: 'tuple[]',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.VTokenPositionView[]',
-        name: 'tokenPositions',
-        type: 'tuple[]',
       },
     ],
     stateMutability: 'view',
@@ -604,212 +528,6 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint32',
-        name: 'collateralId',
-        type: 'uint32',
-      },
-    ],
-    name: 'getCollateralInfo',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'contract IERC20',
-            name: 'token',
-            type: 'address',
-          },
-          {
-            components: [
-              {
-                internalType: 'contract IOracle',
-                name: 'oracle',
-                type: 'address',
-              },
-              {
-                internalType: 'uint32',
-                name: 'twapDuration',
-                type: 'uint32',
-              },
-              {
-                internalType: 'bool',
-                name: 'isAllowedForDeposit',
-                type: 'bool',
-              },
-            ],
-            internalType: 'struct IClearingHouseStructures.CollateralSettings',
-            name: 'settings',
-            type: 'tuple',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.Collateral',
-        name: '',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
-      },
-    ],
-    name: 'getPoolInfo',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'contract IVToken',
-            name: 'vToken',
-            type: 'address',
-          },
-          {
-            internalType: 'contract IUniswapV3Pool',
-            name: 'vPool',
-            type: 'address',
-          },
-          {
-            internalType: 'contract IVPoolWrapper',
-            name: 'vPoolWrapper',
-            type: 'address',
-          },
-          {
-            components: [
-              {
-                internalType: 'uint16',
-                name: 'initialMarginRatioBps',
-                type: 'uint16',
-              },
-              {
-                internalType: 'uint16',
-                name: 'maintainanceMarginRatioBps',
-                type: 'uint16',
-              },
-              {
-                internalType: 'uint16',
-                name: 'maxVirtualPriceDeviationRatioBps',
-                type: 'uint16',
-              },
-              {
-                internalType: 'uint32',
-                name: 'twapDuration',
-                type: 'uint32',
-              },
-              {
-                internalType: 'bool',
-                name: 'isAllowedForTrade',
-                type: 'bool',
-              },
-              {
-                internalType: 'bool',
-                name: 'isCrossMargined',
-                type: 'bool',
-              },
-              {
-                internalType: 'contract IOracle',
-                name: 'oracle',
-                type: 'address',
-              },
-            ],
-            internalType: 'struct IClearingHouseStructures.PoolSettings',
-            name: 'settings',
-            type: 'tuple',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.Pool',
-        name: '',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getProtocolInfo',
-    outputs: [
-      {
-        internalType: 'contract IERC20',
-        name: 'settlementToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IVQuote',
-        name: 'vQuote',
-        type: 'address',
-      },
-      {
-        components: [
-          {
-            internalType: 'uint16',
-            name: 'rangeLiquidationFeeFraction',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'tokenLiquidationFeeFraction',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'closeFactorMMThresholdBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'partialLiquidationCloseFactorBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'insuranceFundFeeShareBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint16',
-            name: 'liquidationSlippageSqrtToleranceBps',
-            type: 'uint16',
-          },
-          {
-            internalType: 'uint64',
-            name: 'maxRangeLiquidationFees',
-            type: 'uint64',
-          },
-          {
-            internalType: 'uint64',
-            name: 'minNotionalLiquidatable',
-            type: 'uint64',
-          },
-        ],
-        internalType: 'struct IClearingHouseStructures.LiquidationParams',
-        name: 'liquidationParams',
-        type: 'tuple',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minRequiredMargin',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'removeLimitOrderFee',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minimumOrderNotional',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
         name: 'poolId',
         type: 'uint32',
       },
@@ -858,10 +576,33 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'governancePending',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
         name: 'rageTradeFactoryAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'initialGovernance',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'initialTeamMultisig',
         type: 'address',
       },
       {
@@ -893,20 +634,27 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint32',
-        name: 'poolId',
-        type: 'uint32',
+        internalType: 'address',
+        name: 'newGovernancePending',
+        type: 'address',
       },
     ],
-    name: 'isPoolIdAvailable',
-    outputs: [
+    name: 'initiateGovernanceTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
+        internalType: 'address',
+        name: 'newTeamMultisigPending',
+        type: 'address',
       },
     ],
-    stateMutability: 'view',
+    name: 'initiateTeamMultisigTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -1134,29 +882,16 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [
+    inputs: [],
+    name: 'teamMultisigPending',
+    outputs: [
       {
         internalType: 'address',
-        name: 'newGovernance',
+        name: '',
         type: 'address',
       },
     ],
-    name: 'transferGovernance',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newTeamMultisig',
-        type: 'address',
-      },
-    ],
-    name: 'transferTeamMultisig',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -1439,9 +1174,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address[]',
-        name: 'wrapperAddresses',
-        type: 'address[]',
+        internalType: 'uint256',
+        name: 'numberOfPoolsToUpdateInThisTx',
+        type: 'uint256',
       },
     ],
     name: 'withdrawProtocolFee',

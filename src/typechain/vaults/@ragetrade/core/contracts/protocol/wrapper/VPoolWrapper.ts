@@ -368,6 +368,7 @@ export interface VPoolWrapperInterface extends utils.Interface {
     'AccruedProtocolFeeCollected(uint256)': EventFragment;
     'Burn(int24,int24,uint128,uint256,uint256)': EventFragment;
     'FundingRateOverrideUpdated(int256)': EventFragment;
+    'Initialized(uint8)': EventFragment;
     'LiquidityFeeUpdated(uint24)': EventFragment;
     'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
     'ProtocolFeeUpdated(uint24)': EventFragment;
@@ -379,6 +380,7 @@ export interface VPoolWrapperInterface extends utils.Interface {
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FundingRateOverrideUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'LiquidityFeeUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
@@ -420,6 +422,13 @@ export type FundingRateOverrideUpdatedEvent = TypedEvent<
 
 export type FundingRateOverrideUpdatedEventFilter =
   TypedEventFilter<FundingRateOverrideUpdatedEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface LiquidityFeeUpdatedEventObject {
   liquidityFeePips: number;
@@ -952,6 +961,9 @@ export interface VPoolWrapper extends BaseContract {
     FundingRateOverrideUpdated(
       fundingRateOverrideX128?: null
     ): FundingRateOverrideUpdatedEventFilter;
+
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     'LiquidityFeeUpdated(uint24)'(
       liquidityFeePips?: null

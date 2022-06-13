@@ -112,6 +112,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'version',
+        type: 'uint8',
+      },
+    ],
+    name: 'Initialized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: 'address',
         name: 'previousOwner',
@@ -389,6 +402,19 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'ethPoolId',
+    outputs: [
+      {
+        internalType: 'uint32',
+        name: '',
+        type: 'uint32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'bytes32',
@@ -548,26 +574,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'maxAssets',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '_maxAssets',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'maxAssetsAlwaysReverts',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
@@ -622,19 +628,6 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'maxShares',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -797,6 +790,32 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'rageClearingHouse',
+    outputs: [
+      {
+        internalType: 'contract IClearingHouse',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'rageVPool',
+    outputs: [
+      {
+        internalType: 'contract IUniswapV3Pool',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'rebalance',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -865,34 +884,16 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [
+    inputs: [],
+    name: 'swapSimulator',
+    outputs: [
       {
-        internalType: 'address',
-        name: 'newKeeperAddress',
+        internalType: 'contract ISwapSimulator',
+        name: '',
         type: 'address',
       },
     ],
-    name: 'setKeeper',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint32',
-        name: '_rebalanceTimeThreshold',
-        type: 'uint32',
-      },
-      {
-        internalType: 'uint16',
-        name: '_rebalancePriceThresholdBps',
-        type: 'uint16',
-      },
-    ],
-    name: 'setRebalanceThreshold',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -1007,8 +1008,23 @@ const _abi = [
         name: 'newDepositCap',
         type: 'uint256',
       },
+      {
+        internalType: 'address',
+        name: 'newKeeperAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint32',
+        name: '_rebalanceTimeThreshold',
+        type: 'uint32',
+      },
+      {
+        internalType: 'uint16',
+        name: '_rebalancePriceThresholdBps',
+        type: 'uint16',
+      },
     ],
-    name: 'updateDepositCap',
+    name: 'updateBaseParams',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

@@ -73,7 +73,7 @@ export declare namespace IClearingHouseStructures {
 
 export interface IClearingHouseSystemActionsInterface extends utils.Interface {
   functions: {
-    'initialize(address,address,address,address,address)': FunctionFragment;
+    'initialize(address,address,address,address,address,address,address)': FunctionFragment;
     'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
   };
 
@@ -83,7 +83,7 @@ export interface IClearingHouseSystemActionsInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [string, string, string, string, string]
+    values: [string, string, string, string, string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
@@ -128,6 +128,8 @@ export interface IClearingHouseSystemActions extends BaseContract {
   functions: {
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -143,6 +145,8 @@ export interface IClearingHouseSystemActions extends BaseContract {
 
   initialize(
     rageTradeFactoryAddress: string,
+    initialGovernance: string,
+    initialTeamMultisig: string,
     defaultCollateralToken: string,
     defaultCollateralTokenOracle: string,
     insuranceFund: string,
@@ -158,6 +162,8 @@ export interface IClearingHouseSystemActions extends BaseContract {
   callStatic: {
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -176,6 +182,8 @@ export interface IClearingHouseSystemActions extends BaseContract {
   estimateGas: {
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,
@@ -192,6 +200,8 @@ export interface IClearingHouseSystemActions extends BaseContract {
   populateTransaction: {
     initialize(
       rageTradeFactoryAddress: string,
+      initialGovernance: string,
+      initialTeamMultisig: string,
       defaultCollateralToken: string,
       defaultCollateralTokenOracle: string,
       insuranceFund: string,

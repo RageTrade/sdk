@@ -24,24 +24,71 @@ import type {
 export interface IBaseVaultInterface extends utils.Interface {
   functions: {
     'closeTokenPosition()': FunctionFragment;
+    'depositCap()': FunctionFragment;
+    'ethPoolId()': FunctionFragment;
+    'rageAccountNo()': FunctionFragment;
+    'rageClearingHouse()': FunctionFragment;
+    'rageVPool()': FunctionFragment;
     'rebalance()': FunctionFragment;
+    'swapSimulator()': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'closeTokenPosition' | 'rebalance'
+    nameOrSignatureOrTopic:
+      | 'closeTokenPosition'
+      | 'depositCap'
+      | 'ethPoolId'
+      | 'rageAccountNo'
+      | 'rageClearingHouse'
+      | 'rageVPool'
+      | 'rebalance'
+      | 'swapSimulator'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'closeTokenPosition',
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: 'depositCap',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'ethPoolId', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'rageAccountNo',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rageClearingHouse',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'rageVPool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'swapSimulator',
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: 'closeTokenPosition',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'ethPoolId', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'rageAccountNo',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'rageClearingHouse',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'rageVPool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'rebalance', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'swapSimulator',
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -77,23 +124,59 @@ export interface IBaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<[number]>;
+
+    rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
+
+    rageVPool(overrides?: CallOverrides): Promise<[string]>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<[string]>;
   };
 
   closeTokenPosition(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
+  ethPoolId(overrides?: CallOverrides): Promise<number>;
+
+  rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
+
+  rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+  rageVPool(overrides?: CallOverrides): Promise<string>;
+
   rebalance(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  swapSimulator(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     closeTokenPosition(overrides?: CallOverrides): Promise<void>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<number>;
+
+    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+    rageVPool(overrides?: CallOverrides): Promise<string>;
+
     rebalance(overrides?: CallOverrides): Promise<void>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -103,9 +186,21 @@ export interface IBaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageVPool(overrides?: CallOverrides): Promise<BigNumber>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -113,8 +208,20 @@ export interface IBaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    ethPoolId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rageVPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    swapSimulator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

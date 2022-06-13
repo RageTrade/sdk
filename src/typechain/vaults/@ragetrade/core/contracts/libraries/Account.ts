@@ -24,8 +24,7 @@ export interface AccountInterface extends utils.Interface {
     'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': EventFragment;
     'MarginUpdated(uint256,uint32,int256,bool)': EventFragment;
     'ProfitUpdated(uint256,int256)': EventFragment;
-    'ProtocolFeesWithdrawn(address,uint256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint256,uint32,int256,int256,int256)': EventFragment;
+    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)': EventFragment;
   };
 
   getEvent(
@@ -33,7 +32,6 @@ export interface AccountInterface extends utils.Interface {
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'MarginUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProfitUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolFeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TokenPositionLiquidated'): EventFragment;
 }
 
@@ -77,28 +75,15 @@ export type ProfitUpdatedEvent = TypedEvent<
 
 export type ProfitUpdatedEventFilter = TypedEventFilter<ProfitUpdatedEvent>;
 
-export interface ProtocolFeesWithdrawnEventObject {
-  wrapperAddress: string;
-  feeAmount: BigNumber;
-}
-export type ProtocolFeesWithdrawnEvent = TypedEvent<
-  [string, BigNumber],
-  ProtocolFeesWithdrawnEventObject
->;
-
-export type ProtocolFeesWithdrawnEventFilter =
-  TypedEventFilter<ProtocolFeesWithdrawnEvent>;
-
 export interface TokenPositionLiquidatedEventObject {
   accountId: BigNumber;
-  liquidatorAccountId: BigNumber;
   poolId: number;
   keeperFee: BigNumber;
   insuranceFundFee: BigNumber;
   accountMarketValueFinal: BigNumber;
 }
 export type TokenPositionLiquidatedEvent = TypedEvent<
-  [BigNumber, BigNumber, number, BigNumber, BigNumber, BigNumber],
+  [BigNumber, number, BigNumber, BigNumber, BigNumber],
   TokenPositionLiquidatedEventObject
 >;
 
@@ -175,18 +160,8 @@ export interface Account extends BaseContract {
       amount?: null
     ): ProfitUpdatedEventFilter;
 
-    'ProtocolFeesWithdrawn(address,uint256)'(
-      wrapperAddress?: string | null,
-      feeAmount?: null
-    ): ProtocolFeesWithdrawnEventFilter;
-    ProtocolFeesWithdrawn(
-      wrapperAddress?: string | null,
-      feeAmount?: null
-    ): ProtocolFeesWithdrawnEventFilter;
-
-    'TokenPositionLiquidated(uint256,uint256,uint32,int256,int256,int256)'(
+    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)'(
       accountId?: BigNumberish | null,
-      liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       keeperFee?: null,
       insuranceFundFee?: null,
@@ -194,7 +169,6 @@ export interface Account extends BaseContract {
     ): TokenPositionLiquidatedEventFilter;
     TokenPositionLiquidated(
       accountId?: BigNumberish | null,
-      liquidatorAccountId?: BigNumberish | null,
       poolId?: BigNumberish | null,
       keeperFee?: null,
       insuranceFundFee?: null,

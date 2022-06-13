@@ -36,10 +36,84 @@ const _abi = [
     name: 'VPS_TokenInactive',
     type: 'error',
   },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vTokenAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vQuoteAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96Start',
+        type: 'uint160',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96End',
+        type: 'uint160',
+      },
+    ],
+    name: 'TokenPositionChanged',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumALastX128',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionFundingPaymentRealized',
+    type: 'event',
+  },
 ];
 
 const _bytecode =
-  '0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212208f131884d92df6bea47e81a261c1b8f36745472664b702e3873131926d29b6ea64736f6c634300080d0033';
+  '0x6080806040523460175760119081601d823930815050f35b600080fdfe600080fdfea164736f6c634300080e000a';
 
 type VTokenPositionSetConstructorParams =
   | [signer?: Signer]

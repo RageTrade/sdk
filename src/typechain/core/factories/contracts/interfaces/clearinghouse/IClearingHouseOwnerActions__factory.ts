@@ -173,9 +173,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address[]',
-        name: 'wrapperAddresses',
-        type: 'address[]',
+        internalType: 'uint256',
+        name: 'numberOfPoolsToUpdateInThisTx',
+        type: 'uint256',
       },
     ],
     name: 'withdrawProtocolFee',

@@ -39,6 +39,7 @@ export interface BaseVaultInterface extends utils.Interface {
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
+    'ethPoolId()': FunctionFragment;
     'extsload(bytes32)': FunctionFragment;
     'extsload(bytes32[])': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
@@ -49,12 +50,9 @@ export interface BaseVaultInterface extends utils.Interface {
     'isValidRebalance(int256)': FunctionFragment;
     'keeper()': FunctionFragment;
     'lastRebalanceTS()': FunctionFragment;
-    'maxAssets()': FunctionFragment;
-    'maxAssetsAlwaysReverts()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
-    'maxShares()': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
@@ -64,20 +62,21 @@ export interface BaseVaultInterface extends utils.Interface {
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'rageAccountNo()': FunctionFragment;
+    'rageClearingHouse()': FunctionFragment;
+    'rageVPool()': FunctionFragment;
     'rebalance()': FunctionFragment;
     'rebalancePriceThresholdBps()': FunctionFragment;
     'rebalanceTimeThreshold()': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setKeeper(address)': FunctionFragment;
-    'setRebalanceThreshold(uint32,uint16)': FunctionFragment;
+    'swapSimulator()': FunctionFragment;
     'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
-    'updateDepositCap(uint256)': FunctionFragment;
+    'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
   };
 
@@ -94,6 +93,7 @@ export interface BaseVaultInterface extends utils.Interface {
       | 'decreaseAllowance'
       | 'deposit'
       | 'depositCap'
+      | 'ethPoolId'
       | 'extsload(bytes32)'
       | 'extsload(bytes32[])'
       | 'getMarketValue'
@@ -104,12 +104,9 @@ export interface BaseVaultInterface extends utils.Interface {
       | 'isValidRebalance'
       | 'keeper'
       | 'lastRebalanceTS'
-      | 'maxAssets'
-      | 'maxAssetsAlwaysReverts'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
-      | 'maxShares'
       | 'maxWithdraw'
       | 'mint'
       | 'name'
@@ -119,20 +116,21 @@ export interface BaseVaultInterface extends utils.Interface {
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'rageAccountNo'
+      | 'rageClearingHouse'
+      | 'rageVPool'
       | 'rebalance'
       | 'rebalancePriceThresholdBps'
       | 'rebalanceTimeThreshold'
       | 'redeem'
       | 'renounceOwnership'
-      | 'setKeeper'
-      | 'setRebalanceThreshold'
+      | 'swapSimulator'
       | 'symbol'
       | 'totalAssets'
       | 'totalSupply'
       | 'transfer'
       | 'transferFrom'
       | 'transferOwnership'
-      | 'updateDepositCap'
+      | 'updateBaseParams'
       | 'withdraw'
   ): FunctionFragment;
 
@@ -171,6 +169,7 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'depositCap',
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: 'ethPoolId', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
     values: [BytesLike]
@@ -208,15 +207,9 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'maxAssets', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: 'maxDeposit', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
-  encodeFunctionData(functionFragment: 'maxShares', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'mint',
@@ -244,6 +237,11 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'rageAccountNo',
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: 'rageClearingHouse',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'rageVPool', values?: undefined): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'rebalancePriceThresholdBps',
@@ -261,10 +259,9 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'renounceOwnership',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'setKeeper', values: [string]): string;
   encodeFunctionData(
-    functionFragment: 'setRebalanceThreshold',
-    values: [BigNumberish, BigNumberish]
+    functionFragment: 'swapSimulator',
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
@@ -288,8 +285,8 @@ export interface BaseVaultInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'updateDepositCap',
-    values: [BigNumberish]
+    functionFragment: 'updateBaseParams',
+    values: [BigNumberish, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
@@ -319,6 +316,7 @@ export interface BaseVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'ethPoolId', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'extsload(bytes32)',
     data: BytesLike
@@ -356,15 +354,9 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'lastRebalanceTS',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'maxAssets', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxMint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxRedeem', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'maxShares', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'maxWithdraw',
     data: BytesLike
@@ -392,6 +384,11 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'rageAccountNo',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: 'rageClearingHouse',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'rageVPool', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'rebalance', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rebalancePriceThresholdBps',
@@ -406,9 +403,8 @@ export interface BaseVaultInterface extends utils.Interface {
     functionFragment: 'renounceOwnership',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'setRebalanceThreshold',
+    functionFragment: 'swapSimulator',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
@@ -430,7 +426,7 @@ export interface BaseVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'updateDepositCap',
+    functionFragment: 'updateBaseParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
@@ -438,6 +434,7 @@ export interface BaseVaultInterface extends utils.Interface {
   events: {
     'Approval(address,address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
@@ -445,6 +442,7 @@ export interface BaseVaultInterface extends utils.Interface {
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
@@ -474,6 +472,13 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -586,6 +591,8 @@ export interface BaseVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    ethPoolId(overrides?: CallOverrides): Promise<[number]>;
+
     'extsload(bytes32)'(
       slot: BytesLike,
       overrides?: CallOverrides
@@ -628,23 +635,11 @@ export interface BaseVault extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -680,6 +675,10 @@ export interface BaseVault extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
+
+    rageVPool(overrides?: CallOverrides): Promise<[string]>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -699,16 +698,7 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    swapSimulator(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
@@ -734,8 +724,11 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -793,6 +786,8 @@ export interface BaseVault extends BaseContract {
 
   depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+  ethPoolId(overrides?: CallOverrides): Promise<number>;
+
   'extsload(bytes32)'(
     slot: BytesLike,
     overrides?: CallOverrides
@@ -831,23 +826,11 @@ export interface BaseVault extends BaseContract {
 
   lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-  maxAssets(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  maxAssetsAlwaysReverts(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  maxShares(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -883,6 +866,10 @@ export interface BaseVault extends BaseContract {
 
   rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+  rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+  rageVPool(overrides?: CallOverrides): Promise<string>;
+
   rebalance(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -902,16 +889,7 @@ export interface BaseVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setKeeper(
-    newKeeperAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setRebalanceThreshold(
-    _rebalanceTimeThreshold: BigNumberish,
-    _rebalancePriceThresholdBps: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  swapSimulator(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -937,8 +915,11 @@ export interface BaseVault extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  updateDepositCap(
+  updateBaseParams(
     newDepositCap: BigNumberish,
+    newKeeperAddress: string,
+    _rebalanceTimeThreshold: BigNumberish,
+    _rebalancePriceThresholdBps: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -994,6 +975,8 @@ export interface BaseVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    ethPoolId(overrides?: CallOverrides): Promise<number>;
+
     'extsload(bytes32)'(
       slot: BytesLike,
       overrides?: CallOverrides
@@ -1030,17 +1013,11 @@ export interface BaseVault extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(overrides?: CallOverrides): Promise<void>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1076,6 +1053,10 @@ export interface BaseVault extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<string>;
+
+    rageVPool(overrides?: CallOverrides): Promise<string>;
+
     rebalance(overrides?: CallOverrides): Promise<void>;
 
     rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<number>;
@@ -1091,16 +1072,7 @@ export interface BaseVault extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    swapSimulator(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
 
@@ -1126,8 +1098,11 @@ export interface BaseVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1163,6 +1138,9 @@ export interface BaseVault extends BaseContract {
       assets?: null,
       shares?: null
     ): DepositEventFilter;
+
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     'OwnershipTransferred(address,address)'(
       previousOwner?: string | null,
@@ -1247,6 +1225,8 @@ export interface BaseVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    ethPoolId(overrides?: CallOverrides): Promise<BigNumber>;
+
     'extsload(bytes32)'(
       slot: BytesLike,
       overrides?: CallOverrides
@@ -1285,23 +1265,11 @@ export interface BaseVault extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1337,6 +1305,10 @@ export interface BaseVault extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rageVPool(overrides?: CallOverrides): Promise<BigNumber>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1356,16 +1328,7 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    swapSimulator(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1391,8 +1354,11 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1454,6 +1420,8 @@ export interface BaseVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    ethPoolId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     'extsload(bytes32)'(
       slot: BytesLike,
       overrides?: CallOverrides
@@ -1494,14 +1462,6 @@ export interface BaseVault extends BaseContract {
 
     lastRebalanceTS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     maxDeposit(
       arg0: string,
       overrides?: CallOverrides
@@ -1515,10 +1475,6 @@ export interface BaseVault extends BaseContract {
     maxRedeem(
       owner: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     maxWithdraw(
@@ -1558,6 +1514,10 @@ export interface BaseVault extends BaseContract {
 
     rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rageVPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     rebalance(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1581,16 +1541,7 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setKeeper(
-      newKeeperAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRebalanceThreshold(
-      _rebalanceTimeThreshold: BigNumberish,
-      _rebalancePriceThresholdBps: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
+    swapSimulator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1616,8 +1567,11 @@ export interface BaseVault extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    updateDepositCap(
+    updateBaseParams(
       newDepositCap: BigNumberish,
+      newKeeperAddress: string,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

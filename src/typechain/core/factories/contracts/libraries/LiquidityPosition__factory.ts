@@ -19,10 +19,169 @@ const _abi = [
     name: 'LP_IneligibleLimitOrderRemoval',
     type: 'error',
   },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int128',
+        name: 'liquidityDelta',
+        type: 'int128',
+      },
+      {
+        indexed: false,
+        internalType: 'enum IClearingHouseEnums.LimitOrderType',
+        name: 'limitOrderType',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vTokenAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vQuoteAmountOut',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint160',
+        name: 'sqrtPriceX96',
+        type: 'uint160',
+      },
+    ],
+    name: 'LiquidityChanged',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+    ],
+    name: 'LiquidityPositionEarningsRealized',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'amount',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumALastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumBInsideLastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'sumFpInsideLastX128',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'sumFeeInsideLastX128',
+        type: 'uint256',
+      },
+    ],
+    name: 'LiquidityPositionFundingPaymentRealized',
+    type: 'event',
+  },
 ];
 
 const _bytecode =
-  '0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220697b40195e7909c19affd9cceebfa5c4b4fa03cd7e39115ce6158619e186686064736f6c634300080d0033';
+  '0x6080806040523460175760119081601d823930815050f35b600080fdfe600080fdfea164736f6c634300080e000a';
 
 type LiquidityPositionConstructorParams =
   | [signer?: Signer]

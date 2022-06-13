@@ -37,11 +37,14 @@ export interface VTokenInterface extends utils.Interface {
     'increaseAllowance(address,uint256)': FunctionFragment;
     'mint(address,uint256)': FunctionFragment;
     'name()': FunctionFragment;
+    'owner()': FunctionFragment;
+    'renounceOwnership()': FunctionFragment;
     'setVPoolWrapper(address)': FunctionFragment;
     'symbol()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
     'transferFrom(address,address,uint256)': FunctionFragment;
+    'transferOwnership(address)': FunctionFragment;
     'vPoolWrapper()': FunctionFragment;
   };
 
@@ -56,11 +59,14 @@ export interface VTokenInterface extends utils.Interface {
       | 'increaseAllowance'
       | 'mint'
       | 'name'
+      | 'owner'
+      | 'renounceOwnership'
       | 'setVPoolWrapper'
       | 'symbol'
       | 'totalSupply'
       | 'transfer'
       | 'transferFrom'
+      | 'transferOwnership'
       | 'vPoolWrapper'
   ): FunctionFragment;
 
@@ -88,6 +94,11 @@ export interface VTokenInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'renounceOwnership',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'setVPoolWrapper',
     values: [string]
@@ -104,6 +115,10 @@ export interface VTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'transferFrom',
     values: [string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'transferOwnership',
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'vPoolWrapper',
@@ -125,6 +140,11 @@ export interface VTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'renounceOwnership',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'setVPoolWrapper',
     data: BytesLike
@@ -140,16 +160,22 @@ export interface VTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'transferOwnership',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'vPoolWrapper',
     data: BytesLike
   ): Result;
 
   events: {
     'Approval(address,address,uint256)': EventFragment;
+    'OwnershipTransferred(address,address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
 }
 
@@ -164,6 +190,18 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export interface OwnershipTransferredEventObject {
+  previousOwner: string;
+  newOwner: string;
+}
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferredEventObject
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -245,6 +283,12 @@ export interface VToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setVPoolWrapper(
       _vPoolWrapper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -264,6 +308,11 @@ export interface VToken extends BaseContract {
       from: string,
       to: string,
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -311,6 +360,12 @@ export interface VToken extends BaseContract {
 
   name(overrides?: CallOverrides): Promise<string>;
 
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setVPoolWrapper(
     _vPoolWrapper: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -330,6 +385,11 @@ export interface VToken extends BaseContract {
     from: string,
     to: string,
     amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  transferOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -374,6 +434,10 @@ export interface VToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<string>;
 
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
     setVPoolWrapper(
       _vPoolWrapper: string,
       overrides?: CallOverrides
@@ -396,6 +460,11 @@ export interface VToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     vPoolWrapper(overrides?: CallOverrides): Promise<string>;
   };
 
@@ -410,6 +479,15 @@ export interface VToken extends BaseContract {
       spender?: string | null,
       value?: null
     ): ApprovalEventFilter;
+
+    'OwnershipTransferred(address,address)'(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
 
     'Transfer(address,address,uint256)'(
       from?: string | null,
@@ -465,6 +543,12 @@ export interface VToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setVPoolWrapper(
       _vPoolWrapper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -484,6 +568,11 @@ export interface VToken extends BaseContract {
       from: string,
       to: string,
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -535,6 +624,12 @@ export interface VToken extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setVPoolWrapper(
       _vPoolWrapper: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -554,6 +649,11 @@ export interface VToken extends BaseContract {
       from: string,
       to: string,
       amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

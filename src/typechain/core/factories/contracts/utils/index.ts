@@ -5,5 +5,4 @@ export { Extsload__factory } from './Extsload__factory';
 export { Governable__factory } from './Governable__factory';
 export { Multicall__factory } from './Multicall__factory';
 export { ProxyAdminDeployer__factory } from './ProxyAdminDeployer__factory';
-export { SwapSimulator__factory } from './SwapSimulator__factory';
 export { TimelockControllerWithMinDelayOverride__factory } from './TimelockControllerWithMinDelayOverride__factory';

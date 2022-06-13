@@ -27,59 +27,117 @@ import type {
 
 export interface GovernableInterface extends utils.Interface {
   functions: {
+    'acceptGovernanceTransfer()': FunctionFragment;
+    'acceptTeamMultisigTransfer()': FunctionFragment;
     'governance()': FunctionFragment;
+    'governancePending()': FunctionFragment;
+    'initiateGovernanceTransfer(address)': FunctionFragment;
+    'initiateTeamMultisigTransfer(address)': FunctionFragment;
     'teamMultisig()': FunctionFragment;
-    'transferGovernance(address)': FunctionFragment;
-    'transferTeamMultisig(address)': FunctionFragment;
+    'teamMultisigPending()': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'acceptGovernanceTransfer'
+      | 'acceptTeamMultisigTransfer'
       | 'governance'
+      | 'governancePending'
+      | 'initiateGovernanceTransfer'
+      | 'initiateTeamMultisigTransfer'
       | 'teamMultisig'
-      | 'transferGovernance'
-      | 'transferTeamMultisig'
+      | 'teamMultisigPending'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'acceptGovernanceTransfer',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'acceptTeamMultisigTransfer',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'governance',
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'governancePending',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initiateGovernanceTransfer',
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'initiateTeamMultisigTransfer',
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'teamMultisig',
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'transferGovernance',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'transferTeamMultisig',
-    values: [string]
+    functionFragment: 'teamMultisigPending',
+    values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'acceptGovernanceTransfer',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'acceptTeamMultisigTransfer',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'governance', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'governancePending',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'initiateGovernanceTransfer',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'initiateTeamMultisigTransfer',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'teamMultisig',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'transferGovernance',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'transferTeamMultisig',
+    functionFragment: 'teamMultisigPending',
     data: BytesLike
   ): Result;
 
   events: {
+    'GovernancePending(address,address)': EventFragment;
     'GovernanceTransferred(address,address)': EventFragment;
+    'Initialized(uint8)': EventFragment;
+    'TeamMultisigPending(address,address)': EventFragment;
     'TeamMultisigTransferred(address,address)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'GovernancePending'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TeamMultisigPending'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
 }
+
+export interface GovernancePendingEventObject {
+  previousGovernancePending: string;
+  newGovernancePending: string;
+}
+export type GovernancePendingEvent = TypedEvent<
+  [string, string],
+  GovernancePendingEventObject
+>;
+
+export type GovernancePendingEventFilter =
+  TypedEventFilter<GovernancePendingEvent>;
 
 export interface GovernanceTransferredEventObject {
   previousGovernance: string;
@@ -92,6 +150,25 @@ export type GovernanceTransferredEvent = TypedEvent<
 
 export type GovernanceTransferredEventFilter =
   TypedEventFilter<GovernanceTransferredEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface TeamMultisigPendingEventObject {
+  previousTeamMultisigPending: string;
+  newTeamMultisigPending: string;
+}
+export type TeamMultisigPendingEvent = TypedEvent<
+  [string, string],
+  TeamMultisigPendingEventObject
+>;
+
+export type TeamMultisigPendingEventFilter =
+  TypedEventFilter<TeamMultisigPendingEvent>;
 
 export interface TeamMultisigTransferredEventObject {
   previousTeamMultisig: string;
@@ -132,52 +209,93 @@ export interface Governable extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    acceptGovernanceTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    acceptTeamMultisigTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     governance(overrides?: CallOverrides): Promise<[string]>;
+
+    governancePending(overrides?: CallOverrides): Promise<[string]>;
+
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  acceptGovernanceTransfer(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  acceptTeamMultisigTransfer(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   governance(overrides?: CallOverrides): Promise<string>;
 
+  governancePending(overrides?: CallOverrides): Promise<string>;
+
+  initiateGovernanceTransfer(
+    newGovernancePending: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initiateTeamMultisigTransfer(
+    newTeamMultisigPending: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   teamMultisig(overrides?: CallOverrides): Promise<string>;
 
-  transferGovernance(
-    newGovernance: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  transferTeamMultisig(
-    newTeamMultisig: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
+  teamMultisigPending(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    acceptGovernanceTransfer(overrides?: CallOverrides): Promise<void>;
+
+    acceptTeamMultisigTransfer(overrides?: CallOverrides): Promise<void>;
+
     governance(overrides?: CallOverrides): Promise<string>;
+
+    governancePending(overrides?: CallOverrides): Promise<string>;
+
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     teamMultisig(overrides?: CallOverrides): Promise<string>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
+    'GovernancePending(address,address)'(
+      previousGovernancePending?: string | null,
+      newGovernancePending?: string | null
+    ): GovernancePendingEventFilter;
+    GovernancePending(
+      previousGovernancePending?: string | null,
+      newGovernancePending?: string | null
+    ): GovernancePendingEventFilter;
+
     'GovernanceTransferred(address,address)'(
       previousGovernance?: string | null,
       newGovernance?: string | null
@@ -186,6 +304,18 @@ export interface Governable extends BaseContract {
       previousGovernance?: string | null,
       newGovernance?: string | null
     ): GovernanceTransferredEventFilter;
+
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
+    'TeamMultisigPending(address,address)'(
+      previousTeamMultisigPending?: string | null,
+      newTeamMultisigPending?: string | null
+    ): TeamMultisigPendingEventFilter;
+    TeamMultisigPending(
+      previousTeamMultisigPending?: string | null,
+      newTeamMultisigPending?: string | null
+    ): TeamMultisigPendingEventFilter;
 
     'TeamMultisigTransferred(address,address)'(
       previousTeamMultisig?: string | null,
@@ -198,34 +328,60 @@ export interface Governable extends BaseContract {
   };
 
   estimateGas: {
+    acceptGovernanceTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    acceptTeamMultisigTransfer(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     governance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    governancePending(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
 
-    transferGovernance(
-      newGovernance: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    transferTeamMultisig(
-      newTeamMultisig: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
+    teamMultisigPending(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferGovernance(
-      newGovernance: string,
+    acceptGovernanceTransfer(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    transferTeamMultisig(
-      newTeamMultisig: string,
+    acceptTeamMultisigTransfer(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    initiateGovernanceTransfer(
+      newGovernancePending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initiateTeamMultisigTransfer(
+      newTeamMultisigPending: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    teamMultisigPending(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

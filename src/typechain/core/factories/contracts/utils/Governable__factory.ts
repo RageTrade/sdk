@@ -26,6 +26,25 @@ const _abi = [
       {
         indexed: true,
         internalType: 'address',
+        name: 'previousGovernancePending',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newGovernancePending',
+        type: 'address',
+      },
+    ],
+    name: 'GovernancePending',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
         name: 'previousGovernance',
         type: 'address',
       },
@@ -37,6 +56,25 @@ const _abi = [
       },
     ],
     name: 'GovernanceTransferred',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousTeamMultisigPending',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newTeamMultisigPending',
+        type: 'address',
+      },
+    ],
+    name: 'TeamMultisigPending',
     type: 'event',
   },
   {
@@ -60,6 +98,20 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'acceptGovernanceTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'acceptTeamMultisigTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'governance',
     outputs: [
       {
@@ -69,6 +121,45 @@ const _abi = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'governancePending',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newGovernancePending',
+        type: 'address',
+      },
+    ],
+    name: 'initiateGovernanceTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newTeamMultisigPending',
+        type: 'address',
+      },
+    ],
+    name: 'initiateTeamMultisigTransfer',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -85,29 +176,16 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [
+    inputs: [],
+    name: 'teamMultisigPending',
+    outputs: [
       {
         internalType: 'address',
-        name: 'newGovernance',
+        name: '',
         type: 'address',
       },
     ],
-    name: 'transferGovernance',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newTeamMultisig',
-        type: 'address',
-      },
-    ],
-    name: 'transferTeamMultisig',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
 ];

@@ -38,12 +38,9 @@ export interface RageERC4626Interface extends utils.Interface {
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'maxAssets()': FunctionFragment;
-    'maxAssetsAlwaysReverts()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
-    'maxShares()': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
@@ -72,12 +69,9 @@ export interface RageERC4626Interface extends utils.Interface {
       | 'decreaseAllowance'
       | 'deposit'
       | 'increaseAllowance'
-      | 'maxAssets'
-      | 'maxAssetsAlwaysReverts'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
-      | 'maxShares'
       | 'maxWithdraw'
       | 'mint'
       | 'name'
@@ -125,15 +119,9 @@ export interface RageERC4626Interface extends utils.Interface {
     functionFragment: 'increaseAllowance',
     values: [string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: 'maxAssets', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: 'maxDeposit', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
-  encodeFunctionData(functionFragment: 'maxShares', values?: undefined): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'mint',
@@ -204,15 +192,9 @@ export interface RageERC4626Interface extends utils.Interface {
     functionFragment: 'increaseAllowance',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'maxAssets', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'maxAssetsAlwaysReverts',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxMint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxRedeem', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'maxShares', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'maxWithdraw',
     data: BytesLike
@@ -255,12 +237,14 @@ export interface RageERC4626Interface extends utils.Interface {
   events: {
     'Approval(address,address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'Initialized(uint8)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
@@ -289,6 +273,13 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -389,23 +380,11 @@ export interface RageERC4626 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -517,23 +496,11 @@ export interface RageERC4626 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  maxAssets(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  maxAssetsAlwaysReverts(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  maxShares(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -645,17 +612,11 @@ export interface RageERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    maxAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(overrides?: CallOverrides): Promise<void>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxShares(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -746,6 +707,9 @@ export interface RageERC4626 extends BaseContract {
       shares?: null
     ): DepositEventFilter;
 
+    'Initialized(uint8)'(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     'Transfer(address,address,uint256)'(
       from?: string | null,
       to?: string | null,
@@ -820,23 +784,11 @@ export interface RageERC4626 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     maxDeposit(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxMint(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     maxRedeem(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -952,14 +904,6 @@ export interface RageERC4626 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    maxAssets(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    maxAssetsAlwaysReverts(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     maxDeposit(
       arg0: string,
       overrides?: CallOverrides
@@ -973,10 +917,6 @@ export interface RageERC4626 extends BaseContract {
     maxRedeem(
       owner: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxShares(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     maxWithdraw(

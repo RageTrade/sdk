@@ -22,6 +22,16 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'CannotPauseIfUnpauseInProgress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'CannotUnpauseIfPauseInProgress',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -82,6 +92,17 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'errorCode',
+        type: 'uint256',
+      },
+    ],
+    name: 'InvalidSetting',
+    type: 'error',
+  },
+  {
     inputs: [],
     name: 'InvalidTokenLiquidationParameters',
     type: 'error',
@@ -109,6 +130,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'NotRageTradeFactory',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint32',
@@ -133,6 +159,11 @@ const _abi = [
   {
     inputs: [],
     name: 'SlippageBeyondTolerance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroAmount',
     type: 'error',
   },
 ];

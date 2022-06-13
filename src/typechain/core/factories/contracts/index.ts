@@ -2,8 +2,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from './interfaces';
+export * as lens from './lens';
 export * as libraries from './libraries';
 export * as oracles from './oracles';
 export * as protocol from './protocol';
-export * as test from './test';
 export * as utils from './utils';

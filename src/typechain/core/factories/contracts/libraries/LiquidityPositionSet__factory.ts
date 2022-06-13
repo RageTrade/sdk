@@ -51,10 +51,47 @@ const _abi = [
     name: 'LPS_InactiveRange',
     type: 'error',
   },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'accountId',
+        type: 'uint256',
+      },
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'poolId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'vTokenAmountOut',
+        type: 'int256',
+      },
+    ],
+    name: 'TokenPositionChangedDueToLiquidityChanged',
+    type: 'event',
+  },
 ];
 
 const _bytecode =
-  '0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122030d5fe17740a3f46f6e7e40a86d73b16ac40ef4b090a1d341066fe5ee1984cbd64736f6c634300080d0033';
+  '0x6080806040523460175760119081601d823930815050f35b600080fdfe600080fdfea164736f6c634300080e000a';
 
 type LiquidityPositionSetConstructorParams =
   | [signer?: Signer]

@@ -18,6 +18,16 @@ const _abi = [
         type: 'address',
       },
       {
+        internalType: 'address',
+        name: 'initialGovernance',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'initialTeamMultisig',
+        type: 'address',
+      },
+      {
         internalType: 'contract IERC20',
         name: 'defaultCollateralToken',
         type: 'address',

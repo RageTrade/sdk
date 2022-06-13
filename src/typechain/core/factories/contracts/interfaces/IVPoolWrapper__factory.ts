@@ -383,7 +383,7 @@ const _abi = [
       {
         components: [
           {
-            internalType: 'contract IClearingHouse',
+            internalType: 'address',
             name: 'clearingHouse',
             type: 'address',
           },

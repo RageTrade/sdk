@@ -1,5 +1,5 @@
 {
-  "address": "0xA2423321c854a37F002D3c276DE1CA9E88935bf2",
+  "address": "0xb84f7ACe7a6a5e54F84824605f7539aeD4A3e871",
   "abi": [
     {
       "inputs": [],
@@ -231,7 +231,7 @@
           "type": "address"
         },
         {
-          "internalType": "contract IClearingHouse",
+          "internalType": "address",
           "name": "_clearingHouse",
           "type": "address"
         },
@@ -370,5 +370,5 @@
       "type": "function"
     }
   ],
-  "numDeployments": 3
+  "numDeployments": 1
 }

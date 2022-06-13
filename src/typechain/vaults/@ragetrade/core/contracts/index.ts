@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as interfaces from './interfaces';
 export type { interfaces };
+import type * as lens from './lens';
+export type { lens };
 import type * as libraries from './libraries';
 export type { libraries };
 import type * as oracles from './oracles';

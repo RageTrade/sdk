@@ -6,5 +6,6 @@ export type { curveMocks };
 import type * as mocks from './mocks';
 export type { mocks };
 export type { BaseVaultTest } from './BaseVaultTest';
+export type { ChainlinkMock } from './ChainlinkMock';
 export type { CurveYieldStrategyTest } from './CurveYieldStrategyTest';
 export type { EightyTwentyRangeStrategyVaultTest } from './EightyTwentyRangeStrategyVaultTest';
