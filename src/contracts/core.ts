@@ -23,6 +23,7 @@ import {
   getNetworkNameFromChainId,
   NetworkName,
 } from './common';
+import { ClearingHouseLens__factory } from '../typechain/core';
 
 /**
  * This method can be used to get contract instances
@@ -52,6 +53,7 @@ export async function getContractsWithChainId(
 export interface CoreDeployments {
   AccountLibraryDeployment: ContractDeployment;
   ClearingHouseDeployment: ContractDeployment;
+  ClearingHouseLensDeployment: ContractDeployment;
   ClearingHouseLogicDeployment: ContractDeployment;
   InsuranceFundDeployment: ContractDeployment;
   InsuranceFundLogicDeployment: ContractDeployment;
@@ -78,6 +80,10 @@ export async function getContractsWithDeployments(
     ),
     clearingHouse: ClearingHouse__factory.connect(
       deployments.ClearingHouseDeployment.address,
+      signerOrProvider
+    ),
+    clearingHouseLens: ClearingHouseLens__factory.connect(
+      deployments.ClearingHouseLensDeployment.address,
       signerOrProvider
     ),
     clearingHouseLogic: ClearingHouse__factory.connect(
@@ -167,6 +173,11 @@ export async function getDeployments(
     network,
     'ClearingHouse'
   );
+  const ClearingHouseLensDeployment = await getDeployment(
+    'core',
+    network,
+    'ClearingHouseLens'
+  );
   const ClearingHouseLogicDeployment = await getDeployment(
     'core',
     network,
@@ -219,6 +230,7 @@ export async function getDeployments(
   return {
     AccountLibraryDeployment,
     ClearingHouseDeployment,
+    ClearingHouseLensDeployment,
     ClearingHouseLogicDeployment,
     InsuranceFundDeployment,
     InsuranceFundLogicDeployment,
