@@ -15,6 +15,6 @@ describe('curve strategy', () => {
   it('works', async () => {
     ({ curveYieldStrategy } = await getVaultContracts(provider));
     const fee = await curveYieldStrategy.FEE();
-    expect(fee.toNumber()).toEqual(0);
+    expect(fee.toNumber()).toEqual(1000);
   });
 });
