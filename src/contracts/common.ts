@@ -1,3 +1,6 @@
+import { Provider } from '@ethersproject/providers';
+import { Signer } from 'ethers';
+
 export type NetworkName =
   | 'mainnet'
   | 'rinkeby'
@@ -44,6 +47,20 @@ export async function getDeployment(
       `Network ${networkName} does not contain the deployment ${name}. Make sure deployments are updated.`
     );
   }
+}
+
+export async function getChainIdFromProvider(
+  signerOrProvider: Signer | Provider
+) {
+  const provider = Provider.isProvider(signerOrProvider)
+    ? signerOrProvider
+    : signerOrProvider.provider;
+  if (provider === undefined) {
+    throw new Error('provider is not present in signerOrProvider');
+  }
+
+  const network = await provider.getNetwork();
+  return network.chainId;
 }
 
 export interface ContractDeployment {

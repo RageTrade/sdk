@@ -4,20 +4,17 @@ import { Provider } from '@ethersproject/abstract-provider';
 
 import {
   ContractDeployment,
+  getChainIdFromProvider,
   getDeployment,
   getNetworkNameFromChainId,
   NetworkName,
 } from './common';
 import {
   CurveYieldStrategy__factory,
-  ERC20PresetMinterPauser__factory,
-  ICurveGauge__factory,
-  ICurveStableSwap__factory,
   IERC20Metadata__factory,
   Logic__factory,
   SwapManager__factory,
   VaultPeriphery__factory,
-  ILPPriceGetter__factory,
 } from '../typechain';
 
 export const vaultMetaData = {
@@ -31,14 +28,6 @@ export interface VaultDeployments {
   SwapManagerLibraryDeployment: ContractDeployment;
   VaultPeripheryDeployment: ContractDeployment;
   CurveYieldStrategyDeployment: ContractDeployment;
-  CurveGaugeDeployment: ContractDeployment;
-  CurveTokenDeployment: ContractDeployment;
-  CurveTriCryptoPoolDeployment: ContractDeployment;
-  CurveTriCryptoLpTokenDeployment: ContractDeployment;
-  CurveQuoterDeployment: ContractDeployment;
-  WETHDeployment: ContractDeployment;
-  WBTCDeployment: ContractDeployment;
-  USDTDeployment: ContractDeployment;
 }
 
 export async function getVaultContractsWithDeployments(
@@ -66,51 +55,12 @@ export async function getVaultContractsWithDeployments(
       deployments.CurveYieldStrategyDeployment.address,
       signerOrProvider
     ),
-    curveGauge: ICurveGauge__factory.connect(
-      deployments.CurveGaugeDeployment.address,
-      signerOrProvider
-    ),
-    curveToken: IERC20Metadata__factory.connect(
-      deployments.CurveTokenDeployment.address,
-      signerOrProvider
-    ),
-    curveTriCryptoPool: ICurveStableSwap__factory.connect(
-      deployments.CurveTriCryptoPoolDeployment.address,
-      signerOrProvider
-    ),
-    curveTriCryptoLpToken: IERC20Metadata__factory.connect(
-      deployments.CurveTriCryptoLpTokenDeployment.address,
-      signerOrProvider
-    ),
-    curveQuoter: ILPPriceGetter__factory.connect(
-      deployments.CurveQuoterDeployment.address,
-      signerOrProvider
-    ),
-    usdt: ERC20PresetMinterPauser__factory.connect(
-      deployments.USDTDeployment.address,
-      signerOrProvider
-    ),
-    weth: ERC20PresetMinterPauser__factory.connect(
-      deployments.WETHDeployment.address,
-      signerOrProvider
-    ),
-    wbtc: ERC20PresetMinterPauser__factory.connect(
-      deployments.WBTCDeployment.address,
-      signerOrProvider
-    ),
   };
 }
 
 export async function getVaultContracts(signerOrProvider: Signer | Provider) {
-  const provider = Provider.isProvider(signerOrProvider)
-    ? signerOrProvider
-    : signerOrProvider.provider;
-  if (provider === undefined) {
-    throw new Error('provider is not present in getContracts signerOrProvider');
-  }
-
-  const network = await provider.getNetwork();
-  return getVaultContractsWithChainId(signerOrProvider, network.chainId);
+  const chainId = await getChainIdFromProvider(signerOrProvider);
+  return getVaultContractsWithChainId(signerOrProvider, chainId);
 }
 
 export async function getVaultContractsWithChainId(
@@ -149,49 +99,12 @@ export async function getVaultDeployments(
     network,
     'CurveYieldStrategy'
   );
-  const CurveGaugeDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveGauge'
-  );
-  const CurveTokenDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveToken'
-  );
-  const CurveTriCryptoPoolDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveTriCryptoPool'
-  );
-  const CurveTriCryptoLpTokenDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveTriCryptoLpToken'
-  );
-  const CurveQuoterDeployment = await getDeployment(
-    'vaults',
-    network,
-    'CurveQuoter'
-  );
-  const WETHDeployment = await getDeployment('vaults', network, 'WETH');
-  const WBTCDeployment = await getDeployment('vaults', network, 'WBTC');
-  const USDTDeployment = await getDeployment('vaults', network, 'USDT');
+
   return {
     CollateralTokenDeployment,
     LogicLibraryDeployment,
     SwapManagerLibraryDeployment,
     VaultPeripheryDeployment,
-
     CurveYieldStrategyDeployment,
-    CurveGaugeDeployment,
-    CurveTokenDeployment,
-    CurveTriCryptoPoolDeployment,
-    CurveTriCryptoLpTokenDeployment,
-    CurveQuoterDeployment,
-
-    WBTCDeployment,
-    USDTDeployment,
-    WETHDeployment,
   };
 }

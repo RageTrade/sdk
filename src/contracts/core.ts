@@ -19,6 +19,7 @@ import {
 } from '../typechain';
 import {
   ContractDeployment,
+  getChainIdFromProvider,
   getDeployment,
   getNetworkNameFromChainId,
   NetworkName,
@@ -31,15 +32,8 @@ import { ClearingHouseLens__factory } from '../typechain/core';
  *      it should also be able to make read+write contract instance
  */
 export async function getContracts(signerOrProvider: Signer | Provider) {
-  const provider = Provider.isProvider(signerOrProvider)
-    ? signerOrProvider
-    : signerOrProvider.provider;
-  if (provider === undefined) {
-    throw new Error('provider is not present in getContracts signerOrProvider');
-  }
-
-  const network = await provider.getNetwork();
-  return getContractsWithChainId(signerOrProvider, network.chainId);
+  const chainId = await getChainIdFromProvider(signerOrProvider);
+  return getContractsWithChainId(signerOrProvider, chainId);
 }
 
 export async function getContractsWithChainId(

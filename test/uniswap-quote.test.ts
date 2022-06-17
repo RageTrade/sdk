@@ -3,6 +3,7 @@ import {
   getContracts,
   getUniswapContracts,
   getVaultContracts,
+  getTokenContracts,
   parseUsdc,
   Q128,
 } from '../';
@@ -21,11 +22,10 @@ const wallet = new ethers.Wallet(
   arbtest
 );
 
-describe('Uniswap quote', () => {
+describe.skip('Uniswap quote', () => {
   it('works usdc crv3', async () => {
-    const { settlementToken: usdc } = await getContracts(arbtest);
-    const { curveTriCryptoLpToken, usdt, curveYieldStrategy } =
-      await getVaultContracts(arbtest);
+    const { usdc, crv3, usdt } = await getTokenContracts(arbtest);
+    const { curveYieldStrategy } = await getVaultContracts(arbtest);
     const { quoterV1 } = getUniswapContracts(arbtest);
 
     const inputUsdcAmount = parseUsdc('1');
@@ -41,7 +41,7 @@ describe('Uniswap quote', () => {
           hexZeroPad(BigNumber.from(500).toHexString(), 3), // uint24
           usdt.address,
           hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
-          curveTriCryptoLpToken.address,
+          crv3.address,
         ]),
         inputUsdcAmount
       );
@@ -59,8 +59,8 @@ describe('Uniswap quote', () => {
 
   it('works weth crv3', async () => {
     const { eth_oracle } = await getContracts(arbtest);
-    const { curveTriCryptoLpToken, weth, usdt, curveYieldStrategy } =
-      await getVaultContracts(arbtest);
+    const { weth, usdt, crv3 } = await getTokenContracts(arbtest);
+    const { curveYieldStrategy } = await getVaultContracts(arbtest);
     const { quoterV1 } = getUniswapContracts(arbtest);
 
     const usdcAmount = parseUsdc('1');
@@ -78,7 +78,7 @@ describe('Uniswap quote', () => {
           hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
           usdt.address,
           hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
-          curveTriCryptoLpToken.address,
+          crv3.address,
         ]),
         inputEthAmount
       );
