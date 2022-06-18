@@ -29,8 +29,8 @@ export function getCurveFinanceAddresses(
       };
     case 421611: // arbtest
       return {
-        crv: '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978',
-        crv3: '0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2',
+        crv: '0xc6BeC13cBf941E3f9a0D3d21B68c5518475a3bAd',
+        crv3: '0x931073e47baA30389A195CABcf5F3549157afdc9',
         quoter: '0x07E837cAbcC37A8b185051Ae0E984346CECde049',
         gauge: '0xcFe36c05f4001E01f0f549Faa3a2d248446D03D2',
         triCryptoPool: '0x07E837cAbcC37A8b185051Ae0E984346CECde049',
