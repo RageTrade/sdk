@@ -11,6 +11,8 @@ export type {
   VPoolWrapper,
   VQuote,
   VToken,
+  ClearingHouseLens,
+  TimelockControllerWithMinDelayOverride,
 } from './core';
 export { ProxyAdmin } from './core/@openzeppelin/contracts/proxy/transparent';
 export { IERC20Metadata } from './core/@openzeppelin/contracts/token/ERC20/extensions';
@@ -33,6 +35,8 @@ export {
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
+  ClearingHouseLens__factory,
+  TimelockControllerWithMinDelayOverride__factory,
 } from './core';
 export { ProxyAdmin__factory } from './core/factories/@openzeppelin/contracts/proxy/transparent';
 export { IERC20Metadata__factory } from './core/factories/@openzeppelin/contracts/token/ERC20/extensions';

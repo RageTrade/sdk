@@ -16,6 +16,8 @@ import {
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
+  ClearingHouseLens__factory,
+  TimelockControllerWithMinDelayOverride__factory,
 } from '../typechain';
 import {
   ContractDeployment,
@@ -24,7 +26,6 @@ import {
   getNetworkNameFromChainId,
   NetworkName,
 } from './common';
-import { ClearingHouseLens__factory } from '../typechain/core';
 
 /**
  * This method can be used to get contract instances
@@ -52,6 +53,7 @@ export interface CoreDeployments {
   InsuranceFundDeployment: ContractDeployment;
   InsuranceFundLogicDeployment: ContractDeployment;
   ProxyAdminDeployment: ContractDeployment;
+  TimelockControllerDeployment: ContractDeployment;
   RageTradeFactoryDeployment: ContractDeployment;
   SettlementTokenDeployment: ContractDeployment;
   VQuoteDeployment: ContractDeployment;
@@ -94,6 +96,10 @@ export async function getContractsWithDeployments(
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
       deployments.ProxyAdminDeployment.address,
+      signerOrProvider
+    ),
+    timelock: TimelockControllerWithMinDelayOverride__factory.connect(
+      deployments.TimelockControllerDeployment.address,
       signerOrProvider
     ),
     rageTradeFactory: RageTradeFactory__factory.connect(
@@ -192,6 +198,11 @@ export async function getDeployments(
     network,
     'ProxyAdmin'
   );
+  const TimelockControllerDeployment = await getDeployment(
+    'core',
+    network,
+    'TimelockController'
+  );
   const RageTradeFactoryDeployment = await getDeployment(
     'core',
     network,
@@ -229,6 +240,7 @@ export async function getDeployments(
     InsuranceFundDeployment,
     InsuranceFundLogicDeployment,
     ProxyAdminDeployment,
+    TimelockControllerDeployment,
     RageTradeFactoryDeployment,
     SettlementTokenDeployment,
     VQuoteDeployment,
