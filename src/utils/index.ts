@@ -14,3 +14,4 @@ export * from './funding-payment';
 export * from './lp-fees';
 export * from './deployment-helpers';
 export * from './timelock';
+export * from './get-accounts';
