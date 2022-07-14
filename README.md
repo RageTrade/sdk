@@ -90,3 +90,22 @@ await rageTradeFactory.connect(w).initializePool({
   protocolFeePips: 500,
 });
 ```
+
+## Timelock
+
+```ts
+import { getContracts, generateTimelockSchedule } from '@ragetrade/sdk';
+
+const { clearingHouse, timelock } = await getContracts(signer);
+
+// single
+const schedule = await generateTimelockSchedule(timelock, [
+  clearingHouse.populateTransaction.withdrawProtocolFee(),
+]);
+
+// batch
+const schedule = await generateTimelockSchedule(timelock, [
+  clearingHouse.populateTransaction.withdrawProtocolFee(),
+  clearingHouse.populateTransaction.updateProtocolSettings(...args),
+]);
+```

@@ -3,7 +3,50 @@ import { TimelockControllerWithMinDelayOverride } from '../typechain';
 
 const MIN_DELAY_DEFAULT = 2 * 24 * 3600;
 
-export type Operation = [
+export interface TimelockOptions {
+  minDelay?: number;
+  predecessor?: ethers.utils.BytesLike;
+  salt?: ethers.utils.BytesLike;
+}
+
+export async function generateTimelockSchedule(
+  timelock: TimelockControllerWithMinDelayOverride,
+  txArray: Array<PopulatedTransaction | Promise<PopulatedTransaction>>,
+  { minDelay, predecessor, salt }: TimelockOptions = {}
+) {
+  if (minDelay === undefined) {
+    minDelay = (await timelock.getMinDelay()).toNumber();
+  }
+  if (predecessor === undefined) {
+    predecessor = ethers.constants.HashZero;
+  }
+  if (salt === undefined) {
+    salt = ethers.constants.HashZero;
+  }
+
+  switch (txArray.length) {
+    case 0:
+      throw new Error('Empty txArray');
+    case 1:
+      return generateTimelockScheduleSingle(
+        timelock,
+        txArray[0],
+        minDelay,
+        predecessor,
+        salt
+      );
+    default:
+      return generateTimelockScheduleBatch(
+        timelock,
+        txArray,
+        minDelay,
+        predecessor,
+        salt
+      );
+  }
+}
+
+type OperationSingle = [
   target: string,
   value: ethers.BigNumberish,
   data: ethers.utils.BytesLike,
@@ -11,23 +54,32 @@ export type Operation = [
   salt: ethers.utils.BytesLike
 ];
 
-export async function generateTimelockSchedule(
+type OperationBatch = [
+  targets: string[],
+  values: ethers.BigNumberish[],
+  datas: ethers.utils.BytesLike[],
+  predecessor: ethers.utils.BytesLike,
+  salt: ethers.utils.BytesLike
+];
+
+async function generateTimelockScheduleSingle(
   timelock: TimelockControllerWithMinDelayOverride,
   tx: PopulatedTransaction | Promise<PopulatedTransaction>,
-  minDelay?: number,
-  predecessor?: ethers.utils.BytesLike
+  minDelay: number,
+  predecessor: ethers.utils.BytesLike,
+  salt: ethers.utils.BytesLike
 ) {
   tx = await tx;
   if (!tx.to) {
     throw new Error('tx.to is undefined');
   }
 
-  const operation: Operation = [
+  const operation: OperationSingle = [
     tx.to,
     tx.value ?? 0,
     tx.data ?? '0x',
-    predecessor ?? ethers.constants.HashZero,
-    ethers.constants.HashZero,
+    predecessor,
+    salt,
   ];
 
   const schedule = await timelock.populateTransaction.schedule(
@@ -39,19 +91,12 @@ export async function generateTimelockSchedule(
   return { schedule, hash, execute };
 }
 
-export type BatchOperation = [
-  targets: string[],
-  values: ethers.BigNumberish[],
-  datas: ethers.utils.BytesLike[],
-  predecessor: ethers.utils.BytesLike,
-  salt: ethers.utils.BytesLike
-];
-
-export async function generateTimelockScheduleBatch(
+async function generateTimelockScheduleBatch(
   timelock: TimelockControllerWithMinDelayOverride,
   txArray: Array<PopulatedTransaction | Promise<PopulatedTransaction>>,
-  minDelay?: number,
-  predecessor?: ethers.utils.BytesLike
+  minDelay: number,
+  predecessor: ethers.utils.BytesLike,
+  salt: ethers.utils.BytesLike
 ) {
   const txArrayResolved = await Promise.all(txArray);
 
@@ -61,16 +106,11 @@ export async function generateTimelockScheduleBatch(
     }
     return tx.to;
   });
+
   const values = txArrayResolved.map((tx) => tx.value ?? 0);
   const datas = txArrayResolved.map((tx) => tx.data ?? '0x');
 
-  const operation: BatchOperation = [
-    targets,
-    values,
-    datas,
-    predecessor ?? ethers.constants.HashZero,
-    ethers.constants.HashZero,
-  ];
+  const operation: OperationBatch = [targets, values, datas, predecessor, salt];
 
   const schedule = await timelock.populateTransaction.scheduleBatch(
     ...operation,
