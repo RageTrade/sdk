@@ -28,6 +28,7 @@ export interface VaultDeployments {
   SwapManagerLibraryDeployment: ContractDeployment;
   VaultPeripheryDeployment: ContractDeployment;
   CurveYieldStrategyDeployment: ContractDeployment;
+  CurveYieldStrategyLogicDeployment: ContractDeployment;
 }
 
 export async function getVaultContractsWithDeployments(
@@ -53,6 +54,10 @@ export async function getVaultContractsWithDeployments(
     ),
     curveYieldStrategy: CurveYieldStrategy__factory.connect(
       deployments.CurveYieldStrategyDeployment.address,
+      signerOrProvider
+    ),
+    curveYieldStrategyLogic: CurveYieldStrategy__factory.connect(
+      deployments.CurveYieldStrategyLogicDeployment.address,
       signerOrProvider
     ),
   };
@@ -99,6 +104,11 @@ export async function getVaultDeployments(
     network,
     'CurveYieldStrategy'
   );
+  const CurveYieldStrategyLogicDeployment = await getDeployment(
+    'vaults',
+    network,
+    'CurveYieldStrategyLogic'
+  );
 
   return {
     CollateralTokenDeployment,
@@ -106,5 +116,6 @@ export async function getVaultDeployments(
     SwapManagerLibraryDeployment,
     VaultPeripheryDeployment,
     CurveYieldStrategyDeployment,
+    CurveYieldStrategyLogicDeployment,
   };
 }
