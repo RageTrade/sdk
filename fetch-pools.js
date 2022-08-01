@@ -7,11 +7,14 @@ const { writeJson } = require('fs-extra');
 config();
 
 async function main() {
-  const [defaultPool, poolsList] = await Promise.all([getDefaultPool(), getPoolsList()]) 
+  const [defaultPool, poolsList] = await Promise.all([
+    getDefaultPool(),
+    getPoolsList(),
+  ]);
 
   await writeJson('./src/default_pools.json', defaultPool, { spaces: 2 });
   await writeJson('./dist/default_pools.json', defaultPool, { spaces: 2 });
-  
+
   await writeJson('./src/pools.json', poolsList, { spaces: 2 });
   await writeJson('./dist/pools.json', poolsList, { spaces: 2 });
 }
@@ -55,7 +58,10 @@ async function getPoolsList() {
     const provider = getProvider(chainName);
     if (provider) {
       try {
-        const { rageTradeFactory } = await getContracts(provider);
+        const providerArbiscan = getArbiscanProvider(chainName);
+        const { rageTradeFactory } = await getContracts(
+          providerArbiscan ?? provider
+        );
         const poolContracts = await getPoolContracts(rageTradeFactory);
         poolsListForChain = await Promise.all(
           poolContracts.map(async ({ vToken, vPool, vPoolWrapper }) => ({
@@ -78,6 +84,13 @@ async function getPoolsList() {
   }
 
   return poolsList;
+}
+
+function getArbiscanProvider(chainName) {
+  try {
+    if (chainName === 'arbmain') throw new Error('some issue is there');
+    return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
+  } catch {}
 }
 
 function getProvider(chainName) {
