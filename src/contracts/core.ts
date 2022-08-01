@@ -166,20 +166,22 @@ export async function getPoolContractsCached(
   const networkName = getNetworkNameFromChainId(
     await getChainIdFromProvider(signerOrProvider)
   );
-  const poolsList = (await import('../pools.json')).default;
+  // the IIFE is to avoid: "Error: You must set "output.dir" instead of "output.file" when generating multiple chunks."
+  const poolsList = (await import((() => '../pools.json')())).default;
 
-  return poolsList[networkName].map(
-    ({ vTokenAddress, vPoolAddress, vPoolWrapperAddress }) => {
-      return {
-        vToken: VToken__factory.connect(vTokenAddress, signerOrProvider),
-        vPool: IUniswapV3Pool__factory.connect(vPoolAddress, signerOrProvider),
-        vPoolWrapper: VPoolWrapper__factory.connect(
-          vPoolWrapperAddress,
-          signerOrProvider
-        ),
-      };
-    }
-  );
+  return poolsList[networkName].map((pool: any) => {
+    return {
+      vToken: VToken__factory.connect(pool.vTokenAddress, signerOrProvider),
+      vPool: IUniswapV3Pool__factory.connect(
+        pool.vPoolAddress,
+        signerOrProvider
+      ),
+      vPoolWrapper: VPoolWrapper__factory.connect(
+        pool.vPoolWrapperAddress,
+        signerOrProvider
+      ),
+    };
+  });
 }
 
 export async function getDeployments(
