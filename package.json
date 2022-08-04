@@ -70,6 +70,7 @@
     "@ragetrade/vaults": "^1.0.1",
     "@size-limit/preset-small-lib": "^7.0.5",
     "@typechain/ethers-v5": "^10.0.0",
+    "@types/deep-equal": "^1.0.1",
     "@types/fs-extra": "^9.0.13",
     "dotenv": "^16.0.0",
     "fs-extra": "^10.0.0",
@@ -83,6 +84,7 @@
   },
   "dependencies": {
     "@uniswap/v3-sdk": "^3.8.2",
+    "deep-equal": "^2.0.5",
     "ethers": "^5.6.2",
     "ethers-repl": "^1.0.3"
   },
