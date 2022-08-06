@@ -169,7 +169,7 @@ export async function getPoolContractsCached(
   // the IIFE is to avoid: "Error: You must set "output.dir" instead of "output.file" when generating multiple chunks."
   const poolsList = (await import((() => '../pools.json')())).default;
 
-  return poolsList[networkName].map((pool: any) => {
+  return (poolsList[networkName] as any[]).map((pool) => {
     return {
       vToken: VToken__factory.connect(pool.vTokenAddress, signerOrProvider),
       vPool: IUniswapV3Pool__factory.connect(
