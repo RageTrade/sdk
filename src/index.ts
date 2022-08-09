@@ -1,5 +1,4 @@
-export * from './contracts/index';
+export * from './contracts';
 export * from './utils';
 export * from './typechain';
-export * from './contracts/vaults';
 export * from './data-sources';
