@@ -16,6 +16,30 @@ export class FallbackDataSource extends BaseDataSource {
     this._quorum = quorum;
   }
 
+  async getAccountIdsByAddress(address: string): Promise<number[]> {
+    return this.perform('getAccountIdsByAddress', [address]);
+  }
+
+  async getDeposits(address: string) {
+    return this.perform('getDeposits', [address]);
+  }
+
+  async getWithdrawals(address: string) {
+    return this.perform('getWithdrawals', [address]);
+  }
+
+  async findBlockByTimestamp(timestamp: number): Promise<number> {
+    return this.perform('findBlockByTimestamp', [timestamp]);
+  }
+
+  async myPerformance(address: string): Promise<number> {
+    return this.perform('myPerformance', [address]);
+  }
+
+  async benchmarkPerformance(): Promise<number> {
+    return this.perform('benchmarkPerformance', []);
+  }
+
   async perform(method: string, args: any[]) {
     const results: { count: number; value: any }[] = [];
     for (let i = 0; i < this._dataSources.length; i++) {
@@ -45,9 +69,5 @@ export class FallbackDataSource extends BaseDataSource {
     error.numberOfUniqueResults = results.length;
     error.maxQuorum = maxQuorum;
     throw error;
-  }
-
-  async getAccountIdsByAddress(address: string): Promise<number[]> {
-    return this.perform('getAccountIdsByAddress', [address]);
   }
 }
