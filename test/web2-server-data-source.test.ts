@@ -15,4 +15,14 @@ describe('web2 data source', () => {
       expect(resp).toEqual([0]);
     });
   });
+
+  describe('findBlockByTimestamp', () => {
+    it('works', async () => {
+      const ds = new Web2ServerDataSource('arbtest');
+
+      const resp = await ds.findBlockByTimestamp(1660048813);
+
+      expect(resp).toEqual(14049177);
+    });
+  });
 });
