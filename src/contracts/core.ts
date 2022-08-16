@@ -2,9 +2,11 @@ import { Signer } from 'ethers';
 
 import { Provider } from '@ethersproject/abstract-provider';
 
+import poolsList from '../pools.json';
 import {
   Account__factory,
   ClearingHouse__factory,
+  ClearingHouseLens__factory,
   IERC20Metadata__factory,
   InsuranceFund__factory,
   IOracle__factory,
@@ -13,11 +15,10 @@ import {
   RageTradeFactory,
   RageTradeFactory__factory,
   SwapSimulator__factory,
+  TimelockControllerWithMinDelayOverride__factory,
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
-  ClearingHouseLens__factory,
-  TimelockControllerWithMinDelayOverride__factory,
 } from '../typechain';
 import {
   ContractDeployment,
@@ -166,8 +167,6 @@ export async function getPoolContractsCached(
   const networkName = getNetworkNameFromChainId(
     await getChainIdFromProvider(signerOrProvider)
   );
-  // the IIFE is to avoid: "Error: You must set "output.dir" instead of "output.file" when generating multiple chunks."
-  const poolsList = (await import((() => '../pools.json')())).default;
 
   return (poolsList[networkName] as any[]).map((pool) => {
     return {
