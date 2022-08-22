@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from '@ethersproject/abi';
 import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
@@ -192,8 +196,64 @@ export interface IRewardRouterV2Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'unstakeGmx', data: BytesLike): Result;
 
-  events: {};
+  events: {
+    'StakeGlp(address,uint256)': EventFragment;
+    'StakeGmx(address,address,uint256)': EventFragment;
+    'UnstakeGlp(address,uint256)': EventFragment;
+    'UnstakeGmx(address,address,uint256)': EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: 'StakeGlp'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'StakeGmx'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'UnstakeGlp'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'UnstakeGmx'): EventFragment;
 }
+
+export interface StakeGlpEventObject {
+  account: string;
+  amount: BigNumber;
+}
+export type StakeGlpEvent = TypedEvent<
+  [string, BigNumber],
+  StakeGlpEventObject
+>;
+
+export type StakeGlpEventFilter = TypedEventFilter<StakeGlpEvent>;
+
+export interface StakeGmxEventObject {
+  account: string;
+  token: string;
+  amount: BigNumber;
+}
+export type StakeGmxEvent = TypedEvent<
+  [string, string, BigNumber],
+  StakeGmxEventObject
+>;
+
+export type StakeGmxEventFilter = TypedEventFilter<StakeGmxEvent>;
+
+export interface UnstakeGlpEventObject {
+  account: string;
+  amount: BigNumber;
+}
+export type UnstakeGlpEvent = TypedEvent<
+  [string, BigNumber],
+  UnstakeGlpEventObject
+>;
+
+export type UnstakeGlpEventFilter = TypedEventFilter<UnstakeGlpEvent>;
+
+export interface UnstakeGmxEventObject {
+  account: string;
+  token: string;
+  amount: BigNumber;
+}
+export type UnstakeGmxEvent = TypedEvent<
+  [string, string, BigNumber],
+  UnstakeGmxEventObject
+>;
+
+export type UnstakeGmxEventFilter = TypedEventFilter<UnstakeGmxEvent>;
 
 export interface IRewardRouterV2 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -483,13 +543,13 @@ export interface IRewardRouterV2 extends BaseContract {
       _minUsdg: BigNumberish,
       _minGlp: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     mintAndStakeGlpETH(
       _minUsdg: BigNumberish,
       _minGlp: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     signalTransfer(_receiver: string, overrides?: CallOverrides): Promise<void>;
 
@@ -509,14 +569,14 @@ export interface IRewardRouterV2 extends BaseContract {
       _minOut: BigNumberish,
       _receiver: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     unstakeAndRedeemGlpETH(
       _glpAmount: BigNumberish,
       _minOut: BigNumberish,
       _receiver: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     unstakeEsGmx(
       _amount: BigNumberish,
@@ -526,7 +586,37 @@ export interface IRewardRouterV2 extends BaseContract {
     unstakeGmx(_amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    'StakeGlp(address,uint256)'(
+      account?: null,
+      amount?: null
+    ): StakeGlpEventFilter;
+    StakeGlp(account?: null, amount?: null): StakeGlpEventFilter;
+
+    'StakeGmx(address,address,uint256)'(
+      account?: null,
+      token?: null,
+      amount?: null
+    ): StakeGmxEventFilter;
+    StakeGmx(account?: null, token?: null, amount?: null): StakeGmxEventFilter;
+
+    'UnstakeGlp(address,uint256)'(
+      account?: null,
+      amount?: null
+    ): UnstakeGlpEventFilter;
+    UnstakeGlp(account?: null, amount?: null): UnstakeGlpEventFilter;
+
+    'UnstakeGmx(address,address,uint256)'(
+      account?: null,
+      token?: null,
+      amount?: null
+    ): UnstakeGmxEventFilter;
+    UnstakeGmx(
+      account?: null,
+      token?: null,
+      amount?: null
+    ): UnstakeGmxEventFilter;
+  };
 
   estimateGas: {
     acceptTransfer(

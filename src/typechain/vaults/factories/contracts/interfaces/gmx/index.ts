@@ -3,11 +3,8 @@
 /* eslint-disable */
 export { IGMXBatchingManager__factory } from './IGMXBatchingManager__factory';
 export { IGlpManager__factory } from './IGlpManager__factory';
-export { IRewardDistributor__factory } from './IRewardDistributor__factory';
+export { IGlpStakingManager__factory } from './IGlpStakingManager__factory';
 export { IRewardRouterV2__factory } from './IRewardRouterV2__factory';
 export { IRewardTracker__factory } from './IRewardTracker__factory';
 export { ISGLPExtended__factory } from './ISGLPExtended__factory';
 export { IVault__factory } from './IVault__factory';
-export { IVaultPriceFeed__factory } from './IVaultPriceFeed__factory';
-export { IVaultUtils__factory } from './IVaultUtils__factory';
-export { IVester__factory } from './IVester__factory';

@@ -94,36 +94,20 @@ export declare namespace EightyTwentyRangeStrategyVault {
 export declare namespace GMXYieldStrategy {
   export type GMXYieldStrategyInitParamsStruct = {
     eightyTwentyRangeStrategyVaultInitParams: EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStruct;
-    gmx: string;
-    glp: string;
-    weth: string;
-    esGMX: string;
-    glpManager: string;
     rewardRouter: string;
   };
 
   export type GMXYieldStrategyInitParamsStructOutput = [
     EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStructOutput,
-    string,
-    string,
-    string,
-    string,
-    string,
     string
   ] & {
     eightyTwentyRangeStrategyVaultInitParams: EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStructOutput;
-    gmx: string;
-    glp: string;
-    weth: string;
-    esGMX: string;
-    glpManager: string;
     rewardRouter: string;
   };
 }
 
 export interface GMXYieldStrategyInterface extends utils.Interface {
   functions: {
-    'FEE()': FunctionFragment;
     'MAX_BPS()': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
@@ -148,7 +132,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'getVaultMarketValue()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(((((address,string,string),uint32,address,address,address,address,address),uint16,uint16,uint64),address,address,address,address,address,address))': FunctionFragment;
+    'initialize(((((address,string,string),uint32,address,address,address,address,address),uint16,uint16,uint64),address))': FunctionFragment;
     'isReset()': FunctionFragment;
     'isValidRebalance(int256)': FunctionFragment;
     'keeper()': FunctionFragment;
@@ -165,7 +149,6 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'previewMint(uint256)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
-    'protocolFee()': FunctionFragment;
     'rageAccountNo()': FunctionFragment;
     'rageClearingHouse()': FunctionFragment;
     'rageVPool()': FunctionFragment;
@@ -184,16 +167,15 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
-    'updateGMXParams(uint256,address)': FunctionFragment;
-    'wethThreshold()': FunctionFragment;
+    'updateGMXParams(address,uint16,uint240)': FunctionFragment;
+    'usdcConversionThreshold()': FunctionFragment;
+    'usdcReedemSlippage()': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees()': FunctionFragment;
     'withdrawToken(address,uint256,uint256,address)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'FEE'
       | 'MAX_BPS'
       | 'allowance'
       | 'approve'
@@ -235,7 +217,6 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
       | 'previewMint'
       | 'previewRedeem'
       | 'previewWithdraw'
-      | 'protocolFee'
       | 'rageAccountNo'
       | 'rageClearingHouse'
       | 'rageVPool'
@@ -255,13 +236,12 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
       | 'transferOwnership'
       | 'updateBaseParams'
       | 'updateGMXParams'
-      | 'wethThreshold'
+      | 'usdcConversionThreshold'
+      | 'usdcReedemSlippage'
       | 'withdraw'
-      | 'withdrawFees'
       | 'withdrawToken'
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'FEE', values?: undefined): string;
   encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'allowance',
@@ -388,10 +368,6 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'protocolFee',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'rageAccountNo',
     values?: undefined
   ): string;
@@ -456,10 +432,14 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGMXParams',
-    values: [BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: 'wethThreshold',
+    functionFragment: 'usdcConversionThreshold',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'usdcReedemSlippage',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -467,15 +447,10 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     values: [BigNumberish, string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: 'withdrawFees',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'withdrawToken',
     values: [string, BigNumberish, BigNumberish, string]
   ): string;
 
-  decodeFunctionResult(functionFragment: 'FEE', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'MAX_BPS', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
@@ -587,10 +562,6 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'protocolFee',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'rageAccountNo',
     data: BytesLike
   ): Result;
@@ -652,14 +623,14 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'wethThreshold',
+    functionFragment: 'usdcConversionThreshold',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'usdcReedemSlippage',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'withdrawFees',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'withdrawToken',
     data: BytesLike
@@ -668,19 +639,17 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   events: {
     'Approval(address,address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
-    'FeesWithdrawn(uint256)': EventFragment;
-    'GmxParamsUpdated(uint256,address)': EventFragment;
+    'GmxParamsUpdated(address,uint256,uint240)': EventFragment;
     'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
-    'TokenRedeemded(address,uint256,address)': EventFragment;
-    'TokenWithdrawn(address,uint256,address)': EventFragment;
+    'TokenRedeemded(address,uint256,uint256,address)': EventFragment;
+    'TokenWithdrawn(address,uint256,uint256,address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'GmxParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
@@ -715,22 +684,13 @@ export type DepositEvent = TypedEvent<
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
 
-export interface FeesWithdrawnEventObject {
-  vaule: BigNumber;
-}
-export type FeesWithdrawnEvent = TypedEvent<
-  [BigNumber],
-  FeesWithdrawnEventObject
->;
-
-export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
-
 export interface GmxParamsUpdatedEventObject {
-  newFee: BigNumber;
-  batchingManager: string;
+  stakingManager: string;
+  usdcReedemSlippage: BigNumber;
+  usdcConversionThreshold: BigNumber;
 }
 export type GmxParamsUpdatedEvent = TypedEvent<
-  [BigNumber, string],
+  [string, BigNumber, BigNumber],
   GmxParamsUpdatedEventObject
 >;
 
@@ -758,11 +718,12 @@ export type OwnershipTransferredEventFilter =
 
 export interface TokenRedeemdedEventObject {
   token: string;
-  _sGLPQuantity: BigNumber;
+  sGLPQuantity: BigNumber;
+  shares: BigNumber;
   receiver: string;
 }
 export type TokenRedeemdedEvent = TypedEvent<
-  [string, BigNumber, string],
+  [string, BigNumber, BigNumber, string],
   TokenRedeemdedEventObject
 >;
 
@@ -770,11 +731,12 @@ export type TokenRedeemdedEventFilter = TypedEventFilter<TokenRedeemdedEvent>;
 
 export interface TokenWithdrawnEventObject {
   token: string;
+  sGLPQuantity: BigNumber;
   shares: BigNumber;
   receiver: string;
 }
 export type TokenWithdrawnEvent = TypedEvent<
-  [string, BigNumber, string],
+  [string, BigNumber, BigNumber, string],
   TokenWithdrawnEventObject
 >;
 
@@ -833,9 +795,7 @@ export interface GMXYieldStrategy extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<[BigNumber]>;
+    MAX_BPS(overrides?: CallOverrides): Promise<[number]>;
 
     allowance(
       owner: string,
@@ -986,8 +946,6 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
@@ -1011,7 +969,7 @@ export interface GMXYieldStrategy extends BaseContract {
 
     redeemToken(
       token: string,
-      _sGLP: BigNumberish,
+      shares: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1063,12 +1021,15 @@ export interface GMXYieldStrategy extends BaseContract {
     ): Promise<ContractTransaction>;
 
     updateGMXParams(
-      _feeBps: BigNumberish,
-      _batchingManager: string,
+      _stakingManager: string,
+      _usdcReedemSlippage: BigNumberish,
+      _usdcConversionThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    wethThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+    usdcConversionThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    usdcReedemSlippage(overrides?: CallOverrides): Promise<[number]>;
 
     withdraw(
       amount: BigNumberish,
@@ -1077,22 +1038,16 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    withdrawFees(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     withdrawToken(
       token: string,
-      shares: BigNumberish,
+      _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
-  FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+  MAX_BPS(overrides?: CallOverrides): Promise<number>;
 
   allowance(
     owner: string,
@@ -1239,8 +1194,6 @@ export interface GMXYieldStrategy extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
   rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
   rageClearingHouse(overrides?: CallOverrides): Promise<string>;
@@ -1264,7 +1217,7 @@ export interface GMXYieldStrategy extends BaseContract {
 
   redeemToken(
     token: string,
-    _sGLP: BigNumberish,
+    shares: BigNumberish,
     minTokenOut: BigNumberish,
     receiver: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -1316,12 +1269,15 @@ export interface GMXYieldStrategy extends BaseContract {
   ): Promise<ContractTransaction>;
 
   updateGMXParams(
-    _feeBps: BigNumberish,
-    _batchingManager: string,
+    _stakingManager: string,
+    _usdcReedemSlippage: BigNumberish,
+    _usdcConversionThreshold: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+  usdcReedemSlippage(overrides?: CallOverrides): Promise<number>;
 
   withdraw(
     amount: BigNumberish,
@@ -1330,22 +1286,16 @@ export interface GMXYieldStrategy extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  withdrawFees(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   withdrawToken(
     token: string,
-    shares: BigNumberish,
+    _sGLP: BigNumberish,
     minTokenOut: BigNumberish,
     receiver: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+    MAX_BPS(overrides?: CallOverrides): Promise<number>;
 
     allowance(
       owner: string,
@@ -1488,8 +1438,6 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
     rageClearingHouse(overrides?: CallOverrides): Promise<string>;
@@ -1511,7 +1459,7 @@ export interface GMXYieldStrategy extends BaseContract {
 
     redeemToken(
       token: string,
-      _sGLP: BigNumberish,
+      shares: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: CallOverrides
@@ -1561,12 +1509,15 @@ export interface GMXYieldStrategy extends BaseContract {
     ): Promise<void>;
 
     updateGMXParams(
-      _feeBps: BigNumberish,
-      _batchingManager: string,
+      _stakingManager: string,
+      _usdcReedemSlippage: BigNumberish,
+      _usdcConversionThreshold: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    usdcReedemSlippage(overrides?: CallOverrides): Promise<number>;
 
     withdraw(
       amount: BigNumberish,
@@ -1575,11 +1526,9 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    withdrawFees(overrides?: CallOverrides): Promise<void>;
-
     withdrawToken(
       token: string,
-      shares: BigNumberish,
+      _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: CallOverrides
@@ -1611,16 +1560,15 @@ export interface GMXYieldStrategy extends BaseContract {
       shares?: null
     ): DepositEventFilter;
 
-    'FeesWithdrawn(uint256)'(vaule?: null): FeesWithdrawnEventFilter;
-    FeesWithdrawn(vaule?: null): FeesWithdrawnEventFilter;
-
-    'GmxParamsUpdated(uint256,address)'(
-      newFee?: null,
-      batchingManager?: null
+    'GmxParamsUpdated(address,uint256,uint240)'(
+      stakingManager?: null,
+      usdcReedemSlippage?: null,
+      usdcConversionThreshold?: null
     ): GmxParamsUpdatedEventFilter;
     GmxParamsUpdated(
-      newFee?: null,
-      batchingManager?: null
+      stakingManager?: null,
+      usdcReedemSlippage?: null,
+      usdcConversionThreshold?: null
     ): GmxParamsUpdatedEventFilter;
 
     'Initialized(uint8)'(version?: null): InitializedEventFilter;
@@ -1635,24 +1583,28 @@ export interface GMXYieldStrategy extends BaseContract {
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
 
-    'TokenRedeemded(address,uint256,address)'(
+    'TokenRedeemded(address,uint256,uint256,address)'(
       token?: null,
-      _sGLPQuantity?: null,
+      sGLPQuantity?: null,
+      shares?: null,
       receiver?: null
     ): TokenRedeemdedEventFilter;
     TokenRedeemded(
       token?: null,
-      _sGLPQuantity?: null,
+      sGLPQuantity?: null,
+      shares?: null,
       receiver?: null
     ): TokenRedeemdedEventFilter;
 
-    'TokenWithdrawn(address,uint256,address)'(
+    'TokenWithdrawn(address,uint256,uint256,address)'(
       token?: null,
+      sGLPQuantity?: null,
       shares?: null,
       receiver?: null
     ): TokenWithdrawnEventFilter;
     TokenWithdrawn(
       token?: null,
+      sGLPQuantity?: null,
       shares?: null,
       receiver?: null
     ): TokenWithdrawnEventFilter;
@@ -1685,8 +1637,6 @@ export interface GMXYieldStrategy extends BaseContract {
   };
 
   estimateGas: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
     MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
 
     allowance(
@@ -1834,8 +1784,6 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
     rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
 
     rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1859,7 +1807,7 @@ export interface GMXYieldStrategy extends BaseContract {
 
     redeemToken(
       token: string,
-      _sGLP: BigNumberish,
+      shares: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1911,12 +1859,15 @@ export interface GMXYieldStrategy extends BaseContract {
     ): Promise<BigNumber>;
 
     updateGMXParams(
-      _feeBps: BigNumberish,
-      _batchingManager: string,
+      _stakingManager: string,
+      _usdcReedemSlippage: BigNumberish,
+      _usdcConversionThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    usdcReedemSlippage(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdraw(
       amount: BigNumberish,
@@ -1925,13 +1876,9 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    withdrawFees(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     withdrawToken(
       token: string,
-      shares: BigNumberish,
+      _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1939,8 +1886,6 @@ export interface GMXYieldStrategy extends BaseContract {
   };
 
   populateTransaction: {
-    FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     allowance(
@@ -2105,8 +2050,6 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -2134,7 +2077,7 @@ export interface GMXYieldStrategy extends BaseContract {
 
     redeemToken(
       token: string,
-      _sGLP: BigNumberish,
+      shares: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -2186,12 +2129,19 @@ export interface GMXYieldStrategy extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     updateGMXParams(
-      _feeBps: BigNumberish,
-      _batchingManager: string,
+      _stakingManager: string,
+      _usdcReedemSlippage: BigNumberish,
+      _usdcConversionThreshold: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    wethThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    usdcConversionThreshold(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    usdcReedemSlippage(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     withdraw(
       amount: BigNumberish,
@@ -2200,13 +2150,9 @@ export interface GMXYieldStrategy extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    withdrawFees(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     withdrawToken(
       token: string,
-      shares: BigNumberish,
+      _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }

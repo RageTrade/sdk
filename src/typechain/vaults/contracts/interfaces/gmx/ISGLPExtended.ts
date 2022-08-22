@@ -22,15 +22,26 @@ import type {
 export interface ISGLPExtendedInterface extends utils.Interface {
   functions: {
     'feeGlpTracker()': FunctionFragment;
+    'glp()': FunctionFragment;
+    'glpManager()': FunctionFragment;
     'stakedGlpTracker()': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'feeGlpTracker' | 'stakedGlpTracker'
+    nameOrSignatureOrTopic:
+      | 'feeGlpTracker'
+      | 'glp'
+      | 'glpManager'
+      | 'stakedGlpTracker'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'feeGlpTracker',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'glp', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'glpManager',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -42,6 +53,8 @@ export interface ISGLPExtendedInterface extends utils.Interface {
     functionFragment: 'feeGlpTracker',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'glp', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'glpManager', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'stakedGlpTracker',
     data: BytesLike
@@ -79,15 +92,27 @@ export interface ISGLPExtended extends BaseContract {
   functions: {
     feeGlpTracker(overrides?: CallOverrides): Promise<[string]>;
 
+    glp(overrides?: CallOverrides): Promise<[string]>;
+
+    glpManager(overrides?: CallOverrides): Promise<[string]>;
+
     stakedGlpTracker(overrides?: CallOverrides): Promise<[string]>;
   };
 
   feeGlpTracker(overrides?: CallOverrides): Promise<string>;
 
+  glp(overrides?: CallOverrides): Promise<string>;
+
+  glpManager(overrides?: CallOverrides): Promise<string>;
+
   stakedGlpTracker(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     feeGlpTracker(overrides?: CallOverrides): Promise<string>;
+
+    glp(overrides?: CallOverrides): Promise<string>;
+
+    glpManager(overrides?: CallOverrides): Promise<string>;
 
     stakedGlpTracker(overrides?: CallOverrides): Promise<string>;
   };
@@ -97,11 +122,19 @@ export interface ISGLPExtended extends BaseContract {
   estimateGas: {
     feeGlpTracker(overrides?: CallOverrides): Promise<BigNumber>;
 
+    glp(overrides?: CallOverrides): Promise<BigNumber>;
+
+    glpManager(overrides?: CallOverrides): Promise<BigNumber>;
+
     stakedGlpTracker(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     feeGlpTracker(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    glp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    glpManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     stakedGlpTracker(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };

@@ -3,11 +3,8 @@
 /* eslint-disable */
 export type { IGMXBatchingManager } from './IGMXBatchingManager';
 export type { IGlpManager } from './IGlpManager';
-export type { IRewardDistributor } from './IRewardDistributor';
+export type { IGlpStakingManager } from './IGlpStakingManager';
 export type { IRewardRouterV2 } from './IRewardRouterV2';
 export type { IRewardTracker } from './IRewardTracker';
 export type { ISGLPExtended } from './ISGLPExtended';
 export type { IVault } from './IVault';
-export type { IVaultPriceFeed } from './IVaultPriceFeed';
-export type { IVaultUtils } from './IVaultUtils';
-export type { IVester } from './IVester';

@@ -33,6 +33,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     'lastAddedAt(address)': FunctionFragment;
     'removeLiquidity(address,uint256,uint256,address)': FunctionFragment;
     'removeLiquidityForAccount(address,address,uint256,uint256,address)': FunctionFragment;
+    'vault()': FunctionFragment;
   };
 
   getFunction(
@@ -46,6 +47,7 @@ export interface IGlpManagerInterface extends utils.Interface {
       | 'lastAddedAt'
       | 'removeLiquidity'
       | 'removeLiquidityForAccount'
+      | 'vault'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -75,6 +77,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     functionFragment: 'removeLiquidityForAccount',
     values: [string, string, BigNumberish, BigNumberish, string]
   ): string;
+  encodeFunctionData(functionFragment: 'vault', values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: 'addLiquidity',
@@ -106,6 +109,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     functionFragment: 'removeLiquidityForAccount',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'vault', data: BytesLike): Result;
 
   events: {};
 }
@@ -189,6 +193,8 @@ export interface IGlpManager extends BaseContract {
       _receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<[string]>;
   };
 
   addLiquidity(
@@ -244,6 +250,8 @@ export interface IGlpManager extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  vault(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     addLiquidity(
       _token: string,
@@ -295,6 +303,8 @@ export interface IGlpManager extends BaseContract {
       _receiver: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -352,6 +362,8 @@ export interface IGlpManager extends BaseContract {
       _receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    vault(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -410,5 +422,7 @@ export interface IGlpManager extends BaseContract {
       _receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

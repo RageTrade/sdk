@@ -8,6 +8,7 @@ export { Account__factory } from './Account__factory';
 export { Bisection__factory } from './Bisection__factory';
 export { CollateralDeposit__factory } from './CollateralDeposit__factory';
 export { FundingPayment__factory } from './FundingPayment__factory';
+export { FundingRateOverride__factory } from './FundingRateOverride__factory';
 export { LiquidityPosition__factory } from './LiquidityPosition__factory';
 export { LiquidityPositionSet__factory } from './LiquidityPositionSet__factory';
 export { PriceMath__factory } from './PriceMath__factory';
