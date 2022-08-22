@@ -19,6 +19,7 @@ export * from './vaults';
 export * from './uniswap';
 export * from './tokens';
 export * from './curve-finance';
+export * from './gmx-vault';
 
 export function getEthersInterfaces() {
   return [

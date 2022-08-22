@@ -20,7 +20,12 @@ export { IOracle } from './core/contracts/interfaces';
 export { InsuranceFund } from './core/contracts/protocol/insurancefund';
 export { IUniswapV3Pool } from './uniswap-core';
 export { IQuoter, IQuoterV2 } from './uniswap-periphery';
-export { CurveYieldStrategy } from './vaults';
+export {
+  CurveYieldStrategy,
+  GMXYieldStrategy,
+  GMXBatchingManager,
+  GlpStakingManager,
+} from './vaults';
 export {
   ERC20PresetMinterPauser,
   ERC20PresetMinterPauser__factory,
@@ -51,4 +56,7 @@ export {
   SwapManager__factory,
   VaultPeriphery__factory,
   ILPPriceGetter__factory,
+  GMXYieldStrategy__factory,
+  GMXBatchingManager__factory,
+  GlpStakingManager__factory,
 } from './vaults';
