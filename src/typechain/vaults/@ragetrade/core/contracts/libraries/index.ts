@@ -11,7 +11,6 @@ export type { Account } from './Account';
 export type { Bisection } from './Bisection';
 export type { CollateralDeposit } from './CollateralDeposit';
 export type { FundingPayment } from './FundingPayment';
-export type { FundingRateOverride } from './FundingRateOverride';
 export type { LiquidityPosition } from './LiquidityPosition';
 export type { LiquidityPositionSet } from './LiquidityPositionSet';
 export type { PriceMath } from './PriceMath';

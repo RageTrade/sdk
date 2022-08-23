@@ -114,8 +114,6 @@ export type { CollateralDeposit } from './@ragetrade/core/contracts/libraries/Co
 export { CollateralDeposit__factory } from './factories/@ragetrade/core/contracts/libraries/CollateralDeposit__factory';
 export type { FundingPayment } from './@ragetrade/core/contracts/libraries/FundingPayment';
 export { FundingPayment__factory } from './factories/@ragetrade/core/contracts/libraries/FundingPayment__factory';
-export type { FundingRateOverride } from './@ragetrade/core/contracts/libraries/FundingRateOverride';
-export { FundingRateOverride__factory } from './factories/@ragetrade/core/contracts/libraries/FundingRateOverride__factory';
 export type { LiquidityPosition } from './@ragetrade/core/contracts/libraries/LiquidityPosition';
 export { LiquidityPosition__factory } from './factories/@ragetrade/core/contracts/libraries/LiquidityPosition__factory';
 export type { LiquidityPositionSet } from './@ragetrade/core/contracts/libraries/LiquidityPositionSet';

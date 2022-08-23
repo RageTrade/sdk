@@ -65,6 +65,19 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: 'int256',
+        name: 'fundingRateOverrideX128',
+        type: 'int256',
+      },
+    ],
+    name: 'FundingRateOverrideUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'uint24',
         name: 'liquidityFeePips',
         type: 'uint24',
