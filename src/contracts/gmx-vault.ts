@@ -16,8 +16,8 @@ import {
 } from '../typechain/vaults';
 
 export const gmxVaultMetaData = {
-  name: 'Rage GMX Strategy',
-  assetName: 'rGMX',
+  name: '80-20 GLP Strategy',
+  assetName: 'GLP Shares',
 };
 
 export interface GmxVaultDeployments {
