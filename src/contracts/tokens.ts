@@ -3,6 +3,7 @@ import { Signer } from 'ethers';
 import { IERC20Metadata__factory } from '../typechain';
 import { ISGLPExtended__factory } from '../typechain/vaults';
 import { getChainIdFromProvider } from './common';
+import { getDeployments } from './core';
 
 export interface TokenAddresses {
   weth: string;
@@ -17,7 +18,9 @@ export interface TokenAddresses {
   fsGLP: string;
 }
 
-export function getTokenAddresses(chainId: number): TokenAddresses {
+export async function getTokenAddresses(
+  chainId: number
+): Promise<TokenAddresses> {
   switch (chainId) {
     case 42161: // arbmain
       return {
@@ -33,10 +36,11 @@ export function getTokenAddresses(chainId: number): TokenAddresses {
         fsGLP: '0x1aDDD80E6039594eE970E5872D247bf0414C8903',
       };
     case 421611: // arbtest
+      const { SettlementTokenDeployment } = await getDeployments('arbtest');
       return {
         weth: '0xFCfbfcC11d12bCf816415794E5dc1BBcc5304e01',
         wbtc: '0xF2bf2a5CF00c9121A18d161F6738D39Ab576DB68',
-        usdc: '0x33a010E74A354bd784a62cca3A4047C1A84Ceeab',
+        usdc: SettlementTokenDeployment.address,
         usdt: '0x237b3B5238D2022aA80cAd1f67dAE53f353F74bF',
         crv: '0xc6BeC13cBf941E3f9a0D3d21B68c5518475a3bAd',
         crv3: '0x931073e47baA30389A195CABcf5F3549157afdc9',
@@ -54,7 +58,7 @@ export function getTokenAddresses(chainId: number): TokenAddresses {
 
 export async function getTokenContracts(signerOrProvider: Signer | Provider) {
   const chainId = await getChainIdFromProvider(signerOrProvider);
-  const addresses = getTokenAddresses(chainId);
+  const addresses = await getTokenAddresses(chainId);
   return {
     weth: IERC20Metadata__factory.connect(addresses.weth, signerOrProvider),
     wbtc: IERC20Metadata__factory.connect(addresses.wbtc, signerOrProvider),
