@@ -13,7 +13,11 @@ import {
   GlpStakingManager__factory,
   GMXBatchingManager__factory,
   GMXYieldStrategy__factory,
+  IGlpManager__factory,
+  IRewardRouterV2__factory,
+  ISGLPExtended__factory,
 } from '../typechain/vaults';
+import { IERC20Metadata__factory } from '../typechain';
 
 export const gmxVaultMetaData = {
   name: '80-20 GLP Strategy',
@@ -27,6 +31,42 @@ export interface GmxVaultDeployments {
   GMXBatchingManagerLogicDeployment: ContractDeployment;
   GMXYieldStrategyDeployment: ContractDeployment;
   GMXYieldStrategyLogicDeployment: ContractDeployment;
+}
+
+export interface GmxVaultExtraContracts {
+  gmx: string;
+  glp: string;
+  sGLP: string;
+  fsGLP: string;
+  glpManager: string;
+  rewardRouter: string;
+}
+
+export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
+  switch (chainId) {
+    case 42161: // arbmain
+      return {
+        gmx: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
+        glp: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',
+        sGLP: '0x2F546AD4eDD93B956C8999Be404cdCAFde3E89AE',
+        fsGLP: '0x1aDDD80E6039594eE970E5872D247bf0414C8903',
+        glpManager: '0x321F653eED006AD1C29D174e17d96351BDe22649',
+        rewardRouter: '0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1',
+      };
+    case 421611: // arbtest
+      return {
+        gmx: '0x35601e6181887bd6Edc6261be5C8fc9dA50679F6',
+        glp: '0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27',
+        sGLP: '0xfa14956e27D55427f7E267313D1E12d2217747e6',
+        fsGLP: '0x98deA01800071212da93a6e76bb6De012c3a483D',
+        glpManager: '0xD875d99E09118d2Be80579b9d23E83469077b498',
+        rewardRouter: '0xE4180809231B554423b28EfB8c13819fe5b2c930',
+      };
+    default:
+      throw new Error(
+        `The token addresses are not present in sdk for chainId ${chainId}.`
+      );
+  }
 }
 
 export async function getGmxVaultContractsWithDeployments(
@@ -65,7 +105,26 @@ export async function getGmxVaultContracts(
   signerOrProvider: Signer | Provider
 ) {
   const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getGmxVaultContractsWithChainId(signerOrProvider, chainId);
+  const contracts = await getGmxVaultContractsWithChainId(
+    signerOrProvider,
+    chainId
+  );
+  const addresses = getContractAddresses(chainId);
+  return {
+    ...contracts,
+    gmx: IERC20Metadata__factory.connect(addresses.gmx, signerOrProvider),
+    glp: IERC20Metadata__factory.connect(addresses.glp, signerOrProvider),
+    sGLP: ISGLPExtended__factory.connect(addresses.sGLP, signerOrProvider),
+    fsGLP: IERC20Metadata__factory.connect(addresses.fsGLP, signerOrProvider),
+    glpManager: IGlpManager__factory.connect(
+      addresses.glpManager,
+      signerOrProvider
+    ),
+    rewardRouter: IRewardRouterV2__factory.connect(
+      addresses.rewardRouter,
+      signerOrProvider
+    ),
+  };
 }
 
 export async function getGmxVaultContractsWithChainId(
