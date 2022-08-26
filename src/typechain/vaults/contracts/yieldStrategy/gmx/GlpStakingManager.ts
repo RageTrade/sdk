@@ -83,6 +83,7 @@ export interface GlpStakingManagerInterface extends utils.Interface {
     'depositToken(address,uint256)': FunctionFragment;
     'feeRecipient()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
+    'harvestFees()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
     'initialize(((address,string,string),address,address,address,address))': FunctionFragment;
     'isVault(address)': FunctionFragment;
@@ -134,6 +135,7 @@ export interface GlpStakingManagerInterface extends utils.Interface {
       | 'depositToken'
       | 'feeRecipient'
       | 'grantAllowances'
+      | 'harvestFees'
       | 'increaseAllowance'
       | 'initialize'
       | 'isVault'
@@ -217,6 +219,10 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'grantAllowances',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'harvestFees',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -358,6 +364,10 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'grantAllowances',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'harvestFees',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -700,6 +710,10 @@ export interface GlpStakingManager extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    harvestFees(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -885,6 +899,10 @@ export interface GlpStakingManager extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  harvestFees(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   increaseAllowance(
     spender: string,
     addedValue: BigNumberish,
@@ -1067,6 +1085,8 @@ export interface GlpStakingManager extends BaseContract {
     feeRecipient(overrides?: CallOverrides): Promise<string>;
 
     grantAllowances(overrides?: CallOverrides): Promise<void>;
+
+    harvestFees(overrides?: CallOverrides): Promise<void>;
 
     increaseAllowance(
       spender: string,
@@ -1363,6 +1383,10 @@ export interface GlpStakingManager extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    harvestFees(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     increaseAllowance(
       spender: string,
       addedValue: BigNumberish,
@@ -1549,6 +1573,10 @@ export interface GlpStakingManager extends BaseContract {
     feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     grantAllowances(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    harvestFees(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

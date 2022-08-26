@@ -156,7 +156,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'rebalancePriceThresholdBps()': FunctionFragment;
     'rebalanceTimeThreshold()': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
-    'redeemToken(address,uint256,uint256,address)': FunctionFragment;
+    'redeemToken(address,uint256,uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setEightTwentyParams(uint16,uint16,uint64)': FunctionFragment;
     'swapSimulator()': FunctionFragment;
@@ -171,7 +171,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'usdcConversionThreshold()': FunctionFragment;
     'usdcReedemSlippage()': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawToken(address,uint256,uint256,address)': FunctionFragment;
+    'withdrawToken(address,uint256,uint256,address,address)': FunctionFragment;
   };
 
   getFunction(
@@ -391,7 +391,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'redeemToken',
-    values: [string, BigNumberish, BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
@@ -448,7 +448,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawToken',
-    values: [string, BigNumberish, BigNumberish, string]
+    values: [string, BigNumberish, BigNumberish, string, string]
   ): string;
 
   decodeFunctionResult(functionFragment: 'MAX_BPS', data: BytesLike): Result;
@@ -642,8 +642,7 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'GmxParamsUpdated(address,uint256,uint240)': EventFragment;
     'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
-    'TokenRedeemded(address,uint256,uint256,address)': EventFragment;
-    'TokenWithdrawn(address,uint256,uint256,address)': EventFragment;
+    'TokenWithdrawn(address,address,address,address,uint256,uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
@@ -653,7 +652,6 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'GmxParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenRedeemded'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'TokenWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
@@ -716,27 +714,16 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface TokenRedeemdedEventObject {
-  token: string;
-  sGLPQuantity: BigNumber;
-  shares: BigNumber;
-  receiver: string;
-}
-export type TokenRedeemdedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string],
-  TokenRedeemdedEventObject
->;
-
-export type TokenRedeemdedEventFilter = TypedEventFilter<TokenRedeemdedEvent>;
-
 export interface TokenWithdrawnEventObject {
+  caller: string;
+  owner: string;
+  receiver: string;
   token: string;
   sGLPQuantity: BigNumber;
   shares: BigNumber;
-  receiver: string;
 }
 export type TokenWithdrawnEvent = TypedEvent<
-  [string, BigNumber, BigNumber, string],
+  [string, string, string, string, BigNumber, BigNumber],
   TokenWithdrawnEventObject
 >;
 
@@ -971,6 +958,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       shares: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1042,6 +1030,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1219,6 +1208,7 @@ export interface GMXYieldStrategy extends BaseContract {
     token: string,
     shares: BigNumberish,
     minTokenOut: BigNumberish,
+    from: string,
     receiver: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1290,6 +1280,7 @@ export interface GMXYieldStrategy extends BaseContract {
     token: string,
     _sGLP: BigNumberish,
     minTokenOut: BigNumberish,
+    from: string,
     receiver: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1461,6 +1452,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       shares: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1530,6 +1522,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1583,30 +1576,21 @@ export interface GMXYieldStrategy extends BaseContract {
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
 
-    'TokenRedeemded(address,uint256,uint256,address)'(
+    'TokenWithdrawn(address,address,address,address,uint256,uint256)'(
+      caller?: string | null,
+      owner?: string | null,
+      receiver?: string | null,
       token?: null,
       sGLPQuantity?: null,
-      shares?: null,
-      receiver?: null
-    ): TokenRedeemdedEventFilter;
-    TokenRedeemded(
-      token?: null,
-      sGLPQuantity?: null,
-      shares?: null,
-      receiver?: null
-    ): TokenRedeemdedEventFilter;
-
-    'TokenWithdrawn(address,uint256,uint256,address)'(
-      token?: null,
-      sGLPQuantity?: null,
-      shares?: null,
-      receiver?: null
+      shares?: null
     ): TokenWithdrawnEventFilter;
     TokenWithdrawn(
+      caller?: string | null,
+      owner?: string | null,
+      receiver?: string | null,
       token?: null,
       sGLPQuantity?: null,
-      shares?: null,
-      receiver?: null
+      shares?: null
     ): TokenWithdrawnEventFilter;
 
     'Transfer(address,address,uint256)'(
@@ -1809,6 +1793,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       shares: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1880,6 +1865,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -2079,6 +2065,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       shares: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2154,6 +2141,7 @@ export interface GMXYieldStrategy extends BaseContract {
       token: string,
       _sGLP: BigNumberish,
       minTokenOut: BigNumberish,
+      from: string,
       receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
