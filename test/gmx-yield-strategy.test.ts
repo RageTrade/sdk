@@ -28,6 +28,14 @@ describe('gmx strategy', () => {
       const sgt = await sGLP.stakedGlpTracker();
       expect(fsGLP.address).toEqual(sgt);
     });
+
+    // it('works vault', async () => {
+    //   const { gmxUnderlyingVault, glpManager } = await getGmxVaultContracts(
+    //     provider
+    //   );
+    //   const vaultAddr = await glpManager.vault();
+    //   expect(gmxUnderlyingVault.address).toEqual(vaultAddr);
+    // });
   });
 
   describe('arbtest', () => {
@@ -45,6 +53,14 @@ describe('gmx strategy', () => {
       const { sGLP, fsGLP } = await getTokenContracts(provider);
       const sgt = await sGLP.stakedGlpTracker();
       expect(sgt).toEqual(fsGLP.address);
+    });
+
+    it('works vault', async () => {
+      const { gmxUnderlyingVault, glpManager } = await getGmxVaultContracts(
+        provider
+      );
+      const vaultAddr = await glpManager.vault();
+      expect(gmxUnderlyingVault.address).toEqual(vaultAddr);
     });
   });
 });

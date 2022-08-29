@@ -16,6 +16,7 @@ import {
   IGlpManager__factory,
   IRewardRouterV2__factory,
   ISGLPExtended__factory,
+  IVault__factory,
 } from '../typechain/vaults';
 import { IERC20Metadata__factory } from '../typechain';
 
@@ -40,6 +41,7 @@ export interface GmxVaultExtraContracts {
   fsGLP: string;
   glpManager: string;
   rewardRouter: string;
+  vault: string;
 }
 
 export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
@@ -52,6 +54,7 @@ export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
         fsGLP: '0x1aDDD80E6039594eE970E5872D247bf0414C8903',
         glpManager: '0x321F653eED006AD1C29D174e17d96351BDe22649',
         rewardRouter: '0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1',
+        vault: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
       };
     case 421611: // arbtest
       return {
@@ -61,6 +64,7 @@ export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
         fsGLP: '0x98deA01800071212da93a6e76bb6De012c3a483D',
         glpManager: '0xD875d99E09118d2Be80579b9d23E83469077b498',
         rewardRouter: '0xE4180809231B554423b28EfB8c13819fe5b2c930',
+        vault: '0xBc9BC47A7aB63db1E0030dC7B60DDcDe29CF4Ffb',
       };
     default:
       throw new Error(
@@ -122,6 +126,10 @@ export async function getGmxVaultContracts(
     ),
     rewardRouter: IRewardRouterV2__factory.connect(
       addresses.rewardRouter,
+      signerOrProvider
+    ),
+    gmxUnderlyingVault: IVault__factory.connect(
+      addresses.vault,
       signerOrProvider
     ),
   };
