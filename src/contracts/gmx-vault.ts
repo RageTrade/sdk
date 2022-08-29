@@ -58,13 +58,13 @@ export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
       };
     case 421611: // arbtest
       return {
-        gmx: '0x35601e6181887bd6Edc6261be5C8fc9dA50679F6',
-        glp: '0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27',
-        sGLP: '0xfa14956e27D55427f7E267313D1E12d2217747e6',
-        fsGLP: '0x98deA01800071212da93a6e76bb6De012c3a483D',
-        glpManager: '0xD875d99E09118d2Be80579b9d23E83469077b498',
-        rewardRouter: '0xE4180809231B554423b28EfB8c13819fe5b2c930',
-        vault: '0xBc9BC47A7aB63db1E0030dC7B60DDcDe29CF4Ffb',
+        gmx: '0x0A72Ee78CcC55b979A4a77943745b202A11A931B',
+        glp: '0xc78Cb6Ee5515109064E4DBca1c38759b6da4615f',
+        sGLP: '0xe2f057A1F5A1F100b9bF991709432f89602eAC68',
+        fsGLP: '0x5964b93a672cabb2e7d8c482b882ec66ed15da23',
+        glpManager: '0x9f3be2329E1698eEfFE1c9358a3AB2e7fdBeF527',
+        rewardRouter: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
+        vault: '0x613512Ec9906975d29e1308f87454485D1b264fD',
       };
     default:
       throw new Error(

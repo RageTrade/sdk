@@ -6,6 +6,7 @@ import {
   GMXYieldStrategy,
   getTokenContracts,
 } from '../dist';
+import { hexStripZeros, hexZeroPad } from 'ethers/lib/utils';
 
 let gmxYieldStrategy: GMXYieldStrategy;
 
@@ -61,6 +62,18 @@ describe('gmx strategy', () => {
       );
       const vaultAddr = await glpManager.vault();
       expect(gmxUnderlyingVault.address).toEqual(vaultAddr);
+    });
+
+    it('works strategy contracts', async () => {
+      const { glpManager, glpStakingManager } = await getGmxVaultContracts(
+        provider
+      );
+
+      const val = await provider.getStorageAt(glpStakingManager.address, 261);
+
+      expect(hexZeroPad(hexStripZeros(val), 20)).toEqual(
+        glpManager.address.toLocaleLowerCase()
+      );
     });
   });
 });
