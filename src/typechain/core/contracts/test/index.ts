@@ -14,7 +14,6 @@ export type { ClearingHouseTest } from './ClearingHouseTest';
 export type { CollateralDepositSetTest } from './CollateralDepositSetTest';
 export type { ExtsloadTest } from './ExtsloadTest';
 export type { FundingPaymentTest } from './FundingPaymentTest';
-export type { FundingRateOverrideTest } from './FundingRateOverrideTest';
 export type { GoodAddressDeployerTest } from './GoodAddressDeployerTest';
 export type { LiquidityPositionSetTest } from './LiquidityPositionSetTest';
 export type { LiquidityPositionTest } from './LiquidityPositionTest';

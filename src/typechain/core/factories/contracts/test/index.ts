@@ -11,7 +11,6 @@ export { ClearingHouseTest__factory } from './ClearingHouseTest__factory';
 export { CollateralDepositSetTest__factory } from './CollateralDepositSetTest__factory';
 export { ExtsloadTest__factory } from './ExtsloadTest__factory';
 export { FundingPaymentTest__factory } from './FundingPaymentTest__factory';
-export { FundingRateOverrideTest__factory } from './FundingRateOverrideTest__factory';
 export { GoodAddressDeployerTest__factory } from './GoodAddressDeployerTest__factory';
 export { LiquidityPositionSetTest__factory } from './LiquidityPositionSetTest__factory';
 export { LiquidityPositionTest__factory } from './LiquidityPositionTest__factory';

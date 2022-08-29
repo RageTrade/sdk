@@ -111,10 +111,10 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     'extsload(bytes32)': FunctionFragment;
     'extsload(bytes32[])': FunctionFragment;
     'fpGlobal()': FunctionFragment;
+    'fundingRateOverrideX128()': FunctionFragment;
     'getExtrapolatedSumAX128()': FunctionFragment;
     'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
     'getFundingRateAndVirtualPrice()': FunctionFragment;
-    'getFundingRateOverride()': FunctionFragment;
     'getSumAX128()': FunctionFragment;
     'getValuesInside(int24,int24)': FunctionFragment;
     'increaseTimestamp(uint48)': FunctionFragment;
@@ -122,7 +122,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     'liquidityFeePips()': FunctionFragment;
     'mint(int24,int24,uint128)': FunctionFragment;
     'protocolFeePips()': FunctionFragment;
-    'setFundingRateOverride(address)': FunctionFragment;
     'setFundingRateOverride(int256)': FunctionFragment;
     'setLiquidityFee(uint24)': FunctionFragment;
     'setProtocolFee(uint24)': FunctionFragment;
@@ -131,7 +130,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     'ticksExtended(int24)': FunctionFragment;
     'uniswapV3MintCallback(uint256,uint256,bytes)': FunctionFragment;
     'uniswapV3SwapCallback(int256,int256,bytes)': FunctionFragment;
-    'unsetFundingRateOverride()': FunctionFragment;
     'updateGlobalFundingState(bool)': FunctionFragment;
     'vPool()': FunctionFragment;
     'vQuote()': FunctionFragment;
@@ -149,10 +147,10 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
       | 'extsload(bytes32)'
       | 'extsload(bytes32[])'
       | 'fpGlobal'
+      | 'fundingRateOverrideX128'
       | 'getExtrapolatedSumAX128'
       | 'getExtrapolatedValuesInside'
       | 'getFundingRateAndVirtualPrice'
-      | 'getFundingRateOverride'
       | 'getSumAX128'
       | 'getValuesInside'
       | 'increaseTimestamp'
@@ -160,8 +158,7 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
       | 'liquidityFeePips'
       | 'mint'
       | 'protocolFeePips'
-      | 'setFundingRateOverride(address)'
-      | 'setFundingRateOverride(int256)'
+      | 'setFundingRateOverride'
       | 'setLiquidityFee'
       | 'setProtocolFee'
       | 'sumFeeGlobalX128'
@@ -169,7 +166,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
       | 'ticksExtended'
       | 'uniswapV3MintCallback'
       | 'uniswapV3SwapCallback'
-      | 'unsetFundingRateOverride'
       | 'updateGlobalFundingState'
       | 'vPool'
       | 'vQuote'
@@ -210,6 +206,10 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'fpGlobal', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'fundingRateOverrideX128',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getExtrapolatedSumAX128',
     values?: undefined
   ): string;
@@ -219,10 +219,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getFundingRateAndVirtualPrice',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getFundingRateOverride',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -254,11 +250,7 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'setFundingRateOverride(address)',
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setFundingRateOverride(int256)',
+    functionFragment: 'setFundingRateOverride',
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -288,10 +280,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'uniswapV3SwapCallback',
     values: [BigNumberish, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'unsetFundingRateOverride',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
@@ -332,6 +320,10 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'fpGlobal', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'fundingRateOverrideX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getExtrapolatedSumAX128',
     data: BytesLike
   ): Result;
@@ -341,10 +333,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getFundingRateAndVirtualPrice',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getFundingRateOverride',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -370,11 +358,7 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setFundingRateOverride(address)',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setFundingRateOverride(int256)',
+    functionFragment: 'setFundingRateOverride',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -403,10 +387,6 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'unsetFundingRateOverride',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'updateGlobalFundingState',
     data: BytesLike
   ): Result;
@@ -417,6 +397,7 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
   events: {
     'AccruedProtocolFeeCollected(uint256)': EventFragment;
     'Burn(int24,int24,uint128,uint256,uint256)': EventFragment;
+    'FundingRateOverrideUpdated(int256)': EventFragment;
     'LiquidityFeeUpdated(uint24)': EventFragment;
     'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
     'ProtocolFeeUpdated(uint24)': EventFragment;
@@ -427,6 +408,7 @@ export interface VPoolWrapperMock2Interface extends utils.Interface {
     nameOrSignatureOrTopic: 'AccruedProtocolFeeCollected'
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FundingRateOverrideUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'LiquidityFeeUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
@@ -457,6 +439,17 @@ export type BurnEvent = TypedEvent<
 >;
 
 export type BurnEventFilter = TypedEventFilter<BurnEvent>;
+
+export interface FundingRateOverrideUpdatedEventObject {
+  fundingRateOverrideX128: BigNumber;
+}
+export type FundingRateOverrideUpdatedEvent = TypedEvent<
+  [BigNumber],
+  FundingRateOverrideUpdatedEventObject
+>;
+
+export type FundingRateOverrideUpdatedEventFilter =
+  TypedEventFilter<FundingRateOverrideUpdatedEvent>;
 
 export interface LiquidityFeeUpdatedEventObject {
   liquidityFeePips: number;
@@ -578,6 +571,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
       }
     >;
 
+    fundingRateOverrideX128(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getExtrapolatedValuesInside(
@@ -590,11 +585,12 @@ export interface VPoolWrapperMock2 extends BaseContract {
       }
     >;
 
-    getFundingRateAndVirtualPrice(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    getFundingRateOverride(overrides?: CallOverrides): Promise<[string]>;
+    getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        fundingRateX128: BigNumber;
+        virtualPriceX128: BigNumber;
+      }
+    >;
 
     getSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -629,13 +625,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
 
-    'setFundingRateOverride(address)'(
-      chainlinkOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    'setFundingRateOverride(int256)'(
-      fundingRateOverrideX128: BigNumberish,
+    setFundingRateOverride(
+      fundingRateOverrideX128_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -681,10 +672,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
       amount0Delta: BigNumberish,
       amount1Delta: BigNumberish,
       arg2: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    unsetFundingRateOverride(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -747,6 +734,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
     }
   >;
 
+  fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
+
   getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getExtrapolatedValuesInside(
@@ -755,11 +744,12 @@ export interface VPoolWrapperMock2 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
-  getFundingRateAndVirtualPrice(
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
-
-  getFundingRateOverride(overrides?: CallOverrides): Promise<string>;
+  getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+    [BigNumber, BigNumber] & {
+      fundingRateX128: BigNumber;
+      virtualPriceX128: BigNumber;
+    }
+  >;
 
   getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -790,13 +780,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
   protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
-  'setFundingRateOverride(address)'(
-    chainlinkOracle: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  'setFundingRateOverride(int256)'(
-    fundingRateOverrideX128: BigNumberish,
+  setFundingRateOverride(
+    fundingRateOverrideX128_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -842,10 +827,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
     amount0Delta: BigNumberish,
     amount1Delta: BigNumberish,
     arg2: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  unsetFundingRateOverride(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -912,6 +893,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
       }
     >;
 
+    fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
+
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getExtrapolatedValuesInside(
@@ -920,11 +903,12 @@ export interface VPoolWrapperMock2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
-    getFundingRateAndVirtualPrice(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    getFundingRateOverride(overrides?: CallOverrides): Promise<string>;
+    getFundingRateAndVirtualPrice(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        fundingRateX128: BigNumber;
+        virtualPriceX128: BigNumber;
+      }
+    >;
 
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -961,13 +945,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
-    'setFundingRateOverride(address)'(
-      chainlinkOracle: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'setFundingRateOverride(int256)'(
-      fundingRateOverrideX128: BigNumberish,
+    setFundingRateOverride(
+      fundingRateOverrideX128_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1016,8 +995,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    unsetFundingRateOverride(overrides?: CallOverrides): Promise<void>;
-
     updateGlobalFundingState(
       useZeroFundingRate: boolean,
       overrides?: CallOverrides
@@ -1052,6 +1029,13 @@ export interface VPoolWrapperMock2 extends BaseContract {
       vTokenPrincipal?: null,
       vQuotePrincipal?: null
     ): BurnEventFilter;
+
+    'FundingRateOverrideUpdated(int256)'(
+      fundingRateOverrideX128?: null
+    ): FundingRateOverrideUpdatedEventFilter;
+    FundingRateOverrideUpdated(
+      fundingRateOverrideX128?: null
+    ): FundingRateOverrideUpdatedEventFilter;
 
     'LiquidityFeeUpdated(uint24)'(
       liquidityFeePips?: null
@@ -1120,6 +1104,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     fpGlobal(overrides?: CallOverrides): Promise<BigNumber>;
 
+    fundingRateOverrideX128(overrides?: CallOverrides): Promise<BigNumber>;
+
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getExtrapolatedValuesInside(
@@ -1131,8 +1117,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
     getFundingRateAndVirtualPrice(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    getFundingRateOverride(overrides?: CallOverrides): Promise<BigNumber>;
 
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1163,13 +1147,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
-    'setFundingRateOverride(address)'(
-      chainlinkOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    'setFundingRateOverride(int256)'(
-      fundingRateOverrideX128: BigNumberish,
+    setFundingRateOverride(
+      fundingRateOverrideX128_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1208,10 +1187,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
       amount0Delta: BigNumberish,
       amount1Delta: BigNumberish,
       arg2: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    unsetFundingRateOverride(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1265,6 +1240,10 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     fpGlobal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    fundingRateOverrideX128(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getExtrapolatedSumAX128(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1276,10 +1255,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getFundingRateAndVirtualPrice(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getFundingRateOverride(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1312,13 +1287,8 @@ export interface VPoolWrapperMock2 extends BaseContract {
 
     protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    'setFundingRateOverride(address)'(
-      chainlinkOracle: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'setFundingRateOverride(int256)'(
-      fundingRateOverrideX128: BigNumberish,
+    setFundingRateOverride(
+      fundingRateOverrideX128_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1357,10 +1327,6 @@ export interface VPoolWrapperMock2 extends BaseContract {
       amount0Delta: BigNumberish,
       amount1Delta: BigNumberish,
       arg2: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unsetFundingRateOverride(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

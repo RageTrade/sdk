@@ -24,7 +24,6 @@ export interface SignedMathTestInterface extends utils.Interface {
   functions: {
     'abs(int256)': FunctionFragment;
     'absUint(int256)': FunctionFragment;
-    'bound(int256,uint256)': FunctionFragment;
     'extractSign(int256,bool)': FunctionFragment;
     'extractSign(int256)': FunctionFragment;
     'sign(int256)': FunctionFragment;
@@ -34,7 +33,6 @@ export interface SignedMathTestInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'abs'
       | 'absUint'
-      | 'bound'
       | 'extractSign(int256,bool)'
       | 'extractSign(int256)'
       | 'sign'
@@ -44,10 +42,6 @@ export interface SignedMathTestInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'absUint',
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'bound',
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'extractSign(int256,bool)',
@@ -61,7 +55,6 @@ export interface SignedMathTestInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: 'abs', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'absUint', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'bound', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'extractSign(int256,bool)',
     data: BytesLike
@@ -109,12 +102,6 @@ export interface SignedMathTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    bound(
-      val: BigNumberish,
-      absoluteCap: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     'extractSign(int256,bool)'(
       a: BigNumberish,
       positive: boolean,
@@ -133,12 +120,6 @@ export interface SignedMathTest extends BaseContract {
 
   absUint(value: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
-  bound(
-    val: BigNumberish,
-    absoluteCap: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   'extractSign(int256,bool)'(
     a: BigNumberish,
     positive: boolean,
@@ -156,12 +137,6 @@ export interface SignedMathTest extends BaseContract {
     abs(value: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     absUint(value: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    bound(
-      val: BigNumberish,
-      absoluteCap: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     'extractSign(int256,bool)'(
       a: BigNumberish,
@@ -183,12 +158,6 @@ export interface SignedMathTest extends BaseContract {
     abs(value: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     absUint(value: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    bound(
-      val: BigNumberish,
-      absoluteCap: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     'extractSign(int256,bool)'(
       a: BigNumberish,
@@ -212,12 +181,6 @@ export interface SignedMathTest extends BaseContract {
 
     absUint(
       value: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    bound(
-      val: BigNumberish,
-      absoluteCap: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

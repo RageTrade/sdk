@@ -136,8 +136,6 @@ export type { CollateralDeposit } from './contracts/libraries/CollateralDeposit'
 export { CollateralDeposit__factory } from './factories/contracts/libraries/CollateralDeposit__factory';
 export type { FundingPayment } from './contracts/libraries/FundingPayment';
 export { FundingPayment__factory } from './factories/contracts/libraries/FundingPayment__factory';
-export type { FundingRateOverride } from './contracts/libraries/FundingRateOverride';
-export { FundingRateOverride__factory } from './factories/contracts/libraries/FundingRateOverride__factory';
 export type { LiquidityPosition } from './contracts/libraries/LiquidityPosition';
 export { LiquidityPosition__factory } from './factories/contracts/libraries/LiquidityPosition__factory';
 export type { LiquidityPositionSet } from './contracts/libraries/LiquidityPositionSet';
@@ -200,8 +198,6 @@ export type { ExtsloadTest } from './contracts/test/ExtsloadTest';
 export { ExtsloadTest__factory } from './factories/contracts/test/ExtsloadTest__factory';
 export type { FundingPaymentTest } from './contracts/test/FundingPaymentTest';
 export { FundingPaymentTest__factory } from './factories/contracts/test/FundingPaymentTest__factory';
-export type { FundingRateOverrideTest } from './contracts/test/FundingRateOverrideTest';
-export { FundingRateOverrideTest__factory } from './factories/contracts/test/FundingRateOverrideTest__factory';
 export type { GoodAddressDeployerTest } from './contracts/test/GoodAddressDeployerTest';
 export { GoodAddressDeployerTest__factory } from './factories/contracts/test/GoodAddressDeployerTest__factory';
 export type { GovernableTest } from './contracts/test/Governable.sol/GovernableTest';
