@@ -47,5 +47,10 @@ state.sdk.getVaultContracts(arbtest).then((vaultTest) => {
   Object.assign(myRepl.context, _state);
 });
 
+state.sdk.getGmxVaultContracts(arbtest).then((gmxTest) => {
+  const _state = { ...myRepl.context, gmxTest };
+  Object.assign(myRepl.context, _state);
+});
+
 // # node -i -e "ethers = require('ethers'); p = new ethers.providers.StaticJsonRpcProvider('https://arb-rinkeby.g.alchemy.com/v2/gh1-tm4X9f0pxljEGsnFnPe693FZ-gim');sdk = require('./');"
 // node -i -e "require('./cli.initializers.js')"
