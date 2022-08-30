@@ -36,6 +36,11 @@ state.sdk.getVaultContracts(arbmain).then((vaultMain) => {
   Object.assign(myRepl.context, _state);
 });
 
+state.sdk.getTokenContracts(arbmain).then((tokenMain) => {
+  const _state = { ...myRepl.context, tokenMain };
+  Object.assign(myRepl.context, _state);
+});
+
 // testnet
 state.sdk.getContracts(arbtest).then((coreTest) => {
   const _state = { ...myRepl.context, coreTest };
@@ -49,6 +54,11 @@ state.sdk.getVaultContracts(arbtest).then((vaultTest) => {
 
 state.sdk.getGmxVaultContracts(arbtest).then((gmxTest) => {
   const _state = { ...myRepl.context, gmxTest };
+  Object.assign(myRepl.context, _state);
+});
+
+state.sdk.getTokenContracts(arbtest).then((tokenTest) => {
+  const _state = { ...myRepl.context, tokenTest };
   Object.assign(myRepl.context, _state);
 });
 
