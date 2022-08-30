@@ -2,7 +2,7 @@ import { Provider } from '@ethersproject/providers';
 import { Signer } from 'ethers';
 import { IERC20Metadata__factory } from '../typechain';
 import { ISGLPExtended__factory } from '../typechain/vaults';
-import { getChainIdFromProvider } from './common';
+import { getChainIdFromProvider, getDeployment } from './common';
 import { getDeployments } from './core';
 
 export interface TokenAddresses {
@@ -38,12 +38,14 @@ export async function getTokenAddresses(
     case 421611: // arbtest
       const { SettlementTokenDeployment } = await getDeployments('arbtest');
       return {
-        weth: '0xFCfbfcC11d12bCf816415794E5dc1BBcc5304e01',
-        wbtc: '0xF2bf2a5CF00c9121A18d161F6738D39Ab576DB68',
+        weth: (await getDeployment('vaults', 'arbtest', 'WETH')).address,
+        wbtc: (await getDeployment('vaults', 'arbtest', 'WBTC')).address,
         usdc: SettlementTokenDeployment.address,
-        usdt: '0x237b3B5238D2022aA80cAd1f67dAE53f353F74bF',
-        crv: '0xc6BeC13cBf941E3f9a0D3d21B68c5518475a3bAd',
-        crv3: '0x931073e47baA30389A195CABcf5F3549157afdc9',
+        usdt: (await getDeployment('vaults', 'arbtest', 'USDT')).address,
+        crv: (await getDeployment('vaults', 'arbtest', 'CurveToken')).address,
+        crv3: (
+          await getDeployment('vaults', 'arbtest', 'CurveTriCryptoLpToken')
+        ).address,
         gmx: '0x35601e6181887bd6Edc6261be5C8fc9dA50679F6',
         glp: '0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27',
         sGLP: '0xfa14956e27D55427f7E267313D1E12d2217747e6',
