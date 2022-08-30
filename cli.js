@@ -22,7 +22,7 @@ const state = {
   ...require('./'),
 };
 
-const myRepl = repl.start('ragetrade> ');
+const myRepl = repl.start('rage> ');
 Object.assign(myRepl.context, state);
 
 // mainnet
