@@ -645,6 +645,17 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
     'TokenWithdrawn(address,address,address,address,uint256,uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
+    'BaseParamsUpdated(uint256,address,uint32,uint16)': EventFragment;
+    'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)': EventFragment;
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
+    'FeesUpdated(uint256)': EventFragment;
+    'FeesWithdrawn(uint256)': EventFragment;
+    'Harvested(uint256)': EventFragment;
+    'Rebalance()': EventFragment;
+    'Staked(uint256,address)': EventFragment;
+    'StateInfo(uint256)': EventFragment;
+    'TokenPositionClosed()': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
@@ -655,6 +666,17 @@ export interface GMXYieldStrategyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'TokenWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'BaseParamsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CrvSwapFailedDueToSlippage'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'CurveParamsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EightyTwentyParamsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeesUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Harvested'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Rebalance'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Staked'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'StateInfo'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TokenPositionClosed'): EventFragment;
 }
 
 export interface ApprovalEventObject {
@@ -754,6 +776,112 @@ export type WithdrawEvent = TypedEvent<
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
+
+export interface BaseParamsUpdatedEventObject {
+  newDepositCap: BigNumber;
+  newKeeperAddress: string;
+  rebalanceTimeThreshold: number;
+  rebalancePriceThresholdBps: number;
+}
+export type BaseParamsUpdatedEvent = TypedEvent<
+  [BigNumber, string, number, number],
+  BaseParamsUpdatedEventObject
+>;
+
+export type BaseParamsUpdatedEventFilter =
+  TypedEventFilter<BaseParamsUpdatedEvent>;
+
+export interface CrvSwapFailedDueToSlippageEventObject {
+  crvSlippageTolerance: BigNumber;
+}
+export type CrvSwapFailedDueToSlippageEvent = TypedEvent<
+  [BigNumber],
+  CrvSwapFailedDueToSlippageEventObject
+>;
+
+export type CrvSwapFailedDueToSlippageEventFilter =
+  TypedEventFilter<CrvSwapFailedDueToSlippageEvent>;
+
+export interface CurveParamsUpdatedEventObject {
+  feeBps: BigNumber;
+  stablecoinSlippage: BigNumber;
+  crvHarvestThreshold: BigNumber;
+  crvSlippageTolerance: BigNumber;
+  crvOracle: string;
+}
+export type CurveParamsUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, string],
+  CurveParamsUpdatedEventObject
+>;
+
+export type CurveParamsUpdatedEventFilter =
+  TypedEventFilter<CurveParamsUpdatedEvent>;
+
+export interface EightyTwentyParamsUpdatedEventObject {
+  closePositionSlippageSqrtToleranceBps: number;
+  resetPositionThresholdBps: number;
+  minNotionalPositionToCloseThreshold: BigNumber;
+}
+export type EightyTwentyParamsUpdatedEvent = TypedEvent<
+  [number, number, BigNumber],
+  EightyTwentyParamsUpdatedEventObject
+>;
+
+export type EightyTwentyParamsUpdatedEventFilter =
+  TypedEventFilter<EightyTwentyParamsUpdatedEvent>;
+
+export interface FeesUpdatedEventObject {
+  fee: BigNumber;
+}
+export type FeesUpdatedEvent = TypedEvent<[BigNumber], FeesUpdatedEventObject>;
+
+export type FeesUpdatedEventFilter = TypedEventFilter<FeesUpdatedEvent>;
+
+export interface FeesWithdrawnEventObject {
+  total: BigNumber;
+}
+export type FeesWithdrawnEvent = TypedEvent<
+  [BigNumber],
+  FeesWithdrawnEventObject
+>;
+
+export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
+
+export interface HarvestedEventObject {
+  crvAmount: BigNumber;
+}
+export type HarvestedEvent = TypedEvent<[BigNumber], HarvestedEventObject>;
+
+export type HarvestedEventFilter = TypedEventFilter<HarvestedEvent>;
+
+export interface RebalanceEventObject {}
+export type RebalanceEvent = TypedEvent<[], RebalanceEventObject>;
+
+export type RebalanceEventFilter = TypedEventFilter<RebalanceEvent>;
+
+export interface StakedEventObject {
+  amount: BigNumber;
+  depositor: string;
+}
+export type StakedEvent = TypedEvent<[BigNumber, string], StakedEventObject>;
+
+export type StakedEventFilter = TypedEventFilter<StakedEvent>;
+
+export interface StateInfoEventObject {
+  lpPrice: BigNumber;
+}
+export type StateInfoEvent = TypedEvent<[BigNumber], StateInfoEventObject>;
+
+export type StateInfoEventFilter = TypedEventFilter<StateInfoEvent>;
+
+export interface TokenPositionClosedEventObject {}
+export type TokenPositionClosedEvent = TypedEvent<
+  [],
+  TokenPositionClosedEventObject
+>;
+
+export type TokenPositionClosedEventFilter =
+  TypedEventFilter<TokenPositionClosedEvent>;
 
 export interface GMXYieldStrategy extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1618,6 +1746,76 @@ export interface GMXYieldStrategy extends BaseContract {
       assets?: null,
       shares?: null
     ): WithdrawEventFilter;
+
+    'BaseParamsUpdated(uint256,address,uint32,uint16)'(
+      newDepositCap?: null,
+      newKeeperAddress?: null,
+      rebalanceTimeThreshold?: null,
+      rebalancePriceThresholdBps?: null
+    ): BaseParamsUpdatedEventFilter;
+    BaseParamsUpdated(
+      newDepositCap?: null,
+      newKeeperAddress?: null,
+      rebalanceTimeThreshold?: null,
+      rebalancePriceThresholdBps?: null
+    ): BaseParamsUpdatedEventFilter;
+
+    'CrvSwapFailedDueToSlippage(uint256)'(
+      crvSlippageTolerance?: null
+    ): CrvSwapFailedDueToSlippageEventFilter;
+    CrvSwapFailedDueToSlippage(
+      crvSlippageTolerance?: null
+    ): CrvSwapFailedDueToSlippageEventFilter;
+
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)'(
+      feeBps?: null,
+      stablecoinSlippage?: null,
+      crvHarvestThreshold?: null,
+      crvSlippageTolerance?: null,
+      crvOracle?: string | null
+    ): CurveParamsUpdatedEventFilter;
+    CurveParamsUpdated(
+      feeBps?: null,
+      stablecoinSlippage?: null,
+      crvHarvestThreshold?: null,
+      crvSlippageTolerance?: null,
+      crvOracle?: string | null
+    ): CurveParamsUpdatedEventFilter;
+
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)'(
+      closePositionSlippageSqrtToleranceBps?: null,
+      resetPositionThresholdBps?: null,
+      minNotionalPositionToCloseThreshold?: null
+    ): EightyTwentyParamsUpdatedEventFilter;
+    EightyTwentyParamsUpdated(
+      closePositionSlippageSqrtToleranceBps?: null,
+      resetPositionThresholdBps?: null,
+      minNotionalPositionToCloseThreshold?: null
+    ): EightyTwentyParamsUpdatedEventFilter;
+
+    'FeesUpdated(uint256)'(fee?: null): FeesUpdatedEventFilter;
+    FeesUpdated(fee?: null): FeesUpdatedEventFilter;
+
+    'FeesWithdrawn(uint256)'(total?: null): FeesWithdrawnEventFilter;
+    FeesWithdrawn(total?: null): FeesWithdrawnEventFilter;
+
+    'Harvested(uint256)'(crvAmount?: null): HarvestedEventFilter;
+    Harvested(crvAmount?: null): HarvestedEventFilter;
+
+    'Rebalance()'(): RebalanceEventFilter;
+    Rebalance(): RebalanceEventFilter;
+
+    'Staked(uint256,address)'(
+      amount?: null,
+      depositor?: string | null
+    ): StakedEventFilter;
+    Staked(amount?: null, depositor?: string | null): StakedEventFilter;
+
+    'StateInfo(uint256)'(lpPrice?: null): StateInfoEventFilter;
+    StateInfo(lpPrice?: null): StateInfoEventFilter;
+
+    'TokenPositionClosed()'(): TokenPositionClosedEventFilter;
+    TokenPositionClosed(): TokenPositionClosedEventFilter;
   };
 
   estimateGas: {
