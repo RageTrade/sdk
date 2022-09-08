@@ -32,7 +32,7 @@ describe('fallback data source', () => {
     it('first req success', async () => {
       const ds1 = new MockDataSource1();
 
-      const fds = new FallbackDataSource([ds1], 1);
+      const fds = new FallbackDataSource([ds1], { quorum: 1 });
       const resp = await fds.getAccountIdsByAddress('0x123');
 
       expect(resp).toEqual([1]);
@@ -43,7 +43,7 @@ describe('fallback data source', () => {
       const dsf = new MockDataSourceFail();
       const ds1 = new MockDataSource1();
 
-      const fds = new FallbackDataSource([dsf, ds1], 1);
+      const fds = new FallbackDataSource([dsf, ds1], { quorum: 1 });
       const resp = await fds.getAccountIdsByAddress('0x123');
 
       expect(resp).toEqual([1]);
@@ -55,7 +55,7 @@ describe('fallback data source', () => {
       const ds1 = new MockDataSource1();
       const ds2 = new MockDataSource2();
 
-      const fds = new FallbackDataSource([ds1, ds2], 1);
+      const fds = new FallbackDataSource([ds1, ds2], { quorum: 1 });
       const resp = await fds.getAccountIdsByAddress('0x123');
       expect(resp).toEqual([1]);
 
@@ -68,7 +68,7 @@ describe('fallback data source', () => {
       const ds1 = new MockDataSource1();
       const ds2 = new MockDataSource2();
 
-      const fds = new FallbackDataSource([dsf, ds1, ds2], 1);
+      const fds = new FallbackDataSource([dsf, ds1, ds2], { quorum: 1 });
       const resp = await fds.getAccountIdsByAddress('0x123');
       expect(resp).toEqual([1]);
 
@@ -82,7 +82,7 @@ describe('fallback data source', () => {
       const dsf = new MockDataSourceFail();
       const ds2 = new MockDataSource2();
 
-      const fds = new FallbackDataSource([ds1, dsf, ds2], 1);
+      const fds = new FallbackDataSource([ds1, dsf, ds2], { quorum: 1 });
       const resp = await fds.getAccountIdsByAddress('0x123');
       expect(resp).toEqual([1]);
 
@@ -95,7 +95,7 @@ describe('fallback data source', () => {
       const dsfa = new MockDataSourceFail();
       const dsfb = new MockDataSourceFail();
 
-      const fds = new FallbackDataSource([dsfa, dsfb], 1);
+      const fds = new FallbackDataSource([dsfa, dsfb], { quorum: 1 });
       try {
         await fds.getAccountIdsByAddress('0x123');
         throw new Error('should have thrown');
@@ -110,7 +110,7 @@ describe('fallback data source', () => {
       const ds1a = new MockDataSource1();
       const ds1b = new MockDataSource1();
 
-      const fds = new FallbackDataSource([ds1a, ds1b], 2);
+      const fds = new FallbackDataSource([ds1a, ds1b], { quorum: 2 });
       const resp = await fds.getAccountIdsByAddress('0x123');
       expect(resp).toEqual([1]);
 
@@ -122,7 +122,7 @@ describe('fallback data source', () => {
       const ds1a = new MockDataSource1();
       const ds1b = new MockDataSource1();
 
-      const fds = new FallbackDataSource([ds1a, ds1b], 2);
+      const fds = new FallbackDataSource([ds1a, ds1b], { quorum: 2 });
       const resp = await fds.getAccountIdsByAddress('0x123');
       expect(resp).toEqual([1]);
 
