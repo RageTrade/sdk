@@ -4,7 +4,7 @@
   "kovan": [],
   "arbmain": [
     {
-      "poolId": "0xa237af5E",
+      "poolId": "0xa237af5e",
       "name": "Virtual Ether (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
@@ -15,7 +15,7 @@
   ],
   "arbtest": [
     {
-      "poolId": "0xd74887E1",
+      "poolId": "0xd74887e1",
       "name": "Virtual Ether (Rage Trade)",
       "symbol": "vETH",
       "decimals": 18,
