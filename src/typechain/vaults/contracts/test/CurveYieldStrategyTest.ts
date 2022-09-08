@@ -165,6 +165,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
+    'migrate()': FunctionFragment;
     'minNotionalPositionToCloseThreshold()': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
@@ -191,9 +192,9 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
-    'updateCurveParams(uint256,uint256,uint256,uint256,address)': FunctionFragment;
+    'updateCurveParams(uint256,uint256,uint256,uint256,address,address)': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees()': FunctionFragment;
+    'withdrawFees(address)': FunctionFragment;
     'withdrawUsdc(uint256)': FunctionFragment;
   };
 
@@ -235,6 +236,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
       | 'maxMint'
       | 'maxRedeem'
       | 'maxWithdraw'
+      | 'migrate'
       | 'minNotionalPositionToCloseThreshold'
       | 'mint'
       | 'name'
@@ -375,6 +377,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
+  encodeFunctionData(functionFragment: 'migrate', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'minNotionalPositionToCloseThreshold',
     values?: undefined
@@ -463,7 +466,14 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateCurveParams',
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, string]
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      string
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
@@ -471,7 +481,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFees',
-    values?: undefined
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawUsdc',
@@ -574,6 +584,7 @@ export interface CurveYieldStrategyTestInterface extends utils.Interface {
     functionFragment: 'maxWithdraw',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'migrate', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'minNotionalPositionToCloseThreshold',
     data: BytesLike
@@ -907,6 +918,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    migrate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -1017,6 +1032,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
+      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1029,6 +1045,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdrawFees(
+      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -1162,6 +1179,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  migrate(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   minNotionalPositionToCloseThreshold(
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -1272,6 +1293,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
     _stablecoinSlippage: BigNumberish,
     _crvHarvestThreshold: BigNumberish,
     _crvSlippageTolerance: BigNumberish,
+    _gauge: string,
     _crvOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1284,6 +1306,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdrawFees(
+    feeRecipient: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1408,6 +1431,8 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    migrate(overrides?: CallOverrides): Promise<void>;
+
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1511,6 +1536,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
+      _gauge: string,
       _crvOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1522,7 +1548,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    withdrawFees(overrides?: CallOverrides): Promise<void>;
+    withdrawFees(
+      feeRecipient: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     withdrawUsdc(
       amount: BigNumberish,
@@ -1719,6 +1748,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    migrate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1829,6 +1862,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
+      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1841,6 +1875,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
     ): Promise<BigNumber>;
 
     withdrawFees(
+      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1992,6 +2027,10 @@ export interface CurveYieldStrategyTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    migrate(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2106,6 +2145,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
+      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2118,6 +2158,7 @@ export interface CurveYieldStrategyTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdrawFees(
+      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

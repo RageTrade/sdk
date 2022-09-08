@@ -43,6 +43,24 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'addr',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+    ],
+    name: 'claim_rewards',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'claim_rewards',
     outputs: [],

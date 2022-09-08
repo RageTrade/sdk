@@ -26,6 +26,7 @@ export interface ICurveGaugeInterface extends utils.Interface {
   functions: {
     'balanceOf(address)': FunctionFragment;
     'claim_rewards(address)': FunctionFragment;
+    'claim_rewards(address,address)': FunctionFragment;
     'claim_rewards()': FunctionFragment;
     'claimable_reward(address,address)': FunctionFragment;
     'claimable_reward_write(address,address)': FunctionFragment;
@@ -41,6 +42,7 @@ export interface ICurveGaugeInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'balanceOf'
       | 'claim_rewards(address)'
+      | 'claim_rewards(address,address)'
       | 'claim_rewards()'
       | 'claimable_reward'
       | 'claimable_reward_write'
@@ -56,6 +58,10 @@ export interface ICurveGaugeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'claim_rewards(address)',
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claim_rewards(address,address)',
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'claim_rewards()',
@@ -97,6 +103,10 @@ export interface ICurveGaugeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'claim_rewards(address)',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'claim_rewards(address,address)',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -173,6 +183,12 @@ export interface ICurveGauge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    'claim_rewards(address,address)'(
+      addr: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     'claim_rewards()'(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -229,6 +245,12 @@ export interface ICurveGauge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  'claim_rewards(address,address)'(
+    addr: string,
+    receiver: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   'claim_rewards()'(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -282,6 +304,12 @@ export interface ICurveGauge extends BaseContract {
 
     'claim_rewards(address)'(
       addr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    'claim_rewards(address,address)'(
+      addr: string,
+      receiver: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -342,6 +370,12 @@ export interface ICurveGauge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    'claim_rewards(address,address)'(
+      addr: string,
+      receiver: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     'claim_rewards()'(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -399,6 +433,12 @@ export interface ICurveGauge extends BaseContract {
 
     'claim_rewards(address)'(
       addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    'claim_rewards(address,address)'(
+      addr: string,
+      receiver: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
