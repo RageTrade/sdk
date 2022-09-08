@@ -1,3 +1,4 @@
+import { BigNumberish } from 'ethers';
 import { VaultName } from '../contracts';
 
 export type MethodNames =
@@ -20,7 +21,7 @@ export abstract class BaseDataSource {
     return this.perform('findBlockByTimestamp', [timestamp]);
   }
 
-  getPrices(poolId: number): Promise<{
+  getPrices(poolId: BigNumberish): Promise<{
     realPrice: number;
     virtualPrice: number;
     realTwapPrice: number;

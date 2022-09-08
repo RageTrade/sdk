@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { NetworkName } from '../contracts';
 
 import { BaseDataSource } from './base-data-source';
@@ -32,14 +32,16 @@ export class CacheServerDataSource extends BaseDataSource {
     return getResult(response);
   }
 
-  async getPrices(poolId: number): Promise<{
+  async getPrices(poolId: BigNumberish): Promise<{
     realPrice: number;
     virtualPrice: number;
     realTwapPrice: number;
     virtualTwapPrice: number;
   }> {
     const response = await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-prices?networkName=${this._network}&poolId=${poolId}`
+      `${this._baseUrl}/data/get-prices?networkName=${
+        this._network
+      }&poolId=${BigNumber.from(poolId).toNumber()}`
     );
     return getResult(response);
   }

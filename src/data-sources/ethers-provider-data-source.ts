@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumberish, ethers } from 'ethers';
 
 import { getContracts, VaultName } from '../contracts';
 import { BaseDataSource } from './base-data-source';
@@ -22,7 +22,7 @@ export class EthersProviderDataSource extends BaseDataSource {
     return logs.map((log) => log.args.accountId.toNumber());
   }
 
-  async getPrices(_poolId: number) {
+  async getPrices(_poolId: BigNumberish) {
     return await getPrices(this._provider, _poolId);
   }
 
