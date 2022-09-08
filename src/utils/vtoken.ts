@@ -7,7 +7,7 @@ export function truncate(address: string) {
     temp = temp.slice(1);
   }
 
-  return '0x' + temp;
+  return '0x' + temp.toLowerCase();
 }
 
 export function parseName(name: string) {
