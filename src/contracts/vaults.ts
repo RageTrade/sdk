@@ -22,6 +22,8 @@ export const vaultMetaData = {
   assetName: 'TriCrypto Shares',
 };
 
+export type VaultName = 'tricrypto' | 'gmx' | 'unknown';
+
 export interface VaultDeployments {
   CollateralTokenDeployment: ContractDeployment;
   LogicLibraryDeployment: ContractDeployment;
