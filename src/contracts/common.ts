@@ -63,6 +63,13 @@ export async function getChainIdFromProvider(
   return network.chainId;
 }
 
+export async function getNetworkNameFromProvider(
+  signerOrProvider: Signer | Provider
+) {
+  const chainId = await getChainIdFromProvider(signerOrProvider);
+  return getNetworkNameFromChainId(chainId);
+}
+
 export interface ContractDeployment {
   address: string;
 }

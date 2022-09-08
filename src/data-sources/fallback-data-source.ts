@@ -2,10 +2,17 @@ import deepEqual from 'fast-deep-equal';
 
 import { BaseDataSource, MethodNames } from './base-data-source';
 
+export interface FallbackDataSourceOptions {
+  quorum?: number;
+}
+
 export class FallbackDataSource extends BaseDataSource {
   _dataSources: BaseDataSource[];
   _quorum: number;
-  constructor(dataSources: BaseDataSource[], quorum: number) {
+  constructor(
+    dataSources: BaseDataSource[],
+    { quorum }: FallbackDataSourceOptions = {}
+  ) {
     super();
     for (let i = 0; i < dataSources.length; i++) {
       if (!dataSources[i]._isDataSource) {
@@ -13,7 +20,7 @@ export class FallbackDataSource extends BaseDataSource {
       }
     }
     this._dataSources = dataSources;
-    this._quorum = quorum;
+    this._quorum = quorum ?? 1;
   }
 
   perform<MethodName extends MethodNames>(

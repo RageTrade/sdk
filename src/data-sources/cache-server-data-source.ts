@@ -1,15 +1,21 @@
 import { ethers } from 'ethers';
+import { NetworkName } from '../contracts';
 
 import { BaseDataSource } from './base-data-source';
 
-export class Web2ServerDataSource extends BaseDataSource {
+export class CacheServerDataSource extends BaseDataSource {
   // _baseUrl = 'http://localhost:3000';
   _baseUrl = 'https://apis.rage.trade';
-  _network: 'arbmain' | 'arbtest';
+  _network: NetworkName;
 
-  constructor(network: 'arbmain' | 'arbtest') {
+  constructor(network: NetworkName) {
     super();
     this._network = network;
+    if (!['arbmain', 'arbtest'].includes(this._network)) {
+      throw new Error(
+        `Currently CacheServer only supports arbmain and arbtest, but got ${this._network}`
+      );
+    }
   }
 
   async getAccountIdsByAddress(address: string): Promise<number[]> {

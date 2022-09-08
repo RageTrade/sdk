@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { ethers } from 'ethers';
 
-import { getVaultContracts, Web2ServerDataSource, pools } from '../dist';
+import { getVaultContracts, CacheServerDataSource, pools } from '../dist';
 
 config();
 
@@ -9,10 +9,10 @@ const provider = new ethers.providers.StaticJsonRpcProvider(
   'https://arb1.arbitrum.io/rpc'
 );
 
-describe('web2 data source', () => {
+describe('cache data source', () => {
   describe('arbmain', () => {
     it('getAccountIdsByAddress', async () => {
-      const ds = new Web2ServerDataSource('arbmain');
+      const ds = new CacheServerDataSource('arbmain');
       const { curveYieldStrategy } = await getVaultContracts(provider);
       const resp = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
 
@@ -20,14 +20,14 @@ describe('web2 data source', () => {
     });
 
     it('findBlockByTimestamp', async () => {
-      const ds = new Web2ServerDataSource('arbmain');
+      const ds = new CacheServerDataSource('arbmain');
       const resp = await ds.findBlockByTimestamp(1660048813);
 
       expect(resp).toEqual(19803868);
     });
 
     it('getPrices', async () => {
-      const ds = new Web2ServerDataSource('arbmain');
+      const ds = new CacheServerDataSource('arbmain');
       const resp = await ds.getPrices(Number(pools.arbmain[0].poolId));
 
       expect(resp.realPrice).toBeGreaterThan(0);
@@ -37,7 +37,7 @@ describe('web2 data source', () => {
     });
 
     it('getVaultInfo', async () => {
-      const ds = new Web2ServerDataSource('arbmain');
+      const ds = new CacheServerDataSource('arbmain');
       const resp = await ds.getVaultInfo('tricrypto');
 
       expect(resp.totalSupply).toBeGreaterThan(0);
