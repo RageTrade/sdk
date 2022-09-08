@@ -59,4 +59,5 @@ export {
   GMXYieldStrategy__factory,
   GMXBatchingManager__factory,
   GlpStakingManager__factory,
+  BaseVault__factory,
 } from './vaults';
