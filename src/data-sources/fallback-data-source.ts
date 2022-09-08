@@ -1,6 +1,6 @@
 import deepEqual from 'fast-deep-equal';
 
-import { BaseDataSource } from './base-data-source';
+import { BaseDataSource, MethodNames } from './base-data-source';
 
 export class FallbackDataSource extends BaseDataSource {
   _dataSources: BaseDataSource[];
@@ -16,29 +16,10 @@ export class FallbackDataSource extends BaseDataSource {
     this._quorum = quorum;
   }
 
-  async getAccountIdsByAddress(address: string): Promise<number[]> {
-    return this.perform('getAccountIdsByAddress', [address]);
-  }
-
-  async getDeposits(address: string) {
-    return this.perform('getDeposits', [address]);
-  }
-
-  async getWithdrawals(address: string) {
-    return this.perform('getWithdrawals', [address]);
-  }
-
-  async findBlockByTimestamp(timestamp: number): Promise<number> {
-    return this.perform('findBlockByTimestamp', [timestamp]);
-  }
-
-  async myPerformance(address: string): Promise<number> {
-    return this.perform('myPerformance', [address]);
-  }
-
-  async benchmarkPerformance(): Promise<number> {
-    return this.perform('benchmarkPerformance', []);
-  }
+  perform<MethodName extends MethodNames>(
+    method: MethodName,
+    args: Parameters<InstanceType<typeof BaseDataSource>[MethodName]>
+  ): ReturnType<InstanceType<typeof BaseDataSource>[MethodName]>;
 
   async perform(method: string, args: any[]) {
     const results: { count: number; value: any }[] = [];

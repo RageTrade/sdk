@@ -1,28 +1,51 @@
-import { Web2ServerDataSource } from '../dist';
-
 import { config } from 'dotenv';
+import { ethers } from 'ethers';
+
+import { getVaultContracts, Web2ServerDataSource, pools } from '../dist';
+
 config();
 
-describe('web2 data source', () => {
-  describe('getAccountIdsByAddress', () => {
-    it('works', async () => {
-      const ds = new Web2ServerDataSource('arbtest');
+const provider = new ethers.providers.StaticJsonRpcProvider(
+  'https://arb1.arbitrum.io/rpc'
+);
 
-      const resp = await ds.getAccountIdsByAddress(
-        '0xe1b8E0a8cC4a7e70061534dE6FFD504CB7cBe2df'
-      );
+describe('web2 data source', () => {
+  describe('arbmain', () => {
+    it('getAccountIdsByAddress', async () => {
+      const ds = new Web2ServerDataSource('arbmain');
+      const { curveYieldStrategy } = await getVaultContracts(provider);
+      const resp = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
 
       expect(resp).toEqual([0]);
     });
-  });
 
-  describe('findBlockByTimestamp', () => {
-    it('works', async () => {
-      const ds = new Web2ServerDataSource('arbtest');
-
+    it('findBlockByTimestamp', async () => {
+      const ds = new Web2ServerDataSource('arbmain');
       const resp = await ds.findBlockByTimestamp(1660048813);
 
-      expect(resp).toEqual(14049177);
+      expect(resp).toEqual(19803868);
+    });
+
+    it('getPrices', async () => {
+      const ds = new Web2ServerDataSource('arbmain');
+      const resp = await ds.getPrices(Number(pools.arbmain[0].poolId));
+
+      expect(resp.realPrice).toBeGreaterThan(0);
+      expect(resp.realTwapPrice).toBeGreaterThan(0);
+      expect(resp.virtualPrice).toBeGreaterThan(0);
+      expect(resp.virtualTwapPrice).toBeGreaterThan(0);
+    });
+
+    it('getVaultInfo', async () => {
+      const ds = new Web2ServerDataSource('arbmain');
+      const resp = await ds.getVaultInfo('tricrypto');
+
+      expect(resp.totalSupply).toBeGreaterThan(0);
+      expect(resp.totalAssets).toBeGreaterThan(0);
+      expect(resp.assetPrice).toBeGreaterThan(0);
+      expect(resp.sharePrice).toBeGreaterThan(0);
+      expect(resp.depositCap).toBeGreaterThan(0);
+      expect(resp.vaultMarketValue).toBeGreaterThan(0);
     });
   });
 });

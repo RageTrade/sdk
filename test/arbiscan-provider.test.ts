@@ -3,6 +3,7 @@ import {
   getContracts,
   getPoolContracts,
   getAccountIdsByAddress,
+  getVaultContracts,
 } from '../dist';
 
 import { config } from 'dotenv';
@@ -56,8 +57,9 @@ describe('arbiscan provider', () => {
         process.env.ARBISCAN_KEY
       );
       const { clearingHouse } = await getContracts(provider);
+      const { curveYieldStrategy } = await getVaultContracts(provider);
       const accountIds = await getAccountIdsByAddress(
-        '0x5F326710bD6b9f3F525fdAa4241b37ee68984052',
+        curveYieldStrategy.address,
         clearingHouse
       );
       expect(accountIds.length).toBeGreaterThan(0);

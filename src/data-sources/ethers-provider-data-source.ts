@@ -1,7 +1,9 @@
 import { ethers } from 'ethers';
 
-import { getContracts } from '../contracts';
+import { getContracts, VaultName } from '../contracts';
 import { BaseDataSource } from './base-data-source';
+import { getVaultInfo } from './scripts';
+import { getPrices } from './scripts/get-prices';
 
 export class EthersProviderDataSource extends BaseDataSource {
   _provider: ethers.providers.Provider;
@@ -18,5 +20,13 @@ export class EthersProviderDataSource extends BaseDataSource {
       clearingHouse.filters.AccountCreated(address)
     );
     return logs.map((log) => log.args.accountId.toNumber());
+  }
+
+  async getPrices(_poolId: number) {
+    return await getPrices(this._provider, _poolId);
+  }
+
+  async getVaultInfo(vaultName: VaultName) {
+    return await getVaultInfo(this._provider, vaultName);
   }
 }
