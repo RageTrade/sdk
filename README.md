@@ -19,13 +19,13 @@ ragetrade> await sdk.sqrtPriceX96ToPrice('0x03e08db11fa9d95156495b', 6, 18)
 
 ```ts
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { getContracts } from '@ragetrade/sdk';
+import { getCoreContracts } from '@ragetrade/sdk';
 
 const provider = new StaticJsonRpcProvider('arbitrum testnet node url');
 
 // in your code
 
-const { clearingHouse } = await getContracts(provider);
+const { clearingHouse } = await getCoreContracts(provider);
 const num = await clearingHouse.numAccounts();
 console.log(num); // BigNumber { _hex: '0x05', _isBigNumber: true }
 console.log(num.toNumber()); // 5
@@ -36,14 +36,14 @@ console.log(num.toNumber()); // 5
 ```ts
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
-import { getContracts, parseUsdc } from '@ragetrade/sdk';
+import { getCoreContracts, parseUsdc } from '@ragetrade/sdk';
 
 const provider = new StaticJsonRpcProvider('arbitrum testnet node url');
 const signer = new Wallet('private key', provider);
 
 // creating account
 
-const { clearingHouse } = await getContracts(signer);
+const { clearingHouse } = await getCoreContracts(signer);
 const myAccountNum = await clearingHouse.callStatic.createAccount();
 const tx = await clearingHouse.createAccount();
 await tx.wait();
@@ -52,9 +52,9 @@ await tx.wait();
 ## Making transaction: add money to account
 
 ```ts
-import { getContracts, formatUsdc, parseUsdc } from '@ragetrade/sdk';
+import { getCoreContracts, formatUsdc, parseUsdc } from '@ragetrade/sdk';
 
-const { clearingHouse, rBase } = await getContracts(signer);
+const { clearingHouse, rBase } = await getCoreContracts(signer);
 
 const balance = await rBase.balanceOf(signer.address);
 console.log(balance); // BigNumber { _hex: '0x05f5e100', _isBigNumber: true }
@@ -94,9 +94,9 @@ await rageTradeFactory.connect(w).initializePool({
 ## Timelock
 
 ```ts
-import { getContracts, generateTimelockSchedule } from '@ragetrade/sdk';
+import { getCoreContracts, generateTimelockSchedule } from '@ragetrade/sdk';
 
-const { clearingHouse, timelock } = await getContracts(signer);
+const { clearingHouse, timelock } = await getCoreContracts(signer);
 
 // single
 const schedule = await generateTimelockSchedule(timelock, [

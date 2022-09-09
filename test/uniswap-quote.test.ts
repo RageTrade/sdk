@@ -1,8 +1,8 @@
 import { BigNumber, ethers } from 'ethers';
 import {
-  getContracts,
+  getCoreContracts,
   getUniswapContracts,
-  getVaultContracts,
+  getTricryptoVaultContracts,
   getTokenContracts,
   parseUsdc,
   Q128,
@@ -25,7 +25,7 @@ const wallet = new ethers.Wallet(
 describe.skip('Uniswap quote', () => {
   it('works usdc crv3', async () => {
     const { usdc, crv3, usdt } = await getTokenContracts(arbtest);
-    const { curveYieldStrategy } = await getVaultContracts(arbtest);
+    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbtest);
     const { quoterV1 } = getUniswapContracts(arbtest);
 
     const inputUsdcAmount = parseUsdc('1');
@@ -58,9 +58,9 @@ describe.skip('Uniswap quote', () => {
   });
 
   it('works weth crv3', async () => {
-    const { eth_oracle } = await getContracts(arbtest);
+    const { eth_oracle } = await getCoreContracts(arbtest);
     const { weth, usdt, crv3 } = await getTokenContracts(arbtest);
-    const { curveYieldStrategy } = await getVaultContracts(arbtest);
+    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbtest);
     const { quoterV1 } = getUniswapContracts(arbtest);
 
     const usdcAmount = parseUsdc('1');

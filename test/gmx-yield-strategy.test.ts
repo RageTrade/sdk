@@ -19,7 +19,7 @@ describe('gmx strategy', () => {
     );
 
     // it('works', async () => {
-    //   ({ curveYieldStrategy } = await getVaultContracts(provider));
+    //   ({ curveYieldStrategy } = await getTricryptoVaultContracts(provider));
     //   const fee = await curveYieldStrategy.FEE();
     //   expect(fee.toNumber()).toEqual(1000);
     // });

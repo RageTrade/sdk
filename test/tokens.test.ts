@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 import { config } from 'dotenv';
-import { getContracts, getTokenContracts } from '../dist';
+import { getCoreContracts, getTokenContracts } from '../dist';
 
 config();
 
@@ -24,7 +24,7 @@ describe('tokens', () => {
   for (const [name, provider] of providers) {
     describe(name, () => {
       it('usdc is same', async () => {
-        const { settlementToken } = await getContracts(provider);
+        const { settlementToken } = await getCoreContracts(provider);
         const { usdc } = await getTokenContracts(provider);
         expect(settlementToken.address).toEqual(usdc.address);
       });

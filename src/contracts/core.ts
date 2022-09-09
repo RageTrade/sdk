@@ -34,6 +34,18 @@ import {
  *      it should also be able to make read+write contract instance
  */
 export async function getContracts(signerOrProvider: Signer | Provider) {
+  console.log(
+    'from @ragetrade/sdk: sdk.getContracts is deprecated and will be changed in future versions, please use sdk.getCoreContracts'
+  );
+  return getCoreContracts(signerOrProvider);
+}
+
+/**
+ * This method can be used to get contract instances
+ * @param signerOrProvider Ethers.js provider for readonly contract instance, and signer if
+ *      it should also be able to make read+write contract instance
+ */
+export async function getCoreContracts(signerOrProvider: Signer | Provider) {
   const chainId = await getChainIdFromProvider(signerOrProvider);
   return getContractsWithChainId(signerOrProvider, chainId);
 }

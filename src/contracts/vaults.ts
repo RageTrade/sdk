@@ -66,6 +66,15 @@ export async function getVaultContractsWithDeployments(
 }
 
 export async function getVaultContracts(signerOrProvider: Signer | Provider) {
+  console.log(
+    'from @ragetrade/sdk: sdk.getVaultContracts is deprecated and will be changed in future versions, please use sdk.getTricryptoVaultContracts'
+  );
+  return getTricryptoVaultContracts(signerOrProvider);
+}
+
+export async function getTricryptoVaultContracts(
+  signerOrProvider: Signer | Provider
+) {
   const chainId = await getChainIdFromProvider(signerOrProvider);
   return getVaultContractsWithChainId(signerOrProvider, chainId);
 }
