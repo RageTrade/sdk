@@ -1,4 +1,4 @@
-import { BigNumberish } from 'ethers';
+import { BigNumber, BigNumberish } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
 
 export type MethodNames =
@@ -35,6 +35,11 @@ export abstract class BaseDataSource {
     virtualPrice: number;
     realTwapPrice: number;
     virtualTwapPrice: number;
+
+    realPriceD18: BigNumber;
+    virtualPriceD18: BigNumber;
+    realTwapPriceD18: BigNumber;
+    virtualTwapPriceD18: BigNumber;
   }> {
     return this.perform('getPrices', [poolId]);
   }
@@ -46,6 +51,13 @@ export abstract class BaseDataSource {
     sharePrice: number;
     depositCap: number;
     vaultMarketValue: number;
+
+    totalSupplyD18: BigNumber;
+    totalAssetsD18: BigNumber;
+    assetPriceD18: BigNumber;
+    sharePriceD18: BigNumber;
+    depositCapD18: BigNumber;
+    vaultMarketValueD6: BigNumber;
   }> {
     return this.perform('getVaultInfo', [vaultName]);
   }

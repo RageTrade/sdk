@@ -1,4 +1,5 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { NetworkName } from '../contracts';
 
 import { BaseDataSource } from './base-data-source';
@@ -41,13 +42,36 @@ export class CacheServerDataSource extends BaseDataSource {
     virtualPrice: number;
     realTwapPrice: number;
     virtualTwapPrice: number;
+
+    realPriceD18: BigNumber;
+    virtualPriceD18: BigNumber;
+    realTwapPriceD18: BigNumber;
+    virtualTwapPriceD18: BigNumber;
   }> {
-    const response = await ethers.utils.fetchJson(
+    const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-prices?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
-    );
-    return getResult(response);
+    )) as {
+      result: {
+        realPrice: number;
+        virtualPrice: number;
+        realTwapPrice: number;
+        virtualTwapPrice: number;
+      };
+    };
+    const result = getResult(response);
+    return {
+      realPrice: result.realPrice,
+      virtualPrice: result.virtualPrice,
+      realTwapPrice: result.realTwapPrice,
+      virtualTwapPrice: result.virtualTwapPrice,
+
+      realPriceD18: parseUnits(String(result.realPrice), 18),
+      virtualPriceD18: parseUnits(String(result.virtualPrice), 18),
+      realTwapPriceD18: parseUnits(String(result.realTwapPrice), 18),
+      virtualTwapPriceD18: parseUnits(String(result.virtualTwapPrice), 18),
+    };
   }
 
   async getVaultInfo(vaultName: string): Promise<{
@@ -57,13 +81,46 @@ export class CacheServerDataSource extends BaseDataSource {
     sharePrice: number;
     depositCap: number;
     vaultMarketValue: number;
+
+    totalSupplyD18: BigNumber;
+    totalAssetsD18: BigNumber;
+    assetPriceD18: BigNumber;
+    sharePriceD18: BigNumber;
+    depositCapD18: BigNumber;
+    vaultMarketValueD6: BigNumber;
   }> {
-    const response = await ethers.utils.fetchJson(
+    const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
-    );
-    return getResult(response);
+    )) as {
+      result: {
+        totalSupply: number;
+        totalAssets: number;
+        assetPrice: number;
+        sharePrice: number;
+        depositCap: number;
+        vaultMarketValue: number;
+      };
+    };
+    const result = getResult(response);
+    return {
+      totalSupply: result.totalSupply,
+      totalAssets: result.totalAssets,
+      assetPrice: result.assetPrice,
+      sharePrice: result.sharePrice,
+      depositCap: result.depositCap,
+      vaultMarketValue: result.vaultMarketValue,
+
+      totalSupplyD18: parseUnits(String(result.totalSupply), 18),
+      totalAssetsD18: parseUnits(String(result.totalAssets), 18),
+      assetPriceD18: parseUnits(String(result.assetPrice), 18),
+      sharePriceD18: parseUnits(String(result.sharePrice), 18),
+      depositCapD18: parseUnits(String(result.depositCap), 18),
+      vaultMarketValueD6: parseUnits(String(result.vaultMarketValue), 6),
+    };
   }
 }
+
+function getResult<T>(response: { result?: T; [key: string]: any }): T;
 
 function getResult(response: any) {
   if ('result' in response) {

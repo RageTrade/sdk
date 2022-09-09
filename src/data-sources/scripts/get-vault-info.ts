@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import { parseEther, formatEther } from 'ethers/lib/utils';
+import { BigNumber, ethers } from 'ethers';
+import { parseEther, formatEther, parseUnits } from 'ethers/lib/utils';
 import { VaultName, getVaultContracts } from '../../contracts';
 import { vaults } from '../../typechain';
 import { priceX128ToPrice, formatUsdc } from '../../utils';
@@ -7,7 +7,21 @@ import { priceX128ToPrice, formatUsdc } from '../../utils';
 export async function getVaultInfo(
   provider: ethers.providers.Provider,
   vaultName: VaultName
-) {
+): Promise<{
+  totalSupply: number;
+  totalAssets: number;
+  assetPrice: number;
+  sharePrice: number;
+  depositCap: number;
+  vaultMarketValue: number;
+
+  totalSupplyD18: BigNumber;
+  totalAssetsD18: BigNumber;
+  assetPriceD18: BigNumber;
+  sharePriceD18: BigNumber;
+  depositCapD18: BigNumber;
+  vaultMarketValueD6: BigNumber;
+}> {
   let vaultAddress = '';
   // TODO move switch to getParam
   switch (vaultName) {
@@ -57,5 +71,12 @@ export async function getVaultInfo(
     sharePrice,
     depositCap,
     vaultMarketValue,
+
+    totalSupplyD18,
+    totalAssetsD18,
+    assetPriceD18: parseUnits(String(assetPrice), 18),
+    sharePriceD18: parseUnits(String(sharePrice), 18),
+    depositCapD18,
+    vaultMarketValueD6,
   };
 }
