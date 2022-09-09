@@ -3,5 +3,4 @@
 /* eslint-disable */
 export type { ICurveGauge } from './ICurveGauge';
 export type { ICurveStableSwap } from './ICurveStableSwap';
-export type { IGaugeFactory } from './IGaugeFactory';
 export type { ILPPriceGetter } from './ILPPriceGetter';

@@ -163,7 +163,6 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
-    'migrate()': FunctionFragment;
     'minNotionalPositionToCloseThreshold()': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
@@ -189,9 +188,9 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
-    'updateCurveParams(uint256,uint256,uint256,uint256,address,address)': FunctionFragment;
+    'updateCurveParams(uint256,uint256,uint256,uint256,address)': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees(address)': FunctionFragment;
+    'withdrawFees()': FunctionFragment;
   };
 
   getFunction(
@@ -230,7 +229,6 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
       | 'maxMint'
       | 'maxRedeem'
       | 'maxWithdraw'
-      | 'migrate'
       | 'minNotionalPositionToCloseThreshold'
       | 'mint'
       | 'name'
@@ -361,7 +359,6 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'maxMint', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxRedeem', values: [string]): string;
   encodeFunctionData(functionFragment: 'maxWithdraw', values: [string]): string;
-  encodeFunctionData(functionFragment: 'migrate', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'minNotionalPositionToCloseThreshold',
     values?: undefined
@@ -449,14 +446,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'updateCurveParams',
-    values: [
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      string,
-      string
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, string]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
@@ -464,7 +454,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFees',
-    values: [string]
+    values?: undefined
   ): string;
 
   decodeFunctionResult(functionFragment: 'FEE', data: BytesLike): Result;
@@ -555,7 +545,6 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     functionFragment: 'maxWithdraw',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'migrate', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'minNotionalPositionToCloseThreshold',
     data: BytesLike
@@ -651,7 +640,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
     'BaseParamsUpdated(uint256,address,uint32,uint16)': EventFragment;
     'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': EventFragment;
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)': EventFragment;
     'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
     'FeesUpdated(uint256)': EventFragment;
     'FeesWithdrawn(uint256)': EventFragment;
@@ -781,11 +770,10 @@ export interface CurveParamsUpdatedEventObject {
   stablecoinSlippage: BigNumber;
   crvHarvestThreshold: BigNumber;
   crvSlippageTolerance: BigNumber;
-  gauge: string;
   crvOracle: string;
 }
 export type CurveParamsUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, string, string],
+  [BigNumber, BigNumber, BigNumber, BigNumber, string],
   CurveParamsUpdatedEventObject
 >;
 
@@ -1004,10 +992,6 @@ export interface CurveYieldStrategy extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    migrate(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -1113,7 +1097,6 @@ export interface CurveYieldStrategy extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
-      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -1126,7 +1109,6 @@ export interface CurveYieldStrategy extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdrawFees(
-      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -1246,10 +1228,6 @@ export interface CurveYieldStrategy extends BaseContract {
 
   maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  migrate(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   minNotionalPositionToCloseThreshold(
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -1355,7 +1333,6 @@ export interface CurveYieldStrategy extends BaseContract {
     _stablecoinSlippage: BigNumberish,
     _crvHarvestThreshold: BigNumberish,
     _crvSlippageTolerance: BigNumberish,
-    _gauge: string,
     _crvOracle: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1368,7 +1345,6 @@ export interface CurveYieldStrategy extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdrawFees(
-    feeRecipient: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1484,8 +1460,6 @@ export interface CurveYieldStrategy extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    migrate(overrides?: CallOverrides): Promise<void>;
-
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1587,7 +1561,6 @@ export interface CurveYieldStrategy extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
-      _gauge: string,
       _crvOracle: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1599,10 +1572,7 @@ export interface CurveYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    withdrawFees(
-      feeRecipient: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    withdrawFees(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -1688,12 +1658,11 @@ export interface CurveYieldStrategy extends BaseContract {
       crvSlippageTolerance?: null
     ): CrvSwapFailedDueToSlippageEventFilter;
 
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)'(
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)'(
       feeBps?: null,
       stablecoinSlippage?: null,
       crvHarvestThreshold?: null,
       crvSlippageTolerance?: null,
-      gauge?: string | null,
       crvOracle?: string | null
     ): CurveParamsUpdatedEventFilter;
     CurveParamsUpdated(
@@ -1701,7 +1670,6 @@ export interface CurveYieldStrategy extends BaseContract {
       stablecoinSlippage?: null,
       crvHarvestThreshold?: null,
       crvSlippageTolerance?: null,
-      gauge?: string | null,
       crvOracle?: string | null
     ): CurveParamsUpdatedEventFilter;
 
@@ -1857,10 +1825,6 @@ export interface CurveYieldStrategy extends BaseContract {
 
     maxWithdraw(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    migrate(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1966,7 +1930,6 @@ export interface CurveYieldStrategy extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
-      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1979,7 +1942,6 @@ export interface CurveYieldStrategy extends BaseContract {
     ): Promise<BigNumber>;
 
     withdrawFees(
-      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -2117,10 +2079,6 @@ export interface CurveYieldStrategy extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    migrate(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     minNotionalPositionToCloseThreshold(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2230,7 +2188,6 @@ export interface CurveYieldStrategy extends BaseContract {
       _stablecoinSlippage: BigNumberish,
       _crvHarvestThreshold: BigNumberish,
       _crvSlippageTolerance: BigNumberish,
-      _gauge: string,
       _crvOracle: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -2243,7 +2200,6 @@ export interface CurveYieldStrategy extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdrawFees(
-      feeRecipient: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

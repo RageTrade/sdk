@@ -214,8 +214,6 @@ export type { ICurveGauge } from './contracts/interfaces/curve/ICurveGauge';
 export { ICurveGauge__factory } from './factories/contracts/interfaces/curve/ICurveGauge__factory';
 export type { ICurveStableSwap } from './contracts/interfaces/curve/ICurveStableSwap';
 export { ICurveStableSwap__factory } from './factories/contracts/interfaces/curve/ICurveStableSwap__factory';
-export type { IGaugeFactory } from './contracts/interfaces/curve/IGaugeFactory';
-export { IGaugeFactory__factory } from './factories/contracts/interfaces/curve/IGaugeFactory__factory';
 export type { ILPPriceGetter } from './contracts/interfaces/curve/ILPPriceGetter';
 export { ILPPriceGetter__factory } from './factories/contracts/interfaces/curve/ILPPriceGetter__factory';
 export type { IGlpManager } from './contracts/interfaces/gmx/IGlpManager';

@@ -107,7 +107,7 @@ export interface LogicInterface extends utils.Interface {
   events: {
     'BaseParamsUpdated(uint256,address,uint32,uint16)': EventFragment;
     'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': EventFragment;
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)': EventFragment;
     'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
     'FeesUpdated(uint256)': EventFragment;
     'FeesWithdrawn(uint256)': EventFragment;
@@ -161,11 +161,10 @@ export interface CurveParamsUpdatedEventObject {
   stablecoinSlippage: BigNumber;
   crvHarvestThreshold: BigNumber;
   crvSlippageTolerance: BigNumber;
-  gauge: string;
   crvOracle: string;
 }
 export type CurveParamsUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, string, string],
+  [BigNumber, BigNumber, BigNumber, BigNumber, string],
   CurveParamsUpdatedEventObject
 >;
 
@@ -460,12 +459,11 @@ export interface Logic extends BaseContract {
       crvSlippageTolerance?: null
     ): CrvSwapFailedDueToSlippageEventFilter;
 
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)'(
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address)'(
       feeBps?: null,
       stablecoinSlippage?: null,
       crvHarvestThreshold?: null,
       crvSlippageTolerance?: null,
-      gauge?: string | null,
       crvOracle?: string | null
     ): CurveParamsUpdatedEventFilter;
     CurveParamsUpdated(
@@ -473,7 +471,6 @@ export interface Logic extends BaseContract {
       stablecoinSlippage?: null,
       crvHarvestThreshold?: null,
       crvSlippageTolerance?: null,
-      gauge?: string | null,
       crvOracle?: string | null
     ): CurveParamsUpdatedEventFilter;
 
