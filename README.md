@@ -31,6 +31,20 @@ console.log(num); // BigNumber { _hex: '0x05', _isBigNumber: true }
 console.log(num.toNumber()); // 5
 ```
 
+## Using Fallback Data Sources
+
+```ts
+import { getDefaultDataSourceSync, pools, VaultName } from '@ragetrade/sdk';
+const ds = getDefaultDataSourceSync(
+  'arbmain' /* optionally pass in ethers provider or array of ethers providers or data sources */
+);
+
+const prices = await ds.getPrices(pools.arbmain[0].poolId);
+// { realPrice: number; virtualPrice: number; realTwapPrice: number; virtualTwapPrice: number; }
+const vaultInfo = await ds.getVaultInfo('tricrypto' /* as VaultName */);
+// { totalSupply: number; totalAssets: number; assetPrice: number; sharePrice: number; depositCap: number; vaultMarketValue: number; }
+```
+
 ## Making transaction: create account
 
 ```ts

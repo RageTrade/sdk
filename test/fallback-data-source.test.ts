@@ -1,4 +1,4 @@
-import { FallbackDataSource, BaseDataSource } from '../dist';
+import { FallbackDataSource, BaseDataSource, NetworkName } from '../dist';
 
 import { config } from 'dotenv';
 config();
@@ -9,6 +9,9 @@ class MockDataSource1 extends BaseDataSource {
     this.queries++;
     return [1];
   }
+  async getNetworkName(): Promise<NetworkName> {
+    return 'arbmain';
+  }
 }
 
 class MockDataSource2 extends BaseDataSource {
@@ -17,13 +20,25 @@ class MockDataSource2 extends BaseDataSource {
     this.queries++;
     return [2];
   }
+  async getNetworkName(): Promise<NetworkName> {
+    return 'arbmain';
+  }
 }
 
 class MockDataSourceFail extends BaseDataSource {
   queries = 0;
   async getAccountIdsByAddress(_address: string): Promise<number[]> {
     this.queries++;
-    throw new Error('some issue');
+    throw new Error('intended error for test case');
+  }
+  async getNetworkName(): Promise<NetworkName> {
+    return 'arbmain';
+  }
+}
+
+class MockDataSource2OtherNetwork extends MockDataSource2 {
+  async getNetworkName(): Promise<NetworkName> {
+    return 'arbtest';
   }
 }
 
@@ -128,6 +143,26 @@ describe('fallback data source', () => {
 
       expect(ds1a.queries).toEqual(1);
       expect(ds1b.queries).toEqual(1);
+    });
+  });
+
+  describe('wrong network', () => {
+    it('should throw if data sources point to various ', async () => {
+      const ds1 = new MockDataSource1();
+      const ds2 = new MockDataSource2OtherNetwork();
+
+      const fds = new FallbackDataSource([ds1, ds2], { quorum: 1 });
+
+      try {
+        await fds.getAccountIdsByAddress('0x123');
+        throw new Error('should have thrown');
+      } catch (e: any) {
+        expect(
+          e?.message.includes(
+            'Please ensure that data sources have the same network.'
+          )
+        ).toBe(true);
+      }
     });
   });
 });

@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
-import { getContracts } from '../../contracts';
+import { getCoreContracts } from '../../contracts';
 import { IOracle__factory, IUniswapV3Pool__factory } from '../../typechain';
 import { priceX128ToPrice, sqrtPriceX96ToPrice } from '../../utils';
 
@@ -8,7 +8,7 @@ export async function getPrices(
   poolId: BigNumberish
 ) {
   poolId = BigNumber.from(poolId);
-  const { clearingHouse, clearingHouseLens } = await getContracts(provider);
+  const { clearingHouse, clearingHouseLens } = await getCoreContracts(provider);
 
   const [realTwapPriceX128, virtualTwapPriceX128, pool] = await Promise.all([
     clearingHouse.getRealTwapPriceX128(poolId),

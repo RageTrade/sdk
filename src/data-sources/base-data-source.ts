@@ -1,7 +1,8 @@
 import { BigNumberish } from 'ethers';
-import { VaultName } from '../contracts';
+import { NetworkName, VaultName } from '../contracts';
 
 export type MethodNames =
+  | 'getNetworkName'
   | 'getAccountIdsByAddress'
   | 'findBlockByTimestamp'
   | 'getPrices'
@@ -11,6 +12,14 @@ export abstract class BaseDataSource {
   _isDataSource: boolean;
   constructor() {
     this._isDataSource = true;
+  }
+
+  static isDataSource(obj: any): obj is BaseDataSource {
+    return typeof obj === 'object' && obj?._isDataSource;
+  }
+
+  getNetworkName(): Promise<NetworkName> {
+    return this.perform('getNetworkName', []);
   }
 
   getAccountIdsByAddress(address: string): Promise<number[]> {
