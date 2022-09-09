@@ -6,6 +6,7 @@ export type MethodNames =
   | 'getAccountIdsByAddress'
   | 'findBlockByTimestamp'
   | 'getPrices'
+  | 'getPoolInfo'
   | 'getVaultInfo';
 
 export abstract class BaseDataSource {
@@ -42,6 +43,31 @@ export abstract class BaseDataSource {
     virtualTwapPriceD18: BigNumber;
   }> {
     return this.perform('getPrices', [poolId]);
+  }
+
+  getPoolInfo(poolId: BigNumberish): Promise<{
+    realPrice: number;
+    virtualPrice: number;
+    realTwapPrice: number;
+    virtualTwapPrice: number;
+    fundingRate: number;
+
+    realSqrtPriceX96: BigNumber;
+    virtualSqrtPriceX96: BigNumber;
+    realPriceX128: BigNumber;
+    virtualPriceX128: BigNumber;
+    realTwapPriceX128: BigNumber;
+    virtualTwapPriceX128: BigNumber;
+    fundingRateX128: BigNumber;
+    sumAX128: BigNumber;
+
+    realPriceD18: BigNumber;
+    virtualPriceD18: BigNumber;
+    realTwapPriceD18: BigNumber;
+    virtualTwapPriceD18: BigNumber;
+    fundingRateD18: BigNumber;
+  }> {
+    return this.perform('getPoolInfo', [poolId]);
   }
 
   getVaultInfo(vaultName: VaultName): Promise<{

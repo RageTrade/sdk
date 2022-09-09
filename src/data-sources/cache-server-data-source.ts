@@ -74,6 +74,81 @@ export class CacheServerDataSource extends BaseDataSource {
     };
   }
 
+  async getPoolInfo(poolId: BigNumberish): Promise<{
+    realPrice: number;
+    virtualPrice: number;
+    realTwapPrice: number;
+    virtualTwapPrice: number;
+    fundingRate: number;
+
+    realSqrtPriceX96: BigNumber;
+    virtualSqrtPriceX96: BigNumber;
+    realPriceX128: BigNumber;
+    virtualPriceX128: BigNumber;
+    realTwapPriceX128: BigNumber;
+    virtualTwapPriceX128: BigNumber;
+    fundingRateX128: BigNumber;
+    sumAX128: BigNumber;
+
+    realPriceD18: BigNumber;
+    virtualPriceD18: BigNumber;
+    realTwapPriceD18: BigNumber;
+    virtualTwapPriceD18: BigNumber;
+    fundingRateD18: BigNumber;
+  }> {
+    const response = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/get-pool-info?networkName=${
+        this._networkName
+      }&poolId=${BigNumber.from(poolId).toNumber()}`
+    )) as {
+      result: {
+        realPrice: number;
+        virtualPrice: number;
+        realTwapPrice: number;
+        virtualTwapPrice: number;
+        fundingRate: number;
+
+        realSqrtPriceX96: string;
+        virtualSqrtPriceX96: string;
+        realPriceX128: string;
+        virtualPriceX128: string;
+        realTwapPriceX128: string;
+        virtualTwapPriceX128: string;
+        fundingRateX128: string;
+        sumAX128: string;
+
+        realPriceD18: string;
+        virtualPriceD18: string;
+        realTwapPriceD18: string;
+        virtualTwapPriceD18: string;
+        fundingRateD18: string;
+      };
+    };
+    const result = getResult(response);
+    return {
+      realPrice: result.realPrice,
+      virtualPrice: result.virtualPrice,
+      realTwapPrice: result.realTwapPrice,
+      virtualTwapPrice: result.virtualTwapPrice,
+      fundingRate: result.fundingRate,
+
+      realSqrtPriceX96: BigNumber.from(result.realSqrtPriceX96),
+      virtualSqrtPriceX96: BigNumber.from(result.virtualSqrtPriceX96),
+      realPriceX128: BigNumber.from(result.realPriceX128),
+      virtualPriceX128: BigNumber.from(result.virtualPriceX128),
+      realTwapPriceX128: BigNumber.from(result.realTwapPriceX128),
+      virtualTwapPriceX128: BigNumber.from(result.virtualTwapPriceX128),
+      fundingRateX128: BigNumber.from(result.fundingRateX128),
+      sumAX128: BigNumber.from(result.sumAX128),
+
+      realPriceD18: BigNumber.from(result.realPriceD18),
+      virtualPriceD18: BigNumber.from(result.virtualPriceD18),
+      realTwapPriceD18: BigNumber.from(result.realTwapPriceD18),
+      virtualTwapPriceD18: BigNumber.from(result.virtualTwapPriceD18),
+      fundingRateD18: BigNumber.from(result.fundingRateD18),
+    };
+  }
+
   async getVaultInfo(vaultName: string): Promise<{
     totalSupply: number;
     totalAssets: number;

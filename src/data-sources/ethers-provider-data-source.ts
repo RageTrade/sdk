@@ -8,6 +8,7 @@ import {
 } from '../contracts';
 import { BaseDataSource } from './base-data-source';
 import { getVaultInfo } from './scripts';
+import { getPoolInfo } from './scripts/get-pool-info';
 import { getPrices } from './scripts/get-prices';
 
 export class EthersProviderDataSource extends BaseDataSource {
@@ -33,6 +34,10 @@ export class EthersProviderDataSource extends BaseDataSource {
 
   async getPrices(_poolId: BigNumberish) {
     return await getPrices(this._provider, _poolId);
+  }
+
+  async getPoolInfo(_poolId: BigNumberish) {
+    return await getPoolInfo(this._provider, _poolId);
   }
 
   async getVaultInfo(vaultName: VaultName) {
