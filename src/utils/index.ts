@@ -16,3 +16,4 @@ export * from './deployment-helpers';
 export * from './timelock';
 export * from './get-accounts';
 export * from './arbiscan-provider';
+export * from './general';

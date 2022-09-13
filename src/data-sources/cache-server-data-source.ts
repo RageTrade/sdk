@@ -150,6 +150,14 @@ export class CacheServerDataSource extends BaseDataSource {
   }
 
   async getVaultInfo(vaultName: string): Promise<{
+    poolComposition: {
+      rageAmount: string;
+      nativeAmount: string;
+      ragePercentage: string;
+      nativePercentage: string;
+      nativeProtocolName: string;
+    };
+
     totalSupply: number;
     totalAssets: number;
     assetPrice: number;
@@ -168,6 +176,14 @@ export class CacheServerDataSource extends BaseDataSource {
       `${this._baseUrl}/data/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as {
       result: {
+        poolComposition: {
+          rageAmount: string;
+          nativeAmount: string;
+          ragePercentage: string;
+          nativePercentage: string;
+          nativeProtocolName: string;
+        };
+
         totalSupply: number;
         totalAssets: number;
         assetPrice: number;
@@ -178,6 +194,8 @@ export class CacheServerDataSource extends BaseDataSource {
     };
     const result = getResult(response);
     return {
+      poolComposition: result.poolComposition,
+
       totalSupply: result.totalSupply,
       totalAssets: result.totalAssets,
       assetPrice: result.assetPrice,

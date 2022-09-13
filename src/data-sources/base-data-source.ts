@@ -71,6 +71,14 @@ export abstract class BaseDataSource {
   }
 
   getVaultInfo(vaultName: VaultName): Promise<{
+    poolComposition: {
+      rageAmount: string;
+      nativeAmount: string;
+      ragePercentage: string;
+      nativePercentage: string;
+      nativeProtocolName: string;
+    };
+
     totalSupply: number;
     totalAssets: number;
     assetPrice: number;

@@ -1,4 +1,4 @@
-import { Signer } from 'ethers';
+import { ethers, Signer } from 'ethers';
 
 import { Provider } from '@ethersproject/abstract-provider';
 
@@ -16,6 +16,7 @@ import {
   SwapManager__factory,
   VaultPeriphery__factory,
 } from '../typechain';
+import { getGmxVaultContracts } from './gmx-vault';
 
 export const vaultMetaData = {
   name: '80-20 TriCrypto Strategy',
@@ -129,4 +130,31 @@ export async function getVaultDeployments(
     CurveYieldStrategyDeployment,
     CurveYieldStrategyLogicDeployment,
   };
+}
+
+export async function getVaultAddressFromVaultName(
+  provider: ethers.providers.Provider,
+  vaultName: VaultName
+): Promise<string> {
+  switch (vaultName) {
+    case 'tricrypto':
+      const { curveYieldStrategy } = await getTricryptoVaultContracts(provider);
+      return curveYieldStrategy.address;
+    case 'gmx':
+      const { gmxYieldStrategy } = await getGmxVaultContracts(provider);
+      return gmxYieldStrategy.address;
+    default:
+      throw new Error(`vaultName should be either tricrypto or gmx`);
+  }
+}
+
+export function getNativeProtocolName(vaultName: VaultName) {
+  switch (vaultName) {
+    case 'tricrypto':
+      return 'Curve';
+    case 'gmx':
+      return 'GMX';
+    default:
+      throw new Error(`vaultName should be either tricrypto or gmx`);
+  }
 }
