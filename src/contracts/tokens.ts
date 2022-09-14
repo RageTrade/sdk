@@ -46,10 +46,10 @@ export async function getTokenAddresses(
         crv3: (
           await getDeployment('vaults', 'arbtest', 'CurveTriCryptoLpToken')
         ).address,
-        gmx: '0x35601e6181887bd6Edc6261be5C8fc9dA50679F6',
-        glp: '0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27',
-        sGLP: '0xfa14956e27D55427f7E267313D1E12d2217747e6',
-        fsGLP: '0x98deA01800071212da93a6e76bb6De012c3a483D',
+        gmx: '0x0A72Ee78CcC55b979A4a77943745b202A11A931B',
+        glp: '0xc78Cb6Ee5515109064E4DBca1c38759b6da4615f',
+        sGLP: '0xe2f057A1F5A1F100b9bF991709432f89602eAC68',
+        fsGLP: '0x5964b93A672CAbb2E7D8c482B882Ec66ED15da23',
       };
     default:
       throw new Error(

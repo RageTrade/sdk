@@ -61,7 +61,7 @@ export function getContractAddresses(chainId: number): GmxVaultExtraContracts {
         gmx: '0x0A72Ee78CcC55b979A4a77943745b202A11A931B',
         glp: '0xc78Cb6Ee5515109064E4DBca1c38759b6da4615f',
         sGLP: '0xe2f057A1F5A1F100b9bF991709432f89602eAC68',
-        fsGLP: '0x5964b93a672cabb2e7d8c482b882ec66ed15da23',
+        fsGLP: '0x5964b93A672CAbb2E7D8c482B882Ec66ED15da23',
         glpManager: '0x9f3be2329E1698eEfFE1c9358a3AB2e7fdBeF527',
         rewardRouter: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
         vault: '0x613512Ec9906975d29e1308f87454485D1b264fD',
