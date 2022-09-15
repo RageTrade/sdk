@@ -7,7 +7,9 @@ export type MethodNames =
   | 'findBlockByTimestamp'
   | 'getPrices'
   | 'getPoolInfo'
-  | 'getVaultInfo';
+  | 'getVaultInfo'
+  | 'getGmxVaultInfo'
+  | 'getGmxVaultInfoByTokenAddress';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -94,6 +96,19 @@ export abstract class BaseDataSource {
     vaultMarketValueD6: BigNumber;
   }> {
     return this.perform('getVaultInfo', [vaultName]);
+  }
+
+  getGmxVaultInfo(): Promise<{
+    aumInUsdg: BigNumber;
+    glpSupply: BigNumber;
+  }> {
+    return this.perform('getGmxVaultInfo', []);
+  }
+
+  getGmxVaultInfoByTokenAddress(tokenAddress: string): Promise<{
+    underlyingVaultMinPrice: BigNumber;
+  }> {
+    return this.perform('getGmxVaultInfoByTokenAddress', [tokenAddress]);
   }
 
   perform<MethodName extends MethodNames>(

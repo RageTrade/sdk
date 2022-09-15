@@ -211,6 +211,32 @@ export class CacheServerDataSource extends BaseDataSource {
       vaultMarketValueD6: parseUnits(String(result.vaultMarketValue), 6),
     };
   }
+
+  async getGmxVaultInfo(): Promise<{
+    aumInUsdg: BigNumber;
+    glpSupply: BigNumber;
+  }> {
+    const response = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/get-gmx-vault-info?networkName=${this._networkName}`
+    )) as { result: { aumInUsdg: string; glpSupply: string } };
+    const result = getResult(response);
+    return {
+      aumInUsdg: BigNumber.from(result.aumInUsdg),
+      glpSupply: BigNumber.from(result.glpSupply),
+    };
+  }
+
+  async getGmxVaultInfoByTokenAddress(tokenAddress: string): Promise<{
+    underlyingVaultMinPrice: BigNumber;
+  }> {
+    const response = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/get-gmx-vault-info-by-token-address?networkName=${this._networkName}&tokenAddress=${tokenAddress}`
+    )) as { result: { underlyingVaultMinPrice: string } };
+    const result = getResult(response);
+    return {
+      underlyingVaultMinPrice: BigNumber.from(result.underlyingVaultMinPrice),
+    };
+  }
 }
 
 function getResult<T>(response: { result?: T; [key: string]: any }): T;

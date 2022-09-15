@@ -1,4 +1,4 @@
-import { BigNumberish, ethers } from 'ethers';
+import { BigNumber, BigNumberish, ethers } from 'ethers';
 
 import {
   getCoreContracts,
@@ -8,6 +8,7 @@ import {
 } from '../contracts';
 import { BaseDataSource } from './base-data-source';
 import { getVaultInfo } from './scripts';
+import { getGmxVaultInfo } from './scripts/get-gmx-vault-info';
 import { getPoolInfo } from './scripts/get-pool-info';
 import { getPrices } from './scripts/get-prices';
 
@@ -42,5 +43,18 @@ export class EthersProviderDataSource extends BaseDataSource {
 
   async getVaultInfo(vaultName: VaultName) {
     return await getVaultInfo(this._provider, vaultName);
+  }
+
+  async getGmxVaultInfo(): Promise<{
+    aumInUsdg: BigNumber;
+    glpSupply: BigNumber;
+  }> {
+    return getGmxVaultInfo(this._provider);
+  }
+
+  async getGmxVaultInfoByTokenAddress(tokenAddress: string): Promise<{
+    underlyingVaultMinPrice: BigNumber;
+  }> {
+    return getGmxVaultInfoByTokenAddress(this._provider, tokenAddress);
   }
 }
