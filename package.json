@@ -1,5 +1,5 @@
 {
-  "version": "0.11.4",
+  "version": "0.11.5",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -19,11 +19,12 @@
   },
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build && yarn update:pools",
+    "build:without-update-pools": "tsdx build",
+    "build": "yarn build:without-update-pools && yarn update:pools",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "clean": "rm -rf dist",
-    "prepare": "yarn clean && yarn build",
+    "prepare": "yarn clean && yarn build:without-update-pools",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "format": "prettier --check src test",
