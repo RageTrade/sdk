@@ -20,6 +20,7 @@ const state = {
   arbtest,
   sdk: require('./'),
   ...require('./'),
+  addressesOf: (obj) => Object.keys(obj).map((key) => [key, obj[key].address]),
 };
 
 const myRepl = repl.start('rage> ');
