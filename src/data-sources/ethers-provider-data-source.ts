@@ -9,6 +9,7 @@ import {
 import { BaseDataSource } from './base-data-source';
 import { getVaultInfo } from './scripts';
 import { getGmxVaultInfo } from './scripts/get-gmx-vault-info';
+import { getGmxVaultInfoByTokenAddress } from './scripts/get-gmx-vault-info-by-token-address';
 import { getPoolInfo } from './scripts/get-pool-info';
 import { getPrices } from './scripts/get-prices';
 

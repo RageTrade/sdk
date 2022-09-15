@@ -119,4 +119,36 @@ export abstract class BaseDataSource {
       `${this.constructor.name}.perform[${method}] Not implemented`
     );
   }
+
+  // helper methods that use the above methods to calculate something
+
+  async getDerivedAssetAmount(
+    tokenAddress: string,
+    depositAmount: BigNumber,
+    decimals: number
+  ) {
+    const slippageThreshold = BigNumber.from(200); // 2%
+    const PRICE_PRECISION = BigNumber.from(10).pow(30);
+    const MAX_BPS = BigNumber.from(10_000);
+
+    const { underlyingVaultMinPrice } =
+      await this.getGmxVaultInfoByTokenAddress(tokenAddress);
+
+    const usdgUnit = BigNumber.from(10).pow(18);
+    const depositAmountUnit = BigNumber.from(10).pow(decimals);
+
+    const usdg = depositAmount
+      .mul(underlyingVaultMinPrice)
+      .mul(MAX_BPS.sub(slippageThreshold))
+      .div(MAX_BPS)
+      .div(PRICE_PRECISION)
+      .mul(usdgUnit)
+      .div(depositAmountUnit);
+
+    const { aumInUsdg, glpSupply } = await this.getGmxVaultInfo();
+
+    const sGLPAmount = usdg.mul(glpSupply).div(aumInUsdg);
+
+    return sGLPAmount;
+  }
 }
