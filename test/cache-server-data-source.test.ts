@@ -81,6 +81,7 @@ describe('cache data source', () => {
             expect(resp.sharePrice).toBeGreaterThan(0);
             expect(resp.depositCap).toBeGreaterThan(0);
             expect(resp.vaultMarketValue).toBeGreaterThan(0);
+            expect(resp.avgVaultMarketValue).toBeGreaterThan(0);
           });
         }
       });

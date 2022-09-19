@@ -30,7 +30,15 @@ export class CacheServerDataSource extends BaseDataSource {
     return getResult(response);
   }
 
+  // TODO remove
   async findBlockByTimestamp(timestamp: number): Promise<number> {
+    const response = await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/get-block-by-timestamp?networkName=${this._networkName}&timestamp=${timestamp}`
+    );
+    return getResult(response);
+  }
+
+  async getBlockByTimestamp(timestamp: number): Promise<number> {
     const response = await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-block-by-timestamp?networkName=${this._networkName}&timestamp=${timestamp}`
     );
@@ -164,6 +172,7 @@ export class CacheServerDataSource extends BaseDataSource {
     sharePrice: number;
     depositCap: number;
     vaultMarketValue: number;
+    avgVaultMarketValue: number;
 
     totalSupplyD18: BigNumber;
     totalAssetsD18: BigNumber;
@@ -171,6 +180,7 @@ export class CacheServerDataSource extends BaseDataSource {
     sharePriceD18: BigNumber;
     depositCapD18: BigNumber;
     vaultMarketValueD6: BigNumber;
+    avgVaultMarketValueD6: BigNumber;
   }> {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
@@ -190,6 +200,7 @@ export class CacheServerDataSource extends BaseDataSource {
         sharePrice: number;
         depositCap: number;
         vaultMarketValue: number;
+        avgVaultMarketValue: number;
       };
     };
     const result = getResult(response);
@@ -202,13 +213,16 @@ export class CacheServerDataSource extends BaseDataSource {
       sharePrice: result.sharePrice,
       depositCap: result.depositCap,
       vaultMarketValue: result.vaultMarketValue,
+      avgVaultMarketValue: result.avgVaultMarketValue,
 
+      // TODO change this to using D things in the result
       totalSupplyD18: parseUnits(String(result.totalSupply), 18),
       totalAssetsD18: parseUnits(String(result.totalAssets), 18),
       assetPriceD18: parseUnits(String(result.assetPrice), 18),
       sharePriceD18: parseUnits(String(result.sharePrice), 18),
       depositCapD18: parseUnits(String(result.depositCap), 18),
       vaultMarketValueD6: parseUnits(String(result.vaultMarketValue), 6),
+      avgVaultMarketValueD6: parseUnits(String(result.avgVaultMarketValue), 6),
     };
   }
 

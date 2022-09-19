@@ -21,6 +21,7 @@ export class FallbackDataSource extends BaseDataSource {
       if (!dataSources[i]._isDataSource) {
         throw new Error(`The ${i}th array element is not a valid data source`);
       }
+      dataSources[i]._queryingDataSource = this; // set the querying data source to this fallback data source
     }
     this._dataSources = dataSources;
     this._quorum = quorum ?? 1;

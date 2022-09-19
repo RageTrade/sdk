@@ -5,6 +5,13 @@ export interface FindBlockByTimestampOptions {
   allowFutureTimestamp?: boolean;
 }
 
+export async function getBlockByTimestamp(
+  provider: ethers.providers.Provider,
+  timestamp: number
+): Promise<number> {
+  return (await findBlockByTimestamp(provider, timestamp)).number;
+}
+
 export async function findBlockByTimestamp(
   provider: ethers.providers.Provider,
   timestampTarget: number,

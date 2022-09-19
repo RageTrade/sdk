@@ -5,6 +5,7 @@ export type MethodNames =
   | 'getNetworkName'
   | 'getAccountIdsByAddress'
   | 'findBlockByTimestamp'
+  | 'getBlockByTimestamp'
   | 'getPrices'
   | 'getPoolInfo'
   | 'getVaultInfo'
@@ -13,8 +14,10 @@ export type MethodNames =
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
+  _queryingDataSource: BaseDataSource; // can be changed to a fallback data source
   constructor() {
     this._isDataSource = true;
+    this._queryingDataSource = this;
   }
 
   static isDataSource(obj: any): obj is BaseDataSource {
@@ -29,8 +32,17 @@ export abstract class BaseDataSource {
     return this.perform('getAccountIdsByAddress', [address]);
   }
 
+  // TODO remove
   findBlockByTimestamp(timestamp: number): Promise<number> {
+    console.log(
+      'The method findBlockByTimestamp is deprecated, please use getBlockByTimestamp'
+    );
+
     return this.perform('findBlockByTimestamp', [timestamp]);
+  }
+
+  getBlockByTimestamp(timestamp: number): Promise<number> {
+    return this.perform('getBlockByTimestamp', [timestamp]);
   }
 
   getPrices(poolId: BigNumberish): Promise<{
@@ -87,6 +99,7 @@ export abstract class BaseDataSource {
     sharePrice: number;
     depositCap: number;
     vaultMarketValue: number;
+    avgVaultMarketValue: number;
 
     totalSupplyD18: BigNumber;
     totalAssetsD18: BigNumber;
@@ -94,6 +107,7 @@ export abstract class BaseDataSource {
     sharePriceD18: BigNumber;
     depositCapD18: BigNumber;
     vaultMarketValueD6: BigNumber;
+    avgVaultMarketValueD6: BigNumber;
   }> {
     return this.perform('getVaultInfo', [vaultName]);
   }

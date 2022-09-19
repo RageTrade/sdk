@@ -14,10 +14,13 @@ import {
   Q128,
   truncate,
 } from '../../utils';
+import { BaseDataSource } from '../base-data-source';
+import { getAvgVaultMarketValue } from './get-avg-vault-market-value';
 
 export async function getVaultInfo(
   provider: ethers.providers.Provider,
-  vaultName: VaultName
+  vaultName: VaultName,
+  dataSource: BaseDataSource
 ): Promise<{
   poolComposition: {
     rageAmount: string;
@@ -34,6 +37,7 @@ export async function getVaultInfo(
   sharePrice: number;
   depositCap: number;
   vaultMarketValue: number;
+  avgVaultMarketValue: number;
 
   totalSupplyD18: BigNumber;
   totalSharesD18: BigNumber;
@@ -42,6 +46,7 @@ export async function getVaultInfo(
   sharePriceD18: BigNumber;
   depositCapD18: BigNumber;
   vaultMarketValueD6: BigNumber;
+  avgVaultMarketValueD6: BigNumber;
 }> {
   const vaultAddress = await getVaultAddressFromVaultName(provider, vaultName);
 
@@ -72,6 +77,8 @@ export async function getVaultInfo(
   const depositCap = Number(formatEther(depositCapD18));
   const vaultMarketValue = Number(formatUsdc(vaultMarketValueD6));
 
+  const avgVaultMarketValueD6 = await getAvgVaultMarketValue(vault, dataSource);
+
   const poolComposition = await getPoolComposition(provider, vaultName);
   return {
     poolComposition,
@@ -83,6 +90,7 @@ export async function getVaultInfo(
     sharePrice,
     depositCap,
     vaultMarketValue,
+    avgVaultMarketValue: Number(formatUsdc(avgVaultMarketValueD6)),
 
     totalSupplyD18,
     totalSharesD18: totalSupplyD18,
@@ -91,6 +99,7 @@ export async function getVaultInfo(
     sharePriceD18: parseUnits(String(sharePrice), 18),
     depositCapD18,
     vaultMarketValueD6,
+    avgVaultMarketValueD6,
   };
 }
 

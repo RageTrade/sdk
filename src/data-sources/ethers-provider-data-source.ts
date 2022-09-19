@@ -6,6 +6,7 @@ import {
   NetworkName,
   VaultName,
 } from '../contracts';
+import { getBlockByTimestamp } from '../utils';
 import { BaseDataSource } from './base-data-source';
 import { getVaultInfo } from './scripts';
 import { getGmxVaultInfo } from './scripts/get-gmx-vault-info';
@@ -26,6 +27,10 @@ export class EthersProviderDataSource extends BaseDataSource {
     return await getNetworkNameFromProvider(this._provider);
   }
 
+  async getBlockByTimestamp(timestamp: number): Promise<number> {
+    return getBlockByTimestamp(this._provider, timestamp);
+  }
+
   async getAccountIdsByAddress(address: string): Promise<number[]> {
     const { clearingHouse } = await this._contracts;
     const logs = await clearingHouse.queryFilter(
@@ -43,7 +48,11 @@ export class EthersProviderDataSource extends BaseDataSource {
   }
 
   async getVaultInfo(vaultName: VaultName) {
-    return await getVaultInfo(this._provider, vaultName);
+    return await getVaultInfo(
+      this._provider,
+      vaultName,
+      this._queryingDataSource
+    );
   }
 
   async getGmxVaultInfo(): Promise<{
