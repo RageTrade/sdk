@@ -19,16 +19,20 @@ ragetrade> await sdk.sqrtPriceX96ToPrice('0x03e08db11fa9d95156495b', 6, 18)
 
 ```ts
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { getCoreContracts } from '@ragetrade/sdk';
+import { core, tricryptoVault } from '@ragetrade/sdk';
 
 const provider = new StaticJsonRpcProvider('arbitrum testnet node url');
 
 // in your code
 
-const { clearingHouse } = await getCoreContracts(provider);
+const { clearingHouse } = await core.getContracts(provider);
 const num = await clearingHouse.numAccounts();
 console.log(num); // BigNumber { _hex: '0x05', _isBigNumber: true }
 console.log(num.toNumber()); // 5
+
+const { curveYieldStrategy } = await tricryptoVault.getContracts(provider);
+const tvl = await curveYieldStrategy.vaultMarketValue();
+console.log(tvl); // BigNumber
 ```
 
 ## Using Fallback Data Sources
@@ -50,14 +54,14 @@ const vaultInfo = await ds.getVaultInfo('tricrypto' /* as VaultName */);
 ```ts
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
-import { getCoreContracts, parseUsdc } from '@ragetrade/sdk';
+import { core, parseUsdc } from '@ragetrade/sdk';
 
 const provider = new StaticJsonRpcProvider('arbitrum testnet node url');
 const signer = new Wallet('private key', provider);
 
 // creating account
 
-const { clearingHouse } = await getCoreContracts(signer);
+const { clearingHouse } = await core.getContracts(signer);
 const myAccountNum = await clearingHouse.callStatic.createAccount();
 const tx = await clearingHouse.createAccount();
 await tx.wait();
@@ -66,9 +70,9 @@ await tx.wait();
 ## Making transaction: add money to account
 
 ```ts
-import { getCoreContracts, formatUsdc, parseUsdc } from '@ragetrade/sdk';
+import { core, formatUsdc, parseUsdc } from '@ragetrade/sdk';
 
-const { clearingHouse, rBase } = await getCoreContracts(signer);
+const { clearingHouse, rBase } = await core.getContracts(signer);
 
 const balance = await rBase.balanceOf(signer.address);
 console.log(balance); // BigNumber { _hex: '0x05f5e100', _isBigNumber: true }
@@ -108,9 +112,9 @@ await rageTradeFactory.connect(w).initializePool({
 ## Timelock
 
 ```ts
-import { getCoreContracts, generateTimelockSchedule } from '@ragetrade/sdk';
+import { core, generateTimelockSchedule } from '@ragetrade/sdk';
 
-const { clearingHouse, timelock } = await getCoreContracts(signer);
+const { clearingHouse, timelock } = await core.getContracts(signer);
 
 // single
 const schedule = await generateTimelockSchedule(timelock, [
