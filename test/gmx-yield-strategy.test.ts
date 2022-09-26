@@ -1,11 +1,7 @@
 import { ethers } from 'ethers';
 
 import { config } from 'dotenv';
-import {
-  getGmxVaultContracts,
-  GMXYieldStrategy,
-  getTokenContracts,
-} from '../dist';
+import { GMXYieldStrategy, gmxProtocol, gmxVault, tokens } from '../dist';
 import { hexStripZeros, hexZeroPad } from 'ethers/lib/utils';
 
 let gmxYieldStrategy: GMXYieldStrategy;
@@ -25,7 +21,8 @@ describe('gmx strategy', () => {
     // });
 
     it('works token contracts', async () => {
-      const { sGLP, fsGLP } = await getTokenContracts(provider);
+      const { sGLP } = await gmxProtocol.getContracts(provider);
+      const { fsGLP } = await tokens.getContracts(provider);
       const sgt = await sGLP.stakedGlpTracker();
       expect(fsGLP.address).toEqual(sgt);
     });
@@ -45,19 +42,20 @@ describe('gmx strategy', () => {
     );
 
     it('works', async () => {
-      ({ gmxYieldStrategy } = await getGmxVaultContracts(provider));
+      ({ gmxYieldStrategy } = await gmxVault.getContracts(provider));
       const fee = await gmxYieldStrategy.MAX_BPS();
       expect(fee).toEqual(10000);
     });
 
     it('works token contracts', async () => {
-      const { sGLP, fsGLP } = await getTokenContracts(provider);
+      const { sGLP } = await gmxProtocol.getContracts(provider);
+      const { fsGLP } = await tokens.getContracts(provider);
       const sgt = await sGLP.stakedGlpTracker();
       expect(sgt).toEqual(fsGLP.address);
     });
 
     it('works vault', async () => {
-      const { gmxUnderlyingVault, glpManager } = await getGmxVaultContracts(
+      const { gmxUnderlyingVault, glpManager } = await gmxProtocol.getContracts(
         provider
       );
       const vaultAddr = await glpManager.vault();
@@ -65,9 +63,8 @@ describe('gmx strategy', () => {
     });
 
     it('works strategy contracts', async () => {
-      const { glpManager, glpStakingManager } = await getGmxVaultContracts(
-        provider
-      );
+      const { glpManager } = await gmxProtocol.getContracts(provider);
+      const { glpStakingManager } = await gmxVault.getContracts(provider);
 
       const val = await provider.getStorageAt(glpStakingManager.address, 261);
 

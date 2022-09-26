@@ -1,9 +1,8 @@
 import {
   ArbiscanProvider,
-  getCoreContracts,
-  getPoolContracts,
+  core,
+  tricryptoVault,
   getAccountIdsByAddress,
-  getTricryptoVaultContracts,
 } from '../dist';
 
 import { config } from 'dotenv';
@@ -25,8 +24,8 @@ describe('arbiscan provider', () => {
         'arbmain',
         process.env.ARBISCAN_KEY
       );
-      const { rageTradeFactory } = await getCoreContracts(provider);
-      const pools = await getPoolContracts(rageTradeFactory);
+      const { rageTradeFactory } = await core.getContracts(provider);
+      const pools = await core.getPoolContracts(rageTradeFactory);
       expect(pools.length).toBeGreaterThan(0);
     });
   });
@@ -46,8 +45,8 @@ describe('arbiscan provider', () => {
         'arbtest',
         process.env.ARBISCAN_KEY
       );
-      const { rageTradeFactory } = await getCoreContracts(provider);
-      const pools = await getPoolContracts(rageTradeFactory);
+      const { rageTradeFactory } = await core.getContracts(provider);
+      const pools = await core.getPoolContracts(rageTradeFactory);
       expect(pools.length).toBeGreaterThan(0);
     });
 
@@ -56,8 +55,10 @@ describe('arbiscan provider', () => {
         'arbtest',
         process.env.ARBISCAN_KEY
       );
-      const { clearingHouse } = await getCoreContracts(provider);
-      const { curveYieldStrategy } = await getTricryptoVaultContracts(provider);
+      const { clearingHouse } = await core.getContracts(provider);
+      const { curveYieldStrategy } = await tricryptoVault.getContracts(
+        provider
+      );
       const accountIds = await getAccountIdsByAddress(
         curveYieldStrategy.address,
         clearingHouse

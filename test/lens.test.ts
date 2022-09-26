@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { ethers } from 'ethers';
-import { getCoreContracts, getTricryptoVaultContracts } from '../dist';
+import { core, tricryptoVault } from '../dist';
 
 config();
 
@@ -14,19 +14,19 @@ const arbtest = new ethers.providers.StaticJsonRpcProvider(
 
 describe('Lens', () => {
   it('arbmain', async () => {
-    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbmain);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbmain);
     const accountId = await curveYieldStrategy.rageAccountNo();
 
-    const { clearingHouseLens } = await getCoreContracts(arbmain);
+    const { clearingHouseLens } = await core.getContracts(arbmain);
     const account = await clearingHouseLens.getAccountInfo(accountId);
     expect(account.owner).toEqual(curveYieldStrategy.address);
   });
 
   it('arbtest', async () => {
-    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbtest);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbtest);
     const accountId = await curveYieldStrategy.rageAccountNo();
 
-    const { clearingHouseLens } = await getCoreContracts(arbtest);
+    const { clearingHouseLens } = await core.getContracts(arbtest);
     const account = await clearingHouseLens.getAccountInfo(accountId);
     expect(account.owner).toEqual(curveYieldStrategy.address);
   });

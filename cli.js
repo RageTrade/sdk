@@ -27,38 +27,38 @@ const myRepl = repl.start('rage> ');
 Object.assign(myRepl.context, state);
 
 // mainnet
-state.sdk.getContracts(arbmain).then((coreMain) => {
+state.sdk.core.getContracts(arbmain).then((coreMain) => {
   const _state = { ...myRepl.context, coreMain };
   Object.assign(myRepl.context, _state);
 });
 
-state.sdk.getVaultContracts(arbmain).then((vaultMain) => {
+state.sdk.tricryptoVault.getContracts(arbmain).then((vaultMain) => {
   const _state = { ...myRepl.context, vaultMain };
   Object.assign(myRepl.context, _state);
 });
 
-state.sdk.getTokenContracts(arbmain).then((tokenMain) => {
+state.sdk.tokens.getContracts(arbmain).then((tokenMain) => {
   const _state = { ...myRepl.context, tokenMain };
   Object.assign(myRepl.context, _state);
 });
 
 // testnet
-state.sdk.getContracts(arbtest).then((coreTest) => {
+state.sdk.core.getContracts(arbtest).then((coreTest) => {
   const _state = { ...myRepl.context, coreTest };
   Object.assign(myRepl.context, _state);
 });
 
-state.sdk.getVaultContracts(arbtest).then((vaultTest) => {
+state.sdk.tricryptoVault.getContracts(arbtest).then((vaultTest) => {
   const _state = { ...myRepl.context, vaultTest };
   Object.assign(myRepl.context, _state);
 });
 
-state.sdk.getGmxVaultContracts(arbtest).then((gmxTest) => {
+state.sdk.gmxVault.getContracts(arbtest).then((gmxTest) => {
   const _state = { ...myRepl.context, gmxTest };
   Object.assign(myRepl.context, _state);
 });
 
-state.sdk.getTokenContracts(arbtest).then((tokenTest) => {
+state.sdk.tokens.getContracts(arbtest).then((tokenTest) => {
   const _state = { ...myRepl.context, tokenTest };
   Object.assign(myRepl.context, _state);
 });

@@ -1,4 +1,5 @@
 import { Signer, providers } from 'ethers';
+import { warn } from '../utils/loggers';
 
 const aliasNetworkNames = ['arbtest'];
 export const chainIds = {
@@ -36,8 +37,8 @@ export function sanitizeNetworkName(networkName: NetworkName): NetworkName {
   const networkNameSanitized = getNetworkNameFromChainId(chainId);
 
   if (aliasNetworkNames.includes(networkName)) {
-    console.log(
-      `use of networkName ${networkName} is deprecated, please use ${networkNameSanitized}`
+    warn(
+      `use of networkName "${networkName}" is deprecated, please use "${networkNameSanitized}"`
     );
   }
 

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 import { config } from 'dotenv';
-import { CurveYieldStrategy, getTricryptoVaultContracts } from '../dist';
+import { CurveYieldStrategy, tricryptoVault } from '../dist';
 
 let curveYieldStrategy: CurveYieldStrategy;
 
@@ -14,7 +14,7 @@ describe('curve strategy', () => {
     );
 
     it('works', async () => {
-      ({ curveYieldStrategy } = await getTricryptoVaultContracts(provider));
+      ({ curveYieldStrategy } = await tricryptoVault.getContracts(provider));
       const fee = await curveYieldStrategy.FEE();
       expect(fee.toNumber()).toEqual(1000);
     });
@@ -26,7 +26,7 @@ describe('curve strategy', () => {
     );
 
     it('works', async () => {
-      ({ curveYieldStrategy } = await getTricryptoVaultContracts(provider));
+      ({ curveYieldStrategy } = await tricryptoVault.getContracts(provider));
       const fee = await curveYieldStrategy.FEE();
       expect(fee.toNumber()).toEqual(1000);
     });

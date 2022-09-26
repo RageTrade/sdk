@@ -1,12 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import {
-  getCoreContracts,
-  getUniswapContracts,
-  getTricryptoVaultContracts,
-  getTokenContracts,
-  parseUsdc,
-  Q128,
-} from '../';
+import { core, uniswap, tricryptoVault, tokens, parseUsdc, Q128 } from '../';
 
 import { config } from 'dotenv';
 import { hexZeroPad } from 'ethers/lib/utils';
@@ -24,16 +17,16 @@ const wallet = new ethers.Wallet(
 
 describe.skip('Uniswap quote', () => {
   it('works usdc crv3', async () => {
-    const { usdc, crv3, usdt } = await getTokenContracts(arbtest);
-    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbtest);
-    const { quoterV1 } = getUniswapContracts(arbtest);
+    const { usdc, crv3, usdt } = await tokens.getContracts(arbtest);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbtest);
+    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbtest);
 
     const inputUsdcAmount = parseUsdc('1');
 
     const actualPriceX128 = await curveYieldStrategy.getPriceX128();
     const expectedOutputAmount = inputUsdcAmount.mul(Q128).div(actualPriceX128);
 
-    const actualOutputCrv3 = await quoterV1
+    const actualOutputCrv3 = await uniswapV3QuoterV1
       .connect(wallet)
       .callStatic.quoteExactInput(
         ethers.utils.concat([
@@ -58,10 +51,10 @@ describe.skip('Uniswap quote', () => {
   });
 
   it('works weth crv3', async () => {
-    const { eth_oracle } = await getCoreContracts(arbtest);
-    const { weth, usdt, crv3 } = await getTokenContracts(arbtest);
-    const { curveYieldStrategy } = await getTricryptoVaultContracts(arbtest);
-    const { quoterV1 } = getUniswapContracts(arbtest);
+    const { eth_oracle } = await core.getContracts(arbtest);
+    const { weth, usdt, crv3 } = await tokens.getContracts(arbtest);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbtest);
+    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbtest);
 
     const usdcAmount = parseUsdc('1');
     const ethPriceX128 = await eth_oracle.getTwapPriceX128(0);
@@ -70,7 +63,7 @@ describe.skip('Uniswap quote', () => {
 
     const expectedOutputAmount = usdcAmount.mul(Q128).div(crv3UsdPriceX128);
 
-    const actualOutputCrv3 = await quoterV1
+    const actualOutputCrv3 = await uniswapV3QuoterV1
       .connect(wallet)
       .callStatic.quoteExactInput(
         ethers.utils.concat([

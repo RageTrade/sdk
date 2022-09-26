@@ -1,12 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { parseEther, formatEther, parseUnits } from 'ethers/lib/utils';
-import {
-  VaultName,
-  getNativeProtocolName,
-  core,
-  getVaultAddressFromVaultName,
-} from '../../contracts';
-import { BaseVault__factory } from '../../typechain';
+import { VaultName, getVault, core } from '../../contracts';
 import {
   priceX128ToPrice,
   formatUsdc,
@@ -48,9 +42,9 @@ export async function getVaultInfo(
   vaultMarketValueD6: BigNumber;
   avgVaultMarketValueD6: BigNumber;
 }> {
-  const vaultAddress = await getVaultAddressFromVaultName(provider, vaultName);
+  const { vault } = await getVault(provider, vaultName);
 
-  const vault = BaseVault__factory.connect(vaultAddress, provider);
+  // const vault = BaseVault__factory.connect(vaultAddress, provider);
 
   const totalSupplyD18 = await vault.totalSupply();
   const totalAssetsD18 = await vault.totalAssets();
@@ -115,14 +109,12 @@ export async function getPoolComposition(
 }> {
   const { clearingHouse, eth_vToken } = await core.getContracts(provider);
 
-  const vaultStrategy = BaseVault__factory.connect(
-    await getVaultAddressFromVaultName(provider, vaultName),
-    provider
-  );
+  const { vault, nativeProtocolName } = await getVault(provider, vaultName);
+
   const poolId = truncate(eth_vToken.address);
 
   // TODO
-  const vaultAccountId = await vaultStrategy.rageAccountNo();
+  const vaultAccountId = await vault.rageAccountNo();
 
   // net position of eth * twap price
   const netPosition = await clearingHouse.getAccountNetTokenPosition(
@@ -132,9 +124,7 @@ export async function getPoolComposition(
   const virtualPriceX128 = await clearingHouse.getVirtualTwapPriceX128(poolId);
 
   const rageAmount = netPosition.abs().mul(virtualPriceX128).div(Q128);
-  const nativeAmount = (await vaultStrategy.getVaultMarketValue()).sub(
-    rageAmount
-  );
+  const nativeAmount = (await vault.getVaultMarketValue()).sub(rageAmount);
 
   const sum = nativeAmount.add(rageAmount);
   const oneEth = parseEther('1');
@@ -144,6 +134,6 @@ export async function getPoolComposition(
     nativeAmount: formatUsdc(nativeAmount),
     ragePercentage: formatEther(safeDiv(oneEth.mul(rageAmount), sum)),
     nativePercentage: formatEther(safeDiv(oneEth.mul(nativeAmount), sum)),
-    nativeProtocolName: getNativeProtocolName(vaultName),
+    nativeProtocolName: nativeProtocolName,
   };
 }

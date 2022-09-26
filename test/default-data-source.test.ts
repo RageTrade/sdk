@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import {
   EthersProviderDataSource,
   getDefaultDataSourceSync,
-  getTricryptoVaultContracts,
+  tricryptoVault,
   pools,
 } from '../dist';
 
@@ -18,7 +18,9 @@ describe('default data source', () => {
   describe('arbmain', () => {
     it('getAccountIdsByAddress', async () => {
       const ds = getDefaultDataSourceSync('arbmain', provider);
-      const { curveYieldStrategy } = await getTricryptoVaultContracts(provider);
+      const { curveYieldStrategy } = await tricryptoVault.getContracts(
+        provider
+      );
       const resp = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
 
       expect(resp).toEqual([0]);

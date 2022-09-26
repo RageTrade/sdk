@@ -1610,10 +1610,10 @@
     "@uniswap/v3-periphery" "^1.4.0"
     hardhat-dependency-compiler "^1.1.2"
 
-"@ragetrade/tricrypto-vault@1.0.0-arbgoerli.1":
-  version "1.0.0-arbgoerli.1"
-  resolved "https://registry.yarnpkg.com/@ragetrade/tricrypto-vault/-/tricrypto-vault-1.0.0-arbgoerli.1.tgz#96b4490e2e5cee1316654216a3c1a8b8ccd45ffb"
-  integrity sha512-QcNZZDgygfYEvxPvDMH2fDkrGEDrgaBQT0XTsMn4ZRSrzu8C37tThEHSYytavG/WYczzaaIH7/aGnvhrQcOohQ==
+"@ragetrade/tricrypto-vault@1.0.0-arbgoerli.2":
+  version "1.0.0-arbgoerli.2"
+  resolved "https://registry.yarnpkg.com/@ragetrade/tricrypto-vault/-/tricrypto-vault-1.0.0-arbgoerli.2.tgz#9a911a0df3fa72ee628ca20a096a2e2d601940bf"
+  integrity sha512-+w/RPzNHad1dOZiyuh6u7hvLRQPLpfkfqiHyBjVv0moQBMirBcUdNW3V9viKY58xi098oVe1Y/IN4Tz+cZGluQ==
   dependencies:
     "@134dd3v/arbos-precompiles" "^1.0.4"
     "@openzeppelin/contracts" "^4.0.0"

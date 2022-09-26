@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { ethers } from 'ethers';
 
 import {
-  getTricryptoVaultContracts,
+  tricryptoVault,
   CacheServerDataSource,
   pools,
   NetworkName,
@@ -21,7 +21,7 @@ describe('cache data source', () => {
     describe(networkName, () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
         const ds = new CacheServerDataSource(networkName);
-        const { curveYieldStrategy } = await getTricryptoVaultContracts(
+        const { curveYieldStrategy } = await tricryptoVault.getContracts(
           provider
         );
         const resp = await ds.getAccountIdsByAddress(

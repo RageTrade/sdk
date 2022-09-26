@@ -27,7 +27,7 @@ async function getDefaultPool() {
   for (const [chainName, chainId] of Object.entries(sdk.chainIds)) {
     let defaultPoolForChain = undefined;
 
-    const provider = getProvider(chainName);
+    const provider = sdk.getProvider(chainName);
     if (provider) {
       try {
         const contracts = await core.getContracts(provider);
@@ -55,7 +55,7 @@ async function getPoolsList() {
 
   for (const [chainName, chainId] of Object.entries(sdk.chainIds)) {
     let poolsListForChain = [];
-    const provider = getProvider(chainName);
+    const provider = sdk.getProvider(chainName);
     if (provider) {
       try {
         const providerArbiscan = getArbiscanProvider(chainName);
@@ -93,29 +93,33 @@ function getArbiscanProvider(chainName) {
   } catch {}
 }
 
-function getProvider(chainName) {
-  try {
-    return new providers.AlchemyProvider(
-      chainName,
-      process.env.ALCHEMY_API_KEY
-    );
-  } catch {}
+// function getProvider(chainName) {
+//   try {
+//     return new providers.AlchemyProvider(
+//       chainName,
+//       process.env.ALCHEMY_API_KEY
+//     );
+//   } catch {}
 
-  if (!process.env.ALCHEMY_KEY) {
-    throw new Error('Please provide ALCHEMY_KEY in .env');
-  }
+//   if (!process.env.ALCHEMY_KEY) {
+//     throw new Error('Please provide ALCHEMY_KEY in .env');
+//   }
 
-  try {
-    if (chainName === 'arbmain') {
-      return new providers.StaticJsonRpcProvider(
-        'https://arb-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-      );
-    } else if (chainName === 'arbtest') {
-      return new providers.StaticJsonRpcProvider(
-        'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-      );
-    } else {
-      return undefined;
-    }
-  } catch {}
-}
+//   try {
+//     if (chainName === 'arbmain') {
+//       return new providers.StaticJsonRpcProvider(
+//         'https://arb-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+//       );
+//     } else if (chainName === 'arbtest') {
+//       return new providers.StaticJsonRpcProvider(
+//         'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+//       );
+//     } else if (chainName === 'arbgoerli') {
+//       return new providers.StaticJsonRpcProvider(
+//         'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+//       );
+//     } else {
+//       return undefined;
+//     }
+//   } catch {}
+// }

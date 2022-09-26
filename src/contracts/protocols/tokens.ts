@@ -30,11 +30,11 @@ export function getAddresses(
   networkNameOrChainId: NetworkName | number
 ): TokenAddresses {
   const networkName = getNetworkName(networkNameOrChainId);
-  const coreDeployments = core.getDeployments(networkNameOrChainId);
+  const coreDeployments = core.getDeployments(networkName);
   const { crvAddress, tricryptoAddress } =
-    curveFinance.getAddresses(networkNameOrChainId);
+    curveFinance.getAddresses(networkName);
   const { gmxAddress, glpAddress, sGLPAddress, fsGLPAddress } =
-    gmx.getAddresses(networkNameOrChainId);
+    gmx.getAddresses(networkName);
   switch (networkName) {
     case 'arbmain':
       return {
@@ -133,7 +133,7 @@ export async function getContractsSync(
       signerOrProvider
     ),
     fsGLP: ERC20PresetMinterPauser__factory.connect(
-      addresses.sGLPAddress,
+      addresses.fsGLPAddress,
       signerOrProvider
     ),
   };
