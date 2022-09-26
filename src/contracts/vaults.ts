@@ -1,4 +1,4 @@
-import { BaseVault, BaseVault__factory } from '../typechain';
+import { BaseVault__factory } from '../typechain';
 import { SignerOrProvider } from './common';
 
 export const tricryptoVaultMetaData: VaultMetadata = {
@@ -15,12 +15,6 @@ export type VaultName = 'tricrypto' | 'gmx' | 'unknown';
 
 import { tricryptoVault, gmxVault } from './protocols';
 
-export interface Vault {
-  vault: BaseVault;
-  metadata: VaultMetadata;
-  nativeProtocolName: string;
-}
-
 export interface VaultMetadata {
   name: string;
   assetName: string;
@@ -29,29 +23,45 @@ export interface VaultMetadata {
 export async function getVault(
   signerOrProvider: SignerOrProvider,
   vaultName: VaultName
-): Promise<Vault> {
+) {
+  const vaultSync = getVaultSync(vaultName);
   switch (vaultName) {
     case 'tricrypto':
       const { curveYieldStrategy } = await tricryptoVault.getContracts(
         signerOrProvider
       );
       return {
+        ...vaultSync,
         vault: BaseVault__factory.connect(
           curveYieldStrategy.address,
           signerOrProvider
         ),
-        metadata: tricryptoVaultMetaData,
-        nativeProtocolName: 'CurveFinance',
       };
     case 'gmx':
       const { gmxYieldStrategy } = await gmxVault.getContracts(
         signerOrProvider
       );
       return {
+        ...vaultSync,
         vault: BaseVault__factory.connect(
           gmxYieldStrategy.address,
           signerOrProvider
         ),
+      };
+    default:
+      throw new Error(`vaultName should be either tricrypto or gmx`);
+  }
+}
+
+export function getVaultSync(vaultName: VaultName) {
+  switch (vaultName) {
+    case 'tricrypto':
+      return {
+        metadata: tricryptoVaultMetaData,
+        nativeProtocolName: 'CurveFinance',
+      };
+    case 'gmx':
+      return {
         metadata: tricryptoVaultMetaData,
         nativeProtocolName: 'GMX',
       };
