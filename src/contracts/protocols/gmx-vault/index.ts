@@ -12,6 +12,7 @@ import {
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbrinkeby from './arbrinkeby';
+import * as arbgoerli from './arbrinkeby';
 
 export function getDeployments(networkNameOrChainId: NetworkName | number) {
   const networkName = getNetworkName(networkNameOrChainId);
@@ -19,6 +20,8 @@ export function getDeployments(networkNameOrChainId: NetworkName | number) {
     case 'arbrinkeby':
     case 'arbtest':
       return arbrinkeby.getDeployments();
+    case 'arbgoerli':
+      return arbgoerli.getDeployments();
     default:
       throw newError(
         `gmx vault deployment not present for ${networkName} network`

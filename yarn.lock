@@ -1595,10 +1595,10 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/gmx-vault@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ragetrade/gmx-vault/-/gmx-vault-1.0.1.tgz#cdf860156b6800cf72a8f5419e407241cb518542"
-  integrity sha512-vRqALGtvg/8wn+LkbrWKylJfZ4YYmUzwy5FMqlapHN0bz4Mn9EvtZstqyekjCOFIX7ElZhz6/9whTmmOYI3Opw==
+"@ragetrade/gmx-vault@1.0.1-arbgoerli":
+  version "1.0.1-arbgoerli"
+  resolved "https://registry.yarnpkg.com/@ragetrade/gmx-vault/-/gmx-vault-1.0.1-arbgoerli.tgz#9fbf833748b1814ec71033ea59e8056540be46c4"
+  integrity sha512-PXiyEpKVyWOAS9GrJ9VQ3T/LbyDcT+VmlX432fHu9U0Pu2U+/x7zAqXkVfeyJoK23ZZkRNeCOPhsO41i3qtgqQ==
   dependencies:
     "@134dd3v/arbos-precompiles" "^1.0.4"
     "@openzeppelin/contracts" "^4.0.0"
