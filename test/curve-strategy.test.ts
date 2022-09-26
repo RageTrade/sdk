@@ -31,4 +31,16 @@ describe('curve strategy', () => {
       expect(fee.toNumber()).toEqual(1000);
     });
   });
+
+  describe('arbgoerli', () => {
+    const provider = new ethers.providers.StaticJsonRpcProvider(
+      'https://arb-goerli.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+    );
+
+    it('works', async () => {
+      ({ curveYieldStrategy } = await tricryptoVault.getContracts(provider));
+      const fee = await curveYieldStrategy.FEE();
+      expect(fee.toNumber()).toEqual(1000);
+    });
+  });
 });

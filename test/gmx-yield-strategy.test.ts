@@ -73,4 +73,42 @@ describe('gmx strategy', () => {
       );
     });
   });
+
+  describe('arbgoerli', () => {
+    const provider = new ethers.providers.StaticJsonRpcProvider(
+      'https://arb-goerli.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+    );
+
+    it('works', async () => {
+      ({ gmxYieldStrategy } = await gmxVault.getContracts(provider));
+      const fee = await gmxYieldStrategy.MAX_BPS();
+      expect(fee).toEqual(10000);
+    });
+
+    it('works token contracts', async () => {
+      const { sGLP } = await gmxProtocol.getContracts(provider);
+      const { fsGLP } = await tokens.getContracts(provider);
+      const sgt = await sGLP.stakedGlpTracker();
+      expect(sgt).toEqual(fsGLP.address);
+    });
+
+    it('works vault', async () => {
+      const { gmxUnderlyingVault, glpManager } = await gmxProtocol.getContracts(
+        provider
+      );
+      const vaultAddr = await glpManager.vault();
+      expect(gmxUnderlyingVault.address).toEqual(vaultAddr);
+    });
+
+    it('works strategy contracts', async () => {
+      const { glpManager } = await gmxProtocol.getContracts(provider);
+      const { glpStakingManager } = await gmxVault.getContracts(provider);
+
+      const val = await provider.getStorageAt(glpStakingManager.address, 261);
+
+      expect(hexZeroPad(hexStripZeros(val), 20)).toEqual(
+        glpManager.address.toLocaleLowerCase()
+      );
+    });
+  });
 });

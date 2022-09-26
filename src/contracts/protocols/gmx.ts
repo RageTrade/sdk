@@ -50,6 +50,16 @@ export function getAddresses(
         rewardRouterAddress: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
         vaultAddress: '0x613512Ec9906975d29e1308f87454485D1b264fD',
       };
+    case 'arbgoerli':
+      return {
+        gmxAddress: '0x42814b4fD4B3a08bd8ac798B44846dfdBF2ff1bB',
+        glpAddress: '0xa8E4d2c5C9321a6452eDc5b17E66be04269e0447',
+        sGLPAddress: '0x1Dac875be521199a3dD6CC10e7e738122d11059C',
+        fsGLPAddress: '0xdDc8d8B826086A9d687bb34c16ab1F9Da1f08CD1',
+        glpManagerAddress: '0x710c1233C642b7C734573cfc36C8747AA97CE863',
+        rewardRouterAddress: '0xb5df65927B340C56980001D67A6f3A8945551972',
+        vaultAddress: '0x8b8683Ce947E5FE51736d2e581688e973EAa5583',
+      };
     default:
       throw newError(`gmx addresses not present for ${networkName} network`);
   }

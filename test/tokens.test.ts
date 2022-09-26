@@ -19,6 +19,12 @@ describe('tokens', () => {
         'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
       ),
     ],
+    [
+      'arbgoerli',
+      new ethers.providers.StaticJsonRpcProvider(
+        'https://arb-goerli.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
+      ),
+    ],
   ];
 
   for (const [name, provider] of providers) {
