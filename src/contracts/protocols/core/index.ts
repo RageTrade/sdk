@@ -19,6 +19,7 @@ import { newError } from '../../../utils/loggers';
 import {
   getChainIdFromProvider,
   getNetworkName,
+  getNetworkNameFromChainId,
   NetworkName,
   SignerOrProvider,
 } from '../../common';
@@ -146,27 +147,26 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
   });
 }
 
-// TODO add this after fetch-pool works
-// import poolsList from '../../../default_pools.json';
+import poolsList from '../../../pools.json';
 
-// export async function getPoolContractsCached(
-//   signerOrProvider: SignerOrProvider
-// ) {
-//   const networkName = getNetworkNameFromChainId(
-//     await getChainIdFromProvider(signerOrProvider)
-//   );
+export async function getPoolContractsCached(
+  signerOrProvider: SignerOrProvider
+) {
+  const networkName = getNetworkNameFromChainId(
+    await getChainIdFromProvider(signerOrProvider)
+  );
 
-//   return (poolsList[networkName] as any[]).map((pool) => {
-//     return {
-//       vToken: VToken__factory.connect(pool.vTokenAddress, signerOrProvider),
-//       vPool: IUniswapV3Pool__factory.connect(
-//         pool.vPoolAddress,
-//         signerOrProvider
-//       ),
-//       vPoolWrapper: VPoolWrapper__factory.connect(
-//         pool.vPoolWrapperAddress,
-//         signerOrProvider
-//       ),
-//     };
-//   });
-// }
+  return poolsList[networkName].map((pool) => {
+    return {
+      vToken: VToken__factory.connect(pool.vTokenAddress, signerOrProvider),
+      vPool: IUniswapV3Pool__factory.connect(
+        pool.vPoolAddress,
+        signerOrProvider
+      ),
+      vPoolWrapper: VPoolWrapper__factory.connect(
+        pool.vPoolWrapperAddress,
+        signerOrProvider
+      ),
+    };
+  });
+}
