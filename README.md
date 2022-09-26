@@ -1,5 +1,13 @@
 # Rage Trade SDK
 
+## Install
+
+Ethers.js is a peer dependency so that needs to be installed in the project as well.
+
+```
+npm install @ragetrade/sdk ethers
+```
+
 ## Quick debugging
 
 ```sh
