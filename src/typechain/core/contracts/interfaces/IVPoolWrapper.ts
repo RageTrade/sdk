@@ -24,17 +24,18 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export declare namespace IVPoolWrapper {
   export type SwapResultStruct = {
-    amountSpecified: BigNumberish;
-    vTokenIn: BigNumberish;
-    vQuoteIn: BigNumberish;
-    liquidityFees: BigNumberish;
-    protocolFees: BigNumberish;
-    sqrtPriceX96Start: BigNumberish;
-    sqrtPriceX96End: BigNumberish;
+    amountSpecified: PromiseOrValue<BigNumberish>;
+    vTokenIn: PromiseOrValue<BigNumberish>;
+    vQuoteIn: PromiseOrValue<BigNumberish>;
+    liquidityFees: PromiseOrValue<BigNumberish>;
+    protocolFees: PromiseOrValue<BigNumberish>;
+    sqrtPriceX96Start: PromiseOrValue<BigNumberish>;
+    sqrtPriceX96End: PromiseOrValue<BigNumberish>;
   };
 
   export type SwapResultStructOutput = [
@@ -56,10 +57,10 @@ export declare namespace IVPoolWrapper {
   };
 
   export type WrapperValuesInsideStruct = {
-    sumAX128: BigNumberish;
-    sumBInsideX128: BigNumberish;
-    sumFpInsideX128: BigNumberish;
-    sumFeeInsideX128: BigNumberish;
+    sumAX128: PromiseOrValue<BigNumberish>;
+    sumBInsideX128: PromiseOrValue<BigNumberish>;
+    sumFpInsideX128: PromiseOrValue<BigNumberish>;
+    sumFeeInsideX128: PromiseOrValue<BigNumberish>;
   };
 
   export type WrapperValuesInsideStructOutput = [
@@ -75,12 +76,12 @@ export declare namespace IVPoolWrapper {
   };
 
   export type InitializeVPoolWrapperParamsStruct = {
-    clearingHouse: string;
-    vToken: string;
-    vQuote: string;
-    vPool: string;
-    liquidityFeePips: BigNumberish;
-    protocolFeePips: BigNumberish;
+    clearingHouse: PromiseOrValue<string>;
+    vToken: PromiseOrValue<string>;
+    vQuote: PromiseOrValue<string>;
+    vPool: PromiseOrValue<string>;
+    liquidityFeePips: PromiseOrValue<BigNumberish>;
+    protocolFeePips: PromiseOrValue<BigNumberish>;
   };
 
   export type InitializeVPoolWrapperParamsStructOutput = [
@@ -136,7 +137,11 @@ export interface IVPoolWrapperInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'burn',
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'collectAccruedProtocolFee',
@@ -148,7 +153,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getExtrapolatedValuesInside',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getSumAX128',
@@ -156,7 +161,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getValuesInside',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -168,7 +173,11 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'protocolFeePips',
@@ -176,11 +185,15 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'swap',
-    values: [boolean, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values: [boolean]
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
 
@@ -353,21 +366,21 @@ export interface IVPoolWrapper extends BaseContract {
 
   functions: {
     burn(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getExtrapolatedValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IVPoolWrapper.WrapperValuesInsideStructOutput] & {
@@ -378,8 +391,8 @@ export interface IVPoolWrapper extends BaseContract {
     getSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IVPoolWrapper.WrapperValuesInsideStructOutput] & {
@@ -389,97 +402,97 @@ export interface IVPoolWrapper extends BaseContract {
 
     initialize(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     mint(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
 
     swap(
-      swapVTokenForVQuote: boolean,
-      amountSpecified: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateGlobalFundingState(
-      useZeroFundingRate: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      useZeroFundingRate: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     vPool(overrides?: CallOverrides): Promise<[string]>;
   };
 
   burn(
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    liquidity: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
+    liquidity: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   collectAccruedProtocolFee(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getExtrapolatedValuesInside(
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
   getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getValuesInside(
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
   initialize(
     params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
   mint(
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    liquidity: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
+    liquidity: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
   swap(
-    swapVTokenForVQuote: boolean,
-    amountSpecified: BigNumberish,
-    sqrtPriceLimitX96: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    swapVTokenForVQuote: PromiseOrValue<boolean>,
+    amountSpecified: PromiseOrValue<BigNumberish>,
+    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateGlobalFundingState(
-    useZeroFundingRate: boolean,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    useZeroFundingRate: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   vPool(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     burn(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
@@ -494,16 +507,16 @@ export interface IVPoolWrapper extends BaseContract {
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getExtrapolatedValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
 
@@ -515,9 +528,9 @@ export interface IVPoolWrapper extends BaseContract {
     liquidityFeePips(overrides?: CallOverrides): Promise<number>;
 
     mint(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
@@ -530,14 +543,14 @@ export interface IVPoolWrapper extends BaseContract {
     protocolFeePips(overrides?: CallOverrides): Promise<number>;
 
     swap(
-      swapVTokenForVQuote: boolean,
-      amountSpecified: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IVPoolWrapper.SwapResultStructOutput>;
 
     updateGlobalFundingState(
-      useZeroFundingRate: boolean,
+      useZeroFundingRate: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -607,58 +620,58 @@ export interface IVPoolWrapper extends BaseContract {
 
   estimateGas: {
     burn(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getExtrapolatedValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     initialize(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     mint(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
 
     swap(
-      swapVTokenForVQuote: boolean,
-      amountSpecified: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateGlobalFundingState(
-      useZeroFundingRate: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      useZeroFundingRate: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     vPool(overrides?: CallOverrides): Promise<BigNumber>;
@@ -666,14 +679,14 @@ export interface IVPoolWrapper extends BaseContract {
 
   populateTransaction: {
     burn(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     getExtrapolatedSumAX128(
@@ -681,45 +694,45 @@ export interface IVPoolWrapper extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getExtrapolatedValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getSumAX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getValuesInside(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     initialize(
       params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mint(
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      liquidity: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      liquidity: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     swap(
-      swapVTokenForVQuote: boolean,
-      amountSpecified: BigNumberish,
-      sqrtPriceLimitX96: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateGlobalFundingState(
-      useZeroFundingRate: boolean,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      useZeroFundingRate: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     vPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;

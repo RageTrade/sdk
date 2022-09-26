@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface ChainlinkOracleInterface extends utils.Interface {
@@ -41,7 +42,7 @@ export interface ChainlinkOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapPriceX128',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(functionFragment: 'aggregator', data: BytesLike): Result;
@@ -89,7 +90,7 @@ export interface ChainlinkOracle extends BaseContract {
     chainlinkFlags(overrides?: CallOverrides): Promise<[string]>;
 
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { priceX128: BigNumber }>;
   };
@@ -99,7 +100,7 @@ export interface ChainlinkOracle extends BaseContract {
   chainlinkFlags(overrides?: CallOverrides): Promise<string>;
 
   getTwapPriceX128(
-    twapDuration: BigNumberish,
+    twapDuration: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -109,7 +110,7 @@ export interface ChainlinkOracle extends BaseContract {
     chainlinkFlags(overrides?: CallOverrides): Promise<string>;
 
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -122,7 +123,7 @@ export interface ChainlinkOracle extends BaseContract {
     chainlinkFlags(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -133,7 +134,7 @@ export interface ChainlinkOracle extends BaseContract {
     chainlinkFlags(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

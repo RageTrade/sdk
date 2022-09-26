@@ -20,13 +20,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type CollateralSettingsStruct = {
-    oracle: string;
-    twapDuration: BigNumberish;
-    isAllowedForDeposit: boolean;
+    oracle: PromiseOrValue<string>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForDeposit: PromiseOrValue<boolean>;
   };
 
   export type CollateralSettingsStructOutput = [string, number, boolean] & {
@@ -36,13 +37,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: BigNumberish;
-    maintainanceMarginRatioBps: BigNumberish;
-    maxVirtualPriceDeviationRatioBps: BigNumberish;
-    twapDuration: BigNumberish;
-    isAllowedForTrade: boolean;
-    isCrossMargined: boolean;
-    oracle: string;
+    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForTrade: PromiseOrValue<boolean>;
+    isCrossMargined: PromiseOrValue<boolean>;
+    oracle: PromiseOrValue<string>;
   };
 
   export type PoolSettingsStructOutput = [
@@ -64,14 +65,14 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: BigNumberish;
-    tokenLiquidationFeeFraction: BigNumberish;
-    closeFactorMMThresholdBps: BigNumberish;
-    partialLiquidationCloseFactorBps: BigNumberish;
-    insuranceFundFeeShareBps: BigNumberish;
-    liquidationSlippageSqrtToleranceBps: BigNumberish;
-    maxRangeLiquidationFees: BigNumberish;
-    minNotionalLiquidatable: BigNumberish;
+    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
+    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
+    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
+    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
+    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
+    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
   };
 
   export type LiquidationParamsStructOutput = [
@@ -113,24 +114,30 @@ export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
-    values: [string, IClearingHouseStructures.CollateralSettingsStruct]
+    values: [
+      PromiseOrValue<string>,
+      IClearingHouseStructures.CollateralSettingsStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updatePoolSettings',
-    values: [BigNumberish, IClearingHouseStructures.PoolSettingsStruct]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      IClearingHouseStructures.PoolSettingsStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProtocolSettings',
     values: [
       IClearingHouseStructures.LiquidationParamsStruct,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
@@ -181,79 +188,79 @@ export interface IClearingHouseOwnerActions extends BaseContract {
 
   functions: {
     updateCollateralSettings(
-      cToken: string,
+      cToken: PromiseOrValue<string>,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updatePoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateProtocolSettings(
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: BigNumberish,
-      minimumOrderNotional: BigNumberish,
-      minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
+      minimumOrderNotional: PromiseOrValue<BigNumberish>,
+      minRequiredMargin: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   updateCollateralSettings(
-    cToken: string,
+    cToken: PromiseOrValue<string>,
     collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updatePoolSettings(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     newSettings: IClearingHouseStructures.PoolSettingsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateProtocolSettings(
     liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-    removeLimitOrderFee: BigNumberish,
-    minimumOrderNotional: BigNumberish,
-    minRequiredMargin: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    removeLimitOrderFee: PromiseOrValue<BigNumberish>,
+    minimumOrderNotional: PromiseOrValue<BigNumberish>,
+    minRequiredMargin: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   withdrawProtocolFee(
-    numberOfPoolsToUpdateInThisTx: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     updateCollateralSettings(
-      cToken: string,
+      cToken: PromiseOrValue<string>,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updatePoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       newSettings: IClearingHouseStructures.PoolSettingsStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateProtocolSettings(
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: BigNumberish,
-      minimumOrderNotional: BigNumberish,
-      minRequiredMargin: BigNumberish,
+      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
+      minimumOrderNotional: PromiseOrValue<BigNumberish>,
+      minRequiredMargin: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: BigNumberish,
+      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -262,55 +269,55 @@ export interface IClearingHouseOwnerActions extends BaseContract {
 
   estimateGas: {
     updateCollateralSettings(
-      cToken: string,
+      cToken: PromiseOrValue<string>,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updatePoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateProtocolSettings(
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: BigNumberish,
-      minimumOrderNotional: BigNumberish,
-      minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
+      minimumOrderNotional: PromiseOrValue<BigNumberish>,
+      minRequiredMargin: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     updateCollateralSettings(
-      cToken: string,
+      cToken: PromiseOrValue<string>,
       collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updatePoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateProtocolSettings(
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: BigNumberish,
-      minimumOrderNotional: BigNumberish,
-      minRequiredMargin: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
+      minimumOrderNotional: PromiseOrValue<BigNumberish>,
+      minRequiredMargin: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

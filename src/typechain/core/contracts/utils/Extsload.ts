@@ -17,6 +17,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface ExtsloadInterface extends utils.Interface {
@@ -31,11 +32,11 @@ export interface ExtsloadInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32[])',
-    values: [BytesLike[]]
+    values: [PromiseOrValue<BytesLike>[]]
   ): string;
 
   decodeFunctionResult(
@@ -78,34 +79,34 @@ export interface Extsload extends BaseContract {
 
   functions: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string] & { val: string }>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<[string[]]>;
   };
 
   'extsload(bytes32)'(
-    slot: BytesLike,
+    slot: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   'extsload(bytes32[])'(
-    slots: BytesLike[],
+    slots: PromiseOrValue<BytesLike>[],
     overrides?: CallOverrides
   ): Promise<string[]>;
 
   callStatic: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<string[]>;
   };
@@ -114,24 +115,24 @@ export interface Extsload extends BaseContract {
 
   estimateGas: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

@@ -18,12 +18,13 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export declare namespace IClearingHouseStructures {
   export type TickRangeStruct = {
-    tickLower: BigNumberish;
-    tickUpper: BigNumberish;
+    tickLower: PromiseOrValue<BigNumberish>;
+    tickUpper: PromiseOrValue<BigNumberish>;
   };
 
   export type TickRangeStructOutput = [number, number] & {
@@ -32,9 +33,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type CollateralSettingsStruct = {
-    oracle: string;
-    twapDuration: BigNumberish;
-    isAllowedForDeposit: boolean;
+    oracle: PromiseOrValue<string>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForDeposit: PromiseOrValue<boolean>;
   };
 
   export type CollateralSettingsStructOutput = [string, number, boolean] & {
@@ -44,7 +45,7 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type CollateralStruct = {
-    token: string;
+    token: PromiseOrValue<string>;
     settings: IClearingHouseStructures.CollateralSettingsStruct;
   };
 
@@ -57,13 +58,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: BigNumberish;
-    maintainanceMarginRatioBps: BigNumberish;
-    maxVirtualPriceDeviationRatioBps: BigNumberish;
-    twapDuration: BigNumberish;
-    isAllowedForTrade: boolean;
-    isCrossMargined: boolean;
-    oracle: string;
+    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForTrade: PromiseOrValue<boolean>;
+    isCrossMargined: PromiseOrValue<boolean>;
+    oracle: PromiseOrValue<string>;
   };
 
   export type PoolSettingsStructOutput = [
@@ -85,9 +86,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolStruct = {
-    vToken: string;
-    vPool: string;
-    vPoolWrapper: string;
+    vToken: PromiseOrValue<string>;
+    vPool: PromiseOrValue<string>;
+    vPoolWrapper: PromiseOrValue<string>;
     settings: IClearingHouseStructures.PoolSettingsStruct;
   };
 
@@ -104,14 +105,14 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: BigNumberish;
-    tokenLiquidationFeeFraction: BigNumberish;
-    closeFactorMMThresholdBps: BigNumberish;
-    partialLiquidationCloseFactorBps: BigNumberish;
-    insuranceFundFeeShareBps: BigNumberish;
-    liquidationSlippageSqrtToleranceBps: BigNumberish;
-    maxRangeLiquidationFees: BigNumberish;
-    minNotionalLiquidatable: BigNumberish;
+    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
+    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
+    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
+    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
+    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
+    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
   };
 
   export type LiquidationParamsStructOutput = [
@@ -181,43 +182,48 @@ export interface ClearingHouseLensInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountCollateralBalance',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountCollateralInfo',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountInfo',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountLiquidityPositionInfo',
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountLiquidityPositionList',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountPositionInfo',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountTokenPositionInfo',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getCollateralInfo',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolInfo',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolSettings',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getProtocolInfo',
@@ -225,19 +231,19 @@ export interface ClearingHouseLensInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapDuration',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVPool',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVPoolAndTwapDuration',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'isPoolIdAvailable',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
@@ -335,21 +341,21 @@ export interface ClearingHouseLens extends BaseContract {
     clearingHouse(overrides?: CallOverrides): Promise<[string]>;
 
     getAccountCollateralBalance(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { balance: BigNumber }>;
 
     getAccountCollateralInfo(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber] & { collateral: string; balance: BigNumber }
     >;
 
     getAccountInfo(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber, number[], number[]] & {
@@ -361,10 +367,10 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountLiquidityPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -387,8 +393,8 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountLiquidityPositionList(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IClearingHouseStructures.TickRangeStructOutput[]] & {
@@ -397,8 +403,8 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -415,8 +421,8 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountTokenPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
@@ -427,12 +433,12 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getCollateralInfo(
-      collateralId: BigNumberish,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
 
     getPoolInfo(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IClearingHouseStructures.PoolStructOutput] & {
@@ -441,7 +447,7 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getPoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [IClearingHouseStructures.PoolSettingsStructOutput] & {
@@ -468,22 +474,22 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[number] & { twapDuration: number }>;
 
     getVPool(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string] & { vPool: string }>;
 
     getVPoolAndTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
 
     isPoolIdAvailable(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
   };
@@ -491,19 +497,19 @@ export interface ClearingHouseLens extends BaseContract {
   clearingHouse(overrides?: CallOverrides): Promise<string>;
 
   getAccountCollateralBalance(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    collateralId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getAccountCollateralInfo(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    collateralId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<[string, BigNumber] & { collateral: string; balance: BigNumber }>;
 
   getAccountInfo(
-    accountId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [string, BigNumber, number[], number[]] & {
@@ -515,10 +521,10 @@ export interface ClearingHouseLens extends BaseContract {
   >;
 
   getAccountLiquidityPositionInfo(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [
@@ -541,14 +547,14 @@ export interface ClearingHouseLens extends BaseContract {
   >;
 
   getAccountLiquidityPositionList(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.TickRangeStructOutput[]>;
 
   getAccountPositionInfo(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [
@@ -565,8 +571,8 @@ export interface ClearingHouseLens extends BaseContract {
   >;
 
   getAccountTokenPositionInfo(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber, BigNumber] & {
@@ -577,17 +583,17 @@ export interface ClearingHouseLens extends BaseContract {
   >;
 
   getCollateralInfo(
-    collateralId: BigNumberish,
+    collateralId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
   getPoolInfo(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
   getPoolSettings(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IClearingHouseStructures.PoolSettingsStructOutput>;
 
@@ -610,19 +616,22 @@ export interface ClearingHouseLens extends BaseContract {
   >;
 
   getTwapDuration(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<number>;
 
-  getVPool(poolId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+  getVPool(
+    poolId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   getVPoolAndTwapDuration(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
 
   isPoolIdAvailable(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -630,21 +639,21 @@ export interface ClearingHouseLens extends BaseContract {
     clearingHouse(overrides?: CallOverrides): Promise<string>;
 
     getAccountCollateralBalance(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountCollateralInfo(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber] & { collateral: string; balance: BigNumber }
     >;
 
     getAccountInfo(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber, number[], number[]] & {
@@ -656,10 +665,10 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountLiquidityPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -682,14 +691,14 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountLiquidityPositionList(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.TickRangeStructOutput[]>;
 
     getAccountPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [
@@ -706,8 +715,8 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getAccountTokenPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber, BigNumber] & {
@@ -718,17 +727,17 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getCollateralInfo(
-      collateralId: BigNumberish,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.CollateralStructOutput>;
 
     getPoolInfo(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.PoolStructOutput>;
 
     getPoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IClearingHouseStructures.PoolSettingsStructOutput>;
 
@@ -751,19 +760,22 @@ export interface ClearingHouseLens extends BaseContract {
     >;
 
     getTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<number>;
 
-    getVPool(poolId: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    getVPool(
+      poolId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     getVPoolAndTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
 
     isPoolIdAvailable(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<boolean>;
   };
@@ -774,82 +786,82 @@ export interface ClearingHouseLens extends BaseContract {
     clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAccountCollateralBalance(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountCollateralInfo(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountInfo(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountLiquidityPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountLiquidityPositionList(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountTokenPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getCollateralInfo(
-      collateralId: BigNumberish,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getPoolInfo(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getPoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getVPool(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getVPoolAndTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     isPoolIdAvailable(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -858,82 +870,82 @@ export interface ClearingHouseLens extends BaseContract {
     clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getAccountCollateralBalance(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountCollateralInfo(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountInfo(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountLiquidityPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountLiquidityPositionList(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountTokenPositionInfo(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getCollateralInfo(
-      collateralId: BigNumberish,
+      collateralId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getPoolInfo(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getPoolSettings(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getVPool(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getVPoolAndTwapDuration(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     isPoolIdAvailable(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

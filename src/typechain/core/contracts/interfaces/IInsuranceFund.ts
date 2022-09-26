@@ -20,6 +20,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface IInsuranceFundInterface extends utils.Interface {
@@ -30,10 +31,18 @@ export interface IInsuranceFundInterface extends utils.Interface {
 
   getFunction(nameOrSignatureOrTopic: 'claim' | 'initialize'): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'claim', values: [BigNumberish]): string;
+  encodeFunctionData(
+    functionFragment: 'claim',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [string, string, string, string]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
 
   decodeFunctionResult(functionFragment: 'claim', data: BytesLike): Result;
@@ -70,40 +79,43 @@ export interface IInsuranceFund extends BaseContract {
 
   functions: {
     claim(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     initialize(
-      settlementToken: string,
-      clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      settlementToken: PromiseOrValue<string>,
+      clearingHouse: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   claim(
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   initialize(
-    settlementToken: string,
-    clearingHouse: string,
-    name: string,
-    symbol: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    settlementToken: PromiseOrValue<string>,
+    clearingHouse: PromiseOrValue<string>,
+    name: PromiseOrValue<string>,
+    symbol: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    claim(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    claim(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     initialize(
-      settlementToken: string,
-      clearingHouse: string,
-      name: string,
-      symbol: string,
+      settlementToken: PromiseOrValue<string>,
+      clearingHouse: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      symbol: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -112,31 +124,31 @@ export interface IInsuranceFund extends BaseContract {
 
   estimateGas: {
     claim(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     initialize(
-      settlementToken: string,
-      clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      settlementToken: PromiseOrValue<string>,
+      clearingHouse: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     claim(
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      settlementToken: string,
-      clearingHouse: string,
-      name: string,
-      symbol: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      settlementToken: PromiseOrValue<string>,
+      clearingHouse: PromiseOrValue<string>,
+      name: PromiseOrValue<string>,
+      symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

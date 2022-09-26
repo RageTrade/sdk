@@ -1574,10 +1574,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.7.3.tgz#939534757a81f8d69cc854c7692805684ff3111e"
   integrity sha512-dGRS0agJzu8ybo44pCIf3xBaPQN/65AIXNgK8+4gzKd5kbvlqyxryUYVLJv7fK98Seyd2hDZzVEHSWAh0Bt1Yw==
 
-"@ragetrade/core@^1.0.1", "@ragetrade/core@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@ragetrade/core/-/core-1.0.3.tgz#0143b32d72511630e4033b5794a2a2f655b25500"
-  integrity sha512-p//3C9qIbc22AS87pJBaqQqszdJWiXtDllGeSLxFVgxAabFCV5qxrFtHXIzSI2TdQ3rPzJ46wY7c8bkqOLDWBg==
+"@ragetrade/core@1.0.3-arbgoerli.1":
+  version "1.0.3-arbgoerli.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/core/-/core-1.0.3-arbgoerli.1.tgz#7bad0f63fbf448efc9793cd69ed4fb84cab44aff"
+  integrity sha512-sG6M3RjVsgXEGturq9b9HsztPocDU5koxJb/Krg1RAR43fdYkD4iAh4TvW7/3VRCdBVD8//qUrIHgcNbhsI48g==
   dependencies:
     "@chainlink/contracts" "^0.4.0"
     "@openzeppelin/contracts" "^4.5.0"
@@ -1585,15 +1585,40 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/vaults@^1.0.1":
+"@ragetrade/core@https://github.com/RageTrade/core.git#969ad6b00d8221933cce2a24234206d99dd10ab9":
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ragetrade/vaults/-/vaults-1.0.1.tgz#12e6b4e0b13640b8ea7ac4ff409ccccaa314db1e"
-  integrity sha512-otbk7zDU1xMpN+65+j/aIAUAtFSd3v/Gg/94snPvh3qlQVcNLny79eMFgtjOKCNVXiqocWHmU28lABFjai92xA==
+  resolved "https://github.com/RageTrade/core.git#969ad6b00d8221933cce2a24234206d99dd10ab9"
+  dependencies:
+    "@chainlink/contracts" "^0.4.0"
+    "@openzeppelin/contracts" "^4.5.0"
+    "@openzeppelin/contracts-upgradeable" "^4.5.2"
+    "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
+    "@uniswap/v3-periphery" "^1.4.0"
+
+"@ragetrade/gmx-vault@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/gmx-vault/-/gmx-vault-1.0.1.tgz#cdf860156b6800cf72a8f5419e407241cb518542"
+  integrity sha512-vRqALGtvg/8wn+LkbrWKylJfZ4YYmUzwy5FMqlapHN0bz4Mn9EvtZstqyekjCOFIX7ElZhz6/9whTmmOYI3Opw==
   dependencies:
     "@134dd3v/arbos-precompiles" "^1.0.4"
     "@openzeppelin/contracts" "^4.0.0"
     "@openzeppelin/contracts-upgradeable" "^4.1.0"
-    "@ragetrade/core" "^1.0.1"
+    "@ragetrade/core" "https://github.com/RageTrade/core.git#969ad6b00d8221933cce2a24234206d99dd10ab9"
+    "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
+    "@uniswap/v2-core" "^1.0.1"
+    "@uniswap/v2-periphery" "^1.1.0-beta.0"
+    "@uniswap/v3-periphery" "^1.4.0"
+    hardhat-dependency-compiler "^1.1.2"
+
+"@ragetrade/tricrypto-vault@1.0.0-arbgoerli.1":
+  version "1.0.0-arbgoerli.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/tricrypto-vault/-/tricrypto-vault-1.0.0-arbgoerli.1.tgz#96b4490e2e5cee1316654216a3c1a8b8ccd45ffb"
+  integrity sha512-QcNZZDgygfYEvxPvDMH2fDkrGEDrgaBQT0XTsMn4ZRSrzu8C37tThEHSYytavG/WYczzaaIH7/aGnvhrQcOohQ==
+  dependencies:
+    "@134dd3v/arbos-precompiles" "^1.0.4"
+    "@openzeppelin/contracts" "^4.0.0"
+    "@openzeppelin/contracts-upgradeable" "^4.1.0"
+    "@ragetrade/core" "https://github.com/RageTrade/core.git#969ad6b00d8221933cce2a24234206d99dd10ab9"
     "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
     "@uniswap/v2-core" "^1.0.1"
     "@uniswap/v2-periphery" "^1.1.0-beta.0"

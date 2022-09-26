@@ -35,11 +35,13 @@
     "update:deployments": "cp -r node_modules/@ragetrade/core/deployments/ deployments/core && cp -r node_modules/@ragetrade/vaults/deployments/ deployments/vaults",
     "update:uniswap": "cp -r node_modules/@uniswap/v3-core/artifacts/contracts/UniswapV3Pool.sol/UniswapV3Pool.json deployments/uniswap/UniswapV3Pool.json",
     "update:pools": "node fetch-pools.js",
-    "typechain": "yarn typechain:core && yarn typechain:vaults && yarn typechain:uniswap:core && yarn typechain:uniswap:periphery && yarn format:fix",
-    "typechain:core": "typechain --target ethers-v5 --out-dir src/typechain/core './node_modules/@ragetrade/core/artifacts/**/*.sol/!(*.dbg.json)'",
-    "typechain:vaults": "typechain --target ethers-v5 --out-dir src/typechain/vaults './node_modules/@ragetrade/vaults/artifacts/**/*.sol/!(*.dbg.json)'",
-    "typechain:uniswap:core": "typechain --target ethers-v5 --out-dir src/typechain/uniswap-core './node_modules/@uniswap/v3-core/artifacts/**/*.sol/!(*.dbg.json)'",
-    "typechain:uniswap:periphery": "typechain --target ethers-v5 --out-dir src/typechain/uniswap-periphery './node_modules/@uniswap/v3-periphery/artifacts/**/*.sol/!(*.dbg.json)'"
+    "typechain": "yarn typechain:core && yarn typechain:tricrypto && yarn typechain:gmx && yarn typechain:uniswap:core && yarn typechain:uniswap:periphery && yarn format:fix",
+    "typechain:repo-package": "typechain --target ethers-v5 --out-dir src/typechain/$REPO './node_modules/'\"$PACKAGE\"'/artifacts/**/*.sol/!(*.dbg.json)'",
+    "typechain:core": "REPO=core PACKAGE=@ragetrade/core yarn typechain:repo-package",
+    "typechain:tricrypto": "REPO=tricrypto-vault PACKAGE=@ragetrade/tricrypto-vault yarn typechain:repo-package",
+    "typechain:gmx": "REPO=gmx-vault PACKAGE=@ragetrade/gmx-vault yarn typechain:repo-package",
+    "typechain:uniswap:core": "REPO=uniswap-core PACKAGE=@uniswap/v3-core yarn typechain:repo-package",
+    "typechain:uniswap:periphery": "REPO=uniswap-periphery PACKAGE=@uniswap/v3-periphery yarn typechain:repo-package"
   },
   "peerDependencies": {},
   "husky": {
@@ -68,8 +70,6 @@
     }
   ],
   "devDependencies": {
-    "@ragetrade/core": "^1.0.3",
-    "@ragetrade/vaults": "^1.0.1",
     "@size-limit/preset-small-lib": "^7.0.5",
     "@typechain/ethers-v5": "^10.0.0",
     "@types/fs-extra": "^9.0.13",
@@ -84,6 +84,9 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@ragetrade/core": "1.0.3-arbgoerli.1",
+    "@ragetrade/gmx-vault": "^1.0.1",
+    "@ragetrade/tricrypto-vault": "1.0.0-arbgoerli.1",
     "@uniswap/v3-sdk": "^3.8.2",
     "ethers": "^5.6.2",
     "ethers-repl": "^1.0.3",

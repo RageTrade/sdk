@@ -19,6 +19,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface MulticallInterface extends utils.Interface {
@@ -30,7 +31,7 @@ export interface MulticallInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'multicall',
-    values: [BytesLike[]]
+    values: [PromiseOrValue<BytesLike>[]]
   ): string;
 
   decodeFunctionResult(functionFragment: 'multicall', data: BytesLike): Result;
@@ -66,33 +67,36 @@ export interface Multicall extends BaseContract {
 
   functions: {
     multicall(
-      data: BytesLike[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   multicall(
-    data: BytesLike[],
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    data: PromiseOrValue<BytesLike>[],
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    multicall(data: BytesLike[], overrides?: CallOverrides): Promise<string[]>;
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
   };
 
   filters: {};
 
   estimateGas: {
     multicall(
-      data: BytesLike[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     multicall(
-      data: BytesLike[],
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

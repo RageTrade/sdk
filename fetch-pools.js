@@ -1,5 +1,5 @@
 const { providers } = require('ethers');
-const { getContracts, getPoolContracts, truncate } = require('./dist');
+const { core, truncate } = require('./dist');
 const sdk = require('./dist');
 
 const { config } = require('dotenv');
@@ -30,7 +30,7 @@ async function getDefaultPool() {
     const provider = getProvider(chainName);
     if (provider) {
       try {
-        const contracts = await getContracts(provider);
+        const contracts = await core.getContracts(provider);
         defaultPoolForChain = {
           poolId: truncate(contracts.eth_vToken.address),
           name: await contracts.eth_vToken.name(),
@@ -59,10 +59,10 @@ async function getPoolsList() {
     if (provider) {
       try {
         const providerArbiscan = getArbiscanProvider(chainName);
-        const { rageTradeFactory } = await getContracts(
+        const { rageTradeFactory } = await core.getContracts(
           providerArbiscan ?? provider
         );
-        const poolContracts = await getPoolContracts(rageTradeFactory);
+        const poolContracts = await core.getPoolContracts(rageTradeFactory);
         poolsListForChain = await Promise.all(
           poolContracts.map(async ({ vToken, vPool, vPoolWrapper }) => ({
             poolId: truncate(vToken.address),

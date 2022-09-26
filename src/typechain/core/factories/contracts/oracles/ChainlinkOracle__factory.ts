@@ -10,6 +10,7 @@ import {
   Overrides,
 } from 'ethers';
 import type { Provider, TransactionRequest } from '@ethersproject/providers';
+import type { PromiseOrValue } from '../../../common';
 import type {
   ChainlinkOracle,
   ChainlinkOracleInterface,
@@ -131,11 +132,11 @@ export class ChainlinkOracle__factory extends ContractFactory {
   }
 
   override deploy(
-    _aggregator: string,
-    _flags: string,
-    _vTokenDecimals: BigNumberish,
-    _vQuoteDecimals: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _aggregator: PromiseOrValue<string>,
+    _flags: PromiseOrValue<string>,
+    _vTokenDecimals: PromiseOrValue<BigNumberish>,
+    _vQuoteDecimals: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ChainlinkOracle> {
     return super.deploy(
       _aggregator,
@@ -146,11 +147,11 @@ export class ChainlinkOracle__factory extends ContractFactory {
     ) as Promise<ChainlinkOracle>;
   }
   override getDeployTransaction(
-    _aggregator: string,
-    _flags: string,
-    _vTokenDecimals: BigNumberish,
-    _vQuoteDecimals: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _aggregator: PromiseOrValue<string>,
+    _flags: PromiseOrValue<string>,
+    _vTokenDecimals: PromiseOrValue<BigNumberish>,
+    _vQuoteDecimals: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(
       _aggregator,

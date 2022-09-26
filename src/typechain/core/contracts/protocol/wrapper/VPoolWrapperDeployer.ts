@@ -23,6 +23,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export interface VPoolWrapperDeployerInterface extends utils.Interface {
@@ -73,11 +74,11 @@ export interface VPoolWrapperDeployerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'proxyAdmin',
@@ -85,7 +86,7 @@ export interface VPoolWrapperDeployerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setVPoolWrapperLogicAddress',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -228,11 +229,11 @@ export interface VPoolWrapperDeployer extends BaseContract {
 
   functions: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     governance(overrides?: CallOverrides): Promise<[string]>;
@@ -240,20 +241,20 @@ export interface VPoolWrapperDeployer extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<[string]>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<[string]>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
@@ -264,11 +265,11 @@ export interface VPoolWrapperDeployer extends BaseContract {
   };
 
   acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   governance(overrides?: CallOverrides): Promise<string>;
@@ -276,20 +277,20 @@ export interface VPoolWrapperDeployer extends BaseContract {
   governancePending(overrides?: CallOverrides): Promise<string>;
 
   initiateGovernanceTransfer(
-    newGovernancePending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newGovernancePending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   initiateTeamMultisigTransfer(
-    newTeamMultisigPending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newTeamMultisigPending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   proxyAdmin(overrides?: CallOverrides): Promise<string>;
 
   setVPoolWrapperLogicAddress(
-    _vPoolWrapperLogicAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   teamMultisig(overrides?: CallOverrides): Promise<string>;
@@ -308,19 +309,19 @@ export interface VPoolWrapperDeployer extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<string>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
+      newGovernancePending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
+      newTeamMultisigPending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<string>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -333,49 +334,49 @@ export interface VPoolWrapperDeployer extends BaseContract {
 
   filters: {
     'GovernancePending(address,address)'(
-      previousGovernancePending?: string | null,
-      newGovernancePending?: string | null
+      previousGovernancePending?: PromiseOrValue<string> | null,
+      newGovernancePending?: PromiseOrValue<string> | null
     ): GovernancePendingEventFilter;
     GovernancePending(
-      previousGovernancePending?: string | null,
-      newGovernancePending?: string | null
+      previousGovernancePending?: PromiseOrValue<string> | null,
+      newGovernancePending?: PromiseOrValue<string> | null
     ): GovernancePendingEventFilter;
 
     'GovernanceTransferred(address,address)'(
-      previousGovernance?: string | null,
-      newGovernance?: string | null
+      previousGovernance?: PromiseOrValue<string> | null,
+      newGovernance?: PromiseOrValue<string> | null
     ): GovernanceTransferredEventFilter;
     GovernanceTransferred(
-      previousGovernance?: string | null,
-      newGovernance?: string | null
+      previousGovernance?: PromiseOrValue<string> | null,
+      newGovernance?: PromiseOrValue<string> | null
     ): GovernanceTransferredEventFilter;
 
     'TeamMultisigPending(address,address)'(
-      previousTeamMultisigPending?: string | null,
-      newTeamMultisigPending?: string | null
+      previousTeamMultisigPending?: PromiseOrValue<string> | null,
+      newTeamMultisigPending?: PromiseOrValue<string> | null
     ): TeamMultisigPendingEventFilter;
     TeamMultisigPending(
-      previousTeamMultisigPending?: string | null,
-      newTeamMultisigPending?: string | null
+      previousTeamMultisigPending?: PromiseOrValue<string> | null,
+      newTeamMultisigPending?: PromiseOrValue<string> | null
     ): TeamMultisigPendingEventFilter;
 
     'TeamMultisigTransferred(address,address)'(
-      previousTeamMultisig?: string | null,
-      newTeamMultisig?: string | null
+      previousTeamMultisig?: PromiseOrValue<string> | null,
+      newTeamMultisig?: PromiseOrValue<string> | null
     ): TeamMultisigTransferredEventFilter;
     TeamMultisigTransferred(
-      previousTeamMultisig?: string | null,
-      newTeamMultisig?: string | null
+      previousTeamMultisig?: PromiseOrValue<string> | null,
+      newTeamMultisig?: PromiseOrValue<string> | null
     ): TeamMultisigTransferredEventFilter;
   };
 
   estimateGas: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
@@ -383,20 +384,20 @@ export interface VPoolWrapperDeployer extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<BigNumber>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<BigNumber>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
@@ -408,11 +409,11 @@ export interface VPoolWrapperDeployer extends BaseContract {
 
   populateTransaction: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -420,20 +421,20 @@ export interface VPoolWrapperDeployer extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;

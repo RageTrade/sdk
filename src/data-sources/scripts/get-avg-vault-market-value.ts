@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { BaseVault } from '../../typechain/vaults';
+import { BaseVault } from '../../typechain';
 import { BaseDataSource } from '../base-data-source';
 
 export async function getAvgVaultMarketValue(

@@ -10,6 +10,7 @@ import {
   BytesLike,
 } from 'ethers';
 import type { Provider, TransactionRequest } from '@ethersproject/providers';
+import type { PromiseOrValue } from '../../../../../common';
 import type {
   TransparentUpgradeableProxy,
   TransparentUpgradeableProxyInterface,
@@ -183,10 +184,10 @@ export class TransparentUpgradeableProxy__factory extends ContractFactory {
   }
 
   override deploy(
-    _logic: string,
-    admin_: string,
-    _data: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    _logic: PromiseOrValue<string>,
+    admin_: PromiseOrValue<string>,
+    _data: PromiseOrValue<BytesLike>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<TransparentUpgradeableProxy> {
     return super.deploy(
       _logic,
@@ -196,10 +197,10 @@ export class TransparentUpgradeableProxy__factory extends ContractFactory {
     ) as Promise<TransparentUpgradeableProxy>;
   }
   override getDeployTransaction(
-    _logic: string,
-    admin_: string,
-    _data: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    _logic: PromiseOrValue<string>,
+    admin_: PromiseOrValue<string>,
+    _data: PromiseOrValue<BytesLike>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(_logic, admin_, _data, overrides || {});
   }

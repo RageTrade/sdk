@@ -15,6 +15,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface VTokenPositionSetInterface extends utils.Interface {
@@ -93,16 +94,16 @@ export interface VTokenPositionSet extends BaseContract {
 
   filters: {
     'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       vTokenAmountOut?: null,
       vQuoteAmountOut?: null,
       sqrtPriceX96Start?: null,
       sqrtPriceX96End?: null
     ): TokenPositionChangedEventFilter;
     TokenPositionChanged(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       vTokenAmountOut?: null,
       vQuoteAmountOut?: null,
       sqrtPriceX96Start?: null,
@@ -110,14 +111,14 @@ export interface VTokenPositionSet extends BaseContract {
     ): TokenPositionChangedEventFilter;
 
     'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       sumALastX128?: null
     ): TokenPositionFundingPaymentRealizedEventFilter;
     TokenPositionFundingPaymentRealized(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       sumALastX128?: null
     ): TokenPositionFundingPaymentRealizedEventFilter;

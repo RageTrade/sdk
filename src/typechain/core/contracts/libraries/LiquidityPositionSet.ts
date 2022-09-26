@@ -15,6 +15,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface LiquidityPositionSetInterface extends utils.Interface {
@@ -76,15 +77,15 @@ export interface LiquidityPositionSet extends BaseContract {
 
   filters: {
     'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       vTokenAmountOut?: null
     ): TokenPositionChangedDueToLiquidityChangedEventFilter;
     TokenPositionChangedDueToLiquidityChanged(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       vTokenAmountOut?: null

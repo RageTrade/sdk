@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface SettlementTokenOracleInterface extends utils.Interface {
@@ -29,7 +30,7 @@ export interface SettlementTokenOracleInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'getTwapPriceX128',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
@@ -68,19 +69,19 @@ export interface SettlementTokenOracle extends BaseContract {
 
   functions: {
     getTwapPriceX128(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { priceX128: BigNumber }>;
   };
 
   getTwapPriceX128(
-    arg0: BigNumberish,
+    arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
     getTwapPriceX128(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -89,14 +90,14 @@ export interface SettlementTokenOracle extends BaseContract {
 
   estimateGas: {
     getTwapPriceX128(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     getTwapPriceX128(
-      arg0: BigNumberish,
+      arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

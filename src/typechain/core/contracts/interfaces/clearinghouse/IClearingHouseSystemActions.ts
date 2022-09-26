@@ -20,17 +20,18 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: BigNumberish;
-    maintainanceMarginRatioBps: BigNumberish;
-    maxVirtualPriceDeviationRatioBps: BigNumberish;
-    twapDuration: BigNumberish;
-    isAllowedForTrade: boolean;
-    isCrossMargined: boolean;
-    oracle: string;
+    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForTrade: PromiseOrValue<boolean>;
+    isCrossMargined: PromiseOrValue<boolean>;
+    oracle: PromiseOrValue<string>;
   };
 
   export type PoolSettingsStructOutput = [
@@ -52,9 +53,9 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolStruct = {
-    vToken: string;
-    vPool: string;
-    vPoolWrapper: string;
+    vToken: PromiseOrValue<string>;
+    vPool: PromiseOrValue<string>;
+    vPoolWrapper: PromiseOrValue<string>;
     settings: IClearingHouseStructures.PoolSettingsStruct;
   };
 
@@ -83,7 +84,15 @@ export interface IClearingHouseSystemActionsInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [string, string, string, string, string, string, string]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'registerPool',
@@ -127,47 +136,47 @@ export interface IClearingHouseSystemActions extends BaseContract {
 
   functions: {
     initialize(
-      rageTradeFactoryAddress: string,
-      initialGovernance: string,
-      initialTeamMultisig: string,
-      defaultCollateralToken: string,
-      defaultCollateralTokenOracle: string,
-      insuranceFund: string,
-      vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      rageTradeFactoryAddress: PromiseOrValue<string>,
+      initialGovernance: PromiseOrValue<string>,
+      initialTeamMultisig: PromiseOrValue<string>,
+      defaultCollateralToken: PromiseOrValue<string>,
+      defaultCollateralTokenOracle: PromiseOrValue<string>,
+      insuranceFund: PromiseOrValue<string>,
+      vQuote: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     registerPool(
       poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   initialize(
-    rageTradeFactoryAddress: string,
-    initialGovernance: string,
-    initialTeamMultisig: string,
-    defaultCollateralToken: string,
-    defaultCollateralTokenOracle: string,
-    insuranceFund: string,
-    vQuote: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    rageTradeFactoryAddress: PromiseOrValue<string>,
+    initialGovernance: PromiseOrValue<string>,
+    initialTeamMultisig: PromiseOrValue<string>,
+    defaultCollateralToken: PromiseOrValue<string>,
+    defaultCollateralTokenOracle: PromiseOrValue<string>,
+    insuranceFund: PromiseOrValue<string>,
+    vQuote: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   registerPool(
     poolInfo: IClearingHouseStructures.PoolStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     initialize(
-      rageTradeFactoryAddress: string,
-      initialGovernance: string,
-      initialTeamMultisig: string,
-      defaultCollateralToken: string,
-      defaultCollateralTokenOracle: string,
-      insuranceFund: string,
-      vQuote: string,
+      rageTradeFactoryAddress: PromiseOrValue<string>,
+      initialGovernance: PromiseOrValue<string>,
+      initialTeamMultisig: PromiseOrValue<string>,
+      defaultCollateralToken: PromiseOrValue<string>,
+      defaultCollateralTokenOracle: PromiseOrValue<string>,
+      insuranceFund: PromiseOrValue<string>,
+      vQuote: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -181,37 +190,37 @@ export interface IClearingHouseSystemActions extends BaseContract {
 
   estimateGas: {
     initialize(
-      rageTradeFactoryAddress: string,
-      initialGovernance: string,
-      initialTeamMultisig: string,
-      defaultCollateralToken: string,
-      defaultCollateralTokenOracle: string,
-      insuranceFund: string,
-      vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      rageTradeFactoryAddress: PromiseOrValue<string>,
+      initialGovernance: PromiseOrValue<string>,
+      initialTeamMultisig: PromiseOrValue<string>,
+      defaultCollateralToken: PromiseOrValue<string>,
+      defaultCollateralTokenOracle: PromiseOrValue<string>,
+      insuranceFund: PromiseOrValue<string>,
+      vQuote: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     registerPool(
       poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     initialize(
-      rageTradeFactoryAddress: string,
-      initialGovernance: string,
-      initialTeamMultisig: string,
-      defaultCollateralToken: string,
-      defaultCollateralTokenOracle: string,
-      insuranceFund: string,
-      vQuote: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      rageTradeFactoryAddress: PromiseOrValue<string>,
+      initialGovernance: PromiseOrValue<string>,
+      initialTeamMultisig: PromiseOrValue<string>,
+      defaultCollateralToken: PromiseOrValue<string>,
+      defaultCollateralTokenOracle: PromiseOrValue<string>,
+      insuranceFund: PromiseOrValue<string>,
+      vQuote: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     registerPool(
       poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

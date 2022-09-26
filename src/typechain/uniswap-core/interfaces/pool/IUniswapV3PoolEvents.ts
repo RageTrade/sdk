@@ -15,6 +15,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface IUniswapV3PoolEventsInterface extends utils.Interface {
@@ -203,63 +204,63 @@ export interface IUniswapV3PoolEvents extends BaseContract {
 
   filters: {
     'Burn(address,int24,int24,uint128,uint256,uint256)'(
-      owner?: string | null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      owner?: PromiseOrValue<string> | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       amount0?: null,
       amount1?: null
     ): BurnEventFilter;
     Burn(
-      owner?: string | null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      owner?: PromiseOrValue<string> | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       amount0?: null,
       amount1?: null
     ): BurnEventFilter;
 
     'Collect(address,address,int24,int24,uint128,uint128)'(
-      owner?: string | null,
+      owner?: PromiseOrValue<string> | null,
       recipient?: null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount0?: null,
       amount1?: null
     ): CollectEventFilter;
     Collect(
-      owner?: string | null,
+      owner?: PromiseOrValue<string> | null,
       recipient?: null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount0?: null,
       amount1?: null
     ): CollectEventFilter;
 
     'CollectProtocol(address,address,uint128,uint128)'(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null
     ): CollectProtocolEventFilter;
     CollectProtocol(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null
     ): CollectProtocolEventFilter;
 
     'Flash(address,address,uint256,uint256,uint256,uint256)'(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null,
       paid0?: null,
       paid1?: null
     ): FlashEventFilter;
     Flash(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null,
       paid0?: null,
@@ -283,18 +284,18 @@ export interface IUniswapV3PoolEvents extends BaseContract {
 
     'Mint(address,address,int24,int24,uint128,uint256,uint256)'(
       sender?: null,
-      owner?: string | null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      owner?: PromiseOrValue<string> | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       amount0?: null,
       amount1?: null
     ): MintEventFilter;
     Mint(
       sender?: null,
-      owner?: string | null,
-      tickLower?: BigNumberish | null,
-      tickUpper?: BigNumberish | null,
+      owner?: PromiseOrValue<string> | null,
+      tickLower?: PromiseOrValue<BigNumberish> | null,
+      tickUpper?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       amount0?: null,
       amount1?: null
@@ -314,8 +315,8 @@ export interface IUniswapV3PoolEvents extends BaseContract {
     ): SetFeeProtocolEventFilter;
 
     'Swap(address,address,int256,int256,uint160,uint128,int24)'(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null,
       sqrtPriceX96?: null,
@@ -323,8 +324,8 @@ export interface IUniswapV3PoolEvents extends BaseContract {
       tick?: null
     ): SwapEventFilter;
     Swap(
-      sender?: string | null,
-      recipient?: string | null,
+      sender?: PromiseOrValue<string> | null,
+      recipient?: PromiseOrValue<string> | null,
       amount0?: null,
       amount1?: null,
       sqrtPriceX96?: null,

@@ -15,6 +15,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface AccountInterface extends utils.Interface {
@@ -122,16 +123,16 @@ export interface Account extends BaseContract {
 
   filters: {
     'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)'(
-      accountId?: BigNumberish | null,
-      keeperAddress?: string | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      keeperAddress?: PromiseOrValue<string> | null,
       liquidationFee?: null,
       keeperFee?: null,
       insuranceFundFee?: null,
       accountMarketValueFinal?: null
     ): LiquidityPositionsLiquidatedEventFilter;
     LiquidityPositionsLiquidated(
-      accountId?: BigNumberish | null,
-      keeperAddress?: string | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      keeperAddress?: PromiseOrValue<string> | null,
       liquidationFee?: null,
       keeperFee?: null,
       insuranceFundFee?: null,
@@ -139,37 +140,37 @@ export interface Account extends BaseContract {
     ): LiquidityPositionsLiquidatedEventFilter;
 
     'MarginUpdated(uint256,uint32,int256,bool)'(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      collateralId?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       isSettleProfit?: null
     ): MarginUpdatedEventFilter;
     MarginUpdated(
-      accountId?: BigNumberish | null,
-      collateralId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      collateralId?: PromiseOrValue<BigNumberish> | null,
       amount?: null,
       isSettleProfit?: null
     ): MarginUpdatedEventFilter;
 
     'ProfitUpdated(uint256,int256)'(
-      accountId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
       amount?: null
     ): ProfitUpdatedEventFilter;
     ProfitUpdated(
-      accountId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
       amount?: null
     ): ProfitUpdatedEventFilter;
 
     'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       keeperFee?: null,
       insuranceFundFee?: null,
       accountMarketValueFinal?: null
     ): TokenPositionLiquidatedEventFilter;
     TokenPositionLiquidated(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       keeperFee?: null,
       insuranceFundFee?: null,
       accountMarketValueFinal?: null

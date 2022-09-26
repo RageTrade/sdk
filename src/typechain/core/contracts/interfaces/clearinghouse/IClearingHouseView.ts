@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export interface IClearingHouseViewInterface extends utils.Interface {
@@ -44,31 +45,31 @@ export interface IClearingHouseViewInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
-    values: [BytesLike]
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32[])',
-    values: [BytesLike[]]
+    values: [PromiseOrValue<BytesLike>[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
-    values: [BigNumberish, boolean]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountNetProfit',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountNetTokenPosition',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRealTwapPriceX128',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVirtualTwapPriceX128',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
@@ -131,18 +132,18 @@ export interface IClearingHouseView extends BaseContract {
 
   functions: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[string] & { value: string }>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
     getAccountMarketValueAndRequiredMargin(
-      accountId: BigNumberish,
-      isInitialMargin: boolean,
+      accountId: PromiseOrValue<BigNumberish>,
+      isInitialMargin: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -152,40 +153,40 @@ export interface IClearingHouseView extends BaseContract {
     >;
 
     getAccountNetProfit(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
 
     getAccountNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { netPosition: BigNumber }>;
 
     getRealTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { realPriceX128: BigNumber }>;
 
     getVirtualTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { virtualPriceX128: BigNumber }>;
   };
 
   'extsload(bytes32)'(
-    slot: BytesLike,
+    slot: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<string>;
 
   'extsload(bytes32[])'(
-    slots: BytesLike[],
+    slots: PromiseOrValue<BytesLike>[],
     overrides?: CallOverrides
   ): Promise<string[]>;
 
   getAccountMarketValueAndRequiredMargin(
-    accountId: BigNumberish,
-    isInitialMargin: boolean,
+    accountId: PromiseOrValue<BigNumberish>,
+    isInitialMargin: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -195,40 +196,40 @@ export interface IClearingHouseView extends BaseContract {
   >;
 
   getAccountNetProfit(
-    accountId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getAccountNetTokenPosition(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getRealTwapPriceX128(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   getVirtualTwapPriceX128(
-    poolId: BigNumberish,
+    poolId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<string>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<string[]>;
 
     getAccountMarketValueAndRequiredMargin(
-      accountId: BigNumberish,
-      isInitialMargin: boolean,
+      accountId: PromiseOrValue<BigNumberish>,
+      isInitialMargin: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -238,23 +239,23 @@ export interface IClearingHouseView extends BaseContract {
     >;
 
     getAccountNetProfit(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getRealTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getVirtualTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -263,78 +264,78 @@ export interface IClearingHouseView extends BaseContract {
 
   estimateGas: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountMarketValueAndRequiredMargin(
-      accountId: BigNumberish,
-      isInitialMargin: boolean,
+      accountId: PromiseOrValue<BigNumberish>,
+      isInitialMargin: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountNetProfit(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getAccountNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getRealTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     getVirtualTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     'extsload(bytes32)'(
-      slot: BytesLike,
+      slot: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     'extsload(bytes32[])'(
-      slots: BytesLike[],
+      slots: PromiseOrValue<BytesLike>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountMarketValueAndRequiredMargin(
-      accountId: BigNumberish,
-      isInitialMargin: boolean,
+      accountId: PromiseOrValue<BigNumberish>,
+      isInitialMargin: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountNetProfit(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getAccountNetTokenPosition(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getRealTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getVirtualTwapPriceX128(
-      poolId: BigNumberish,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

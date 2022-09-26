@@ -13,13 +13,9 @@ import {
   VToken__factory,
 } from '../typechain';
 
-export * from './core';
 export * from './common';
 export * from './vaults';
-export * from './uniswap';
-export * from './tokens';
-export * from './curve-finance';
-export * from './gmx-vault';
+export * from './protocols';
 
 export function getEthersInterfaces() {
   return [

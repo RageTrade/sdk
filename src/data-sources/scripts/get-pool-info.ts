@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { getCoreContracts } from '../../contracts';
+import { core } from '../../contracts';
 import {
   IUniswapV3Pool__factory,
   VPoolWrapper__factory,
@@ -40,7 +40,9 @@ export async function getPoolInfo(
   fundingRateD18: BigNumber;
 }> {
   poolId = BigNumber.from(poolId);
-  const { clearingHouse, clearingHouseLens } = await getCoreContracts(provider);
+  const { clearingHouse, clearingHouseLens } = await core.getContracts(
+    provider
+  );
 
   const [realTwapPriceX128, virtualTwapPriceX128, pool] = await Promise.all([
     clearingHouse.getRealTwapPriceX128(poolId),

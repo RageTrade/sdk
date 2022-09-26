@@ -19,6 +19,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface IGovernableInterface extends utils.Interface {
@@ -63,11 +64,11 @@ export interface IGovernableInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -139,11 +140,11 @@ export interface IGovernable extends BaseContract {
 
   functions: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     governance(overrides?: CallOverrides): Promise<[string]>;
@@ -151,13 +152,13 @@ export interface IGovernable extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<[string]>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
@@ -166,11 +167,11 @@ export interface IGovernable extends BaseContract {
   };
 
   acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   governance(overrides?: CallOverrides): Promise<string>;
@@ -178,13 +179,13 @@ export interface IGovernable extends BaseContract {
   governancePending(overrides?: CallOverrides): Promise<string>;
 
   initiateGovernanceTransfer(
-    newGovernancePending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newGovernancePending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   initiateTeamMultisigTransfer(
-    newTeamMultisigPending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newTeamMultisigPending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   teamMultisig(overrides?: CallOverrides): Promise<string>;
@@ -201,12 +202,12 @@ export interface IGovernable extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<string>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
+      newGovernancePending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
+      newTeamMultisigPending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -219,11 +220,11 @@ export interface IGovernable extends BaseContract {
 
   estimateGas: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     governance(overrides?: CallOverrides): Promise<BigNumber>;
@@ -231,13 +232,13 @@ export interface IGovernable extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<BigNumber>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
@@ -247,11 +248,11 @@ export interface IGovernable extends BaseContract {
 
   populateTransaction: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -259,13 +260,13 @@ export interface IGovernable extends BaseContract {
     governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -20,15 +20,16 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type SwapParamsStruct = {
-    amount: BigNumberish;
-    sqrtPriceLimit: BigNumberish;
-    isNotional: boolean;
-    isPartialAllowed: boolean;
-    settleProfit: boolean;
+    amount: PromiseOrValue<BigNumberish>;
+    sqrtPriceLimit: PromiseOrValue<BigNumberish>;
+    isNotional: PromiseOrValue<boolean>;
+    isPartialAllowed: PromiseOrValue<boolean>;
+    settleProfit: PromiseOrValue<boolean>;
   };
 
   export type SwapParamsStructOutput = [
@@ -46,14 +47,14 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidityChangeParamsStruct = {
-    tickLower: BigNumberish;
-    tickUpper: BigNumberish;
-    liquidityDelta: BigNumberish;
-    sqrtPriceCurrent: BigNumberish;
-    slippageToleranceBps: BigNumberish;
-    closeTokenPosition: boolean;
-    limitOrderType: BigNumberish;
-    settleProfit: boolean;
+    tickLower: PromiseOrValue<BigNumberish>;
+    tickUpper: PromiseOrValue<BigNumberish>;
+    liquidityDelta: PromiseOrValue<BigNumberish>;
+    sqrtPriceCurrent: PromiseOrValue<BigNumberish>;
+    slippageToleranceBps: PromiseOrValue<BigNumberish>;
+    closeTokenPosition: PromiseOrValue<boolean>;
+    limitOrderType: PromiseOrValue<BigNumberish>;
+    settleProfit: PromiseOrValue<boolean>;
   };
 
   export type LiquidityChangeParamsStructOutput = [
@@ -111,45 +112,54 @@ export interface IClearingHouseActionsInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'createAccountAndAddMargin',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateLiquidityPositions',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
-    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'settleProfit',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
     values: [
-      BigNumberish,
-      BigNumberish,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       IClearingHouseStructures.SwapParamsStruct
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateMargin',
-    values: [BigNumberish, BigNumberish, BigNumberish]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProfit',
-    values: [BigNumberish, BigNumberish]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateRangeOrder',
     values: [
-      BigNumberish,
-      BigNumberish,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       IClearingHouseStructures.LiquidityChangeParamsStruct
     ]
   ): string;
@@ -223,164 +233,164 @@ export interface IClearingHouseActions extends BaseContract {
 
   functions: {
     createAccount(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     createAccountAndAddMargin(
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     liquidateLiquidityPositions(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     liquidateTokenPosition(
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      targetAccountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     removeLimitOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     settleProfit(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     swapToken(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateProfit(
-      accountId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateRangeOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   createAccount(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   createAccountAndAddMargin(
-    collateralId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    collateralId: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   liquidateLiquidityPositions(
-    accountId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    accountId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   liquidateTokenPosition(
-    targetAccountId: BigNumberish,
-    poolId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    targetAccountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   removeLimitOrder(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
-    tickLower: BigNumberish,
-    tickUpper: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
+    tickLower: PromiseOrValue<BigNumberish>,
+    tickUpper: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   settleProfit(
-    accountId: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    accountId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   swapToken(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     swapParams: IClearingHouseStructures.SwapParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateMargin(
-    accountId: BigNumberish,
-    collateralId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    accountId: PromiseOrValue<BigNumberish>,
+    collateralId: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateProfit(
-    accountId: BigNumberish,
-    amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    accountId: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateRangeOrder(
-    accountId: BigNumberish,
-    poolId: BigNumberish,
+    accountId: PromiseOrValue<BigNumberish>,
+    poolId: PromiseOrValue<BigNumberish>,
     liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     createAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      collateralId: BigNumberish,
-      amount: BigNumberish,
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositions(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     liquidateTokenPosition(
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
+      targetAccountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     removeLimitOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     settleProfit(
-      accountId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     swapToken(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
       overrides?: CallOverrides
     ): Promise<
@@ -391,21 +401,21 @@ export interface IClearingHouseActions extends BaseContract {
     >;
 
     updateMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateProfit(
-      accountId: BigNumberish,
-      amount: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateRangeOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
       overrides?: CallOverrides
     ): Promise<
@@ -420,127 +430,127 @@ export interface IClearingHouseActions extends BaseContract {
 
   estimateGas: {
     createAccount(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     createAccountAndAddMargin(
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     liquidateLiquidityPositions(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     liquidateTokenPosition(
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      targetAccountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     removeLimitOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     settleProfit(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     swapToken(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateProfit(
-      accountId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateRangeOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     createAccount(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     createAccountAndAddMargin(
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateLiquidityPositions(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     liquidateTokenPosition(
-      targetAccountId: BigNumberish,
-      poolId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      targetAccountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     removeLimitOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
-      tickLower: BigNumberish,
-      tickUpper: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
+      tickLower: PromiseOrValue<BigNumberish>,
+      tickUpper: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     settleProfit(
-      accountId: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     swapToken(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateMargin(
-      accountId: BigNumberish,
-      collateralId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      collateralId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateProfit(
-      accountId: BigNumberish,
-      amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      accountId: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateRangeOrder(
-      accountId: BigNumberish,
-      poolId: BigNumberish,
+      accountId: PromiseOrValue<BigNumberish>,
+      poolId: PromiseOrValue<BigNumberish>,
       liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

@@ -15,14 +15,15 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export declare namespace FundingPayment {
   export type InfoStruct = {
-    sumAX128: BigNumberish;
-    sumBX128: BigNumberish;
-    sumFpX128: BigNumberish;
-    timestampLast: BigNumberish;
+    sumAX128: PromiseOrValue<BigNumberish>;
+    sumBX128: PromiseOrValue<BigNumberish>;
+    sumFpX128: PromiseOrValue<BigNumberish>;
+    timestampLast: PromiseOrValue<BigNumberish>;
   };
 
   export type InfoStructOutput = [BigNumber, BigNumber, BigNumber, number] & {

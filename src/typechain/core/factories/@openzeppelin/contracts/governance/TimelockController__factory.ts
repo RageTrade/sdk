@@ -10,6 +10,7 @@ import {
   Overrides,
 } from 'ethers';
 import type { Provider, TransactionRequest } from '@ethersproject/providers';
+import type { PromiseOrValue } from '../../../../common';
 import type {
   TimelockController,
   TimelockControllerInterface,
@@ -779,10 +780,10 @@ export class TimelockController__factory extends ContractFactory {
   }
 
   override deploy(
-    minDelay: BigNumberish,
-    proposers: string[],
-    executors: string[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    minDelay: PromiseOrValue<BigNumberish>,
+    proposers: PromiseOrValue<string>[],
+    executors: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<TimelockController> {
     return super.deploy(
       minDelay,
@@ -792,10 +793,10 @@ export class TimelockController__factory extends ContractFactory {
     ) as Promise<TimelockController>;
   }
   override getDeployTransaction(
-    minDelay: BigNumberish,
-    proposers: string[],
-    executors: string[],
-    overrides?: Overrides & { from?: string | Promise<string> }
+    minDelay: PromiseOrValue<BigNumberish>,
+    proposers: PromiseOrValue<string>[],
+    executors: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(
       minDelay,

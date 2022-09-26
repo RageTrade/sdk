@@ -15,13 +15,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type CollateralSettingsStruct = {
-    oracle: string;
-    twapDuration: BigNumberish;
-    isAllowedForDeposit: boolean;
+    oracle: PromiseOrValue<string>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForDeposit: PromiseOrValue<boolean>;
   };
 
   export type CollateralSettingsStructOutput = [string, number, boolean] & {
@@ -31,13 +32,13 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: BigNumberish;
-    maintainanceMarginRatioBps: BigNumberish;
-    maxVirtualPriceDeviationRatioBps: BigNumberish;
-    twapDuration: BigNumberish;
-    isAllowedForTrade: boolean;
-    isCrossMargined: boolean;
-    oracle: string;
+    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForTrade: PromiseOrValue<boolean>;
+    isCrossMargined: PromiseOrValue<boolean>;
+    oracle: PromiseOrValue<string>;
   };
 
   export type PoolSettingsStructOutput = [
@@ -59,14 +60,14 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: BigNumberish;
-    tokenLiquidationFeeFraction: BigNumberish;
-    closeFactorMMThresholdBps: BigNumberish;
-    partialLiquidationCloseFactorBps: BigNumberish;
-    insuranceFundFeeShareBps: BigNumberish;
-    liquidationSlippageSqrtToleranceBps: BigNumberish;
-    maxRangeLiquidationFees: BigNumberish;
-    minNotionalLiquidatable: BigNumberish;
+    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
+    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
+    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
+    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
+    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
+    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
+    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
   };
 
   export type LiquidationParamsStructOutput = [
@@ -204,11 +205,11 @@ export interface IClearingHouseEvents extends BaseContract {
 
   filters: {
     'AccountCreated(address,uint256)'(
-      ownerAddress?: string | null,
+      ownerAddress?: PromiseOrValue<string> | null,
       accountId?: null
     ): AccountCreatedEventFilter;
     AccountCreated(
-      ownerAddress?: string | null,
+      ownerAddress?: PromiseOrValue<string> | null,
       accountId?: null
     ): AccountCreatedEventFilter;
 

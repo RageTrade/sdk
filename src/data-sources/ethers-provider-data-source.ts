@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 
 import {
-  getCoreContracts,
+  core,
   getNetworkNameFromProvider,
   NetworkName,
   VaultName,
@@ -16,11 +16,11 @@ import { getPrices } from './scripts/get-prices';
 
 export class EthersProviderDataSource extends BaseDataSource {
   _provider: ethers.providers.Provider;
-  _contracts: ReturnType<typeof getCoreContracts>;
+  _contracts: ReturnType<typeof core.getContracts>;
   constructor(provider: ethers.providers.Provider) {
     super();
     this._provider = provider;
-    this._contracts = getCoreContracts(provider);
+    this._contracts = core.getContracts(provider);
   }
 
   async getNetworkName(): Promise<NetworkName> {

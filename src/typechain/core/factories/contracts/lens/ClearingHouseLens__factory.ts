@@ -3,6 +3,7 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from 'ethers';
 import type { Provider, TransactionRequest } from '@ethersproject/providers';
+import type { PromiseOrValue } from '../../../common';
 import type {
   ClearingHouseLens,
   ClearingHouseLensInterface,
@@ -671,8 +672,8 @@ export class ClearingHouseLens__factory extends ContractFactory {
   }
 
   override deploy(
-    _clearingHouse: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _clearingHouse: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ClearingHouseLens> {
     return super.deploy(
       _clearingHouse,
@@ -680,8 +681,8 @@ export class ClearingHouseLens__factory extends ContractFactory {
     ) as Promise<ClearingHouseLens>;
   }
   override getDeployTransaction(
-    _clearingHouse: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _clearingHouse: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(_clearingHouse, overrides || {});
   }

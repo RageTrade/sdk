@@ -1,37 +1,57 @@
-import { Provider } from '@ethersproject/providers';
-import { Signer } from 'ethers';
+import { Signer, providers } from 'ethers';
 
-export type NetworkName =
-  | 'mainnet'
-  | 'rinkeby'
-  | 'kovan'
-  | 'arbmain'
-  | 'arbtest'
-  | 'opmain'
-  | 'optest';
-
+const aliasNetworkNames = ['arbtest'];
 export const chainIds = {
-  mainnet: 1,
-  rinkeby: 4,
-  kovan: 42,
   arbmain: 42161,
-  arbtest: 421611,
-  opmain: 10,
-  optest: 69,
+  arbtest: 421611, // alias TODO remove
+  arbrinkeby: 421611,
+  arbgoerli: 421613,
 };
 
+export type NetworkName = keyof typeof chainIds;
+
+export type SignerOrProvider = Signer | providers.Provider;
 export interface ContractDeployment {
   address: string;
 }
 
 export function getNetworkNameFromChainId(chainId: number): NetworkName {
   for (const [key, val] of Object.entries(chainIds)) {
+    if (aliasNetworkNames.includes(key)) continue; // ignore alias
+
     if (val === chainId) {
       return key as NetworkName;
     }
   }
 
   throw new Error(`chainId ${chainId} not recognized`);
+}
+
+export function sanitizeNetworkName(networkName: NetworkName): NetworkName {
+  const chainId = chainIds[networkName];
+  if (chainId === undefined) {
+    throw new Error(`networkName ${networkName} not recognized`);
+  }
+
+  const networkNameSanitized = getNetworkNameFromChainId(chainId);
+
+  if (aliasNetworkNames.includes(networkName)) {
+    console.log(
+      `use of networkName ${networkName} is deprecated, please use ${networkNameSanitized}`
+    );
+  }
+
+  return networkNameSanitized;
+}
+
+export function getNetworkName(
+  networkNameOrChainId: NetworkName | number
+): NetworkName {
+  const networkName =
+    typeof networkNameOrChainId === 'number'
+      ? getNetworkNameFromChainId(networkNameOrChainId)
+      : networkNameOrChainId;
+  return sanitizeNetworkName(networkName);
 }
 
 export async function getDeployment(
@@ -50,9 +70,9 @@ export async function getDeployment(
 }
 
 export async function getChainIdFromProvider(
-  signerOrProvider: Signer | Provider
+  signerOrProvider: SignerOrProvider
 ) {
-  const provider = Provider.isProvider(signerOrProvider)
+  const provider = providers.Provider.isProvider(signerOrProvider)
     ? signerOrProvider
     : signerOrProvider.provider;
   if (provider === undefined) {
@@ -64,7 +84,7 @@ export async function getChainIdFromProvider(
 }
 
 export async function getNetworkNameFromProvider(
-  signerOrProvider: Signer | Provider
+  signerOrProvider: SignerOrProvider
 ) {
   const chainId = await getChainIdFromProvider(signerOrProvider);
   return getNetworkNameFromChainId(chainId);

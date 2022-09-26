@@ -18,6 +18,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface IOracleInterface extends utils.Interface {
@@ -29,7 +30,7 @@ export interface IOracleInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'getTwapPriceX128',
-    values: [BigNumberish]
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(
@@ -68,19 +69,19 @@ export interface IOracle extends BaseContract {
 
   functions: {
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { priceX128: BigNumber }>;
   };
 
   getTwapPriceX128(
-    twapDuration: BigNumberish,
+    twapDuration: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   callStatic: {
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -89,14 +90,14 @@ export interface IOracle extends BaseContract {
 
   estimateGas: {
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     getTwapPriceX128(
-      twapDuration: BigNumberish,
+      twapDuration: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

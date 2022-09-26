@@ -24,13 +24,14 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export declare namespace VTokenDeployer {
   export type DeployVTokenParamsStruct = {
-    vTokenName: string;
-    vTokenSymbol: string;
-    cTokenDecimals: BigNumberish;
+    vTokenName: PromiseOrValue<string>;
+    vTokenSymbol: PromiseOrValue<string>;
+    cTokenDecimals: PromiseOrValue<BigNumberish>;
   };
 
   export type DeployVTokenParamsStructOutput = [string, string, number] & {
@@ -42,13 +43,13 @@ export declare namespace VTokenDeployer {
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: BigNumberish;
-    maintainanceMarginRatioBps: BigNumberish;
-    maxVirtualPriceDeviationRatioBps: BigNumberish;
-    twapDuration: BigNumberish;
-    isAllowedForTrade: boolean;
-    isCrossMargined: boolean;
-    oracle: string;
+    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
+    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
+    twapDuration: PromiseOrValue<BigNumberish>;
+    isAllowedForTrade: PromiseOrValue<boolean>;
+    isCrossMargined: PromiseOrValue<boolean>;
+    oracle: PromiseOrValue<string>;
   };
 
   export type PoolSettingsStructOutput = [
@@ -74,9 +75,9 @@ export declare namespace RageTradeFactory {
   export type InitializePoolParamsStruct = {
     deployVTokenParams: VTokenDeployer.DeployVTokenParamsStruct;
     poolInitialSettings: IClearingHouseStructures.PoolSettingsStruct;
-    liquidityFeePips: BigNumberish;
-    protocolFeePips: BigNumberish;
-    slotsToInitialize: BigNumberish;
+    liquidityFeePips: PromiseOrValue<BigNumberish>;
+    protocolFeePips: PromiseOrValue<BigNumberish>;
+    slotsToInitialize: PromiseOrValue<BigNumberish>;
   };
 
   export type InitializePoolParamsStructOutput = [
@@ -156,11 +157,11 @@ export interface RageTradeFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'proxyAdmin',
@@ -168,7 +169,7 @@ export interface RageTradeFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setVPoolWrapperLogicAddress',
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -335,11 +336,11 @@ export interface RageTradeFactory extends BaseContract {
 
   functions: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     clearingHouse(overrides?: CallOverrides): Promise<[string]>;
@@ -350,24 +351,24 @@ export interface RageTradeFactory extends BaseContract {
 
     initializePool(
       initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<[string]>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<[string]>;
@@ -380,11 +381,11 @@ export interface RageTradeFactory extends BaseContract {
   };
 
   acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   clearingHouse(overrides?: CallOverrides): Promise<string>;
@@ -395,24 +396,24 @@ export interface RageTradeFactory extends BaseContract {
 
   initializePool(
     initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   initiateGovernanceTransfer(
-    newGovernancePending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newGovernancePending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   initiateTeamMultisigTransfer(
-    newTeamMultisigPending: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newTeamMultisigPending: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   proxyAdmin(overrides?: CallOverrides): Promise<string>;
 
   setVPoolWrapperLogicAddress(
-    _vPoolWrapperLogicAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   teamMultisig(overrides?: CallOverrides): Promise<string>;
@@ -440,19 +441,19 @@ export interface RageTradeFactory extends BaseContract {
     ): Promise<void>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
+      newGovernancePending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
+      newTeamMultisigPending: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<string>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -467,21 +468,21 @@ export interface RageTradeFactory extends BaseContract {
 
   filters: {
     'GovernancePending(address,address)'(
-      previousGovernancePending?: string | null,
-      newGovernancePending?: string | null
+      previousGovernancePending?: PromiseOrValue<string> | null,
+      newGovernancePending?: PromiseOrValue<string> | null
     ): GovernancePendingEventFilter;
     GovernancePending(
-      previousGovernancePending?: string | null,
-      newGovernancePending?: string | null
+      previousGovernancePending?: PromiseOrValue<string> | null,
+      newGovernancePending?: PromiseOrValue<string> | null
     ): GovernancePendingEventFilter;
 
     'GovernanceTransferred(address,address)'(
-      previousGovernance?: string | null,
-      newGovernance?: string | null
+      previousGovernance?: PromiseOrValue<string> | null,
+      newGovernance?: PromiseOrValue<string> | null
     ): GovernanceTransferredEventFilter;
     GovernanceTransferred(
-      previousGovernance?: string | null,
-      newGovernance?: string | null
+      previousGovernance?: PromiseOrValue<string> | null,
+      newGovernance?: PromiseOrValue<string> | null
     ): GovernanceTransferredEventFilter;
 
     'PoolInitialized(address,address,address)'(
@@ -496,31 +497,31 @@ export interface RageTradeFactory extends BaseContract {
     ): PoolInitializedEventFilter;
 
     'TeamMultisigPending(address,address)'(
-      previousTeamMultisigPending?: string | null,
-      newTeamMultisigPending?: string | null
+      previousTeamMultisigPending?: PromiseOrValue<string> | null,
+      newTeamMultisigPending?: PromiseOrValue<string> | null
     ): TeamMultisigPendingEventFilter;
     TeamMultisigPending(
-      previousTeamMultisigPending?: string | null,
-      newTeamMultisigPending?: string | null
+      previousTeamMultisigPending?: PromiseOrValue<string> | null,
+      newTeamMultisigPending?: PromiseOrValue<string> | null
     ): TeamMultisigPendingEventFilter;
 
     'TeamMultisigTransferred(address,address)'(
-      previousTeamMultisig?: string | null,
-      newTeamMultisig?: string | null
+      previousTeamMultisig?: PromiseOrValue<string> | null,
+      newTeamMultisig?: PromiseOrValue<string> | null
     ): TeamMultisigTransferredEventFilter;
     TeamMultisigTransferred(
-      previousTeamMultisig?: string | null,
-      newTeamMultisig?: string | null
+      previousTeamMultisig?: PromiseOrValue<string> | null,
+      newTeamMultisig?: PromiseOrValue<string> | null
     ): TeamMultisigTransferredEventFilter;
   };
 
   estimateGas: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
@@ -531,24 +532,24 @@ export interface RageTradeFactory extends BaseContract {
 
     initializePool(
       initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<BigNumber>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
@@ -562,11 +563,11 @@ export interface RageTradeFactory extends BaseContract {
 
   populateTransaction: {
     acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -577,24 +578,24 @@ export interface RageTradeFactory extends BaseContract {
 
     initializePool(
       initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     initiateGovernanceTransfer(
-      newGovernancePending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newGovernancePending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     initiateTeamMultisigTransfer(
-      newTeamMultisigPending: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newTeamMultisigPending: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     proxyAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;

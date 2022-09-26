@@ -3,10 +3,10 @@ import { parseEther, formatEther, parseUnits } from 'ethers/lib/utils';
 import {
   VaultName,
   getNativeProtocolName,
-  getCoreContracts,
+  core,
   getVaultAddressFromVaultName,
 } from '../../contracts';
-import { BaseVault__factory, vaults } from '../../typechain';
+import { BaseVault__factory } from '../../typechain';
 import {
   priceX128ToPrice,
   formatUsdc,
@@ -50,7 +50,7 @@ export async function getVaultInfo(
 }> {
   const vaultAddress = await getVaultAddressFromVaultName(provider, vaultName);
 
-  const vault = vaults.BaseVault__factory.connect(vaultAddress, provider);
+  const vault = BaseVault__factory.connect(vaultAddress, provider);
 
   const totalSupplyD18 = await vault.totalSupply();
   const totalAssetsD18 = await vault.totalAssets();
@@ -113,7 +113,7 @@ export async function getPoolComposition(
   nativePercentage: string;
   nativeProtocolName: string;
 }> {
-  const { clearingHouse, eth_vToken } = await getCoreContracts(provider);
+  const { clearingHouse, eth_vToken } = await core.getContracts(provider);
 
   const vaultStrategy = BaseVault__factory.connect(
     await getVaultAddressFromVaultName(provider, vaultName),

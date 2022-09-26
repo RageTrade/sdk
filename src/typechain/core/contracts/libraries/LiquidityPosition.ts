@@ -15,6 +15,7 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
+  PromiseOrValue,
 } from '../../common';
 
 export interface LiquidityPositionInterface extends utils.Interface {
@@ -140,8 +141,8 @@ export interface LiquidityPosition extends BaseContract {
 
   filters: {
     'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
@@ -151,8 +152,8 @@ export interface LiquidityPosition extends BaseContract {
       sqrtPriceX96?: null
     ): LiquidityChangedEventFilter;
     LiquidityChanged(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       liquidityDelta?: null,
@@ -163,23 +164,23 @@ export interface LiquidityPosition extends BaseContract {
     ): LiquidityChangedEventFilter;
 
     'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): LiquidityPositionEarningsRealizedEventFilter;
     LiquidityPositionEarningsRealized(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null
     ): LiquidityPositionEarningsRealizedEventFilter;
 
     'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)'(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null,
@@ -189,8 +190,8 @@ export interface LiquidityPosition extends BaseContract {
       sumFeeInsideLastX128?: null
     ): LiquidityPositionFundingPaymentRealizedEventFilter;
     LiquidityPositionFundingPaymentRealized(
-      accountId?: BigNumberish | null,
-      poolId?: BigNumberish | null,
+      accountId?: PromiseOrValue<BigNumberish> | null,
+      poolId?: PromiseOrValue<BigNumberish> | null,
       tickLower?: null,
       tickUpper?: null,
       amount?: null,
