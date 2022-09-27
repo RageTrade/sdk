@@ -1,8 +1,5 @@
-export * from './contracts';
-export * from './utils';
-export * from './typechain/common-exports';
-export * as typechain from './typechain';
-export * from './data-sources';
+export * from './exports';
+export * as sdk from './exports';
 
-import pools from './pools.json';
-export { pools };
+import * as sdk from './exports';
+export default sdk;
