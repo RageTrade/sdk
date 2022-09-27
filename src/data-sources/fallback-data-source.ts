@@ -99,8 +99,12 @@ export class FallbackDataSource extends BaseDataSource {
       if (ur.count > maxQuorum) maxQuorum = ur.count;
       successCount += ur.count;
     });
+    const failedQueriesCount = responses.reduce(
+      (acc, val) => (!!val.error ? acc + 1 : acc),
+      0
+    );
     const error: any = new Error(
-      `Quorum of ${quorum} was not achieved, got ${uniqueResults.length} unique results and max quorum is ${maxQuorum}.`
+      `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique results: ${uniqueResults.length}, Failed queries: ${failedQueriesCount}.`
     );
     error.responses = responses;
     error.numberOfUniqueResults = uniqueResults.length;
