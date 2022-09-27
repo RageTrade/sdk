@@ -1,4 +1,3 @@
-const { existsSync } = require('fs');
 const {
   readdirSync,
   removeSync,
@@ -9,7 +8,7 @@ const {
 const _path = require('path');
 
 async function main() {
-  const deploymentsDirPath = _path.resolve(__dirname, 'deployments');
+  const deploymentsDirPath = _path.resolve(__dirname, 'src', 'deployments');
   removeMetadataFromDir(deploymentsDirPath);
 }
 
@@ -38,9 +37,11 @@ function removeMetadataFromDir(currentDirPath) {
 
 function removeMetadataFromFile(path) {
   const data = readJsonSync(path);
-  delete data.metadata;
-  delete data.devdoc;
-  writeJsonSync(path, data, {
+  // only keep address, get rid of all other things, to reduce package size
+  const newData = {
+    address: data.address,
+  };
+  writeJsonSync(path, newData, {
     spaces: 2,
   });
 }

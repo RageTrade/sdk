@@ -1,9 +1,9 @@
-import CollateralTokenDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/CollateralToken.json';
-import CurveYieldStrategyDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/CurveYieldStrategy.json';
-import CurveYieldStrategyLogicDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/CurveYieldStrategyLogic.json';
-import LogicLibraryDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/LogicLibrary.json';
-import SwapManagerLibraryDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/SwapManagerLibrary.json';
-import VaultPeripheryDeployment from '@ragetrade/tricrypto-vault/deployments/arbgoerli/VaultPeriphery.json';
+import CollateralTokenDeployment from '../../../deployments/tricrypto-vault/arbgoerli/CollateralToken.json';
+import CurveYieldStrategyDeployment from '../../../deployments/tricrypto-vault/arbgoerli/CurveYieldStrategy.json';
+import CurveYieldStrategyLogicDeployment from '../../../deployments/tricrypto-vault/arbgoerli/CurveYieldStrategyLogic.json';
+import LogicLibraryDeployment from '../../../deployments/tricrypto-vault/arbgoerli/LogicLibrary.json';
+import SwapManagerLibraryDeployment from '../../../deployments/tricrypto-vault/arbgoerli/SwapManagerLibrary.json';
+import VaultPeripheryDeployment from '../../../deployments/tricrypto-vault/arbgoerli/VaultPeriphery.json';
 
 import { TricryptoVaultDeployments } from './interface';
 

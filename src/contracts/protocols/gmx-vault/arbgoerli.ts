@@ -1,9 +1,9 @@
-import GlpStakingManagerDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GlpStakingManager.json';
-import GlpStakingManagerLogicDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GlpStakingManagerLogic.json';
-import GMXBatchingManagerDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GMXBatchingManager.json';
-import GMXBatchingManagerLogicDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GMXBatchingManagerLogic.json';
-import GMXYieldStrategyDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GMXYieldStrategy.json';
-import GMXYieldStrategyLogicDeployment from '@ragetrade/gmx-vault/deployments/arbgoerli/GMXYieldStrategyLogic.json';
+import GlpStakingManagerDeployment from '../../../deployments/gmx-vault/arbgoerli/GlpStakingManager.json';
+import GlpStakingManagerLogicDeployment from '../../../deployments/gmx-vault/arbgoerli/GlpStakingManagerLogic.json';
+import GMXBatchingManagerDeployment from '../../../deployments/gmx-vault/arbgoerli/GMXBatchingManager.json';
+import GMXBatchingManagerLogicDeployment from '../../../deployments/gmx-vault/arbgoerli/GMXBatchingManagerLogic.json';
+import GMXYieldStrategyDeployment from '../../../deployments/gmx-vault/arbgoerli/GMXYieldStrategy.json';
+import GMXYieldStrategyLogicDeployment from '../../../deployments/gmx-vault/arbgoerli/GMXYieldStrategyLogic.json';
 
 import { GmxVaultDeployments } from './interface';
 
