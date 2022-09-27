@@ -17,9 +17,12 @@ export class CacheServerDataSource extends BaseDataSource {
   _baseUrl = 'https://apis.rage.trade';
   _networkName: NetworkName;
 
-  constructor(networkNameOrChainId: NetworkName | number) {
+  constructor(networkNameOrChainId: NetworkName | number, baseUrl?: string) {
     super();
     this._networkName = getNetworkName(networkNameOrChainId);
+    if (baseUrl) {
+      this._baseUrl = baseUrl;
+    }
   }
 
   async getNetworkName(): Promise<NetworkName> {
@@ -50,7 +53,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
   async getPrices(poolId: BigNumberish) {
     const response = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-prices?networkName=${
+      `${this._baseUrl}/data/v2/get-prices?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
     )) as ApiResponse<BigNumberStringified<PricesResult>>;
@@ -71,7 +74,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
   async getPoolInfo(poolId: BigNumberish) {
     const response = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-pool-info?networkName=${
+      `${this._baseUrl}/data/v2/get-pool-info?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
     )) as ApiResponse<BigNumberStringified<PoolInfoResult>>;
@@ -102,7 +105,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
   async getVaultInfo(vaultName: string) {
     const response = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
+      `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
     const result = getResult(response);
     return {
@@ -140,7 +143,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
   async getGmxVaultInfo() {
     const response = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-gmx-vault-info?networkName=${this._networkName}`
+      `${this._baseUrl}/data/v2/get-gmx-vault-info?networkName=${this._networkName}`
     )) as ApiResponse<BigNumberStringified<GmxVaultInfoResult>>;
     const result = getResult(response);
     return {
@@ -153,7 +156,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
   async getGmxVaultInfoByTokenAddress(tokenAddress: string) {
     const response = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/get-gmx-vault-info-by-token-address?networkName=${this._networkName}&tokenAddress=${tokenAddress}`
+      `${this._baseUrl}/data/v2/get-gmx-vault-info-by-token-address?networkName=${this._networkName}&tokenAddress=${tokenAddress}`
     )) as ApiResponse<BigNumberStringified<GmxVaultInfoByTokenAddressResult>>;
     const result = getResult(response);
     return {

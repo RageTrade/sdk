@@ -14,13 +14,16 @@ const provider = new ethers.providers.StaticJsonRpcProvider(
   'https://arb1.arbitrum.io/rpc'
 );
 
+// const baseUrl = 'http://localhost:3000';
+const baseUrl = 'https://apis.rage.trade';
+
 describe('cache data source', () => {
   // TODO add tests for arbtest
   const networkNames: NetworkName[] = ['arbmain' /*'arbtest'*/];
   for (const networkName of networkNames) {
     describe(networkName, () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
-        const ds = new CacheServerDataSource(networkName);
+        const ds = new CacheServerDataSource(networkName, baseUrl);
         const { curveYieldStrategy } = await tricryptoVault.getContracts(
           provider
         );
@@ -33,7 +36,7 @@ describe('cache data source', () => {
 
       if (networkName === 'arbmain') {
         it(`findBlockByTimestamp ${networkName}`, async () => {
-          const ds = new CacheServerDataSource(networkName);
+          const ds = new CacheServerDataSource(networkName, baseUrl);
           const resp = await ds.findBlockByTimestamp(1660048813);
 
           expect(resp).toEqual(19803868);
@@ -41,7 +44,7 @@ describe('cache data source', () => {
       }
 
       it(`getPrices ${networkName}`, async () => {
-        const ds = new CacheServerDataSource(networkName);
+        const ds = new CacheServerDataSource(networkName, baseUrl);
         const resp = await ds.getPrices(Number(pools.arbmain[0].poolId));
 
         expect(resp.realPrice).toBeGreaterThan(0);
@@ -53,7 +56,7 @@ describe('cache data source', () => {
       describe(`getPoolInfo ${networkName}`, () => {
         for (const pool of pools[networkName]) {
           it(`getPoolInfo ${networkName} ${pool.symbol}`, async () => {
-            const ds = new CacheServerDataSource(networkName);
+            const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getPoolInfo(pool.poolId);
 
             expect(resp.realPrice).toBeGreaterThan(0);
@@ -72,7 +75,7 @@ describe('cache data source', () => {
           if (networkName === 'arbmain' && vaultName === 'gmx') return; // skip
 
           it(`getVaultInfo ${vaultName}`, async () => {
-            const ds = new CacheServerDataSource(networkName);
+            const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getVaultInfo(vaultName);
 
             expect(resp.totalSupply).toBeGreaterThan(0);
