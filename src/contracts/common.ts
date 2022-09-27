@@ -1,8 +1,18 @@
 import { Signer, providers } from 'ethers';
 import { warn } from '../utils/loggers';
 
-const aliasNetworkNames = ['arbtest'];
-export const chainIds = {
+export const supportedNetworkNames = [
+  'arbmain',
+  'arbrinkeby',
+  'arbgoerli',
+  'arbtest',
+] as const;
+export const aliasNetworkNames = ['arbtest'];
+
+export type ChainIds = {
+  [K in typeof supportedNetworkNames[number]]: number;
+};
+export const chainIds: ChainIds = {
   arbmain: 42161,
   arbtest: 421611, // alias TODO remove
   arbrinkeby: 421611,
@@ -17,11 +27,11 @@ export interface ContractDeployment {
 }
 
 export function getNetworkNameFromChainId(chainId: number): NetworkName {
-  for (const [key, val] of Object.entries(chainIds)) {
-    if (aliasNetworkNames.includes(key)) continue; // ignore alias
+  for (const networkName of supportedNetworkNames) {
+    if (aliasNetworkNames.includes(networkName)) continue; // ignore alias
 
-    if (val === chainId) {
-      return key as NetworkName;
+    if (chainIds[networkName] === chainId) {
+      return networkName;
     }
   }
 

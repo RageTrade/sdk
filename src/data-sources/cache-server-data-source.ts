@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
-import { NetworkName } from '../contracts';
+import { NetworkName, getNetworkName } from '../contracts';
 
 import { BaseDataSource } from './base-data-source';
 
@@ -9,14 +9,9 @@ export class CacheServerDataSource extends BaseDataSource {
   _baseUrl = 'https://apis.rage.trade';
   _networkName: NetworkName;
 
-  constructor(networkName: NetworkName) {
+  constructor(networkNameOrChainId: NetworkName | number) {
     super();
-    this._networkName = networkName;
-    if (!['arbmain', 'arbtest'].includes(this._networkName)) {
-      throw new Error(
-        `Currently CacheServer only supports arbmain and arbtest, but got ${this._networkName}`
-      );
-    }
+    this._networkName = getNetworkName(networkNameOrChainId);
   }
 
   async getNetworkName(): Promise<NetworkName> {
