@@ -38,8 +38,8 @@ export function getNetworkNameFromChainId(chainId: number): NetworkName {
   throw new Error(`chainId ${chainId} not recognized`);
 }
 
-export function sanitizeNetworkName(networkName: NetworkName): NetworkName {
-  const chainId = chainIds[networkName];
+export function sanitizeNetworkName(networkName: string): NetworkName {
+  const chainId = (chainIds as any)[networkName] as number | undefined;
   if (chainId === undefined) {
     throw new Error(`networkName ${networkName} not recognized`);
   }
@@ -56,7 +56,7 @@ export function sanitizeNetworkName(networkName: NetworkName): NetworkName {
 }
 
 export function getNetworkName(
-  networkNameOrChainId: NetworkName | number
+  networkNameOrChainId: string | number
 ): NetworkName {
   const networkName =
     typeof networkNameOrChainId === 'number'
