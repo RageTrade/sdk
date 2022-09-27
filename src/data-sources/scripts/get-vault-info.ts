@@ -1,28 +1,18 @@
 import { BigNumber, ethers } from 'ethers';
 import { parseEther, formatEther, parseUnits } from 'ethers/lib/utils';
-import { VaultName, getVault, core } from '../../contracts';
-import {
-  priceX128ToPrice,
-  formatUsdc,
-  safeDiv,
-  Q128,
-  truncate,
-} from '../../utils';
+import { VaultName, getVault } from '../../contracts';
+import { priceX128ToPrice, formatUsdc } from '../../utils';
 import { BaseDataSource } from '../base-data-source';
 import { getAvgVaultMarketValue } from './get-avg-vault-market-value';
+import {
+  getPoolComposition,
+  PoolCompositionResult,
+} from './get-pool-composition';
 
-export async function getVaultInfo(
-  provider: ethers.providers.Provider,
-  vaultName: VaultName,
-  dataSource: BaseDataSource
-): Promise<{
-  poolComposition: {
-    rageAmount: string;
-    nativeAmount: string;
-    ragePercentage: string;
-    nativePercentage: string;
-    nativeProtocolName: string;
-  };
+export interface VaultInfoResult {
+  nativeProtocolName: string;
+
+  poolComposition: PoolCompositionResult;
 
   totalSupply: number;
   totalShares: number;
@@ -41,10 +31,14 @@ export async function getVaultInfo(
   depositCapD18: BigNumber;
   vaultMarketValueD6: BigNumber;
   avgVaultMarketValueD6: BigNumber;
-}> {
-  const { vault } = await getVault(provider, vaultName);
+}
 
-  // const vault = BaseVault__factory.connect(vaultAddress, provider);
+export async function getVaultInfo(
+  provider: ethers.providers.Provider,
+  vaultName: VaultName,
+  dataSource: BaseDataSource
+): Promise<VaultInfoResult> {
+  const { vault, nativeProtocolName } = await getVault(provider, vaultName);
 
   const totalSupplyD18 = await vault.totalSupply();
   const totalAssetsD18 = await vault.totalAssets();
@@ -71,10 +65,13 @@ export async function getVaultInfo(
   const depositCap = Number(formatEther(depositCapD18));
   const vaultMarketValue = Number(formatUsdc(vaultMarketValueD6));
 
-  const avgVaultMarketValueD6 = await getAvgVaultMarketValue(vault, dataSource);
+  const { avgVaultMarketValue, avgVaultMarketValueD6 } =
+    await getAvgVaultMarketValue(vault, dataSource);
 
   const poolComposition = await getPoolComposition(provider, vaultName);
   return {
+    nativeProtocolName,
+
     poolComposition,
 
     totalSupply,
@@ -84,7 +81,7 @@ export async function getVaultInfo(
     sharePrice,
     depositCap,
     vaultMarketValue,
-    avgVaultMarketValue: Number(formatUsdc(avgVaultMarketValueD6)),
+    avgVaultMarketValue,
 
     totalSupplyD18,
     totalSharesD18: totalSupplyD18,
@@ -94,46 +91,5 @@ export async function getVaultInfo(
     depositCapD18,
     vaultMarketValueD6,
     avgVaultMarketValueD6,
-  };
-}
-
-export async function getPoolComposition(
-  provider: ethers.providers.Provider,
-  vaultName: VaultName
-): Promise<{
-  rageAmount: string;
-  nativeAmount: string;
-  ragePercentage: string;
-  nativePercentage: string;
-  nativeProtocolName: string;
-}> {
-  const { clearingHouse, eth_vToken } = await core.getContracts(provider);
-
-  const { vault, nativeProtocolName } = await getVault(provider, vaultName);
-
-  const poolId = truncate(eth_vToken.address);
-
-  // TODO
-  const vaultAccountId = await vault.rageAccountNo();
-
-  // net position of eth * twap price
-  const netPosition = await clearingHouse.getAccountNetTokenPosition(
-    vaultAccountId,
-    poolId
-  );
-  const virtualPriceX128 = await clearingHouse.getVirtualTwapPriceX128(poolId);
-
-  const rageAmount = netPosition.abs().mul(virtualPriceX128).div(Q128);
-  const nativeAmount = (await vault.getVaultMarketValue()).sub(rageAmount);
-
-  const sum = nativeAmount.add(rageAmount);
-  const oneEth = parseEther('1');
-
-  return {
-    rageAmount: formatUsdc(rageAmount),
-    nativeAmount: formatUsdc(nativeAmount),
-    ragePercentage: formatEther(safeDiv(oneEth.mul(rageAmount), sum)),
-    nativePercentage: formatEther(safeDiv(oneEth.mul(nativeAmount), sum)),
-    nativeProtocolName: nativeProtocolName,
   };
 }

@@ -6,7 +6,7 @@ type Replacement<M extends [any, any], T> = M extends any
     : never
   : never;
 
-type DeepReplace<T, M extends [any, any]> = {
+export type DeepReplace<T, M extends [any, any]> = {
   [P in keyof T]: T[P] extends M[0]
     ? Replacement<M, T[P]>
     : T[P] extends object
@@ -14,12 +14,12 @@ type DeepReplace<T, M extends [any, any]> = {
     : T[P];
 };
 
+export type BigNumberStringified<T> = DeepReplace<T, [BigNumber, string]>;
+
 export function stringifyBigNumber(val: string): string;
 export function stringifyBigNumber(val: number): number;
 export function stringifyBigNumber(val: BigNumber): string;
-export function stringifyBigNumber<T>(
-  object: T
-): DeepReplace<T, [BigNumber, string]>;
+export function stringifyBigNumber<T>(object: T): BigNumberStringified<T>;
 
 export function stringifyBigNumber(val: any): any {
   if (BigNumber.isBigNumber(val)) {

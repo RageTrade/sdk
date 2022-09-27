@@ -4,10 +4,22 @@ import { core } from '../../contracts';
 import { IOracle__factory, IUniswapV3Pool__factory } from '../../typechain';
 import { priceX128ToPrice, sqrtPriceX96ToPrice } from '../../utils';
 
+export interface PricesResult {
+  realPrice: number;
+  virtualPrice: number;
+  realTwapPrice: number;
+  virtualTwapPrice: number;
+
+  realPriceD18: BigNumber;
+  virtualPriceD18: BigNumber;
+  realTwapPriceD18: BigNumber;
+  virtualTwapPriceD18: BigNumber;
+}
+
 export async function getPrices(
   provider: ethers.providers.Provider,
   poolId: BigNumberish
-) {
+): Promise<PricesResult> {
   poolId = BigNumber.from(poolId);
   const { clearingHouse, clearingHouseLens } = await core.getContracts(
     provider

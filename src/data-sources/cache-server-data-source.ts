@@ -1,8 +1,16 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { NetworkName, getNetworkName } from '../contracts';
+import { BigNumberStringified } from '../utils';
 
 import { BaseDataSource } from './base-data-source';
+import {
+  GmxVaultInfoByTokenAddressResult,
+  GmxVaultInfoResult,
+  PoolInfoResult,
+  PricesResult,
+  VaultInfoResult,
+} from './scripts';
 
 export class CacheServerDataSource extends BaseDataSource {
   // _baseUrl = 'http://localhost:3000';
@@ -40,93 +48,33 @@ export class CacheServerDataSource extends BaseDataSource {
     return getResult(response);
   }
 
-  async getPrices(poolId: BigNumberish): Promise<{
-    realPrice: number;
-    virtualPrice: number;
-    realTwapPrice: number;
-    virtualTwapPrice: number;
-
-    realPriceD18: BigNumber;
-    virtualPriceD18: BigNumber;
-    realTwapPriceD18: BigNumber;
-    virtualTwapPriceD18: BigNumber;
-  }> {
+  async getPrices(poolId: BigNumberish) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-prices?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
-    )) as {
-      result: {
-        realPrice: number;
-        virtualPrice: number;
-        realTwapPrice: number;
-        virtualTwapPrice: number;
-      };
-    };
+    )) as ApiResponse<BigNumberStringified<PricesResult>>;
     const result = getResult(response);
+
     return {
       realPrice: result.realPrice,
       virtualPrice: result.virtualPrice,
       realTwapPrice: result.realTwapPrice,
       virtualTwapPrice: result.virtualTwapPrice,
 
-      realPriceD18: parseUnits(String(result.realPrice), 18),
-      virtualPriceD18: parseUnits(String(result.virtualPrice), 18),
-      realTwapPriceD18: parseUnits(String(result.realTwapPrice), 18),
-      virtualTwapPriceD18: parseUnits(String(result.virtualTwapPrice), 18),
+      realPriceD18: BigNumber.from(result.realPriceD18),
+      virtualPriceD18: BigNumber.from(result.virtualPriceD18),
+      realTwapPriceD18: BigNumber.from(result.realTwapPriceD18),
+      virtualTwapPriceD18: BigNumber.from(result.virtualTwapPriceD18),
     };
   }
 
-  async getPoolInfo(poolId: BigNumberish): Promise<{
-    realPrice: number;
-    virtualPrice: number;
-    realTwapPrice: number;
-    virtualTwapPrice: number;
-    fundingRate: number;
-
-    realSqrtPriceX96: BigNumber;
-    virtualSqrtPriceX96: BigNumber;
-    realPriceX128: BigNumber;
-    virtualPriceX128: BigNumber;
-    realTwapPriceX128: BigNumber;
-    virtualTwapPriceX128: BigNumber;
-    fundingRateX128: BigNumber;
-    sumAX128: BigNumber;
-
-    realPriceD18: BigNumber;
-    virtualPriceD18: BigNumber;
-    realTwapPriceD18: BigNumber;
-    virtualTwapPriceD18: BigNumber;
-    fundingRateD18: BigNumber;
-  }> {
+  async getPoolInfo(poolId: BigNumberish) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-pool-info?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
-    )) as {
-      result: {
-        realPrice: number;
-        virtualPrice: number;
-        realTwapPrice: number;
-        virtualTwapPrice: number;
-        fundingRate: number;
-
-        realSqrtPriceX96: string;
-        virtualSqrtPriceX96: string;
-        realPriceX128: string;
-        virtualPriceX128: string;
-        realTwapPriceX128: string;
-        virtualTwapPriceX128: string;
-        fundingRateX128: string;
-        sumAX128: string;
-
-        realPriceD18: string;
-        virtualPriceD18: string;
-        realTwapPriceD18: string;
-        virtualTwapPriceD18: string;
-        fundingRateD18: string;
-      };
-    };
+    )) as ApiResponse<BigNumberStringified<PoolInfoResult>>;
     const result = getResult(response);
     return {
       realPrice: result.realPrice,
@@ -152,57 +100,25 @@ export class CacheServerDataSource extends BaseDataSource {
     };
   }
 
-  async getVaultInfo(vaultName: string): Promise<{
-    poolComposition: {
-      rageAmount: string;
-      nativeAmount: string;
-      ragePercentage: string;
-      nativePercentage: string;
-      nativeProtocolName: string;
-    };
-
-    totalSupply: number;
-    totalAssets: number;
-    assetPrice: number;
-    sharePrice: number;
-    depositCap: number;
-    vaultMarketValue: number;
-    avgVaultMarketValue: number;
-
-    totalSupplyD18: BigNumber;
-    totalAssetsD18: BigNumber;
-    assetPriceD18: BigNumber;
-    sharePriceD18: BigNumber;
-    depositCapD18: BigNumber;
-    vaultMarketValueD6: BigNumber;
-    avgVaultMarketValueD6: BigNumber;
-  }> {
+  async getVaultInfo(vaultName: string) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
-    )) as {
-      result: {
-        poolComposition: {
-          rageAmount: string;
-          nativeAmount: string;
-          ragePercentage: string;
-          nativePercentage: string;
-          nativeProtocolName: string;
-        };
-
-        totalSupply: number;
-        totalAssets: number;
-        assetPrice: number;
-        sharePrice: number;
-        depositCap: number;
-        vaultMarketValue: number;
-        avgVaultMarketValue: number;
-      };
-    };
+    )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
     const result = getResult(response);
     return {
-      poolComposition: result.poolComposition,
+      nativeProtocolName: result.nativeProtocolName,
+
+      poolComposition: {
+        rageAmountD6: BigNumber.from(result.poolComposition.rageAmountD6),
+        nativeAmountD6: BigNumber.from(result.poolComposition.nativeAmountD6),
+        rageAmount: result.poolComposition.rageAmount,
+        nativeAmount: result.poolComposition.nativeAmount,
+        ragePercentage: result.poolComposition.ragePercentage,
+        nativePercentage: result.poolComposition.nativePercentage,
+      },
 
       totalSupply: result.totalSupply,
+      totalShares: result.totalSupply,
       totalAssets: result.totalAssets,
       assetPrice: result.assetPrice,
       sharePrice: result.sharePrice,
@@ -212,6 +128,7 @@ export class CacheServerDataSource extends BaseDataSource {
 
       // TODO change this to using D things in the result
       totalSupplyD18: parseUnits(String(result.totalSupply), 18),
+      totalSharesD18: parseUnits(String(result.totalSupply), 18),
       totalAssetsD18: parseUnits(String(result.totalAssets), 18),
       assetPriceD18: parseUnits(String(result.assetPrice), 18),
       sharePriceD18: parseUnits(String(result.sharePrice), 18),
@@ -221,34 +138,36 @@ export class CacheServerDataSource extends BaseDataSource {
     };
   }
 
-  async getGmxVaultInfo(): Promise<{
-    aumInUsdg: BigNumber;
-    glpSupply: BigNumber;
-  }> {
+  async getGmxVaultInfo() {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-gmx-vault-info?networkName=${this._networkName}`
-    )) as { result: { aumInUsdg: string; glpSupply: string } };
+    )) as ApiResponse<BigNumberStringified<GmxVaultInfoResult>>;
     const result = getResult(response);
     return {
-      aumInUsdg: BigNumber.from(result.aumInUsdg),
-      glpSupply: BigNumber.from(result.glpSupply),
+      aumInUsdg: result.aumInUsdg,
+      glpSupply: result.glpSupply,
+      aumInUsdgD18: BigNumber.from(result.aumInUsdg),
+      glpSupplyD18: BigNumber.from(result.glpSupply),
     };
   }
 
-  async getGmxVaultInfoByTokenAddress(tokenAddress: string): Promise<{
-    underlyingVaultMinPrice: BigNumber;
-  }> {
+  async getGmxVaultInfoByTokenAddress(tokenAddress: string) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-gmx-vault-info-by-token-address?networkName=${this._networkName}&tokenAddress=${tokenAddress}`
-    )) as { result: { underlyingVaultMinPrice: string } };
+    )) as ApiResponse<BigNumberStringified<GmxVaultInfoByTokenAddressResult>>;
     const result = getResult(response);
     return {
-      underlyingVaultMinPrice: BigNumber.from(result.underlyingVaultMinPrice),
+      underlyingVaultMinPrice: result.underlyingVaultMinPrice,
+      underlyingVaultMinPriceD30: BigNumber.from(
+        result.underlyingVaultMinPriceD30
+      ),
     };
   }
 }
 
-function getResult<T>(response: { result?: T; [key: string]: any }): T;
+type ApiResponse<T> = { result?: T; [key: string]: any };
+
+function getResult<T>(response: ApiResponse<T>): T;
 
 function getResult(response: any) {
   if ('result' in response) {

@@ -1,5 +1,12 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
+import {
+  PricesResult,
+  PoolInfoResult,
+  VaultInfoResult,
+  GmxVaultInfoResult,
+  GmxVaultInfoByTokenAddressResult,
+} from './scripts';
 
 export type MethodNames =
   | 'getNetworkName'
@@ -45,83 +52,25 @@ export abstract class BaseDataSource {
     return this.perform('getBlockByTimestamp', [timestamp]);
   }
 
-  getPrices(poolId: BigNumberish): Promise<{
-    realPrice: number;
-    virtualPrice: number;
-    realTwapPrice: number;
-    virtualTwapPrice: number;
-
-    realPriceD18: BigNumber;
-    virtualPriceD18: BigNumber;
-    realTwapPriceD18: BigNumber;
-    virtualTwapPriceD18: BigNumber;
-  }> {
+  getPrices(poolId: BigNumberish): Promise<PricesResult> {
     return this.perform('getPrices', [poolId]);
   }
 
-  getPoolInfo(poolId: BigNumberish): Promise<{
-    realPrice: number;
-    virtualPrice: number;
-    realTwapPrice: number;
-    virtualTwapPrice: number;
-    fundingRate: number;
-
-    realSqrtPriceX96: BigNumber;
-    virtualSqrtPriceX96: BigNumber;
-    realPriceX128: BigNumber;
-    virtualPriceX128: BigNumber;
-    realTwapPriceX128: BigNumber;
-    virtualTwapPriceX128: BigNumber;
-    fundingRateX128: BigNumber;
-    sumAX128: BigNumber;
-
-    realPriceD18: BigNumber;
-    virtualPriceD18: BigNumber;
-    realTwapPriceD18: BigNumber;
-    virtualTwapPriceD18: BigNumber;
-    fundingRateD18: BigNumber;
-  }> {
+  getPoolInfo(poolId: BigNumberish): Promise<PoolInfoResult> {
     return this.perform('getPoolInfo', [poolId]);
   }
 
-  getVaultInfo(vaultName: VaultName): Promise<{
-    poolComposition: {
-      rageAmount: string;
-      nativeAmount: string;
-      ragePercentage: string;
-      nativePercentage: string;
-      nativeProtocolName: string;
-    };
-
-    totalSupply: number;
-    totalAssets: number;
-    assetPrice: number;
-    sharePrice: number;
-    depositCap: number;
-    vaultMarketValue: number;
-    avgVaultMarketValue: number;
-
-    totalSupplyD18: BigNumber;
-    totalAssetsD18: BigNumber;
-    assetPriceD18: BigNumber;
-    sharePriceD18: BigNumber;
-    depositCapD18: BigNumber;
-    vaultMarketValueD6: BigNumber;
-    avgVaultMarketValueD6: BigNumber;
-  }> {
+  getVaultInfo(vaultName: VaultName): Promise<VaultInfoResult> {
     return this.perform('getVaultInfo', [vaultName]);
   }
 
-  getGmxVaultInfo(): Promise<{
-    aumInUsdg: BigNumber;
-    glpSupply: BigNumber;
-  }> {
+  getGmxVaultInfo(): Promise<GmxVaultInfoResult> {
     return this.perform('getGmxVaultInfo', []);
   }
 
-  getGmxVaultInfoByTokenAddress(tokenAddress: string): Promise<{
-    underlyingVaultMinPrice: BigNumber;
-  }> {
+  getGmxVaultInfoByTokenAddress(
+    tokenAddress: string
+  ): Promise<GmxVaultInfoByTokenAddressResult> {
     return this.perform('getGmxVaultInfoByTokenAddress', [tokenAddress]);
   }
 

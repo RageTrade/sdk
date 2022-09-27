@@ -14,16 +14,14 @@ import {
   sqrtPriceX96ToPriceX128,
 } from '../../utils';
 
-export async function getPoolInfo(
-  provider: ethers.providers.Provider,
-  poolId: BigNumberish
-): Promise<{
+export interface PoolInfoResult {
   realPrice: number;
   virtualPrice: number;
   realTwapPrice: number;
   virtualTwapPrice: number;
   fundingRate: number;
 
+  // fixed point
   realSqrtPriceX96: BigNumber;
   virtualSqrtPriceX96: BigNumber;
   realPriceX128: BigNumber;
@@ -33,12 +31,18 @@ export async function getPoolInfo(
   fundingRateX128: BigNumber;
   sumAX128: BigNumber;
 
+  // decimal
   realPriceD18: BigNumber;
   virtualPriceD18: BigNumber;
   realTwapPriceD18: BigNumber;
   virtualTwapPriceD18: BigNumber;
   fundingRateD18: BigNumber;
-}> {
+}
+
+export async function getPoolInfo(
+  provider: ethers.providers.Provider,
+  poolId: BigNumberish
+): Promise<PoolInfoResult> {
   poolId = BigNumber.from(poolId);
   const { clearingHouse, clearingHouseLens } = await core.getContracts(
     provider
