@@ -59,7 +59,7 @@ export async function getContracts(signerOrProvider: SignerOrProvider) {
   return getContractsSync(chainId, signerOrProvider);
 }
 
-export async function getContractsSync(
+export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
   signerOrProvider?: SignerOrProvider
 ) {
