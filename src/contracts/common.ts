@@ -55,21 +55,6 @@ export function getNetworkName(
   return sanitizeNetworkName(networkName);
 }
 
-export async function getDeployment(
-  repo: string,
-  networkName: NetworkName,
-  name: string
-): Promise<ContractDeployment> {
-  try {
-    return await import(`../deployments/${repo}/${networkName}/${name}.json`);
-  } catch (e) {
-    // console.error(e);
-    throw new Error(
-      `Network ${networkName} does not contain the deployment ${name}. Make sure deployments are updated.`
-    );
-  }
-}
-
 export async function getChainIdFromProvider(
   signerOrProvider: SignerOrProvider
 ) {
