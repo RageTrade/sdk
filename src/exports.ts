@@ -5,4 +5,5 @@ export * as typechain from './typechain';
 export * from './data-sources';
 
 import pools from './pools.json';
-export { pools };
+import defaultPools from './default_pools.json';
+export { pools, defaultPools };
