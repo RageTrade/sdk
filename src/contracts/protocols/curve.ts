@@ -44,11 +44,11 @@ export function getAddresses(
       };
     case 'arbgoerli':
       return {
-        crvAddress: '0xF5314B52cB4c77193247f1D8fAe40ccC4953cB37',
-        tricryptoAddress: '0xB642fE1abE33D2B1F58EcdfF1617fD10Cd20D5f7',
-        quoterAddress: '0x16A4f7E81E02f08c5FCb5282ABE04186825817Cb',
-        gaugeAddress: '0x7aF54994bC9d0e5941C8f5661811d66688755eE5',
-        tricryptoPoolAddress: '0x16A4f7E81E02f08c5FCb5282ABE04186825817Cb',
+        crvAddress: '0xd0279841E90a07531f7a6334C481F94072f6869F',
+        tricryptoAddress: '0xd5981b565E66e57AE8A92eD110483a8EC68667C6',
+        quoterAddress: '0xD543d34b3a62Ba9f18b0A1A4dEE2D98972F28c6D',
+        gaugeAddress: '0x1CA211117e8f5008912452e7a2b3198F82EbED83',
+        tricryptoPoolAddress: '0xD543d34b3a62Ba9f18b0A1A4dEE2D98972F28c6D',
       };
     default:
       throw newError(
