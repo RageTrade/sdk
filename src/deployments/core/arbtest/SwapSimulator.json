@@ -1,3 +1,7 @@
 {
-  "address": "0x8D8c1333295D22bef28bdBFAFF7A07346d5a64d7"
+  "address": "0x8D8c1333295D22bef28bdBFAFF7A07346d5a64d7",
+  "receipt": {
+    "blockNumber": 12705347,
+    "transactionHash": "0x5b13d75f8a9a2e20dddfa3d7b6b50c6b412ac6718de35409683ed8d3af16e9d9"
+  }
 }

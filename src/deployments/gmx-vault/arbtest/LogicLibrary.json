@@ -1,3 +1,7 @@
 {
-  "address": "0xC0B9535c29849DB21b56F8F7CB8180B400e0eb7e"
+  "address": "0xC0B9535c29849DB21b56F8F7CB8180B400e0eb7e",
+  "receipt": {
+    "blockNumber": 12949823,
+    "transactionHash": "0x72af3ccea110228b08b82be3a0fc1afab75d681072261a69164e379c543d106d"
+  }
 }

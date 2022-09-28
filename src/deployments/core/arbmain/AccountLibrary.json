@@ -1,3 +1,7 @@
 {
-  "address": "0x3FaB135e76c5c0E85A60bf50f100c8cd912f7E56"
+  "address": "0x3FaB135e76c5c0E85A60bf50f100c8cd912f7E56",
+  "receipt": {
+    "blockNumber": 17185327,
+    "transactionHash": "0xe5cd7af96c304d8e9578348b857b6fa59c312b5fc5e3a99bfa423689e4a1b7d4"
+  }
 }

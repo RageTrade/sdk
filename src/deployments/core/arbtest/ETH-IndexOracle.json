@@ -1,3 +1,7 @@
 {
-  "address": "0xe3de5752cC90A5D596e9ac4EB86F392655184403"
+  "address": "0xe3de5752cC90A5D596e9ac4EB86F392655184403",
+  "receipt": {
+    "blockNumber": 12705356,
+    "transactionHash": "0x94aedb9c329fded4cf3a70b8894ad6d9c3889ca71b410a69f5c16cc81d351a35"
+  }
 }

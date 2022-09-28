@@ -1,3 +1,7 @@
 {
-  "address": "0x39aC75b66153Be03025E109f748928c812b23Afb"
+  "address": "0x39aC75b66153Be03025E109f748928c812b23Afb",
+  "receipt": {
+    "blockNumber": 15303617,
+    "transactionHash": "0x3bc7b78079744ee0d66638a4cbb06e812e02432976c38051b8f4e338cc301451"
+  }
 }

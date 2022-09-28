@@ -31,6 +31,7 @@ import type {
 export interface TimelockControllerWithMinDelayOverrideInterface
   extends utils.Interface {
   functions: {
+    'CANCELLER_ROLE()': FunctionFragment;
     'DEFAULT_ADMIN_ROLE()': FunctionFragment;
     'EXECUTOR_ROLE()': FunctionFragment;
     'PROPOSER_ROLE()': FunctionFragment;
@@ -50,6 +51,9 @@ export interface TimelockControllerWithMinDelayOverrideInterface
     'isOperationDone(bytes32)': FunctionFragment;
     'isOperationPending(bytes32)': FunctionFragment;
     'isOperationReady(bytes32)': FunctionFragment;
+    'onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)': FunctionFragment;
+    'onERC1155Received(address,address,uint256,uint256,bytes)': FunctionFragment;
+    'onERC721Received(address,address,uint256,bytes)': FunctionFragment;
     'renounceRole(bytes32,address)': FunctionFragment;
     'revokeRole(bytes32,address)': FunctionFragment;
     'schedule(address,uint256,bytes,bytes32,bytes32,uint256)': FunctionFragment;
@@ -62,6 +66,7 @@ export interface TimelockControllerWithMinDelayOverrideInterface
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'CANCELLER_ROLE'
       | 'DEFAULT_ADMIN_ROLE'
       | 'EXECUTOR_ROLE'
       | 'PROPOSER_ROLE'
@@ -81,6 +86,9 @@ export interface TimelockControllerWithMinDelayOverrideInterface
       | 'isOperationDone'
       | 'isOperationPending'
       | 'isOperationReady'
+      | 'onERC1155BatchReceived'
+      | 'onERC1155Received'
+      | 'onERC721Received'
       | 'renounceRole'
       | 'revokeRole'
       | 'schedule'
@@ -91,6 +99,10 @@ export interface TimelockControllerWithMinDelayOverrideInterface
       | 'updateDelay'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'CANCELLER_ROLE',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'DEFAULT_ADMIN_ROLE',
     values?: undefined
@@ -192,6 +204,35 @@ export interface TimelockControllerWithMinDelayOverrideInterface
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'onERC1155BatchReceived',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'onERC1155Received',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'onERC721Received',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'renounceRole',
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
@@ -242,6 +283,10 @@ export interface TimelockControllerWithMinDelayOverrideInterface
     values: [PromiseOrValue<BigNumberish>]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: 'CANCELLER_ROLE',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'DEFAULT_ADMIN_ROLE',
     data: BytesLike
@@ -304,6 +349,18 @@ export interface TimelockControllerWithMinDelayOverrideInterface
   ): Result;
   decodeFunctionResult(
     functionFragment: 'isOperationReady',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'onERC1155BatchReceived',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'onERC1155Received',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'onERC721Received',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -493,6 +550,8 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    CANCELLER_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
     EXECUTOR_ROLE(overrides?: CallOverrides): Promise<[string]>;
@@ -509,7 +568,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     execute(
       target: PromiseOrValue<string>,
       value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      payload: PromiseOrValue<BytesLike>,
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -518,7 +577,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     executeBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -568,7 +627,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     hashOperationBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -577,7 +636,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     isOperation(
       id: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<[boolean] & { pending: boolean }>;
+    ): Promise<[boolean] & { registered: boolean }>;
 
     isOperationDone(
       id: PromiseOrValue<BytesLike>,
@@ -593,6 +652,32 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
       id: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean] & { ready: boolean }>;
+
+    onERC1155BatchReceived(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    onERC1155Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    onERC721Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -619,7 +704,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     scheduleBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       delay: PromiseOrValue<BigNumberish>,
@@ -650,6 +735,8 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  CANCELLER_ROLE(overrides?: CallOverrides): Promise<string>;
+
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
   EXECUTOR_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -666,7 +753,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   execute(
     target: PromiseOrValue<string>,
     value: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
+    payload: PromiseOrValue<BytesLike>,
     predecessor: PromiseOrValue<BytesLike>,
     salt: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -675,7 +762,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   executeBatch(
     targets: PromiseOrValue<string>[],
     values: PromiseOrValue<BigNumberish>[],
-    datas: PromiseOrValue<BytesLike>[],
+    payloads: PromiseOrValue<BytesLike>[],
     predecessor: PromiseOrValue<BytesLike>,
     salt: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -723,7 +810,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   hashOperationBatch(
     targets: PromiseOrValue<string>[],
     values: PromiseOrValue<BigNumberish>[],
-    datas: PromiseOrValue<BytesLike>[],
+    payloads: PromiseOrValue<BytesLike>[],
     predecessor: PromiseOrValue<BytesLike>,
     salt: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -748,6 +835,32 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     id: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  onERC1155BatchReceived(
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    arg2: PromiseOrValue<BigNumberish>[],
+    arg3: PromiseOrValue<BigNumberish>[],
+    arg4: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  onERC1155Received(
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    arg2: PromiseOrValue<BigNumberish>,
+    arg3: PromiseOrValue<BigNumberish>,
+    arg4: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  onERC721Received(
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<string>,
+    arg2: PromiseOrValue<BigNumberish>,
+    arg3: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   renounceRole(
     role: PromiseOrValue<BytesLike>,
@@ -774,7 +887,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   scheduleBatch(
     targets: PromiseOrValue<string>[],
     values: PromiseOrValue<BigNumberish>[],
-    datas: PromiseOrValue<BytesLike>[],
+    payloads: PromiseOrValue<BytesLike>[],
     predecessor: PromiseOrValue<BytesLike>,
     salt: PromiseOrValue<BytesLike>,
     delay: PromiseOrValue<BigNumberish>,
@@ -805,6 +918,8 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    CANCELLER_ROLE(overrides?: CallOverrides): Promise<string>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
     EXECUTOR_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -821,7 +936,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     execute(
       target: PromiseOrValue<string>,
       value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      payload: PromiseOrValue<BytesLike>,
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -830,7 +945,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     executeBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -878,7 +993,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     hashOperationBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -903,6 +1018,32 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
       id: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    onERC1155BatchReceived(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    onERC1155Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    onERC721Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -929,7 +1070,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     scheduleBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       delay: PromiseOrValue<BigNumberish>,
@@ -1064,6 +1205,8 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   };
 
   estimateGas: {
+    CANCELLER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
     EXECUTOR_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1080,7 +1223,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     execute(
       target: PromiseOrValue<string>,
       value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      payload: PromiseOrValue<BytesLike>,
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1089,7 +1232,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     executeBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1137,7 +1280,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     hashOperationBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1161,6 +1304,32 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     isOperationReady(
       id: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    onERC1155BatchReceived(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    onERC1155Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    onERC721Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renounceRole(
@@ -1188,7 +1357,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     scheduleBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       delay: PromiseOrValue<BigNumberish>,
@@ -1220,6 +1389,8 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
   };
 
   populateTransaction: {
+    CANCELLER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     DEFAULT_ADMIN_ROLE(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1240,7 +1411,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     execute(
       target: PromiseOrValue<string>,
       value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
+      payload: PromiseOrValue<BytesLike>,
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1249,7 +1420,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     executeBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1297,7 +1468,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     hashOperationBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1321,6 +1492,32 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     isOperationReady(
       id: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    onERC1155BatchReceived(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>[],
+      arg3: PromiseOrValue<BigNumberish>[],
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    onERC1155Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BigNumberish>,
+      arg4: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    onERC721Received(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<string>,
+      arg2: PromiseOrValue<BigNumberish>,
+      arg3: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceRole(
@@ -1348,7 +1545,7 @@ export interface TimelockControllerWithMinDelayOverride extends BaseContract {
     scheduleBatch(
       targets: PromiseOrValue<string>[],
       values: PromiseOrValue<BigNumberish>[],
-      datas: PromiseOrValue<BytesLike>[],
+      payloads: PromiseOrValue<BytesLike>[],
       predecessor: PromiseOrValue<BytesLike>,
       salt: PromiseOrValue<BytesLike>,
       delay: PromiseOrValue<BigNumberish>,

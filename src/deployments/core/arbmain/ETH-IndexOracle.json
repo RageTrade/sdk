@@ -1,3 +1,7 @@
 {
-  "address": "0x04b7A474fD142D19604De4B834D337cc94bDbb86"
+  "address": "0x04b7A474fD142D19604De4B834D337cc94bDbb86",
+  "receipt": {
+    "blockNumber": 17185446,
+    "transactionHash": "0x754a7eb9b6a4e1149fa10017f20227ec5e6133342eae7fd4659eeec7e6fbd1b3"
+  }
 }

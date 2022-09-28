@@ -38,10 +38,15 @@ function removeMetadataFromDir(currentDirPath) {
 function removeMetadataFromFile(path) {
   const data = readJsonSync(path);
   // only keep address, get rid of all other things, to reduce package size
+  const receipt = data?.receipt;
   const newData = {
     address: data.address,
   };
-  writeJsonSync(path, newData, {
-    spaces: 2,
-  });
+  if (receipt !== undefined) {
+    newData.receipt = {
+      blockNumber: receipt.blockNumber,
+      transactionHash: receipt.transactionHash,
+    };
+  }
+  writeJsonSync(path, newData, { spaces: 2 });
 }
