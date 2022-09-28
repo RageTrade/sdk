@@ -19,7 +19,7 @@ const baseUrl = 'https://apis.rage.trade';
 
 describe('cache data source', () => {
   // TODO add tests for arbtest
-  const networkNames: NetworkName[] = ['arbmain' /*'arbtest'*/];
+  const networkNames: NetworkName[] = ['arbmain' /* 'arbtest', 'arbgoerli' */];
   for (const networkName of networkNames) {
     describe(networkName, () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
