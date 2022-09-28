@@ -6,7 +6,8 @@
     "decimals": 18,
     "vTokenAddress": "0x7ab08069a6ee445703116E4E09049E88a237af5E",
     "vPoolAddress": "0x45CB6ecd6a22193bb95AB4B3ACF0CA9638F7A6AA",
-    "vPoolWrapperAddress": "0x891200056D8109c0413e8960F1d1f45c764C9e5b"
+    "vPoolWrapperAddress": "0x891200056D8109c0413e8960F1d1f45c764C9e5b",
+    "creationBlockNumber": 17185456
   },
   "arbtest": {
     "poolId": "0x87ba0501",
@@ -15,7 +16,8 @@
     "decimals": 18,
     "vTokenAddress": "0x164B8C1c65b73638e4C24dB781a0f41a87ba0501",
     "vPoolAddress": "0x1567EA56f4B9cE6e335C042D54C74cCA0b8C6A1E",
-    "vPoolWrapperAddress": "0x13Ff6f6E98534c251dBeAbCB32325eB2093C1570"
+    "vPoolWrapperAddress": "0x13Ff6f6E98534c251dBeAbCB32325eB2093C1570",
+    "creationBlockNumber": 12705363
   },
   "arbrinkeby": {
     "poolId": "0x87ba0501",
@@ -24,7 +26,8 @@
     "decimals": 18,
     "vTokenAddress": "0x164B8C1c65b73638e4C24dB781a0f41a87ba0501",
     "vPoolAddress": "0x1567EA56f4B9cE6e335C042D54C74cCA0b8C6A1E",
-    "vPoolWrapperAddress": "0x13Ff6f6E98534c251dBeAbCB32325eB2093C1570"
+    "vPoolWrapperAddress": "0x13Ff6f6E98534c251dBeAbCB32325eB2093C1570",
+    "creationBlockNumber": 12705363
   },
   "arbgoerli": {
     "poolId": "0xc1378fb5",
@@ -33,6 +36,7 @@
     "decimals": 18,
     "vTokenAddress": "0x058B75fD79fCB6c44e85d1DaB051b03dC1378fb5",
     "vPoolAddress": "0x9D2479CEbF9cf82469Fe406290D74DfFb0d83633",
-    "vPoolWrapperAddress": "0x9165313945BA2dc3Ae0807a59Dad11910b71051E"
+    "vPoolWrapperAddress": "0x9165313945BA2dc3Ae0807a59Dad11910b71051E",
+    "creationBlockNumber": 426799
   }
 }

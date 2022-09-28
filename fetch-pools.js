@@ -7,10 +7,8 @@ const { writeJson } = require('fs-extra');
 config();
 
 async function main() {
-  const [defaultPool, poolsList] = await Promise.all([
-    getDefaultPool(),
-    getPoolsList(),
-  ]);
+  const poolsList = await getPoolsList();
+  const defaultPool = await getDefaultPool(poolsList);
 
   await writeJson('./src/default_pools.json', defaultPool, { spaces: 2 });
   await writeJson('./dist/default_pools.json', defaultPool, { spaces: 2 });
@@ -21,31 +19,14 @@ async function main() {
 
 main().catch(console.error);
 
-async function getDefaultPool() {
+async function getDefaultPool(poolsList) {
   const defaultPool = {};
 
   for (const [chainName, chainId] of Object.entries(sdk.chainIds)) {
-    let defaultPoolForChain = undefined;
-
-    const provider = sdk.getProvider(chainName);
-    if (provider) {
-      try {
-        const contracts = await core.getContracts(provider);
-        defaultPoolForChain = {
-          poolId: truncate(contracts.eth_vToken.address),
-          name: await contracts.eth_vToken.name(),
-          symbol: await contracts.eth_vToken.symbol(),
-          decimals: await contracts.eth_vToken.decimals(),
-          vTokenAddress: contracts.eth_vToken.address,
-          vPoolAddress: contracts.eth_vPool.address,
-          vPoolWrapperAddress: contracts.eth_vPoolWrapper.address,
-        };
-      } catch (e) {
-        // console.log(e);
-      }
+    const defaultPoolForChain = poolsList[chainName]?.[0];
+    if (defaultPoolForChain) {
+      defaultPool[chainName] = defaultPoolForChain;
     }
-
-    defaultPool[chainName] = defaultPoolForChain;
   }
   return defaultPool;
 }
@@ -62,17 +43,43 @@ async function getPoolsList() {
         const { rageTradeFactory } = await core.getContracts(
           providerArbiscan ?? provider
         );
-        const poolContracts = await core.getPoolContracts(rageTradeFactory);
+        const events = await rageTradeFactory.queryFilter(
+          rageTradeFactory.filters.PoolInitialized()
+        );
+        const poolContracts = events.map(
+          ({ blockNumber, args: { vToken, vPool, vPoolWrapper } }) => {
+            const signerOrProvider =
+              rageTradeFactory.signer ?? rageTradeFactory.provider;
+            return {
+              vToken: sdk.typechain.VToken__factory.connect(
+                vToken,
+                signerOrProvider
+              ),
+              vPool: sdk.typechain.IUniswapV3Pool__factory.connect(
+                vPool,
+                signerOrProvider
+              ),
+              vPoolWrapper: sdk.typechain.VPoolWrapper__factory.connect(
+                vPoolWrapper,
+                signerOrProvider
+              ),
+              creationBlockNumber: blockNumber,
+            };
+          }
+        );
         poolsListForChain = await Promise.all(
-          poolContracts.map(async ({ vToken, vPool, vPoolWrapper }) => ({
-            poolId: truncate(vToken.address),
-            name: await vToken.name(),
-            symbol: await vToken.symbol(),
-            decimals: await vToken.decimals(),
-            vTokenAddress: vToken.address,
-            vPoolAddress: vPool.address,
-            vPoolWrapperAddress: vPoolWrapper.address,
-          }))
+          poolContracts.map(
+            async ({ vToken, vPool, vPoolWrapper, creationBlockNumber }) => ({
+              poolId: truncate(vToken.address),
+              name: await vToken.name(),
+              symbol: await vToken.symbol(),
+              decimals: await vToken.decimals(),
+              vTokenAddress: vToken.address,
+              vPoolAddress: vPool.address,
+              vPoolWrapperAddress: vPoolWrapper.address,
+              creationBlockNumber,
+            })
+          )
         );
       } catch (e) {
         if (!e.message.includes('does not contain the deployment')) {
@@ -82,7 +89,6 @@ async function getPoolsList() {
     }
     poolsList[chainName] = poolsListForChain;
   }
-
   return poolsList;
 }
 
