@@ -9,7 +9,11 @@ export async function getBlockByTimestamp(
   provider: ethers.providers.Provider,
   timestamp: number
 ): Promise<number> {
-  return (await findBlockByTimestamp(provider, timestamp)).number;
+  return (
+    await findBlockByTimestamp(provider, timestamp, {
+      allowFutureTimestamp: true,
+    })
+  ).number;
 }
 
 export async function findBlockByTimestamp(
