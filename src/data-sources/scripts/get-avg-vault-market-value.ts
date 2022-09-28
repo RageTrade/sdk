@@ -18,12 +18,19 @@ export async function getAvgVaultMarketValue(
   const hourDelay = 2;
   let i = 0;
   for (; i < 24 / hourDelay; i++) {
-    const blockNumber = await dataSource.getBlockByTimestamp(timestamp);
-    const vmv = await vault.getVaultMarketValue({
-      blockTag: blockNumber,
-    });
-    vmvSum = vmvSum.add(vmv);
-    timestamp -= 3600 * hourDelay;
+    try {
+      const blockNumber = await dataSource.getBlockByTimestamp(timestamp);
+      const vmv = await vault.getVaultMarketValue({
+        blockTag: blockNumber,
+      });
+      vmvSum = vmvSum.add(vmv);
+      timestamp -= 3600 * hourDelay;
+    } catch {
+      // this might fail if node does not support archive queries older than this or
+      // if contract does not exist at this block
+      i++; // counting this iteration
+      break;
+    }
   }
 
   const avgVaultMarketValueD6 = vmvSum.div(i);
