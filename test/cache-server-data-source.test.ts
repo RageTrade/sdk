@@ -10,6 +10,8 @@ import {
 
 config();
 
+jest.setTimeout(200_000);
+
 const provider = new ethers.providers.StaticJsonRpcProvider(
   'https://arb1.arbitrum.io/rpc'
 );
@@ -18,8 +20,7 @@ const provider = new ethers.providers.StaticJsonRpcProvider(
 const baseUrl = 'https://apis.rage.trade';
 
 describe('cache data source', () => {
-  // TODO add tests for arbtest
-  const networkNames: NetworkName[] = ['arbmain' /* 'arbtest', 'arbgoerli' */];
+  const networkNames: NetworkName[] = ['arbmain', 'arbrinkeby', 'arbgoerli'];
   for (const networkName of networkNames) {
     describe(networkName, () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
