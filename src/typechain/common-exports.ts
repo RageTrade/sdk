@@ -14,6 +14,7 @@ export {
   VQuote__factory,
   VToken__factory,
   Account,
+  IClearingHouse,
   ClearingHouse,
   ClearingHouseLens,
   IERC20Metadata,
