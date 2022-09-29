@@ -1,20 +1,16 @@
 import { config } from 'dotenv';
-import { ethers } from 'ethers';
 
 import {
   tricryptoVault,
   CacheServerDataSource,
   pools,
   NetworkName,
+  getProvider,
 } from '../dist';
 
 config();
 
 jest.setTimeout(200_000);
-
-const provider = new ethers.providers.StaticJsonRpcProvider(
-  'https://arb1.arbitrum.io/rpc'
-);
 
 // const baseUrl = 'http://localhost:3000';
 const baseUrl = 'https://apis.rage.trade';
@@ -26,13 +22,14 @@ describe('cache data source', () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
         const ds = new CacheServerDataSource(networkName, baseUrl);
         const { curveYieldStrategy } = await tricryptoVault.getContracts(
-          provider
+          getProvider(networkName)
         );
         const resp = await ds.getAccountIdsByAddress(
           curveYieldStrategy.address
         );
-
-        expect(resp).toEqual([0]);
+        expect(resp).toEqual([
+          (await curveYieldStrategy.rageAccountNo()).toNumber(),
+        ]);
       });
 
       if (networkName === 'arbmain') {
@@ -46,7 +43,7 @@ describe('cache data source', () => {
 
       it(`getPrices ${networkName}`, async () => {
         const ds = new CacheServerDataSource(networkName, baseUrl);
-        const resp = await ds.getPrices(Number(pools.arbmain[0].poolId));
+        const resp = await ds.getPrices(Number(pools[networkName][0].poolId));
 
         expect(resp.realPrice).toBeGreaterThan(0);
         expect(resp.realTwapPrice).toBeGreaterThan(0);

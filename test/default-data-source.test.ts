@@ -10,6 +10,8 @@ import {
 
 config();
 
+jest.setTimeout(200_000);
+
 const provider = new ethers.providers.StaticJsonRpcProvider(
   'https://arb1.arbitrum.io/rpc'
 );
