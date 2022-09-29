@@ -43,6 +43,18 @@ const tvl = await curveYieldStrategy.vaultMarketValue();
 console.log(tvl); // BigNumber
 ```
 
+### Getting user data
+
+```ts
+import { core, tricryptoVault } from '@ragetrade/sdk';
+
+// number[]
+const accountIds = await getAccountIdsByAddress('0xAddress', 'arbmain');
+
+// prints out all collaterals, token positions, liquidity positions for the account
+const accountInfo = await getAccountInfo(2, 'arbmain');
+```
+
 ## Using Fallback Data Sources
 
 ```ts
