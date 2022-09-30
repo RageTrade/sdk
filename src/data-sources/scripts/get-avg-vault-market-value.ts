@@ -10,7 +10,8 @@ export interface AvgVaultMarketValueResult {
 
 export async function getAvgVaultMarketValue(
   vault: BaseVault,
-  dataSource: BaseDataSource
+  dataSource: BaseDataSource,
+  vaultDeployBlockNumber?: number
 ): Promise<AvgVaultMarketValueResult> {
   let timestamp = Math.floor(Date.now() / 1000);
   let vmvSum = BigNumber.from(0);
@@ -21,7 +22,7 @@ export async function getAvgVaultMarketValue(
     try {
       const blockNumber = await dataSource.getBlockByTimestamp(timestamp);
       const vmv = await vault.getVaultMarketValue({
-        blockTag: blockNumber,
+        blockTag: Math.max(blockNumber, vaultDeployBlockNumber || 0),
       });
       vmvSum = vmvSum.add(vmv);
       timestamp -= 3600 * hourDelay;

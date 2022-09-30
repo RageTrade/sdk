@@ -1,5 +1,5 @@
 import { BaseVault__factory } from '../typechain';
-import { SignerOrProvider } from './common';
+import { NetworkName, SignerOrProvider } from './common';
 
 export const tricryptoVaultMetaData: VaultMetadata = {
   name: '80-20 TriCrypto Strategy',
@@ -67,6 +67,26 @@ export function getVaultSync(vaultName: VaultName) {
       };
     default:
       throw new Error(`vaultName should be either tricrypto or gmx`);
+  }
+}
+
+export function getVaultDeployBlockNumber(
+  networkName: NetworkName,
+  vaultName: VaultName
+) {
+  switch (vaultName) {
+    case 'tricrypto':
+      return (
+        tricryptoVault.getDeployments(networkName).CurveYieldStrategyDeployment
+          ?.receipt?.blockNumber || 0
+      );
+    case 'gmx':
+      return (
+        gmxVault.getDeployments(networkName).GMXYieldStrategyDeployment?.receipt
+          ?.blockNumber || 0
+      );
+    default:
+      return 0;
   }
 }
 

@@ -1,6 +1,11 @@
 import { BigNumber, ethers } from 'ethers';
 import { parseEther, formatEther, parseUnits } from 'ethers/lib/utils';
-import { VaultName, getVault } from '../../contracts';
+import {
+  VaultName,
+  getVault,
+  getNetworkNameFromProvider,
+  getVaultDeployBlockNumber,
+} from '../../contracts';
 import { priceX128ToPrice, formatUsdc } from '../../utils';
 import { BaseDataSource } from '../base-data-source';
 import { getAvgVaultMarketValue } from './get-avg-vault-market-value';
@@ -65,8 +70,13 @@ export async function getVaultInfo(
   const depositCap = Number(formatEther(depositCapD18));
   const vaultMarketValue = Number(formatUsdc(vaultMarketValueD6));
 
+  const networkName = await getNetworkNameFromProvider(vault.provider);
+  const vaultDeployBlockNumber = getVaultDeployBlockNumber(
+    networkName,
+    vaultName
+  );
   const { avgVaultMarketValue, avgVaultMarketValueD6 } =
-    await getAvgVaultMarketValue(vault, dataSource);
+    await getAvgVaultMarketValue(vault, dataSource, vaultDeployBlockNumber);
 
   const poolComposition = await getPoolComposition(provider, vaultName);
   return {

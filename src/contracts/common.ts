@@ -24,6 +24,10 @@ export type NetworkName = keyof typeof chainIds;
 export type SignerOrProvider = Signer | providers.Provider;
 export interface ContractDeployment {
   address: string;
+  receipt?: {
+    blockNumber: number;
+    transactionHash: string;
+  };
 }
 
 export function getNetworkNameFromChainId(chainId: number): NetworkName {
