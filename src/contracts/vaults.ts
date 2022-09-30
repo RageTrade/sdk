@@ -62,7 +62,7 @@ export function getVaultSync(vaultName: VaultName) {
       };
     case 'gmx':
       return {
-        metadata: tricryptoVaultMetaData,
+        metadata: gmxVaultMetaData,
         nativeProtocolName: 'GMX',
       };
     default:
