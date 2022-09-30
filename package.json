@@ -1,5 +1,9 @@
 {
-  "version": "1.0.0-alpha.9",
+  "name": "@ragetrade/sdk",
+  "author": "LeadDev",
+  "homepage": "https://github.com/ragetrade/sdk#readme",
+  "version": "1.0.0-alpha.10",
+  "repository": "https://github.com/ragetrade/sdk.git",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -51,9 +55,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@ragetrade/sdk",
-  "author": "LeadDev",
-  "homepage": "https://github.com/owner/project#readme",
   "module": "dist/sdk.esm.js",
   "size-limit": [
     {
