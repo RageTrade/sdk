@@ -4,6 +4,7 @@ import {
   tricryptoVault,
   pools,
   tokens,
+  parseUsdc,
 } from '../dist';
 
 jest.setTimeout(200_000);
@@ -64,6 +65,16 @@ describe('ethers data source', () => {
       const gmxInfo = await ds.getGmxVaultInfoByTokenAddress(usdcAddress);
       expect(gmxInfo.underlyingVaultMinPrice).toBeGreaterThan(0);
     });
+
+    it('deriveSglpAmountForGmxVault', async () => {
+      const { usdcAddress } = tokens.getAddresses(networkName);
+      const sglpAmount = await ds.deriveSglpAmountForGmxVault(
+        usdcAddress,
+        parseUsdc('100'),
+        6
+      );
+      expect(sglpAmount.gt(0)).toBeTruthy();
+    });
   });
 
   describe('arbgoerli', () => {
@@ -120,6 +131,16 @@ describe('ethers data source', () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
       const gmxInfo = await ds.getGmxVaultInfoByTokenAddress(usdcAddress);
       expect(gmxInfo.underlyingVaultMinPrice).toBeGreaterThan(0);
+    });
+
+    it('deriveSglpAmountForGmxVault', async () => {
+      const { usdcAddress } = tokens.getAddresses(networkName);
+      const sglpAmount = await ds.deriveSglpAmountForGmxVault(
+        usdcAddress,
+        parseUsdc('100'),
+        6
+      );
+      expect(sglpAmount.gt(0)).toBeTruthy();
     });
   });
 });

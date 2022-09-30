@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
+import { warn } from '../utils/loggers';
 import {
   PricesResult,
   PoolInfoResult,
@@ -90,28 +91,49 @@ export abstract class BaseDataSource {
     depositAmount: BigNumber,
     decimals: number
   ) {
+    warn(
+      'getDerivedAssetAmount is deprecated and will be removed in future, please use deriveSglpAmountForGmxVault'
+    );
+    return this.deriveSglpAmountForGmxVault(
+      tokenAddress,
+      depositAmount,
+      decimals
+    );
+  }
+
+  /**
+   * Derive amount of sGLP, when any supported token is deposited.
+   * This is used for GMX vaults.
+   * @param tokenAddress Address of the token that will be deposited
+   * @param depositAmount Amount of the token that will be deposited
+   * @param decimals Decimals of the token that will be deposited
+   * @returns Amount of sGLP that might be minted when actually deposited
+   */
+  async deriveSglpAmountForGmxVault(
+    tokenAddress: string,
+    depositAmount: BigNumber,
+    decimals: number
+  ) {
     const slippageThreshold = BigNumber.from(200); // 2%
     const PRICE_PRECISION = BigNumber.from(10).pow(30);
     const MAX_BPS = BigNumber.from(10_000);
 
-    const { underlyingVaultMinPrice } =
+    const { underlyingVaultMinPriceD30 } =
       await this.getGmxVaultInfoByTokenAddress(tokenAddress);
 
     const usdgUnit = BigNumber.from(10).pow(18);
     const depositAmountUnit = BigNumber.from(10).pow(decimals);
 
     const usdg = depositAmount
-      .mul(underlyingVaultMinPrice)
+      .mul(underlyingVaultMinPriceD30)
       .mul(MAX_BPS.sub(slippageThreshold))
       .div(MAX_BPS)
       .div(PRICE_PRECISION)
       .mul(usdgUnit)
       .div(depositAmountUnit);
 
-    const { aumInUsdg, glpSupply } = await this.getGmxVaultInfo();
-
-    const sGLPAmount = usdg.mul(glpSupply).div(aumInUsdg);
-
+    const { aumInUsdgD18, glpSupplyD18 } = await this.getGmxVaultInfo();
+    const sGLPAmount = usdg.mul(glpSupplyD18).div(aumInUsdgD18);
     return sGLPAmount;
   }
 }
