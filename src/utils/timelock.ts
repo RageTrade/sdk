@@ -9,6 +9,9 @@ export interface TimelockOptions {
   salt?: ethers.utils.BytesLike;
 }
 
+// alias for generateTimelockSchedule
+export const timelockSchedule = generateTimelockSchedule;
+
 export async function generateTimelockSchedule(
   timelock: TimelockControllerWithMinDelayOverride,
   txArray: Array<PopulatedTransaction | Promise<PopulatedTransaction>>,
