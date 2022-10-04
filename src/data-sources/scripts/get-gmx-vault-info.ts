@@ -9,6 +9,7 @@ export interface GmxVaultInfoResult {
   glpSupply: number;
 }
 
+// TODO rename to gmx protocol info
 export async function getGmxVaultInfo(
   provider: ethers.providers.Provider
 ): Promise<GmxVaultInfoResult> {
