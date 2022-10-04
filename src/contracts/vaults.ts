@@ -10,8 +10,22 @@ export const gmxVaultMetaData: VaultMetadata = {
   name: '80-20 GLP Strategy',
   assetName: 'GLP Shares',
 };
+export const dnGmxJuniorVaultMetaData: VaultMetadata = {
+  name: '80-20 DN GMX Junior Strategy',
+  assetName: 'GLP Shares',
+};
 
-export type VaultName = 'tricrypto' | 'gmx' | 'unknown';
+export const dnGmxSeniorVaultMetaData: VaultMetadata = {
+  name: '80-20 DN GMX Senior Strategy',
+  assetName: 'GLP Shares',
+};
+
+export type VaultName =
+  | 'tricrypto'
+  | 'gmx'
+  | 'dn-gmx-senior'
+  | 'dn-gmx-junior'
+  | 'unknown';
 
 import { tricryptoVault, gmxVault } from './protocols';
 
@@ -65,8 +79,20 @@ export function getVaultSync(vaultName: VaultName) {
         metadata: gmxVaultMetaData,
         nativeProtocolName: 'GMX',
       };
+    case 'dn-gmx-junior':
+      return {
+        metadata: dnGmxJuniorVaultMetaData,
+        nativeProtocolName: 'GMX',
+      };
+    case 'dn-gmx-senior':
+      return {
+        metadata: dnGmxSeniorVaultMetaData,
+        nativeProtocolName: 'GMX',
+      };
     default:
-      throw new Error(`vaultName should be either tricrypto or gmx`);
+      throw new Error(
+        `vaultName should be either tricrypto, gmx, dn-gmx-junior or dn-gmx-senior`
+      );
   }
 }
 

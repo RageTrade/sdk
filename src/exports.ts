@@ -1,6 +1,6 @@
 export * from './contracts';
 export * from './utils';
-export * from './typechain/common-exports';
+export * from './typechain/exports';
 export * as typechain from './typechain';
 export * from './data-sources';
 
