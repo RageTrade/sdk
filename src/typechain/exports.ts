@@ -45,6 +45,11 @@ export {
   VaultPeriphery,
   BaseVault,
   IERC4626,
+  // curve mocks
+  ICurveStableSwap__factory,
+  ILPPriceGetter__factory,
+  ICurveStableSwap,
+  ILPPriceGetter,
 } from './tricrypto-vault';
 
 export {
@@ -65,11 +70,13 @@ export {
 } from './gmx-vault';
 
 export {
-  ICurveStableSwap__factory,
-  ILPPriceGetter__factory,
-  ICurveStableSwap,
-  ILPPriceGetter,
-} from './tricrypto-vault';
+  DnGmxSeniorVault__factory,
+  DnGmxJuniorVault__factory,
+  DnGmxBatchingManager__factory,
+  DnGmxSeniorVault,
+  DnGmxJuniorVault,
+  DnGmxBatchingManager,
+} from './dn-lb-vault';
 
 export { IUniswapV3Factory__factory, IUniswapV3Factory } from './uniswap-core';
 export {

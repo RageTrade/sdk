@@ -160,11 +160,17 @@ export declare namespace SwapSimulator {
 export interface SwapSimulatorInterface extends utils.Interface {
   functions: {
     'simulateSwap(address,uint32,int256,uint160,bool)': FunctionFragment;
+    'simulateSwapOnVPool(address,uint24,uint24,bool,int256,uint160)': FunctionFragment;
+    'simulateSwapOnVPoolView(address,uint24,uint24,bool,int256,uint160)': FunctionFragment;
     'simulateSwapView(address,uint32,int256,uint160,bool)': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'simulateSwap' | 'simulateSwapView'
+    nameOrSignatureOrTopic:
+      | 'simulateSwap'
+      | 'simulateSwapOnVPool'
+      | 'simulateSwapOnVPoolView'
+      | 'simulateSwapView'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -175,6 +181,28 @@ export interface SwapSimulatorInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<boolean>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'simulateSwapOnVPool',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'simulateSwapOnVPoolView',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
@@ -190,6 +218,14 @@ export interface SwapSimulatorInterface extends utils.Interface {
 
   decodeFunctionResult(
     functionFragment: 'simulateSwap',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'simulateSwapOnVPool',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'simulateSwapOnVPoolView',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -236,6 +272,30 @@ export interface SwapSimulator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    simulateSwapOnVPool(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    simulateSwapOnVPoolView(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [IVPoolWrapper.SwapResultStructOutput] & {
+        swapResult: IVPoolWrapper.SwapResultStructOutput;
+      }
+    >;
+
     simulateSwapView(
       clearingHouse: PromiseOrValue<string>,
       poolId: PromiseOrValue<BigNumberish>,
@@ -258,6 +318,26 @@ export interface SwapSimulator extends BaseContract {
     isNotional: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  simulateSwapOnVPool(
+    vPool: PromiseOrValue<string>,
+    liquidityFeePips: PromiseOrValue<BigNumberish>,
+    protocolFeePips: PromiseOrValue<BigNumberish>,
+    swapVTokenForVQuote: PromiseOrValue<boolean>,
+    amountSpecified: PromiseOrValue<BigNumberish>,
+    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  simulateSwapOnVPoolView(
+    vPool: PromiseOrValue<string>,
+    liquidityFeePips: PromiseOrValue<BigNumberish>,
+    protocolFeePips: PromiseOrValue<BigNumberish>,
+    swapVTokenForVQuote: PromiseOrValue<boolean>,
+    amountSpecified: PromiseOrValue<BigNumberish>,
+    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<IVPoolWrapper.SwapResultStructOutput>;
 
   simulateSwapView(
     clearingHouse: PromiseOrValue<string>,
@@ -288,6 +368,36 @@ export interface SwapSimulator extends BaseContract {
       }
     >;
 
+    simulateSwapOnVPool(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [
+        IVPoolWrapper.SwapResultStructOutput,
+        SimulateSwap.CacheStructOutput,
+        SwapSimulator.SwapStepAndStateStructOutput[]
+      ] & {
+        swapResult: IVPoolWrapper.SwapResultStructOutput;
+        cache: SimulateSwap.CacheStructOutput;
+        steps: SwapSimulator.SwapStepAndStateStructOutput[];
+      }
+    >;
+
+    simulateSwapOnVPoolView(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<IVPoolWrapper.SwapResultStructOutput>;
+
     simulateSwapView(
       clearingHouse: PromiseOrValue<string>,
       poolId: PromiseOrValue<BigNumberish>,
@@ -310,6 +420,26 @@ export interface SwapSimulator extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    simulateSwapOnVPool(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    simulateSwapOnVPoolView(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     simulateSwapView(
       clearingHouse: PromiseOrValue<string>,
       poolId: PromiseOrValue<BigNumberish>,
@@ -328,6 +458,26 @@ export interface SwapSimulator extends BaseContract {
       sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
       isNotional: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    simulateSwapOnVPool(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    simulateSwapOnVPoolView(
+      vPool: PromiseOrValue<string>,
+      liquidityFeePips: PromiseOrValue<BigNumberish>,
+      protocolFeePips: PromiseOrValue<BigNumberish>,
+      swapVTokenForVQuote: PromiseOrValue<boolean>,
+      amountSpecified: PromiseOrValue<BigNumberish>,
+      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     simulateSwapView(
