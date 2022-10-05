@@ -9,6 +9,9 @@ const arbmain = new ethers.providers.StaticJsonRpcProvider(
 const arbtest = new ethers.providers.StaticJsonRpcProvider(
   'https://arb-rinkeby.g.alchemy.com/v2/gh1-tm4X9f0pxljEGsnFnPe693FZ-gim'
 );
+const arbgoerli = new ethers.providers.StaticJsonRpcProvider(
+  'https://arb-goerli.g.alchemy.com/v2/gh1-tm4X9f0pxljEGsnFnPe693FZ-gim'
+);
 
 const state = {
   ...require('ethers-repl/loaders/ethers')(),
@@ -60,6 +63,27 @@ state.sdk.gmxVault.getContracts(arbtest).then((gmxTest) => {
 
 state.sdk.tokens.getContracts(arbtest).then((tokenTest) => {
   const _state = { ...myRepl.context, tokenTest };
+  Object.assign(myRepl.context, _state);
+});
+
+// arbgoerli
+state.sdk.core.getContracts(arbgoerli).then((coreGo) => {
+  const _state = { ...myRepl.context, coreGo };
+  Object.assign(myRepl.context, _state);
+});
+
+state.sdk.tricryptoVault.getContracts(arbgoerli).then((vaultGo) => {
+  const _state = { ...myRepl.context, vaultGo };
+  Object.assign(myRepl.context, _state);
+});
+
+state.sdk.gmxVault.getContracts(arbgoerli).then((gmxGo) => {
+  const _state = { ...myRepl.context, gmxGo };
+  Object.assign(myRepl.context, _state);
+});
+
+state.sdk.tokens.getContracts(arbgoerli).then((tokenGo) => {
+  const _state = { ...myRepl.context, tokenGo };
   Object.assign(myRepl.context, _state);
 });
 
