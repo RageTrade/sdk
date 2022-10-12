@@ -1,5 +1,6 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
+import { ResultWithMetadata } from '../utils';
 import { warn } from '../utils/loggers';
 import {
   PricesResult,
@@ -32,16 +33,18 @@ export abstract class BaseDataSource {
     return typeof obj === 'object' && obj?._isDataSource;
   }
 
-  getNetworkName(): Promise<NetworkName> {
+  getNetworkName(): Promise<ResultWithMetadata<NetworkName>> {
     return this.perform('getNetworkName', []);
   }
 
-  getAccountIdsByAddress(address: string): Promise<number[]> {
+  getAccountIdsByAddress(
+    address: string
+  ): Promise<ResultWithMetadata<number[]>> {
     return this.perform('getAccountIdsByAddress', [address]);
   }
 
   // TODO remove
-  findBlockByTimestamp(timestamp: number): Promise<number> {
+  findBlockByTimestamp(timestamp: number): Promise<ResultWithMetadata<number>> {
     console.log(
       'The method findBlockByTimestamp is deprecated, please use getBlockByTimestamp'
     );
@@ -49,29 +52,33 @@ export abstract class BaseDataSource {
     return this.perform('findBlockByTimestamp', [timestamp]);
   }
 
-  getBlockByTimestamp(timestamp: number): Promise<number> {
+  getBlockByTimestamp(timestamp: number): Promise<ResultWithMetadata<number>> {
     return this.perform('getBlockByTimestamp', [timestamp]);
   }
 
-  getPrices(poolId: BigNumberish): Promise<PricesResult> {
+  getPrices(poolId: BigNumberish): Promise<ResultWithMetadata<PricesResult>> {
     return this.perform('getPrices', [poolId]);
   }
 
-  getPoolInfo(poolId: BigNumberish): Promise<PoolInfoResult> {
+  getPoolInfo(
+    poolId: BigNumberish
+  ): Promise<ResultWithMetadata<PoolInfoResult>> {
     return this.perform('getPoolInfo', [poolId]);
   }
 
-  getVaultInfo(vaultName: VaultName): Promise<VaultInfoResult> {
+  getVaultInfo(
+    vaultName: VaultName
+  ): Promise<ResultWithMetadata<VaultInfoResult>> {
     return this.perform('getVaultInfo', [vaultName]);
   }
 
-  getGmxVaultInfo(): Promise<GmxVaultInfoResult> {
+  getGmxVaultInfo(): Promise<ResultWithMetadata<GmxVaultInfoResult>> {
     return this.perform('getGmxVaultInfo', []);
   }
 
   getGmxVaultInfoByTokenAddress(
     tokenAddress: string
-  ): Promise<GmxVaultInfoByTokenAddressResult> {
+  ): Promise<ResultWithMetadata<GmxVaultInfoByTokenAddressResult>> {
     return this.perform('getGmxVaultInfoByTokenAddress', [tokenAddress]);
   }
 
@@ -113,13 +120,15 @@ export abstract class BaseDataSource {
     tokenAddress: string,
     depositAmount: BigNumber,
     decimals: number
-  ) {
+  ): Promise<ResultWithMetadata<BigNumber>> {
     const slippageThreshold = BigNumber.from(200); // 2%
     const PRICE_PRECISION = BigNumber.from(10).pow(30);
     const MAX_BPS = BigNumber.from(10_000);
 
-    const { underlyingVaultMinPriceD30 } =
-      await this.getGmxVaultInfoByTokenAddress(tokenAddress);
+    const {
+      result: { underlyingVaultMinPriceD30 },
+      cacheTimestamp: timestamp1,
+    } = await this.getGmxVaultInfoByTokenAddress(tokenAddress);
 
     const usdgUnit = BigNumber.from(10).pow(18);
     const depositAmountUnit = BigNumber.from(10).pow(decimals);
@@ -132,8 +141,17 @@ export abstract class BaseDataSource {
       .mul(usdgUnit)
       .div(depositAmountUnit);
 
-    const { aumInUsdgD18, glpSupplyD18 } = await this.getGmxVaultInfo();
+    const {
+      result: { aumInUsdgD18, glpSupplyD18 },
+      cacheTimestamp: timestamp2,
+    } = await this.getGmxVaultInfo();
     const sGLPAmount = usdg.mul(glpSupplyD18).div(aumInUsdgD18);
-    return sGLPAmount;
+    return {
+      result: sGLPAmount,
+      cacheTimestamp:
+        timestamp1 !== undefined && timestamp2 !== undefined
+          ? Math.min(timestamp1, timestamp2)
+          : undefined,
+    };
   }
 }

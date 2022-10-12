@@ -1,5 +1,6 @@
 import deepEqual from 'fast-deep-equal';
 import { NetworkName } from '../contracts';
+import { ResultWithMetadata } from '../utils';
 
 import { BaseDataSource, MethodNames } from './base-data-source';
 
@@ -10,7 +11,7 @@ export interface FallbackDataSourceOptions {
 export class FallbackDataSource extends BaseDataSource {
   _dataSources: BaseDataSource[];
   _quorum: number;
-  _networkName: NetworkName | undefined;
+  _networkName: ResultWithMetadata<NetworkName> | undefined;
 
   constructor(
     dataSources: BaseDataSource[],
@@ -27,7 +28,7 @@ export class FallbackDataSource extends BaseDataSource {
     this._quorum = quorum ?? 1;
   }
 
-  async getNetworkName(): Promise<NetworkName> {
+  async getNetworkName() {
     return (
       this._networkName ??
       (this._networkName = await this.perform(
@@ -50,11 +51,11 @@ export class FallbackDataSource extends BaseDataSource {
       try {
         await this.getNetworkName();
       } catch (e: any) {
-        if (Array.isArray(e.uniqueResults)) {
+        if (Array.isArray(e.uniqueResponses)) {
           throw new Error(
             `Found ${
-              e.uniqueResults.length
-                ? `multiple networks: ${e.uniqueResults
+              e.uniqueResponses.length
+                ? `multiple networks: ${e.uniqueResponses
                     .map((ur: any) => ur.value)
                     .join(', ')}`
                 : 'no networks'
@@ -70,32 +71,35 @@ export class FallbackDataSource extends BaseDataSource {
       }
     }
 
-    const responses: { result?: any; error?: any }[] = [];
-    const uniqueResults: { count: number; value: any }[] = [];
+    const responses: { response?: any; error?: any }[] = [];
+    const uniqueResponses: { count: number; response: any }[] = [];
     for (let i = 0; i < this._dataSources.length; i++) {
       const dataSource = this._dataSources[i];
       try {
-        const response = await (dataSource as any)[method](...args);
-        responses.push({ result: response });
-        const resultObj = uniqueResults.find((ur) =>
-          deepEqual(ur.value, response)
+        const response: ResultWithMetadata<any> = await (dataSource as any)[
+          method
+        ](...args);
+        responses.push({ response });
+        const responseObj = uniqueResponses.find((ur) =>
+          deepEqual(ur.response.result, response.result)
         );
-        if (!resultObj) {
-          uniqueResults.push({ count: 1, value: response });
+        if (!responseObj) {
+          uniqueResponses.push({ count: 1, response });
         } else {
-          resultObj.count++;
+          responseObj.count++;
         }
       } catch (error) {
         responses.push({ error });
       }
-      const resultObj = uniqueResults.find((ur) => ur.count >= quorum);
+      const resultObj = uniqueResponses.find((ur) => ur.count >= quorum);
+
       if (resultObj) {
-        return resultObj.value;
+        return resultObj.response;
       }
     }
     let maxQuorum = 0;
     let successCount = 0;
-    uniqueResults.forEach((ur) => {
+    uniqueResponses.forEach((ur) => {
       if (ur.count > maxQuorum) maxQuorum = ur.count;
       successCount += ur.count;
     });
@@ -104,11 +108,11 @@ export class FallbackDataSource extends BaseDataSource {
       0
     );
     const error: any = new Error(
-      `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique results: ${uniqueResults.length}, Failed queries: ${failedQueriesCount}.`
+      `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique responses: ${uniqueResponses.length}, Failed queries: ${failedQueriesCount}.`
     );
     error.responses = responses;
-    error.numberOfUniqueResults = uniqueResults.length;
-    error.uniqueResults = uniqueResults;
+    error.numberOfUniqueResponses = uniqueResponses.length;
+    error.uniqueResponses = uniqueResponses;
     error.maxQuorum = maxQuorum;
     error.successCount = successCount;
     throw error;

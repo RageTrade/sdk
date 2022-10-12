@@ -20,7 +20,9 @@ export async function getAvgVaultMarketValue(
   let i = 0;
   for (; i < 24 / hourDelay; i++) {
     try {
-      const blockNumber = await dataSource.getBlockByTimestamp(timestamp);
+      const { result: blockNumber } = await dataSource.getBlockByTimestamp(
+        timestamp
+      );
       const vmv = await vault.getVaultMarketValue({
         blockTag: Math.max(blockNumber, vaultDeployBlockNumber || 0),
       });

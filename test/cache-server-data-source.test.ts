@@ -16,7 +16,7 @@ jest.setTimeout(200_000);
 const baseUrl = 'https://apis.rage.trade';
 
 describe('cache data source', () => {
-  const networkNames: NetworkName[] = ['arbmain', 'arbrinkeby', 'arbgoerli'];
+  const networkNames: NetworkName[] = ['arbmain', 'arbgoerli'];
   for (const networkName of networkNames) {
     describe(networkName, () => {
       it(`getAccountIdsByAddress ${networkName}`, async () => {
@@ -27,7 +27,7 @@ describe('cache data source', () => {
         const resp = await ds.getAccountIdsByAddress(
           curveYieldStrategy.address
         );
-        expect(resp).toEqual([
+        expect(resp.result).toEqual([
           (await curveYieldStrategy.rageAccountNo()).toNumber(),
         ]);
       });
@@ -37,7 +37,7 @@ describe('cache data source', () => {
           const ds = new CacheServerDataSource(networkName, baseUrl);
           const resp = await ds.findBlockByTimestamp(1660048813);
 
-          expect(resp).toEqual(19803868);
+          expect(resp.result).toEqual(19803868);
         });
       }
 
@@ -45,10 +45,10 @@ describe('cache data source', () => {
         const ds = new CacheServerDataSource(networkName, baseUrl);
         const resp = await ds.getPrices(Number(pools[networkName][0].poolId));
 
-        expect(resp.realPrice).toBeGreaterThan(0);
-        expect(resp.realTwapPrice).toBeGreaterThan(0);
-        expect(resp.virtualPrice).toBeGreaterThan(0);
-        expect(resp.virtualTwapPrice).toBeGreaterThan(0);
+        expect(resp.result.realPrice).toBeGreaterThan(0);
+        expect(resp.result.realTwapPrice).toBeGreaterThan(0);
+        expect(resp.result.virtualPrice).toBeGreaterThan(0);
+        expect(resp.result.virtualTwapPrice).toBeGreaterThan(0);
       });
 
       describe(`getPoolInfo ${networkName}`, () => {
@@ -57,11 +57,11 @@ describe('cache data source', () => {
             const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getPoolInfo(pool.poolId);
 
-            expect(resp.realPrice).toBeGreaterThan(0);
-            expect(resp.virtualPrice).toBeGreaterThan(0);
-            expect(resp.realTwapPrice).toBeGreaterThan(0);
-            expect(resp.virtualTwapPrice).toBeGreaterThan(0);
-            // expect(resp.fundingRate).toBeGreaterThan(0);
+            expect(resp.result.realPrice).toBeGreaterThan(0);
+            expect(resp.result.virtualPrice).toBeGreaterThan(0);
+            expect(resp.result.realTwapPrice).toBeGreaterThan(0);
+            expect(resp.result.virtualTwapPrice).toBeGreaterThan(0);
+            // expect(resp.result.fundingRate).toBeGreaterThan(0);
           });
         }
       });
@@ -76,13 +76,13 @@ describe('cache data source', () => {
             const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getVaultInfo(vaultName);
 
-            expect(resp.totalSupply).toBeGreaterThan(0);
-            expect(resp.totalAssets).toBeGreaterThan(0);
-            expect(resp.assetPrice).toBeGreaterThan(0);
-            expect(resp.sharePrice).toBeGreaterThan(0);
-            expect(resp.depositCap).toBeGreaterThan(0);
-            expect(resp.vaultMarketValue).toBeGreaterThan(0);
-            expect(resp.avgVaultMarketValue).toBeGreaterThan(0);
+            expect(resp.result.totalSupply).toBeGreaterThan(0);
+            expect(resp.result.totalAssets).toBeGreaterThan(0);
+            expect(resp.result.assetPrice).toBeGreaterThan(0);
+            expect(resp.result.sharePrice).toBeGreaterThan(0);
+            expect(resp.result.depositCap).toBeGreaterThan(0);
+            expect(resp.result.vaultMarketValue).toBeGreaterThan(0);
+            expect(resp.result.avgVaultMarketValue).toBeGreaterThan(0);
           });
         }
       });

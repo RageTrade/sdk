@@ -18,3 +18,4 @@ export * from './get-accounts';
 export * from './arbiscan-provider';
 export * from './general';
 export * from './stringify-bignumber';
+export * from './result';

@@ -1,7 +1,12 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import { NetworkName, getNetworkName } from '../contracts';
-import { BigNumberStringified } from '../utils';
+import {
+  ApiResponse,
+  BigNumberStringified,
+  getResultWithMetadata,
+  ResultWithMetadata,
+} from '../utils';
 
 import { BaseDataSource } from './base-data-source';
 import {
@@ -25,41 +30,48 @@ export class CacheServerDataSource extends BaseDataSource {
     }
   }
 
-  async getNetworkName(): Promise<NetworkName> {
-    return this._networkName;
+  async getNetworkName(): Promise<ResultWithMetadata<NetworkName>> {
+    return getResultWithMetadata(this._networkName);
   }
 
-  async getAccountIdsByAddress(address: string): Promise<number[]> {
+  async getAccountIdsByAddress(
+    address: string
+  ): Promise<ResultWithMetadata<number[]>> {
     const response = await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-account-ids-by-address?networkName=${this._networkName}&userAddress=${address}`
     );
-    return getResult(response);
+    return getResultWithMetadata(response);
   }
 
   // TODO remove
-  async findBlockByTimestamp(timestamp: number): Promise<number> {
+  async findBlockByTimestamp(
+    timestamp: number
+  ): Promise<ResultWithMetadata<number>> {
     const response = await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-block-by-timestamp?networkName=${this._networkName}&timestamp=${timestamp}`
     );
-    return getResult(response);
+    return getResultWithMetadata(response);
   }
 
-  async getBlockByTimestamp(timestamp: number): Promise<number> {
+  async getBlockByTimestamp(
+    timestamp: number
+  ): Promise<ResultWithMetadata<number>> {
     const response = await ethers.utils.fetchJson(
       `${this._baseUrl}/data/get-block-by-timestamp?networkName=${this._networkName}&timestamp=${timestamp}`
     );
-    return getResult(response);
+    return getResultWithMetadata(response);
   }
 
-  async getPrices(poolId: BigNumberish) {
+  async getPrices(
+    poolId: BigNumberish
+  ): Promise<ResultWithMetadata<PricesResult>> {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-prices?networkName=${
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
     )) as ApiResponse<BigNumberStringified<PricesResult>>;
-    const result = getResult(response);
 
-    return {
+    return getResultWithMetadata(response, (result) => ({
       realPrice: result.realPrice,
       virtualPrice: result.virtualPrice,
       realTwapPrice: result.realTwapPrice,
@@ -69,7 +81,7 @@ export class CacheServerDataSource extends BaseDataSource {
       virtualPriceD18: BigNumber.from(result.virtualPriceD18),
       realTwapPriceD18: BigNumber.from(result.realTwapPriceD18),
       virtualTwapPriceD18: BigNumber.from(result.virtualTwapPriceD18),
-    };
+    }));
   }
 
   async getPoolInfo(poolId: BigNumberish) {
@@ -78,8 +90,7 @@ export class CacheServerDataSource extends BaseDataSource {
         this._networkName
       }&poolId=${BigNumber.from(poolId).toNumber()}`
     )) as ApiResponse<BigNumberStringified<PoolInfoResult>>;
-    const result = getResult(response);
-    return {
+    return getResultWithMetadata(response, (result) => ({
       realPrice: result.realPrice,
       virtualPrice: result.virtualPrice,
       realTwapPrice: result.realTwapPrice,
@@ -100,15 +111,14 @@ export class CacheServerDataSource extends BaseDataSource {
       realTwapPriceD18: BigNumber.from(result.realTwapPriceD18),
       virtualTwapPriceD18: BigNumber.from(result.virtualTwapPriceD18),
       fundingRateD18: BigNumber.from(result.fundingRateD18),
-    };
+    }));
   }
 
   async getVaultInfo(vaultName: string) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
-    const result = getResult(response);
-    return {
+    return getResultWithMetadata(response, (result) => ({
       nativeProtocolName: result.nativeProtocolName,
 
       poolComposition: {
@@ -138,46 +148,30 @@ export class CacheServerDataSource extends BaseDataSource {
       depositCapD18: parseUnits(String(result.depositCap), 18),
       vaultMarketValueD6: parseUnits(String(result.vaultMarketValue), 6),
       avgVaultMarketValueD6: parseUnits(String(result.avgVaultMarketValue), 6),
-    };
+    }));
   }
 
   async getGmxVaultInfo() {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-gmx-vault-info?networkName=${this._networkName}`
     )) as ApiResponse<BigNumberStringified<GmxVaultInfoResult>>;
-    const result = getResult(response);
-    return {
+    return getResultWithMetadata(response, (result) => ({
       aumInUsdg: result.aumInUsdg,
       glpSupply: result.glpSupply,
       aumInUsdgD18: BigNumber.from(result.aumInUsdg),
       glpSupplyD18: BigNumber.from(result.glpSupply),
-    };
+    }));
   }
 
   async getGmxVaultInfoByTokenAddress(tokenAddress: string) {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-gmx-vault-info-by-token-address?networkName=${this._networkName}&tokenAddress=${tokenAddress}`
     )) as ApiResponse<BigNumberStringified<GmxVaultInfoByTokenAddressResult>>;
-    const result = getResult(response);
-    return {
+    return getResultWithMetadata(response, (result) => ({
       underlyingVaultMinPrice: result.underlyingVaultMinPrice,
       underlyingVaultMinPriceD30: BigNumber.from(
         result.underlyingVaultMinPriceD30
       ),
-    };
-  }
-}
-
-type ApiResponse<T> = { result?: T; [key: string]: any };
-
-function getResult<T>(response: ApiResponse<T>): T;
-
-function getResult(response: any) {
-  if ('result' in response) {
-    return response.result;
-  } else {
-    const error = new Error();
-    error.stack = JSON.stringify(response);
-    throw error;
+    }));
   }
 }

@@ -20,9 +20,9 @@ describe('ethers data source', () => {
     it('getAccountIdsByAddress', async () => {
       const { curveYieldStrategy } =
         tricryptoVault.getContractsSync(networkName);
-      const [accountId] = await ds.getAccountIdsByAddress(
-        curveYieldStrategy.address
-      );
+      const {
+        result: [accountId],
+      } = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
 
       expect((await curveYieldStrategy.rageAccountNo()).toNumber()).toEqual(
         accountId
@@ -30,45 +30,51 @@ describe('ethers data source', () => {
     });
 
     it('getPrices', async () => {
-      const prices = await ds.getPrices(pools[networkName][0].poolId);
+      const { result: prices } = await ds.getPrices(
+        pools[networkName][0].poolId
+      );
       expect(prices.realPrice).toBeGreaterThan(0);
       expect(prices.virtualPrice).toBeGreaterThan(0);
       expect(prices.virtualTwapPrice).toBeGreaterThan(0);
     });
 
     it('getPoolInfo', async () => {
-      const poolInfo = await ds.getPoolInfo(pools[networkName][0].poolId);
+      const { result: poolInfo } = await ds.getPoolInfo(
+        pools[networkName][0].poolId
+      );
       expect(poolInfo.realPrice).toBeGreaterThan(0);
       expect(poolInfo.virtualPrice).toBeGreaterThan(0);
       expect(poolInfo.virtualTwapPrice).toBeGreaterThan(0);
     });
 
     it('getVaultInfo tricrypto', async () => {
-      const vaultInfo = await ds.getVaultInfo('tricrypto');
+      const { result: vaultInfo } = await ds.getVaultInfo('tricrypto');
       expect(vaultInfo.depositCap).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
     });
 
     it.skip('getVaultInfo gmx', async () => {
-      const vaultInfo = await ds.getVaultInfo('gmx');
+      const { result: vaultInfo } = await ds.getVaultInfo('gmx');
       expect(vaultInfo.depositCap).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('GMX');
     });
 
     it.skip('getGmxVaultInfo', async () => {
-      const gmxInfo = await ds.getGmxVaultInfo();
+      const { result: gmxInfo } = await ds.getGmxVaultInfo();
       expect(gmxInfo.aumInUsdg).toBeGreaterThan(0);
     });
 
     it.skip('getGmxVaultInfoByTokenAddress', async () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
-      const gmxInfo = await ds.getGmxVaultInfoByTokenAddress(usdcAddress);
+      const { result: gmxInfo } = await ds.getGmxVaultInfoByTokenAddress(
+        usdcAddress
+      );
       expect(gmxInfo.underlyingVaultMinPrice).toBeGreaterThan(0);
     });
 
     it('deriveSglpAmountForGmxVault', async () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
-      const sglpAmount = await ds.deriveSglpAmountForGmxVault(
+      const { result: sglpAmount } = await ds.deriveSglpAmountForGmxVault(
         usdcAddress,
         parseUsdc('100'),
         6
@@ -87,9 +93,9 @@ describe('ethers data source', () => {
     it('getAccountIdsByAddress', async () => {
       const { curveYieldStrategy } =
         tricryptoVault.getContractsSync(networkName);
-      const [accountId] = await ds.getAccountIdsByAddress(
-        curveYieldStrategy.address
-      );
+      const {
+        result: [accountId],
+      } = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
 
       expect((await curveYieldStrategy.rageAccountNo()).toNumber()).toEqual(
         accountId
@@ -97,45 +103,51 @@ describe('ethers data source', () => {
     });
 
     it('getPrices', async () => {
-      const prices = await ds.getPrices(pools[networkName][0].poolId);
+      const { result: prices } = await ds.getPrices(
+        pools[networkName][0].poolId
+      );
       expect(prices.realPrice).toBeGreaterThan(0);
       expect(prices.virtualPrice).toBeGreaterThan(0);
       expect(prices.virtualTwapPrice).toBeGreaterThan(0);
     });
 
     it('getPoolInfo', async () => {
-      const poolInfo = await ds.getPoolInfo(pools[networkName][0].poolId);
+      const { result: poolInfo } = await ds.getPoolInfo(
+        pools[networkName][0].poolId
+      );
       expect(poolInfo.realPrice).toBeGreaterThan(0);
       expect(poolInfo.virtualPrice).toBeGreaterThan(0);
       expect(poolInfo.virtualTwapPrice).toBeGreaterThan(0);
     });
 
     it('getVaultInfo tricrypto', async () => {
-      const vaultInfo = await ds.getVaultInfo('tricrypto');
+      const { result: vaultInfo } = await ds.getVaultInfo('tricrypto');
       expect(vaultInfo.depositCap).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
     });
 
     it('getVaultInfo gmx', async () => {
-      const vaultInfo = await ds.getVaultInfo('gmx');
+      const { result: vaultInfo } = await ds.getVaultInfo('gmx');
       expect(vaultInfo.depositCap).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('GMX');
     });
 
     it('getGmxVaultInfo', async () => {
-      const gmxInfo = await ds.getGmxVaultInfo();
+      const { result: gmxInfo } = await ds.getGmxVaultInfo();
       expect(gmxInfo.aumInUsdg).toBeGreaterThan(0);
     });
 
     it('getGmxVaultInfoByTokenAddress', async () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
-      const gmxInfo = await ds.getGmxVaultInfoByTokenAddress(usdcAddress);
+      const { result: gmxInfo } = await ds.getGmxVaultInfoByTokenAddress(
+        usdcAddress
+      );
       expect(gmxInfo.underlyingVaultMinPrice).toBeGreaterThan(0);
     });
 
     it('deriveSglpAmountForGmxVault', async () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
-      const sglpAmount = await ds.deriveSglpAmountForGmxVault(
+      const { result: sglpAmount } = await ds.deriveSglpAmountForGmxVault(
         usdcAddress,
         parseUsdc('100'),
         6
