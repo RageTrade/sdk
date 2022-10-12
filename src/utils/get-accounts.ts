@@ -1,8 +1,12 @@
 import { BigNumber } from 'ethers';
+import { formatEther } from 'ethers/lib/utils';
 import { core, getNetworkName, NetworkName } from '../contracts';
 import pools from '../pools.json';
-import { ClearingHouse, IClearingHouse, uniswapCore } from '../typechain';
+import { ClearingHouse, IClearingHouse } from '../typechain';
+import * as typechain from '../typechain';
+import { formatUsdc } from './amounts';
 import { amountsForLiquidity } from './liquidity';
+import { unrealizedLpFees } from './lp-fees';
 import { tickToPrice } from './price-tick';
 
 export async function getAccountIdsByAddress(
@@ -55,19 +59,25 @@ export async function getAccountInfo(
       const { balance, netTraderPosition, sumALastX128, activeTickRanges } =
         await clearingHouseLens.getAccountPositionInfo(accountId, poolId);
 
-      let vPoolAddress = pools[networkName].find((pool) =>
-        BigNumber.from(pool.poolId).eq(poolId)
-      )?.vPoolAddress;
+      let { vPoolAddress, vPoolWrapperAddress } =
+        pools[networkName].find((pool) =>
+          BigNumber.from(pool.poolId).eq(poolId)
+        )! || {};
 
       if (vPoolAddress === undefined) {
         const poolInfo = await clearingHouseLens.getPoolInfo(poolId);
         vPoolAddress = poolInfo.vPool;
       }
 
-      const vPool = uniswapCore.UniswapV3Pool__factory.connect(
+      const vPool = typechain.uniswapCore.UniswapV3Pool__factory.connect(
         vPoolAddress,
         clearingHouseLens.provider
       );
+      const vPoolWrapper = typechain.core.VPoolWrapper__factory.connect(
+        vPoolWrapperAddress,
+        clearingHouseLens.provider
+      );
+
       const { sqrtPriceX96 } = await vPool.slot0();
 
       const liquidityPositions = await Promise.all(
@@ -89,11 +99,29 @@ export async function getAccountInfo(
           // TODO take the decimals dynamically
           const priceLower = await tickToPrice(tickRange.tickLower, 6, 18);
           const priceUpper = await tickToPrice(tickRange.tickUpper, 6, 18);
+
+          const { sumFeeInsideX128 } =
+            await vPoolWrapper.getExtrapolatedValuesInside(
+              tickRange.tickLower,
+              tickRange.tickUpper
+            );
+          const unrealizedLpFeesAmount = unrealizedLpFees(
+            sumFeeInsideX128,
+            lpInfo.sumFeeInsideLastX128,
+            lpInfo.liquidity
+          );
+
           return {
             tickLower: tickRange.tickLower,
             tickUpper: tickRange.tickUpper,
             priceLower,
             priceUpper,
+            vQuoteAmountFormatted: formatUsdc(vQuoteAmount),
+            vTokenAmountFormatted: formatEther(vTokenAmount),
+            unrealizedLpFeesAmountFormatted: formatUsdc(unrealizedLpFeesAmount),
+            vQuoteAmount,
+            vTokenAmount,
+            unrealizedLpFeesAmount,
             limitOrderType: lpInfo.limitOrderType,
             liquidity: lpInfo.liquidity,
             vTokenAmountIn: lpInfo.vTokenAmountIn,
@@ -101,8 +129,6 @@ export async function getAccountInfo(
             sumBInsideLastX128: lpInfo.sumBInsideLastX128,
             sumFpInsideLastX128: lpInfo.sumFpInsideLastX128,
             sumFeeInsideLastX128: lpInfo.sumFeeInsideLastX128,
-            vQuoteAmount,
-            vTokenAmount,
           };
         })
       );
