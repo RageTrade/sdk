@@ -22,7 +22,7 @@ main().catch(console.error);
 async function getDefaultPool(poolsList) {
   const defaultPool = {};
 
-  for (const [chainName, chainId] of Object.entries(sdk.chainIds)) {
+  for (const [chainName] of Object.entries(sdk.chainIds)) {
     const defaultPoolForChain = poolsList[chainName]?.[0];
     if (defaultPoolForChain) {
       defaultPool[chainName] = defaultPoolForChain;
@@ -34,7 +34,7 @@ async function getDefaultPool(poolsList) {
 async function getPoolsList() {
   const poolsList = {};
 
-  for (const [chainName, chainId] of Object.entries(sdk.chainIds)) {
+  for (const [chainName] of Object.entries(sdk.chainIds)) {
     let poolsListForChain = [];
     const provider = sdk.getProvider(chainName);
     if (provider) {
@@ -94,7 +94,9 @@ async function getPoolsList() {
 
 function getArbiscanProvider(chainName) {
   try {
-    if (chainName === 'arbmain') throw new Error('some issue is there');
+    if (chainName === 'arbrinkeby' || chainName === 'arbtest') {
+      throw new Error('some issue is there');
+    }
     return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
   } catch {}
 }

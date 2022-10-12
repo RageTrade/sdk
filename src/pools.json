@@ -11,7 +11,18 @@
       "creationBlockNumber": 17185456
     }
   ],
-  "arbtest": [],
+  "arbtest": [
+    {
+      "poolId": "0x87ba0501",
+      "name": "Virtual Ether (Rage Trade)",
+      "symbol": "vETH",
+      "decimals": 18,
+      "vTokenAddress": "0x164B8C1c65b73638e4C24dB781a0f41a87ba0501",
+      "vPoolAddress": "0x1567EA56f4B9cE6e335C042D54C74cCA0b8C6A1E",
+      "vPoolWrapperAddress": "0x13Ff6f6E98534c251dBeAbCB32325eB2093C1570",
+      "creationBlockNumber": 12705363
+    }
+  ],
   "arbrinkeby": [
     {
       "poolId": "0x87ba0501",
