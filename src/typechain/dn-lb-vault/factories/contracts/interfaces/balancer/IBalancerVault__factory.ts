@@ -7,7 +7,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   IBalancerVault,
   IBalancerVaultInterface,
-} from '../../../contracts/interfaces/IBalancerVault';
+} from '../../../../contracts/interfaces/balancer/IBalancerVault';
 
 const _abi = [
   {
@@ -36,30 +36,6 @@ const _abi = [
     name: 'flashLoan',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
-      },
-      {
-        internalType: 'address[]',
-        name: 'tokens',
-        type: 'address[]',
-      },
-    ],
-    name: 'getInternalBalance',
-    outputs: [
-      {
-        internalType: 'uint256[]',
-        name: '',
-        type: 'uint256[]',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
 ];

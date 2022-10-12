@@ -37,8 +37,11 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'convertToShares(uint256)': FunctionFragment;
     'decimals()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
+    'depositCap()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
+    'getPriceX128()': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
+    'getVaultMarketValue()': FunctionFragment;
     'harvestFees()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
@@ -69,8 +72,11 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
       | 'convertToShares'
       | 'decimals'
       | 'deposit'
+      | 'depositCap'
       | 'getMarketValue'
+      | 'getPriceX128'
       | 'getUsdcBorrowed'
+      | 'getVaultMarketValue'
       | 'harvestFees'
       | 'maxDeposit'
       | 'maxMint'
@@ -118,11 +124,23 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'depositCap',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getMarketValue',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'getPriceX128',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getUsdcBorrowed',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getVaultMarketValue',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -218,12 +236,21 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'getMarketValue',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getUsdcBorrowed',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getVaultMarketValue',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -402,12 +429,18 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { marketValue: BigNumber }>;
 
+    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getUsdcBorrowed(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     harvestFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -534,12 +567,18 @@ export interface IDnGmxJuniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
   getMarketValue(
     assetAmount: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
   getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
   harvestFees(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -664,12 +703,18 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     harvestFees(overrides?: CallOverrides): Promise<void>;
 
@@ -845,12 +890,18 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     harvestFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -976,12 +1027,20 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getUsdcBorrowed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getVaultMarketValue(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     harvestFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }

@@ -21,17 +21,14 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from '../../common';
+} from '../../../common';
 
 export interface IBalancerVaultInterface extends utils.Interface {
   functions: {
     'flashLoan(address,address[],uint256[],bytes)': FunctionFragment;
-    'getInternalBalance(address,address[])': FunctionFragment;
   };
 
-  getFunction(
-    nameOrSignatureOrTopic: 'flashLoan' | 'getInternalBalance'
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'flashLoan'): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'flashLoan',
@@ -42,16 +39,8 @@ export interface IBalancerVaultInterface extends utils.Interface {
       PromiseOrValue<BytesLike>
     ]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'getInternalBalance',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>[]]
-  ): string;
 
   decodeFunctionResult(functionFragment: 'flashLoan', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'getInternalBalance',
-    data: BytesLike
-  ): Result;
 
   events: {};
 }
@@ -90,12 +79,6 @@ export interface IBalancerVault extends BaseContract {
       userData: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    getInternalBalance(
-      user: PromiseOrValue<string>,
-      tokens: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
   };
 
   flashLoan(
@@ -106,12 +89,6 @@ export interface IBalancerVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  getInternalBalance(
-    user: PromiseOrValue<string>,
-    tokens: PromiseOrValue<string>[],
-    overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
-
   callStatic: {
     flashLoan(
       recipient: PromiseOrValue<string>,
@@ -120,12 +97,6 @@ export interface IBalancerVault extends BaseContract {
       userData: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    getInternalBalance(
-      user: PromiseOrValue<string>,
-      tokens: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
   };
 
   filters: {};
@@ -138,12 +109,6 @@ export interface IBalancerVault extends BaseContract {
       userData: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    getInternalBalance(
-      user: PromiseOrValue<string>,
-      tokens: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -153,12 +118,6 @@ export interface IBalancerVault extends BaseContract {
       amounts: PromiseOrValue<BigNumberish>[],
       userData: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getInternalBalance(
-      user: PromiseOrValue<string>,
-      tokens: PromiseOrValue<string>[],
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

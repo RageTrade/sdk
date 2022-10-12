@@ -62,13 +62,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'executeBatchDeposit()': FunctionFragment;
     'executeBatchStake()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
-    'initialize(address,address,address,address,address)': FunctionFragment;
+    'initialize(address,address,address,address,address,address)': FunctionFragment;
     'keeper()': FunctionFragment;
     'owner()': FunctionFragment;
     'pauseDeposit()': FunctionFragment;
     'paused()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'roundDeposits(uint256)': FunctionFragment;
+    'roundGlpStaked()': FunctionFragment;
     'roundUsdcBalance()': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
@@ -98,6 +99,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'paused'
       | 'renounceOwnership'
       | 'roundDeposits'
+      | 'roundGlpStaked'
       | 'roundUsdcBalance'
       | 'setKeeper'
       | 'transferOwnership'
@@ -156,6 +158,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
@@ -173,6 +176,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'roundDeposits',
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'roundGlpStaked',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'roundUsdcBalance',
@@ -258,6 +265,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'roundDeposits',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'roundGlpStaked',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -492,6 +503,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     initialize(
       _sGlp: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
       _glpManager: PromiseOrValue<string>,
       _dnGmxJuniorVault: PromiseOrValue<string>,
@@ -517,6 +529,8 @@ export interface DnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[IDnGmxBatchingManager.RoundDepositStructOutput]>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -599,6 +613,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   initialize(
     _sGlp: PromiseOrValue<string>,
+    _usdc: PromiseOrValue<string>,
     _rewardRouter: PromiseOrValue<string>,
     _glpManager: PromiseOrValue<string>,
     _dnGmxJuniorVault: PromiseOrValue<string>,
@@ -624,6 +639,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     round: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<IDnGmxBatchingManager.RoundDepositStructOutput>;
+
+  roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
 
   roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -700,6 +717,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     initialize(
       _sGlp: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
       _glpManager: PromiseOrValue<string>,
       _dnGmxJuniorVault: PromiseOrValue<string>,
@@ -721,6 +739,8 @@ export interface DnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IDnGmxBatchingManager.RoundDepositStructOutput>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -881,6 +901,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     initialize(
       _sGlp: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
       _glpManager: PromiseOrValue<string>,
       _dnGmxJuniorVault: PromiseOrValue<string>,
@@ -906,6 +927,8 @@ export interface DnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -985,6 +1008,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     initialize(
       _sGlp: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
       _glpManager: PromiseOrValue<string>,
       _dnGmxJuniorVault: PromiseOrValue<string>,
@@ -1010,6 +1034,8 @@ export interface DnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

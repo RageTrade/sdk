@@ -111,7 +111,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'dnGmxSeniorVault()': FunctionFragment;
     'feeRecipient()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
-    'getPrice()': FunctionFragment;
+    'getPriceX128()': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
     'getVaultMarketValue()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
@@ -189,7 +189,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'dnGmxSeniorVault'
       | 'feeRecipient'
       | 'getMarketValue'
-      | 'getPrice'
+      | 'getPriceX128'
       | 'getUsdcBorrowed'
       | 'getVaultMarketValue'
       | 'grantAllowances'
@@ -310,7 +310,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'getMarketValue',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'getPrice', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'getPriceX128',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'getUsdcBorrowed',
     values?: undefined
@@ -578,7 +581,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'getMarketValue',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'getPrice', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPriceX128',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getUsdcBorrowed',
     data: BytesLike
@@ -1090,7 +1096,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { marketValue: BigNumber }>;
 
-    getPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getUsdcBorrowed(
       overrides?: CallOverrides
@@ -1383,7 +1389,7 @@ export interface DnGmxJuniorVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1672,7 +1678,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2090,7 +2096,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getPrice(overrides?: CallOverrides): Promise<BigNumber>;
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2382,7 +2388,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getUsdcBorrowed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

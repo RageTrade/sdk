@@ -110,6 +110,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
+    'depositToken(address,uint256,uint256)': FunctionFragment;
     'dnGmxSeniorVault()': FunctionFragment;
     'dnUsdcDepositedExternal()': FunctionFragment;
     'executeBorrow(address,uint256)': FunctionFragment;
@@ -128,7 +129,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'getOptimalBorrows(uint256)': FunctionFragment;
     'getPrice(address)': FunctionFragment;
     'getPrice(address,bool)': FunctionFragment;
-    'getPrice()': FunctionFragment;
+    'getPriceX128()': FunctionFragment;
     'getTokenReservesInGlp(address,uint256)': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
     'getVaultMarketValue()': FunctionFragment;
@@ -215,6 +216,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'decreaseAllowance'
       | 'deposit'
       | 'depositCap'
+      | 'depositToken'
       | 'dnGmxSeniorVault'
       | 'dnUsdcDepositedExternal'
       | 'executeBorrow'
@@ -233,7 +235,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'getOptimalBorrows'
       | 'getPrice(address)'
       | 'getPrice(address,bool)'
-      | 'getPrice()'
+      | 'getPriceX128'
       | 'getTokenReservesInGlp'
       | 'getUsdcBorrowed'
       | 'getVaultMarketValue'
@@ -361,6 +363,14 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'depositToken',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'dnGmxSeniorVault',
     values?: undefined
   ): string;
@@ -452,7 +462,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
-    functionFragment: 'getPrice()',
+    functionFragment: 'getPriceX128',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -772,6 +782,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'depositToken',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'dnGmxSeniorVault',
     data: BytesLike
   ): Result;
@@ -843,7 +857,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     functionFragment: 'getPrice(address,bool)',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'getPrice()', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPriceX128',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'getTokenReservesInGlp',
     data: BytesLike
@@ -1390,6 +1407,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    depositToken(
+      token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      minUsdg: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     dnGmxSeniorVault(overrides?: CallOverrides): Promise<[string]>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -1503,7 +1527,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    'getPrice()'(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
@@ -1850,6 +1874,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
   depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+  depositToken(
+    token: PromiseOrValue<string>,
+    amount: PromiseOrValue<BigNumberish>,
+    minUsdg: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   dnGmxSeniorVault(overrides?: CallOverrides): Promise<string>;
 
   dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1963,7 +1994,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  'getPrice()'(overrides?: CallOverrides): Promise<BigNumber>;
+  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
   getTokenReservesInGlp(
     token: PromiseOrValue<string>,
@@ -2306,6 +2337,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    depositToken(
+      token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      minUsdg: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     dnGmxSeniorVault(overrides?: CallOverrides): Promise<string>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2419,7 +2457,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    'getPrice()'(overrides?: CallOverrides): Promise<BigNumber>;
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
@@ -2894,6 +2932,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    depositToken(
+      token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      minUsdg: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     dnGmxSeniorVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
@@ -2991,7 +3036,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    'getPrice()'(overrides?: CallOverrides): Promise<BigNumber>;
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
@@ -3337,6 +3382,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    depositToken(
+      token: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      minUsdg: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     dnGmxSeniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     dnUsdcDepositedExternal(
@@ -3436,7 +3488,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    'getPrice()'(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,

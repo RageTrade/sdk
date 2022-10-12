@@ -1,25 +1,26 @@
 import {
-  DnGmxSeniorVault__factory,
-  DnGmxJuniorVault__factory,
   DnGmxBatchingManager__factory,
+  DnGmxJuniorVault__factory,
+  DnGmxSeniorVault__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  ContractDeployment,
   getChainIdFromProvider,
   getNetworkName,
   NetworkName,
   SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
+import * as arbgoerli from './arbgoerli';
+import { DnGmxVaultDeployments } from './interface';
 
-export function getDeployments(networkNameOrChainId: NetworkName | number): {
-  DnGmxJuniorVaultDeployment: ContractDeployment;
-  DnGmxSeniorVaultDeployment: ContractDeployment;
-  DnGmxBatchingManagerDeployment: ContractDeployment;
-} {
+export function getDeployments(
+  networkNameOrChainId: NetworkName | number
+): DnGmxVaultDeployments {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
+    case 'arbgoerli':
+      return arbgoerli.getDeployments();
     default:
       throw newError(
         `dn-lb-vault deployment not present for ${networkName} network`

@@ -38,7 +38,10 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     'convertToShares(uint256)': FunctionFragment;
     'decimals()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
+    'depositCap()': FunctionFragment;
     'getEthRewardsSplitRate()': FunctionFragment;
+    'getPriceX128()': FunctionFragment;
+    'getVaultMarketValue()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
@@ -70,7 +73,10 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
       | 'convertToShares'
       | 'decimals'
       | 'deposit'
+      | 'depositCap'
       | 'getEthRewardsSplitRate'
+      | 'getPriceX128'
+      | 'getVaultMarketValue'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
@@ -122,7 +128,19 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'depositCap',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getEthRewardsSplitRate',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getPriceX128',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getVaultMarketValue',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -219,8 +237,17 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'getEthRewardsSplitRate',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getVaultMarketValue',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
@@ -401,9 +428,15 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getEthRewardsSplitRate(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxDeposit(
       receiver: PromiseOrValue<string>,
@@ -536,9 +569,15 @@ export interface IDnGmxSeniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
   getEthRewardsSplitRate(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
   maxDeposit(
     receiver: PromiseOrValue<string>,
@@ -669,7 +708,13 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     getEthRewardsSplitRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxDeposit(
       receiver: PromiseOrValue<string>,
@@ -853,9 +898,15 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     getEthRewardsSplitRate(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxDeposit(
       receiver: PromiseOrValue<string>,
@@ -987,8 +1038,16 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getEthRewardsSplitRate(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getVaultMarketValue(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     maxDeposit(

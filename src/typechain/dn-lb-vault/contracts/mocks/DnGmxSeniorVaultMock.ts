@@ -62,9 +62,12 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     'decimals()': FunctionFragment;
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
+    'depositCap()': FunctionFragment;
     'dnGmxJuniorVault()': FunctionFragment;
     'feeStrategy()': FunctionFragment;
     'getEthRewardsSplitRate()': FunctionFragment;
+    'getPriceX128()': FunctionFragment;
+    'getVaultMarketValue()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
     'initialize(address,string,string,address)': FunctionFragment;
@@ -85,6 +88,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'repay(uint256)': FunctionFragment;
+    'setDepositCap(uint256)': FunctionFragment;
     'setDnGmxJuniorVault(address)': FunctionFragment;
     'setMaxUtilizationBps(uint16)': FunctionFragment;
     'symbol()': FunctionFragment;
@@ -114,9 +118,12 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
       | 'decimals'
       | 'decreaseAllowance'
       | 'deposit'
+      | 'depositCap'
       | 'dnGmxJuniorVault'
       | 'feeStrategy'
       | 'getEthRewardsSplitRate'
+      | 'getPriceX128'
+      | 'getVaultMarketValue'
       | 'grantAllowances'
       | 'increaseAllowance'
       | 'initialize'
@@ -137,6 +144,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
       | 'redeem'
       | 'renounceOwnership'
       | 'repay'
+      | 'setDepositCap'
       | 'setDnGmxJuniorVault'
       | 'setMaxUtilizationBps'
       | 'symbol'
@@ -203,6 +211,10 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'depositCap',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'dnGmxJuniorVault',
     values?: undefined
   ): string;
@@ -212,6 +224,14 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getEthRewardsSplitRate',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getPriceX128',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getVaultMarketValue',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -292,6 +312,10 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'repay',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setDepositCap',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -379,6 +403,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'dnGmxJuniorVault',
     data: BytesLike
@@ -389,6 +414,14 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getEthRewardsSplitRate',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPriceX128',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getVaultMarketValue',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -442,6 +475,10 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'repay', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'setDepositCap',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'setDnGmxJuniorVault',
     data: BytesLike
   ): Result;
@@ -485,25 +522,27 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   events: {
     'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
+    'BorrowCapUpdated(address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'DepositCapUpdated(uint256)': EventFragment;
     'Initialized(uint8)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'Paused(address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
-    'VaultCapUpdated(address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'BorrowCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
 
@@ -528,6 +567,18 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
+export interface BorrowCapUpdatedEventObject {
+  vault: string;
+  newCap: BigNumber;
+}
+export type BorrowCapUpdatedEvent = TypedEvent<
+  [string, BigNumber],
+  BorrowCapUpdatedEventObject
+>;
+
+export type BorrowCapUpdatedEventFilter =
+  TypedEventFilter<BorrowCapUpdatedEvent>;
+
 export interface DepositEventObject {
   caller: string;
   owner: string;
@@ -540,6 +591,17 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface DepositCapUpdatedEventObject {
+  _newDepositCap: BigNumber;
+}
+export type DepositCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DepositCapUpdatedEventObject
+>;
+
+export type DepositCapUpdatedEventFilter =
+  TypedEventFilter<DepositCapUpdatedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -585,17 +647,6 @@ export interface UnpausedEventObject {
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface VaultCapUpdatedEventObject {
-  vault: string;
-  newCap: BigNumber;
-}
-export type VaultCapUpdatedEvent = TypedEvent<
-  [string, BigNumber],
-  VaultCapUpdatedEventObject
->;
-
-export type VaultCapUpdatedEventFilter = TypedEventFilter<VaultCapUpdatedEvent>;
 
 export interface WithdrawEventObject {
   caller: string;
@@ -700,6 +751,8 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<[string]>;
 
     feeStrategy(overrides?: CallOverrides): Promise<
@@ -714,6 +767,10 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     getEthRewardsSplitRate(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { feeSplitRate: BigNumber }>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     grantAllowances(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -802,6 +859,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
     repay(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setDepositCap(
+      _newDepositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -931,6 +993,8 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
   dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
   feeStrategy(overrides?: CallOverrides): Promise<
@@ -943,6 +1007,10 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
   >;
 
   getEthRewardsSplitRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
   grantAllowances(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1031,6 +1099,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
   repay(
     amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setDepositCap(
+    _newDepositCap: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1156,6 +1229,8 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
     feeStrategy(overrides?: CallOverrides): Promise<
@@ -1168,6 +1243,10 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     >;
 
     getEthRewardsSplitRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantAllowances(overrides?: CallOverrides): Promise<void>;
 
@@ -1255,6 +1334,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setDepositCap(
+      _newDepositCap: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setDnGmxJuniorVault(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1330,6 +1414,12 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
+    'BorrowCapUpdated(address,uint256)'(
+      vault?: null,
+      newCap?: null
+    ): BorrowCapUpdatedEventFilter;
+    BorrowCapUpdated(vault?: null, newCap?: null): BorrowCapUpdatedEventFilter;
+
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
       owner?: PromiseOrValue<string> | null,
@@ -1342,6 +1432,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       assets?: null,
       shares?: null
     ): DepositEventFilter;
+
+    'DepositCapUpdated(uint256)'(
+      _newDepositCap?: null
+    ): DepositCapUpdatedEventFilter;
+    DepositCapUpdated(_newDepositCap?: null): DepositCapUpdatedEventFilter;
 
     'Initialized(uint8)'(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
@@ -1371,12 +1466,6 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
-
-    'VaultCapUpdated(address,uint256)'(
-      vault?: null,
-      newCap?: null
-    ): VaultCapUpdatedEventFilter;
-    VaultCapUpdated(vault?: null, newCap?: null): VaultCapUpdatedEventFilter;
 
     'Withdraw(address,address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -1457,11 +1546,17 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     feeStrategy(overrides?: CallOverrides): Promise<BigNumber>;
 
     getEthRewardsSplitRate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantAllowances(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1550,6 +1645,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
     repay(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setDepositCap(
+      _newDepositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1676,11 +1776,19 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     feeStrategy(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getEthRewardsSplitRate(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getVaultMarketValue(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1771,6 +1879,11 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
     repay(
       amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setDepositCap(
+      _newDepositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
