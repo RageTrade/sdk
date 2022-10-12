@@ -1,25 +1,10 @@
 import { ethers, logger } from 'ethers';
 import { Logger } from 'ethers/lib/utils';
+import { chainIds, NetworkName } from '../contracts';
 
 export class ArbiscanProvider extends ethers.providers.EtherscanProvider {
-  constructor(network: 'arbmain' | 'arbtest', apiKey?: string) {
-    super(
-      (() => {
-        switch (network) {
-          case 'arbmain':
-            return {
-              name: 'arbmain',
-              chainId: 42161,
-            };
-          case 'arbtest':
-            return {
-              name: 'arbtest',
-              chainId: 421611,
-            };
-        }
-      })(),
-      apiKey
-    );
+  constructor(network: NetworkName, apiKey?: string) {
+    super({ name: network, chainId: chainIds[network] }, apiKey);
   }
 
   getBaseUrl(): string {
@@ -27,7 +12,10 @@ export class ArbiscanProvider extends ethers.providers.EtherscanProvider {
       case 'arbmain':
         return 'https://api.arbiscan.io';
       case 'arbtest':
+      case 'arbrinkeby':
         return 'https://api-testnet.arbiscan.io';
+      case 'arbgoerli':
+        return 'https://api-goerli.arbiscan.io';
       default:
     }
     return logger.throwArgumentError(
