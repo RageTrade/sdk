@@ -65,9 +65,9 @@ export function getAddresses(
       };
     case 'arbgoerli':
       return {
-        wethAddress: '0x007354C7DD2EB9f636204192092d7221c9d988F2',
-        wbtcAddress: '0x577231039631e714d89a99828C9038D390dfe909',
-        usdtAddress: '0x37E607e9f601D718A50221f62b3f4816D0e6352e',
+        wethAddress: '0xCDa739D69067333974cD73A722aB92E5e0ad8a4F',
+        wbtcAddress: '0x2Df743730160059c50c6bA9E87b30876FA6Db720',
+        usdtAddress: '0xbAc565f93f3192D35E9106E67B9d5c9348bD9389',
         usdcAddress: coreDeployments.SettlementTokenDeployment.address,
         crvAddress,
         tricryptoAddress,
