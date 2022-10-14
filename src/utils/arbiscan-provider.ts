@@ -1,6 +1,7 @@
 import { ethers, logger } from 'ethers';
 import { Logger } from 'ethers/lib/utils';
 import { chainIds, NetworkName } from '../contracts';
+import { newError } from './loggers';
 
 export class ArbiscanProvider extends ethers.providers.EtherscanProvider {
   constructor(network: NetworkName, apiKey?: string) {
@@ -123,7 +124,7 @@ export class ArbiscanProvider extends ethers.providers.EtherscanProvider {
 // The blockTag was normalized as a string by the Provider pre-perform operations
 function checkLogTag(blockTag: string): number | 'latest' {
   if (blockTag === 'pending') {
-    throw new Error('pending not supported');
+    throw newError('pending not supported');
   }
   if (blockTag === 'latest') {
     return blockTag;

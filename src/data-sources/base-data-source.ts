@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
 import { ResultWithMetadata } from '../utils';
-import { warn } from '../utils/loggers';
+import { newError, warn } from '../utils/loggers';
 import {
   PricesResult,
   PoolInfoResult,
@@ -86,7 +86,7 @@ export abstract class BaseDataSource {
     method: MethodName,
     _args: Parameters<InstanceType<typeof BaseDataSource>[MethodName]>
   ): ReturnType<InstanceType<typeof BaseDataSource>[MethodName]> {
-    throw new Error(
+    throw newError(
       `${this.constructor.name}.perform[${method}] Not implemented`
     );
   }

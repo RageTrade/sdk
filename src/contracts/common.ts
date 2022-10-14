@@ -1,5 +1,5 @@
 import { Signer, providers } from 'ethers';
-import { warn } from '../utils/loggers';
+import { newError, warn } from '../utils/loggers';
 
 export const supportedNetworkNames = [
   'arbmain',
@@ -39,13 +39,13 @@ export function getNetworkNameFromChainId(chainId: number): NetworkName {
     }
   }
 
-  throw new Error(`chainId ${chainId} not recognized`);
+  throw newError(`chainId ${chainId} not recognized`);
 }
 
 export function sanitizeNetworkName(networkName: string): NetworkName {
   const chainId = (chainIds as any)[networkName] as number | undefined;
   if (chainId === undefined) {
-    throw new Error(`networkName ${networkName} not recognized`);
+    throw newError(`networkName ${networkName} not recognized`);
   }
 
   const networkNameSanitized = getNetworkNameFromChainId(chainId);
@@ -76,7 +76,7 @@ export async function getChainIdFromProvider(
     ? signerOrProvider
     : signerOrProvider.provider;
   if (provider === undefined) {
-    throw new Error('provider is not present in signerOrProvider');
+    throw newError('provider is not present in signerOrProvider');
   }
 
   const network = await provider.getNetwork();

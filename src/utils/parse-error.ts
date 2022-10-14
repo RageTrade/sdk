@@ -1,5 +1,6 @@
 import { BigNumber } from 'ethers';
 import { getEthersInterfaces } from '../contracts/index';
+import { newError } from './loggers';
 
 const interfaces = getEthersInterfaces();
 
@@ -9,7 +10,7 @@ export function parseError(errorData: string) {
       return iface.parseError(errorData);
     } catch {}
   }
-  throw new Error(`Could not parseError ${errorData}`);
+  throw newError(`Could not parseError ${errorData}`);
 }
 
 export function formatError(errorData: string): string {

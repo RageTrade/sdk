@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { newError } from './loggers';
 
 export interface FindBlockByTimestampOptions {
   avgBlockTime?: number;
@@ -27,7 +28,7 @@ export async function findBlockByTimestamp(
     if (allowFutureTimestamp) {
       return latestBlock;
     } else {
-      throw new Error('Timestamp is in the future');
+      throw newError('Timestamp is in the future');
     }
   }
 

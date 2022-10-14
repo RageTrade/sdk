@@ -1,6 +1,7 @@
 import deepEqual from 'fast-deep-equal';
 import { NetworkName } from '../contracts';
 import { ResultWithMetadata } from '../utils';
+import { newError } from '../utils/loggers';
 
 import { BaseDataSource, MethodNames } from './base-data-source';
 
@@ -20,7 +21,7 @@ export class FallbackDataSource extends BaseDataSource {
     super();
     for (let i = 0; i < dataSources.length; i++) {
       if (!dataSources[i]._isDataSource) {
-        throw new Error(`The ${i}th array element is not a valid data source`);
+        throw newError(`The ${i}th array element is not a valid data source`);
       }
       dataSources[i]._queryingDataSource = this; // set the querying data source to this fallback data source
     }
@@ -52,7 +53,7 @@ export class FallbackDataSource extends BaseDataSource {
         await this.getNetworkName();
       } catch (e: any) {
         if (Array.isArray(e.uniqueResponses)) {
-          throw new Error(
+          throw newError(
             `Found ${
               e.uniqueResponses.length
                 ? `multiple networks: ${e.uniqueResponses
@@ -107,7 +108,7 @@ export class FallbackDataSource extends BaseDataSource {
       (acc, val) => (!!val.error ? acc + 1 : acc),
       0
     );
-    const error: any = new Error(
+    const error: any = newError(
       `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique responses: ${uniqueResponses.length}, Failed queries: ${failedQueriesCount}.`
     );
     error.responses = responses;

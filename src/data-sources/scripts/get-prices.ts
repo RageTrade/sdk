@@ -3,6 +3,7 @@ import { parseUnits } from 'ethers/lib/utils';
 import { core } from '../../contracts';
 import { IOracle__factory, IUniswapV3Pool__factory } from '../../typechain';
 import { priceX128ToPrice, sqrtPriceX96ToPrice } from '../../utils';
+import { newError } from '../../utils/loggers';
 
 export interface PricesResult {
   realPrice: number;
@@ -32,7 +33,7 @@ export async function getPrices(
   ]);
 
   if (pool.vPool === ethers.constants.AddressZero) {
-    throw new Error(`Pool with id ${poolId} not found`);
+    throw newError(`Pool with id ${poolId} not found`);
   }
 
   const vPool = IUniswapV3Pool__factory.connect(pool.vPool, provider);

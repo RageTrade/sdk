@@ -1,3 +1,5 @@
+import { newError } from './loggers';
+
 export type ResultWithMetadata<Result> = {
   result: Result;
   cacheTimestamp?: number;
@@ -31,7 +33,9 @@ export function getResultWithMetadata(
       cacheTimestamp: response?.cacheTimestamp || Math.floor(Date.now() / 1000),
     };
   } else {
-    const error = new Error();
+    const error = newError(
+      'This should not happen: utils/result/getResultWithMetadata'
+    );
     error.stack = JSON.stringify(response);
     throw error;
   }

@@ -13,6 +13,7 @@ import {
   priceX128ToSqrtPriceX96,
   sqrtPriceX96ToPriceX128,
 } from '../../utils';
+import { newError } from '../../utils/loggers';
 
 export interface PoolInfoResult {
   realPrice: number;
@@ -55,7 +56,7 @@ export async function getPoolInfo(
   ]);
 
   if (pool.vPool === ethers.constants.AddressZero) {
-    throw new Error(`Pool with id ${poolId} not found`);
+    throw newError(`Pool with id ${poolId} not found`);
   }
 
   const vPool = IUniswapV3Pool__factory.connect(pool.vPool, provider);

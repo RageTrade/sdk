@@ -1,5 +1,6 @@
 import { ethers, PopulatedTransaction } from 'ethers';
 import { TimelockControllerWithMinDelayOverride } from '../typechain';
+import { newError } from './loggers';
 
 const MIN_DELAY_DEFAULT = 2 * 24 * 3600;
 
@@ -29,7 +30,7 @@ export async function generateTimelockSchedule(
 
   switch (txArray.length) {
     case 0:
-      throw new Error('Empty txArray');
+      throw newError('Empty txArray');
     case 1:
       return generateTimelockScheduleSingle(
         timelock,
@@ -74,7 +75,7 @@ async function generateTimelockScheduleSingle(
 ) {
   tx = await tx;
   if (!tx.to) {
-    throw new Error('tx.to is undefined');
+    throw newError('tx.to is undefined');
   }
 
   const operation: OperationSingle = [
@@ -105,7 +106,7 @@ async function generateTimelockScheduleBatch(
 
   const targets = txArrayResolved.map((tx) => {
     if (!tx.to) {
-      throw new Error('tx.to is undefined');
+      throw newError('tx.to is undefined');
     }
     return tx.to;
   });
