@@ -4,6 +4,7 @@ import {
   supportedVaultNames,
   supportedNetworkNames,
   aliasNetworkNames,
+  getDefaultDataSourceSync,
 } from '../dist';
 
 const skipIf: any = {
@@ -54,6 +55,15 @@ describe('vaults', () => {
                 vaultName
               );
               expect(blockNumber).toBeGreaterThan(0);
+            });
+            it('getVaultInfo', async () => {
+              const vaultInfo = await sdk.getVaultInfo(
+                getProvider(networkName),
+                vaultName,
+                getDefaultDataSourceSync(networkName)
+              );
+              expect(vaultInfo.assetPrice).toBeGreaterThan(0);
+              expect(vaultInfo.depositCap).toBeGreaterThan(0);
             });
           });
         }
