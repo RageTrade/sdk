@@ -6,6 +6,7 @@ import {
   pools,
   NetworkName,
   getProvider,
+  supportedVaultNames,
 } from '../dist';
 
 config();
@@ -67,12 +68,31 @@ describe('cache data source', () => {
       });
 
       describe(`getVaultInfo ${networkName}`, () => {
-        const vaultNames = ['tricrypto', 'gmx'];
-        for (const vaultName of vaultNames) {
-          // TODO remove if check after mainnet deploy
-          if (networkName === 'arbmain' && vaultName === 'gmx') return; // skip
+        const skipIf: any = {
+          gmx: {
+            arbmain: true,
+          },
+          dn_gmx_senior: {
+            arbmain: true,
+            arbtest: true,
+            arbrinkeby: true,
+          },
+          dn_gmx_junior: {
+            arbmain: true,
+            arbtest: true,
+            arbrinkeby: true,
+          },
+        };
 
-          it(`getVaultInfo ${vaultName}`, async () => {
+        const vaultNames = supportedVaultNames;
+        for (const vaultName of vaultNames) {
+          const _it =
+            skipIf?.[vaultName as any] === true ||
+            (skipIf?.[vaultName as any]?.[networkName as any] as any) === true
+              ? it.skip
+              : it;
+
+          _it(`getVaultInfo ${vaultName}`, async () => {
             const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getVaultInfo(vaultName);
 
