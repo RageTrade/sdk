@@ -184,40 +184,79 @@ const _abi = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'esGmx',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'glpVester',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'gmx',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'bool',
-        name: '_shouldClaimGmx',
+        name: 'shouldClaimGmx',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldStakeGmx',
+        name: 'shouldStakeGmx',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldClaimEsGmx',
+        name: 'shouldClaimEsGmx',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldStakeEsGmx',
+        name: 'shouldStakeEsGmx',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldStakeMultiplierPoints',
+        name: 'shouldStakeMultiplierPoints',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldClaimWeth',
+        name: 'shouldClaimWeth',
         type: 'bool',
       },
       {
         internalType: 'bool',
-        name: '_shouldConvertWethToEth',
+        name: 'shouldConvertWethToEth',
         type: 'bool',
       },
     ],
@@ -339,6 +378,19 @@ const _abi = [
     name: 'stakeGmxForAccount',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'stakedGmxTracker',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

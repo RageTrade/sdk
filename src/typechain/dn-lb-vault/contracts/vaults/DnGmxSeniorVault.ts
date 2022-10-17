@@ -53,8 +53,10 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'asset()': FunctionFragment;
+    'availableBorrow(address)': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
     'borrow(uint256)': FunctionFragment;
+    'borrowCaps(address)': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
     'convertToShares(uint256)': FunctionFragment;
     'decimals()': FunctionFragment;
@@ -98,7 +100,6 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     'transferOwnership(address)': FunctionFragment;
     'updateBorrowCap(address,uint256)': FunctionFragment;
     'updateFeeStrategyParams((uint256,uint256,uint256,uint256))': FunctionFragment;
-    'vaultCaps(address)': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
   };
 
@@ -107,8 +108,10 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
       | 'allowance'
       | 'approve'
       | 'asset'
+      | 'availableBorrow'
       | 'balanceOf'
       | 'borrow'
+      | 'borrowCaps'
       | 'convertToAssets'
       | 'convertToShares'
       | 'decimals'
@@ -152,7 +155,6 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
       | 'transferOwnership'
       | 'updateBorrowCap'
       | 'updateFeeStrategyParams'
-      | 'vaultCaps'
       | 'withdraw'
   ): FunctionFragment;
 
@@ -166,12 +168,20 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'asset', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'availableBorrow',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'balanceOf',
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'borrow',
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'borrowCaps',
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToAssets',
@@ -344,10 +354,6 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     values: [FeeSplitStrategy.InfoStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: 'vaultCaps',
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'withdraw',
     values: [
       PromiseOrValue<BigNumberish>,
@@ -359,8 +365,13 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'asset', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'availableBorrow',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'borrow', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'borrowCaps', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'convertToAssets',
     data: BytesLike
@@ -488,7 +499,6 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'updateFeeStrategyParams',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'vaultCaps', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
 
   events: {
@@ -675,6 +685,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<[string]>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { availableAUsdc: BigNumber }>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -684,6 +699,11 @@ export interface DnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    borrowCaps(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     convertToAssets(
       shares: PromiseOrValue<BigNumberish>,
@@ -876,11 +896,6 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    vaultCaps(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -903,6 +918,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
   asset(overrides?: CallOverrides): Promise<string>;
 
+  availableBorrow(
+    borrower: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   balanceOf(
     account: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -912,6 +932,11 @@ export interface DnGmxSeniorVault extends BaseContract {
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  borrowCaps(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   convertToAssets(
     shares: PromiseOrValue<BigNumberish>,
@@ -1098,11 +1123,6 @@ export interface DnGmxSeniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  vaultCaps(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   withdraw(
     assets: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
@@ -1125,6 +1145,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<string>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1134,6 +1159,11 @@ export interface DnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    borrowCaps(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     convertToAssets(
       shares: PromiseOrValue<BigNumberish>,
@@ -1316,11 +1346,6 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    vaultCaps(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -1428,6 +1453,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<BigNumber>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1436,6 +1466,11 @@ export interface DnGmxSeniorVault extends BaseContract {
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    borrowCaps(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     convertToAssets(
@@ -1616,11 +1651,6 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    vaultCaps(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -1644,6 +1674,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1652,6 +1687,11 @@ export interface DnGmxSeniorVault extends BaseContract {
     borrow(
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    borrowCaps(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     convertToAssets(
@@ -1834,11 +1874,6 @@ export interface DnGmxSeniorVault extends BaseContract {
     updateFeeStrategyParams(
       _feeStrategy: FeeSplitStrategy.InfoStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    vaultCaps(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     withdraw(

@@ -5,6 +5,8 @@ import type * as erc4626 from './ERC4626';
 export type { erc4626 };
 import type * as interfaces from './interfaces';
 export type { interfaces };
+import type * as libraries from './libraries';
+export type { libraries };
 import type * as mocks from './mocks';
 export type { mocks };
 import type * as vaults from './vaults';

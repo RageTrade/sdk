@@ -13,7 +13,11 @@ import type {
   Signer,
   utils,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from '@ethersproject/abi';
 import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
@@ -42,8 +46,25 @@ export interface BalancerVaultMockInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: 'flashLoan', data: BytesLike): Result;
 
-  events: {};
+  events: {
+    'FlashLoan(address,address,uint256,uint256)': EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: 'FlashLoan'): EventFragment;
 }
+
+export interface FlashLoanEventObject {
+  recipient: string;
+  token: string;
+  amount: BigNumber;
+  feeAmount: BigNumber;
+}
+export type FlashLoanEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber],
+  FlashLoanEventObject
+>;
+
+export type FlashLoanEventFilter = TypedEventFilter<FlashLoanEvent>;
 
 export interface BalancerVaultMock extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -99,7 +120,20 @@ export interface BalancerVaultMock extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    'FlashLoan(address,address,uint256,uint256)'(
+      recipient?: PromiseOrValue<string> | null,
+      token?: PromiseOrValue<string> | null,
+      amount?: null,
+      feeAmount?: null
+    ): FlashLoanEventFilter;
+    FlashLoan(
+      recipient?: PromiseOrValue<string> | null,
+      token?: PromiseOrValue<string> | null,
+      amount?: null,
+      feeAmount?: null
+    ): FlashLoanEventFilter;
+  };
 
   estimateGas: {
     flashLoan(

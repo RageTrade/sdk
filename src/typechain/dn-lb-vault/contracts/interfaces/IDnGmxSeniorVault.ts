@@ -32,11 +32,11 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'asset()': FunctionFragment;
+    'availableBorrow(address)': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
     'borrow(uint256)': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
     'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
     'getEthRewardsSplitRate()': FunctionFragment;
@@ -47,14 +47,12 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     'maxRedeem(address)': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
     'previewDeposit(uint256)': FunctionFragment;
     'previewMint(uint256)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'repay(uint256)': FunctionFragment;
-    'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
@@ -67,11 +65,11 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
       | 'allowance'
       | 'approve'
       | 'asset'
+      | 'availableBorrow'
       | 'balanceOf'
       | 'borrow'
       | 'convertToAssets'
       | 'convertToShares'
-      | 'decimals'
       | 'deposit'
       | 'depositCap'
       | 'getEthRewardsSplitRate'
@@ -82,14 +80,12 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
       | 'maxRedeem'
       | 'maxWithdraw'
       | 'mint'
-      | 'name'
       | 'previewDeposit'
       | 'previewMint'
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'redeem'
       | 'repay'
-      | 'symbol'
       | 'totalAssets'
       | 'totalSupply'
       | 'transfer'
@@ -107,6 +103,10 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'asset', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'availableBorrow',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'balanceOf',
     values: [PromiseOrValue<string>]
   ): string;
@@ -122,7 +122,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'convertToShares',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'deposit',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
@@ -163,7 +162,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'mint',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
     values: [PromiseOrValue<BigNumberish>]
@@ -192,7 +190,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'repay',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'totalAssets',
     values?: undefined
@@ -225,6 +222,10 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'asset', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'availableBorrow',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'borrow', data: BytesLike): Result;
   decodeFunctionResult(
@@ -235,7 +236,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'convertToShares',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
@@ -258,7 +258,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'previewDeposit',
     data: BytesLike
@@ -277,7 +276,6 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'redeem', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'repay', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'totalAssets',
     data: BytesLike
@@ -400,6 +398,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { assetTokenAddress: string }>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -419,8 +422,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { shares: BigNumber }>;
-
-    decimals(overrides?: CallOverrides): Promise<[number]>;
 
     deposit(
       assets: PromiseOrValue<BigNumberish>,
@@ -464,8 +465,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    name(overrides?: CallOverrides): Promise<[string]>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -497,8 +496,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalAssets(
       overrides?: CallOverrides
@@ -541,6 +538,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
   asset(overrides?: CallOverrides): Promise<string>;
 
+  availableBorrow(
+    borrower: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   balanceOf(
     account: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -560,8 +562,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
     assets: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  decimals(overrides?: CallOverrides): Promise<number>;
 
   deposit(
     assets: PromiseOrValue<BigNumberish>,
@@ -605,8 +605,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  name(overrides?: CallOverrides): Promise<string>;
-
   previewDeposit(
     assets: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -638,8 +636,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -680,6 +676,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<string>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -699,8 +700,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<number>;
 
     deposit(
       assets: PromiseOrValue<BigNumberish>,
@@ -742,8 +741,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<string>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -775,8 +772,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
 
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -870,6 +865,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<BigNumber>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -889,8 +889,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
       assets: PromiseOrValue<BigNumberish>,
@@ -934,8 +932,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -967,8 +963,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1010,6 +1004,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    availableBorrow(
+      borrower: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1029,8 +1028,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     deposit(
       assets: PromiseOrValue<BigNumberish>,
@@ -1076,8 +1073,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1109,8 +1104,6 @@ export interface IDnGmxSeniorVault extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

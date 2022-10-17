@@ -35,20 +35,17 @@ export interface IERC4626Interface extends utils.Interface {
     'balanceOf(address)': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
     'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
     'previewDeposit(uint256)': FunctionFragment;
     'previewMint(uint256)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
-    'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
@@ -64,20 +61,17 @@ export interface IERC4626Interface extends utils.Interface {
       | 'balanceOf'
       | 'convertToAssets'
       | 'convertToShares'
-      | 'decimals'
       | 'deposit'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
       | 'maxWithdraw'
       | 'mint'
-      | 'name'
       | 'previewDeposit'
       | 'previewMint'
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'redeem'
-      | 'symbol'
       | 'totalAssets'
       | 'totalSupply'
       | 'transfer'
@@ -106,7 +100,6 @@ export interface IERC4626Interface extends utils.Interface {
     functionFragment: 'convertToShares',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'deposit',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
@@ -131,7 +124,6 @@ export interface IERC4626Interface extends utils.Interface {
     functionFragment: 'mint',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
     values: [PromiseOrValue<BigNumberish>]
@@ -156,7 +148,6 @@ export interface IERC4626Interface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'totalAssets',
     values?: undefined
@@ -198,7 +189,6 @@ export interface IERC4626Interface extends utils.Interface {
     functionFragment: 'convertToShares',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'maxMint', data: BytesLike): Result;
@@ -208,7 +198,6 @@ export interface IERC4626Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'previewDeposit',
     data: BytesLike
@@ -226,7 +215,6 @@ export interface IERC4626Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'redeem', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'totalAssets',
     data: BytesLike
@@ -364,8 +352,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { shares: BigNumber }>;
 
-    decimals(overrides?: CallOverrides): Promise<[number]>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -398,8 +384,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    name(overrides?: CallOverrides): Promise<[string]>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -426,8 +410,6 @@ export interface IERC4626 extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalAssets(
       overrides?: CallOverrides
@@ -485,8 +467,6 @@ export interface IERC4626 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  decimals(overrides?: CallOverrides): Promise<number>;
-
   deposit(
     assets: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
@@ -519,8 +499,6 @@ export interface IERC4626 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  name(overrides?: CallOverrides): Promise<string>;
-
   previewDeposit(
     assets: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -547,8 +525,6 @@ export interface IERC4626 extends BaseContract {
     owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -604,8 +580,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    decimals(overrides?: CallOverrides): Promise<number>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -638,8 +612,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<string>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -666,8 +638,6 @@ export interface IERC4626 extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
 
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -776,8 +746,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -810,8 +778,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -838,8 +804,6 @@ export interface IERC4626 extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -896,8 +860,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -930,8 +892,6 @@ export interface IERC4626 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -958,8 +918,6 @@ export interface IERC4626 extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

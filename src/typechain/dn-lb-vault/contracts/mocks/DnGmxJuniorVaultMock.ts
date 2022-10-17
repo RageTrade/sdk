@@ -27,7 +27,7 @@ import type {
   PromiseOrValue,
 } from '../../common';
 
-export declare namespace DnGmxJuniorVaultStorage {
+export declare namespace DnGmxJuniorVault {
   export type TokensStruct = {
     weth: PromiseOrValue<string>;
     wbtc: PromiseOrValue<string>;
@@ -43,65 +43,15 @@ export declare namespace DnGmxJuniorVaultStorage {
     usdc: string;
     usdt: string;
   };
-
-  export type HedgeStrategyParamsStruct = {
-    vault: PromiseOrValue<string>;
-    swapRouter: PromiseOrValue<string>;
-    targetHealthFactor: PromiseOrValue<BigNumberish>;
-    aaveRewardsController: PromiseOrValue<string>;
-  };
-
-  export type HedgeStrategyParamsStructOutput = [
-    string,
-    string,
-    BigNumber,
-    string
-  ] & {
-    vault: string;
-    swapRouter: string;
-    targetHealthFactor: BigNumber;
-    aaveRewardsController: string;
-  };
-
-  export type RebalanceStrategyParamsStruct = {
-    rebalanceTimeThreshold: PromiseOrValue<BigNumberish>;
-    rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>;
-  };
-
-  export type RebalanceStrategyParamsStructOutput = [number, number] & {
-    rebalanceTimeThreshold: number;
-    rebalanceDeltaThreshold: number;
-  };
-
-  export type YieldStrategyParamsStruct = {
-    usdcRedeemSlippage: PromiseOrValue<BigNumberish>;
-    usdcConversionThreshold: PromiseOrValue<BigNumberish>;
-    seniorVaultWethConversionThreshold: PromiseOrValue<BigNumberish>;
-  };
-
-  export type YieldStrategyParamsStructOutput = [
-    number,
-    BigNumber,
-    BigNumber
-  ] & {
-    usdcRedeemSlippage: number;
-    usdcConversionThreshold: BigNumber;
-    seniorVaultWethConversionThreshold: BigNumber;
-  };
 }
 
 export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   functions: {
-    'FEE()': FunctionFragment;
-    'MAX_BPS()': FunctionFragment;
-    'PRICE_PRECISION()': FunctionFragment;
-    'USDG_DECIMALS()': FunctionFragment;
-    'VARIABLE_INTEREST_MODE()': FunctionFragment;
-    'WETH_DECIMALS()': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'asset()': FunctionFragment;
     'balanceOf(address)': FunctionFragment;
+    'claimVestedGmx()': FunctionFragment;
     'convertAUsdcToAsset(uint256)': FunctionFragment;
     'convertAssetToAUsdc(uint256)': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
@@ -111,7 +61,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
     'depositToken(address,uint256,uint256)': FunctionFragment;
-    'dnGmxSeniorVault()': FunctionFragment;
     'dnUsdcDepositedExternal()': FunctionFragment;
     'executeBorrow(address,uint256)': FunctionFragment;
     'executeBorrowFromDnGmxSeniorVault(uint256)': FunctionFragment;
@@ -121,14 +70,16 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'executeRepayFromDnGmxSeniorVault(uint256)': FunctionFragment;
     'executeSupply(address,uint256)': FunctionFragment;
     'executeWithdraw(address,uint256)': FunctionFragment;
-    'feeRecipient()': FunctionFragment;
     'flashloanAmounts(address,uint256,uint256)': FunctionFragment;
     'getBorrowValue(uint256,uint256)': FunctionFragment;
     'getCurrentBorrows()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
     'getOptimalBorrows(uint256)': FunctionFragment;
+    'getOptimalCappedBorrows(uint256,uint256)': FunctionFragment;
     'getPrice(address)': FunctionFragment;
     'getPrice(address,bool)': FunctionFragment;
+    'getPrice(bool)': FunctionFragment;
+    'getPriceExternal()': FunctionFragment;
     'getPriceX128()': FunctionFragment;
     'getTokenReservesInGlp(address,uint256)': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
@@ -136,13 +87,12 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'grantAllowances()': FunctionFragment;
     'harvestFees()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(string,string,address,address,address,(address,address,address,address,address),address)': FunctionFragment;
+    'initialize(string,string,address,address,(address,address,address,address,address),address)': FunctionFragment;
     'isValidRebalance()': FunctionFragment;
     'isValidRebalanceDeviation()': FunctionFragment;
+    'isValidRebalanceHF()': FunctionFragment;
     'isValidRebalanceTime()': FunctionFragment;
     'isWithinAllowedDelta(uint256,uint256)': FunctionFragment;
-    'keeper()': FunctionFragment;
-    'lastRebalanceTS()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
     'maxRedeem(address)': FunctionFragment;
@@ -156,29 +106,21 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'previewMint(uint256)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
-    'protocolFee()': FunctionFragment;
     'rebalance()': FunctionFragment;
     'rebalanceBeforeShareAllocation()': FunctionFragment;
     'rebalanceBorrow(uint256,uint256,uint256,uint256)': FunctionFragment;
-    'rebalanceDeltaThreshold()': FunctionFragment;
     'rebalanceHedge(uint256,uint256)': FunctionFragment;
     'rebalanceProfit(uint256)': FunctionFragment;
-    'rebalanceTimeThreshold()': FunctionFragment;
     'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'seniorVaultWethConversionThreshold()': FunctionFragment;
-    'seniorVaultWethRewards()': FunctionFragment;
-    'setBatchingManager(address)': FunctionFragment;
-    'setDepositCap(uint256)': FunctionFragment;
-    'setDnGmxSeniorVault(address)': FunctionFragment;
+    'setAdminParams(address,address,uint256,address,uint256)': FunctionFragment;
     'setFeeRecipient(address)': FunctionFragment;
-    'setHedgeParams((address,address,uint256,address))': FunctionFragment;
-    'setKeeper(address)': FunctionFragment;
-    'setRebalanceParams((uint32,uint16))': FunctionFragment;
-    'setThresholds((uint16,uint240,uint256))': FunctionFragment;
-    'setWithdrawFee(uint256)': FunctionFragment;
-    'slippageThreshold()': FunctionFragment;
+    'setHedgeParams(address,address,uint256,address)': FunctionFragment;
+    'setMocks(address)': FunctionFragment;
+    'setRebalanceParams(uint32,uint16)': FunctionFragment;
+    'setThresholds(uint16,uint16,uint208,uint256,uint256,uint256)': FunctionFragment;
+    'stopVestAndStakeEsGmx()': FunctionFragment;
     'swapToken(address,uint256,uint256)': FunctionFragment;
     'swapUSDC(address,uint256,uint256)': FunctionFragment;
     'symbol()': FunctionFragment;
@@ -188,26 +130,18 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'unpause()': FunctionFragment;
-    'usdcConversionThreshold()': FunctionFragment;
-    'usdcRedeemSlippage()': FunctionFragment;
-    'wethThreshold()': FunctionFragment;
+    'unstakeAndVestEsGmx()': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFeeBps()': FunctionFragment;
     'withdrawFees()': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'FEE'
-      | 'MAX_BPS'
-      | 'PRICE_PRECISION'
-      | 'USDG_DECIMALS'
-      | 'VARIABLE_INTEREST_MODE'
-      | 'WETH_DECIMALS'
       | 'allowance'
       | 'approve'
       | 'asset'
       | 'balanceOf'
+      | 'claimVestedGmx'
       | 'convertAUsdcToAsset'
       | 'convertAssetToAUsdc'
       | 'convertToAssets'
@@ -217,7 +151,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'deposit'
       | 'depositCap'
       | 'depositToken'
-      | 'dnGmxSeniorVault'
       | 'dnUsdcDepositedExternal'
       | 'executeBorrow'
       | 'executeBorrowFromDnGmxSeniorVault'
@@ -227,14 +160,16 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'executeRepayFromDnGmxSeniorVault'
       | 'executeSupply'
       | 'executeWithdraw'
-      | 'feeRecipient'
       | 'flashloanAmounts'
       | 'getBorrowValue'
       | 'getCurrentBorrows'
       | 'getMarketValue'
       | 'getOptimalBorrows'
+      | 'getOptimalCappedBorrows'
       | 'getPrice(address)'
       | 'getPrice(address,bool)'
+      | 'getPrice(bool)'
+      | 'getPriceExternal'
       | 'getPriceX128'
       | 'getTokenReservesInGlp'
       | 'getUsdcBorrowed'
@@ -245,10 +180,9 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'initialize'
       | 'isValidRebalance'
       | 'isValidRebalanceDeviation'
+      | 'isValidRebalanceHF'
       | 'isValidRebalanceTime'
       | 'isWithinAllowedDelta'
-      | 'keeper'
-      | 'lastRebalanceTS'
       | 'maxDeposit'
       | 'maxMint'
       | 'maxRedeem'
@@ -262,29 +196,21 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'previewMint'
       | 'previewRedeem'
       | 'previewWithdraw'
-      | 'protocolFee'
       | 'rebalance'
       | 'rebalanceBeforeShareAllocation'
       | 'rebalanceBorrow'
-      | 'rebalanceDeltaThreshold'
       | 'rebalanceHedge'
       | 'rebalanceProfit'
-      | 'rebalanceTimeThreshold'
       | 'receiveFlashLoan'
       | 'redeem'
       | 'renounceOwnership'
-      | 'seniorVaultWethConversionThreshold'
-      | 'seniorVaultWethRewards'
-      | 'setBatchingManager'
-      | 'setDepositCap'
-      | 'setDnGmxSeniorVault'
+      | 'setAdminParams'
       | 'setFeeRecipient'
       | 'setHedgeParams'
-      | 'setKeeper'
+      | 'setMocks'
       | 'setRebalanceParams'
       | 'setThresholds'
-      | 'setWithdrawFee'
-      | 'slippageThreshold'
+      | 'stopVestAndStakeEsGmx'
       | 'swapToken'
       | 'swapUSDC'
       | 'symbol'
@@ -294,32 +220,11 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'transferFrom'
       | 'transferOwnership'
       | 'unpause'
-      | 'usdcConversionThreshold'
-      | 'usdcRedeemSlippage'
-      | 'wethThreshold'
+      | 'unstakeAndVestEsGmx'
       | 'withdraw'
-      | 'withdrawFeeBps'
       | 'withdrawFees'
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'FEE', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'PRICE_PRECISION',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'USDG_DECIMALS',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'VARIABLE_INTEREST_MODE',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'WETH_DECIMALS',
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: 'allowance',
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
@@ -332,6 +237,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'balanceOf',
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'claimVestedGmx',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'convertAUsdcToAsset',
@@ -369,10 +278,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'dnGmxSeniorVault',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'dnUsdcDepositedExternal',
@@ -426,10 +331,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: 'feeRecipient',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'flashloanAmounts',
     values: [
       PromiseOrValue<string>,
@@ -454,12 +355,24 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'getOptimalCappedBorrows',
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getPrice(address)',
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPrice(address,bool)',
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getPrice(bool)',
+    values: [PromiseOrValue<boolean>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getPriceExternal',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'getPriceX128',
@@ -496,8 +409,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      DnGmxJuniorVaultStorage.TokensStruct,
+      DnGmxJuniorVault.TokensStruct,
       PromiseOrValue<string>
     ]
   ): string;
@@ -510,17 +422,16 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'isValidRebalanceHF',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'isValidRebalanceTime',
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'isWithinAllowedDelta',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: 'lastRebalanceTS',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'maxDeposit',
@@ -562,10 +473,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     functionFragment: 'previewWithdraw',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'protocolFee',
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'rebalanceBeforeShareAllocation',
@@ -581,20 +488,12 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'rebalanceDeltaThreshold',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'rebalanceHedge',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'rebalanceProfit',
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'rebalanceTimeThreshold',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'receiveFlashLoan',
@@ -618,24 +517,14 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'seniorVaultWethConversionThreshold',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'seniorVaultWethRewards',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setBatchingManager',
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setDepositCap',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setDnGmxSeniorVault',
-    values: [PromiseOrValue<string>]
+    functionFragment: 'setAdminParams',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeRecipient',
@@ -643,26 +532,34 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setHedgeParams',
-    values: [DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setKeeper',
+    functionFragment: 'setMocks',
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setRebalanceParams',
-    values: [DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setThresholds',
-    values: [DnGmxJuniorVaultStorage.YieldStrategyParamsStruct]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setWithdrawFee',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'slippageThreshold',
+    functionFragment: 'stopVestAndStakeEsGmx',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -708,15 +605,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
   encodeFunctionData(
-    functionFragment: 'usdcConversionThreshold',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'usdcRedeemSlippage',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'wethThreshold',
+    functionFragment: 'unstakeAndVestEsGmx',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -728,36 +617,18 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'withdrawFeeBps',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'withdrawFees',
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: 'FEE', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'MAX_BPS', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'PRICE_PRECISION',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'USDG_DECIMALS',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'VARIABLE_INTEREST_MODE',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'WETH_DECIMALS',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'asset', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'claimVestedGmx',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'convertAUsdcToAsset',
     data: BytesLike
@@ -783,10 +654,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'depositToken',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'dnGmxSeniorVault',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -826,10 +693,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'feeRecipient',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'flashloanAmounts',
     data: BytesLike
   ): Result;
@@ -850,11 +713,23 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'getOptimalCappedBorrows',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getPrice(address)',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getPrice(address,bool)',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPrice(bool)',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getPriceExternal',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -895,16 +770,15 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'isValidRebalanceHF',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'isValidRebalanceTime',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'isWithinAllowedDelta',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: 'keeper', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'lastRebalanceTS',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'maxDeposit', data: BytesLike): Result;
@@ -935,10 +809,6 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     functionFragment: 'previewWithdraw',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: 'protocolFee',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: 'rebalance', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'rebalanceBeforeShareAllocation',
@@ -949,19 +819,11 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'rebalanceDeltaThreshold',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'rebalanceHedge',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'rebalanceProfit',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'rebalanceTimeThreshold',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -974,23 +836,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'seniorVaultWethConversionThreshold',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'seniorVaultWethRewards',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setBatchingManager',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setDepositCap',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'setDnGmxSeniorVault',
+    functionFragment: 'setAdminParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1001,7 +847,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     functionFragment: 'setHedgeParams',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'setMocks', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'setRebalanceParams',
     data: BytesLike
@@ -1011,11 +857,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setWithdrawFee',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'slippageThreshold',
+    functionFragment: 'stopVestAndStakeEsGmx',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapToken', data: BytesLike): Result;
@@ -1040,22 +882,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'unpause', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'usdcConversionThreshold',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'usdcRedeemSlippage',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'wethThreshold',
+    functionFragment: 'unstakeAndVestEsGmx',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: 'withdrawFeeBps',
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: 'withdrawFees',
     data: BytesLike
@@ -1076,12 +906,12 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'Paused(address)': EventFragment;
     'RebalanceParamsUpdated(uint32,uint16)': EventFragment;
     'Rebalanced()': EventFragment;
-    'RewardsHarvested(uint256,uint256)': EventFragment;
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
     'WithdrawFeeUpdated(uint256)': EventFragment;
-    'YieldParamsUpdated(uint16,uint240,uint256)': EventFragment;
+    'YieldParamsUpdated(uint16,uint240,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
@@ -1245,11 +1075,15 @@ export type RebalancedEvent = TypedEvent<[], RebalancedEventObject>;
 export type RebalancedEventFilter = TypedEventFilter<RebalancedEvent>;
 
 export interface RewardsHarvestedEventObject {
-  totalEthAmount: BigNumber;
-  juniorVaultShare: BigNumber;
+  wethHarvested: BigNumber;
+  esGmxStaked: BigNumber;
+  juniorVaultWeth: BigNumber;
+  seniorVaultWeth: BigNumber;
+  juniorVaultGlp: BigNumber;
+  seniorVaultAUsdc: BigNumber;
 }
 export type RewardsHarvestedEvent = TypedEvent<
-  [BigNumber, BigNumber],
+  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
   RewardsHarvestedEventObject
 >;
 
@@ -1301,12 +1135,14 @@ export type WithdrawFeeUpdatedEventFilter =
   TypedEventFilter<WithdrawFeeUpdatedEvent>;
 
 export interface YieldParamsUpdatedEventObject {
-  usdcRedeemSlippage: number;
+  slippageThresholdGmx: number;
   usdcConversionThreshold: BigNumber;
-  seniorVaultWethConversionThreshold: BigNumber;
+  wethConversionThreshold: BigNumber;
+  hedgeUsdcAmountThreshold: BigNumber;
+  hfThreshold: BigNumber;
 }
 export type YieldParamsUpdatedEvent = TypedEvent<
-  [number, BigNumber, BigNumber],
+  [number, BigNumber, BigNumber, BigNumber, BigNumber],
   YieldParamsUpdatedEventObject
 >;
 
@@ -1340,18 +1176,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<[number]>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    VARIABLE_INTEREST_MODE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -1370,6 +1194,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    claimVestedGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     convertAUsdcToAsset(
       amount: PromiseOrValue<BigNumberish>,
@@ -1413,8 +1241,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       minUsdg: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    dnGmxSeniorVault(overrides?: CallOverrides): Promise<[string]>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1473,8 +1299,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    feeRecipient(overrides?: CallOverrides): Promise<[string]>;
-
     flashloanAmounts(
       token: PromiseOrValue<string>,
       optimalBorrow: PromiseOrValue<BigNumberish>,
@@ -1516,6 +1340,17 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       }
     >;
 
+    getOptimalCappedBorrows(
+      availableBorrowAmount: PromiseOrValue<BigNumberish>,
+      usdcLiquidationThreshold: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        optimalBtcBorrow: BigNumber;
+        optimalEthBorrow: BigNumber;
+      }
+    >;
+
     'getPrice(address)'(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1526,6 +1361,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       isUsdc: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    'getPrice(bool)'(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    getPriceExternal(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -1562,8 +1404,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tricryptoPool: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultStorage.TokensStruct,
+      _tokens: DnGmxJuniorVault.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -1571,6 +1412,8 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<[boolean]>;
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<[boolean]>;
+
+    isValidRebalanceHF(overrides?: CallOverrides): Promise<[boolean]>;
 
     isValidRebalanceTime(overrides?: CallOverrides): Promise<[boolean]>;
 
@@ -1580,17 +1423,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    keeper(overrides?: CallOverrides): Promise<[string]>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     maxDeposit(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     maxMint(
-      arg0: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -1640,8 +1479,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     rebalance(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -1658,8 +1495,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    rebalanceDeltaThreshold(overrides?: CallOverrides): Promise<[number]>;
-
     rebalanceHedge(
       currentBtcBorrow: PromiseOrValue<BigNumberish>,
       currentEthBorrow: PromiseOrValue<BigNumberish>,
@@ -1670,8 +1505,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       borrowValue: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<[number]>;
 
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
@@ -1692,24 +1525,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    seniorVaultWethConversionThreshold(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    seniorVaultWethRewards(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    setBatchingManager(
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setDepositCap(
-      _newDepositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setDnGmxSeniorVault(
+    setAdminParams(
+      _newKeeper: PromiseOrValue<string>,
       _dnGmxSeniorVault: PromiseOrValue<string>,
+      _newDepositCap: PromiseOrValue<BigNumberish>,
+      _batchingManager: PromiseOrValue<string>,
+      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1719,31 +1540,37 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setHedgeParams(
-      _hedgeParams: DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct,
+      _vault: PromiseOrValue<string>,
+      _swapRouter: PromiseOrValue<string>,
+      _targetHealthFactor: PromiseOrValue<BigNumberish>,
+      _aaveRewardsController: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setKeeper(
-      _newKeeper: PromiseOrValue<string>,
+    setMocks(
+      _swapRouter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setRebalanceParams(
-      _rsParams: DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct,
+      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
+      _rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     setThresholds(
-      _ysParams: DnGmxJuniorVaultStorage.YieldStrategyParamsStruct,
+      _slippageThresholdSwap: PromiseOrValue<BigNumberish>,
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      _usdcConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hfThreshold: PromiseOrValue<BigNumberish>,
+      _wethConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setWithdrawFee(
-      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
+    stopVestAndStakeEsGmx(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     swapToken(
       token: PromiseOrValue<string>,
@@ -1787,11 +1614,9 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    usdcConversionThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    usdcRedeemSlippage(overrides?: CallOverrides): Promise<[number]>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+    unstakeAndVestEsGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
@@ -1800,24 +1625,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    withdrawFeeBps(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     withdrawFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
-
-  FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  MAX_BPS(overrides?: CallOverrides): Promise<number>;
-
-  PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-  USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  VARIABLE_INTEREST_MODE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
 
   allowance(
     owner: PromiseOrValue<string>,
@@ -1837,6 +1648,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     account: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  claimVestedGmx(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   convertAUsdcToAsset(
     amount: PromiseOrValue<BigNumberish>,
@@ -1880,8 +1695,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     minUsdg: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  dnGmxSeniorVault(overrides?: CallOverrides): Promise<string>;
 
   dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1940,8 +1753,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  feeRecipient(overrides?: CallOverrides): Promise<string>;
-
   flashloanAmounts(
     token: PromiseOrValue<string>,
     optimalBorrow: PromiseOrValue<BigNumberish>,
@@ -1983,6 +1794,17 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     }
   >;
 
+  getOptimalCappedBorrows(
+    availableBorrowAmount: PromiseOrValue<BigNumberish>,
+    usdcLiquidationThreshold: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      optimalBtcBorrow: BigNumber;
+      optimalEthBorrow: BigNumber;
+    }
+  >;
+
   'getPrice(address)'(
     token: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -1993,6 +1815,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isUsdc: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  'getPrice(bool)'(
+    maximize: PromiseOrValue<boolean>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  getPriceExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
   getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2025,8 +1854,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     _symbol: PromiseOrValue<string>,
     _swapRouter: PromiseOrValue<string>,
     _rewardRouter: PromiseOrValue<string>,
-    _tricryptoPool: PromiseOrValue<string>,
-    _tokens: DnGmxJuniorVaultStorage.TokensStruct,
+    _tokens: DnGmxJuniorVault.TokensStruct,
     _poolAddressesProvider: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -2034,6 +1862,8 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
   isValidRebalance(overrides?: CallOverrides): Promise<boolean>;
 
   isValidRebalanceDeviation(overrides?: CallOverrides): Promise<boolean>;
+
+  isValidRebalanceHF(overrides?: CallOverrides): Promise<boolean>;
 
   isValidRebalanceTime(overrides?: CallOverrides): Promise<boolean>;
 
@@ -2043,17 +1873,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  keeper(overrides?: CallOverrides): Promise<string>;
-
-  lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
-
   maxDeposit(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   maxMint(
-    arg0: PromiseOrValue<string>,
+    receiver: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -2103,8 +1929,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
   rebalance(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -2121,8 +1945,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  rebalanceDeltaThreshold(overrides?: CallOverrides): Promise<number>;
-
   rebalanceHedge(
     currentBtcBorrow: PromiseOrValue<BigNumberish>,
     currentEthBorrow: PromiseOrValue<BigNumberish>,
@@ -2133,8 +1955,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     borrowValue: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  rebalanceTimeThreshold(overrides?: CallOverrides): Promise<number>;
 
   receiveFlashLoan(
     tokens: PromiseOrValue<string>[],
@@ -2155,24 +1975,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  seniorVaultWethConversionThreshold(
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  seniorVaultWethRewards(overrides?: CallOverrides): Promise<BigNumber>;
-
-  setBatchingManager(
-    _batchingManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setDepositCap(
-    _newDepositCap: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setDnGmxSeniorVault(
+  setAdminParams(
+    _newKeeper: PromiseOrValue<string>,
     _dnGmxSeniorVault: PromiseOrValue<string>,
+    _newDepositCap: PromiseOrValue<BigNumberish>,
+    _batchingManager: PromiseOrValue<string>,
+    _withdrawFeeBps: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -2182,31 +1990,37 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setHedgeParams(
-    _hedgeParams: DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct,
+    _vault: PromiseOrValue<string>,
+    _swapRouter: PromiseOrValue<string>,
+    _targetHealthFactor: PromiseOrValue<BigNumberish>,
+    _aaveRewardsController: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setKeeper(
-    _newKeeper: PromiseOrValue<string>,
+  setMocks(
+    _swapRouter: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setRebalanceParams(
-    _rsParams: DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct,
+    _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
+    _rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   setThresholds(
-    _ysParams: DnGmxJuniorVaultStorage.YieldStrategyParamsStruct,
+    _slippageThresholdSwap: PromiseOrValue<BigNumberish>,
+    _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+    _usdcConversionThreshold: PromiseOrValue<BigNumberish>,
+    _hfThreshold: PromiseOrValue<BigNumberish>,
+    _wethConversionThreshold: PromiseOrValue<BigNumberish>,
+    _hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setWithdrawFee(
-    _withdrawFeeBps: PromiseOrValue<BigNumberish>,
+  stopVestAndStakeEsGmx(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
   swapToken(
     token: PromiseOrValue<string>,
@@ -2250,11 +2064,9 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  usdcRedeemSlippage(overrides?: CallOverrides): Promise<number>;
-
-  wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  unstakeAndVestEsGmx(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   withdraw(
     assets: PromiseOrValue<BigNumberish>,
@@ -2263,25 +2075,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  withdrawFeeBps(overrides?: CallOverrides): Promise<BigNumber>;
-
   withdrawFees(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<number>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    VARIABLE_INTEREST_MODE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -2300,6 +2098,8 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    claimVestedGmx(overrides?: CallOverrides): Promise<void>;
 
     convertAUsdcToAsset(
       amount: PromiseOrValue<BigNumberish>,
@@ -2343,8 +2143,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       minUsdg: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    dnGmxSeniorVault(overrides?: CallOverrides): Promise<string>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2403,8 +2201,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    feeRecipient(overrides?: CallOverrides): Promise<string>;
-
     flashloanAmounts(
       token: PromiseOrValue<string>,
       optimalBorrow: PromiseOrValue<BigNumberish>,
@@ -2446,6 +2242,17 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       }
     >;
 
+    getOptimalCappedBorrows(
+      availableBorrowAmount: PromiseOrValue<BigNumberish>,
+      usdcLiquidationThreshold: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        optimalBtcBorrow: BigNumber;
+        optimalEthBorrow: BigNumber;
+      }
+    >;
+
     'getPrice(address)'(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -2456,6 +2263,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       isUsdc: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    'getPrice(bool)'(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPriceExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2484,8 +2298,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tricryptoPool: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultStorage.TokensStruct,
+      _tokens: DnGmxJuniorVault.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -2493,6 +2306,8 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<boolean>;
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<boolean>;
+
+    isValidRebalanceHF(overrides?: CallOverrides): Promise<boolean>;
 
     isValidRebalanceTime(overrides?: CallOverrides): Promise<boolean>;
 
@@ -2502,17 +2317,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    keeper(overrides?: CallOverrides): Promise<string>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
-
     maxDeposit(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     maxMint(
-      arg0: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2560,8 +2371,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
     rebalance(overrides?: CallOverrides): Promise<void>;
 
     rebalanceBeforeShareAllocation(overrides?: CallOverrides): Promise<void>;
@@ -2574,8 +2383,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    rebalanceDeltaThreshold(overrides?: CallOverrides): Promise<number>;
-
     rebalanceHedge(
       currentBtcBorrow: PromiseOrValue<BigNumberish>,
       currentEthBorrow: PromiseOrValue<BigNumberish>,
@@ -2586,8 +2393,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       borrowValue: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<number>;
 
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
@@ -2606,24 +2411,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    seniorVaultWethConversionThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    seniorVaultWethRewards(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setBatchingManager(
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setDepositCap(
-      _newDepositCap: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setDnGmxSeniorVault(
+    setAdminParams(
+      _newKeeper: PromiseOrValue<string>,
       _dnGmxSeniorVault: PromiseOrValue<string>,
+      _newDepositCap: PromiseOrValue<BigNumberish>,
+      _batchingManager: PromiseOrValue<string>,
+      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2633,38 +2426,47 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     ): Promise<void>;
 
     setHedgeParams(
-      _hedgeParams: DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct,
+      _vault: PromiseOrValue<string>,
+      _swapRouter: PromiseOrValue<string>,
+      _targetHealthFactor: PromiseOrValue<BigNumberish>,
+      _aaveRewardsController: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setKeeper(
-      _newKeeper: PromiseOrValue<string>,
+    setMocks(
+      _swapRouter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setRebalanceParams(
-      _rsParams: DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct,
+      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
+      _rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setThresholds(
-      _ysParams: DnGmxJuniorVaultStorage.YieldStrategyParamsStruct,
+      _slippageThresholdSwap: PromiseOrValue<BigNumberish>,
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      _usdcConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hfThreshold: PromiseOrValue<BigNumberish>,
+      _wethConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setWithdrawFee(
-      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    stopVestAndStakeEsGmx(overrides?: CallOverrides): Promise<void>;
 
     swapToken(
       token: PromiseOrValue<string>,
       tokenAmount: PromiseOrValue<BigNumberish>,
       minUsdcAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        usdcReceived: BigNumber;
+        tokensUsed: BigNumber;
+      }
+    >;
 
     swapUSDC(
       token: PromiseOrValue<string>,
@@ -2673,7 +2475,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        usdcAmount: BigNumber;
+        usdcPaid: BigNumber;
         tokensReceived: BigNumber;
       }
     >;
@@ -2704,11 +2506,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
-    usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    usdcRedeemSlippage(overrides?: CallOverrides): Promise<number>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    unstakeAndVestEsGmx(overrides?: CallOverrides): Promise<void>;
 
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
@@ -2716,8 +2514,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    withdrawFeeBps(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawFees(overrides?: CallOverrides): Promise<void>;
   };
@@ -2809,13 +2605,21 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     'Rebalanced()'(): RebalancedEventFilter;
     Rebalanced(): RebalancedEventFilter;
 
-    'RewardsHarvested(uint256,uint256)'(
-      totalEthAmount?: null,
-      juniorVaultShare?: null
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)'(
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
     ): RewardsHarvestedEventFilter;
     RewardsHarvested(
-      totalEthAmount?: null,
-      juniorVaultShare?: null
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
     ): RewardsHarvestedEventFilter;
 
     'Transfer(address,address,uint256)'(
@@ -2852,31 +2656,23 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     ): WithdrawFeeUpdatedEventFilter;
     WithdrawFeeUpdated(_withdrawFeeBps?: null): WithdrawFeeUpdatedEventFilter;
 
-    'YieldParamsUpdated(uint16,uint240,uint256)'(
-      usdcRedeemSlippage?: PromiseOrValue<BigNumberish> | null,
-      usdcConversionThreshold?: PromiseOrValue<BigNumberish> | null,
-      seniorVaultWethConversionThreshold?: PromiseOrValue<BigNumberish> | null
+    'YieldParamsUpdated(uint16,uint240,uint256,uint256,uint256)'(
+      slippageThresholdGmx?: null,
+      usdcConversionThreshold?: null,
+      wethConversionThreshold?: null,
+      hedgeUsdcAmountThreshold?: null,
+      hfThreshold?: null
     ): YieldParamsUpdatedEventFilter;
     YieldParamsUpdated(
-      usdcRedeemSlippage?: PromiseOrValue<BigNumberish> | null,
-      usdcConversionThreshold?: PromiseOrValue<BigNumberish> | null,
-      seniorVaultWethConversionThreshold?: PromiseOrValue<BigNumberish> | null
+      slippageThresholdGmx?: null,
+      usdcConversionThreshold?: null,
+      wethConversionThreshold?: null,
+      hedgeUsdcAmountThreshold?: null,
+      hfThreshold?: null
     ): YieldParamsUpdatedEventFilter;
   };
 
   estimateGas: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    VARIABLE_INTEREST_MODE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -2894,6 +2690,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    claimVestedGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     convertAUsdcToAsset(
@@ -2938,8 +2738,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       minUsdg: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    dnGmxSeniorVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     dnUsdcDepositedExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -2998,8 +2796,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    feeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
-
     flashloanAmounts(
       token: PromiseOrValue<string>,
       optimalBorrow: PromiseOrValue<BigNumberish>,
@@ -3025,6 +2821,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getOptimalCappedBorrows(
+      availableBorrowAmount: PromiseOrValue<BigNumberish>,
+      usdcLiquidationThreshold: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     'getPrice(address)'(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -3035,6 +2837,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       isUsdc: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    'getPrice(bool)'(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPriceExternal(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3067,8 +2876,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tricryptoPool: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultStorage.TokensStruct,
+      _tokens: DnGmxJuniorVault.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -3076,6 +2884,8 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<BigNumber>;
+
+    isValidRebalanceHF(overrides?: CallOverrides): Promise<BigNumber>;
 
     isValidRebalanceTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -3085,17 +2895,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    keeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
-
     maxDeposit(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     maxMint(
-      arg0: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3145,8 +2951,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
     rebalance(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -3163,8 +2967,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    rebalanceDeltaThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
     rebalanceHedge(
       currentBtcBorrow: PromiseOrValue<BigNumberish>,
       currentEthBorrow: PromiseOrValue<BigNumberish>,
@@ -3175,8 +2977,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       borrowValue: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
@@ -3197,24 +2997,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    seniorVaultWethConversionThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    seniorVaultWethRewards(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setBatchingManager(
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setDepositCap(
-      _newDepositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setDnGmxSeniorVault(
+    setAdminParams(
+      _newKeeper: PromiseOrValue<string>,
       _dnGmxSeniorVault: PromiseOrValue<string>,
+      _newDepositCap: PromiseOrValue<BigNumberish>,
+      _batchingManager: PromiseOrValue<string>,
+      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -3224,31 +3012,37 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     ): Promise<BigNumber>;
 
     setHedgeParams(
-      _hedgeParams: DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct,
+      _vault: PromiseOrValue<string>,
+      _swapRouter: PromiseOrValue<string>,
+      _targetHealthFactor: PromiseOrValue<BigNumberish>,
+      _aaveRewardsController: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setKeeper(
-      _newKeeper: PromiseOrValue<string>,
+    setMocks(
+      _swapRouter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setRebalanceParams(
-      _rsParams: DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct,
+      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
+      _rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     setThresholds(
-      _ysParams: DnGmxJuniorVaultStorage.YieldStrategyParamsStruct,
+      _slippageThresholdSwap: PromiseOrValue<BigNumberish>,
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      _usdcConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hfThreshold: PromiseOrValue<BigNumberish>,
+      _wethConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setWithdrawFee(
-      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
+    stopVestAndStakeEsGmx(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     swapToken(
       token: PromiseOrValue<string>,
@@ -3292,11 +3086,9 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    usdcConversionThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    usdcRedeemSlippage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+    unstakeAndVestEsGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
@@ -3305,28 +3097,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    withdrawFeeBps(overrides?: CallOverrides): Promise<BigNumber>;
-
     withdrawFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    VARIABLE_INTEREST_MODE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -3344,6 +3120,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     balanceOf(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    claimVestedGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     convertAUsdcToAsset(
@@ -3388,8 +3168,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       minUsdg: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    dnGmxSeniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     dnUsdcDepositedExternal(
       overrides?: CallOverrides
@@ -3450,8 +3228,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     flashloanAmounts(
       token: PromiseOrValue<string>,
       optimalBorrow: PromiseOrValue<BigNumberish>,
@@ -3477,6 +3253,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getOptimalCappedBorrows(
+      availableBorrowAmount: PromiseOrValue<BigNumberish>,
+      usdcLiquidationThreshold: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     'getPrice(address)'(
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -3487,6 +3269,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       isUsdc: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    'getPrice(bool)'(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPriceExternal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -3521,8 +3310,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tricryptoPool: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultStorage.TokensStruct,
+      _tokens: DnGmxJuniorVault.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -3530,6 +3318,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isValidRebalanceDeviation(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isValidRebalanceHF(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3543,17 +3335,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     maxDeposit(
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     maxMint(
-      arg0: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3603,8 +3391,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     rebalance(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -3621,10 +3407,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    rebalanceDeltaThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     rebalanceHedge(
       currentBtcBorrow: PromiseOrValue<BigNumberish>,
       currentEthBorrow: PromiseOrValue<BigNumberish>,
@@ -3634,10 +3416,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     rebalanceProfit(
       borrowValue: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rebalanceTimeThreshold(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     receiveFlashLoan(
@@ -3659,26 +3437,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    seniorVaultWethConversionThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    seniorVaultWethRewards(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setBatchingManager(
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setDepositCap(
-      _newDepositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setDnGmxSeniorVault(
+    setAdminParams(
+      _newKeeper: PromiseOrValue<string>,
       _dnGmxSeniorVault: PromiseOrValue<string>,
+      _newDepositCap: PromiseOrValue<BigNumberish>,
+      _batchingManager: PromiseOrValue<string>,
+      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -3688,31 +3452,37 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setHedgeParams(
-      _hedgeParams: DnGmxJuniorVaultStorage.HedgeStrategyParamsStruct,
+      _vault: PromiseOrValue<string>,
+      _swapRouter: PromiseOrValue<string>,
+      _targetHealthFactor: PromiseOrValue<BigNumberish>,
+      _aaveRewardsController: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setKeeper(
-      _newKeeper: PromiseOrValue<string>,
+    setMocks(
+      _swapRouter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setRebalanceParams(
-      _rsParams: DnGmxJuniorVaultStorage.RebalanceStrategyParamsStruct,
+      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
+      _rebalanceDeltaThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     setThresholds(
-      _ysParams: DnGmxJuniorVaultStorage.YieldStrategyParamsStruct,
+      _slippageThresholdSwap: PromiseOrValue<BigNumberish>,
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      _usdcConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hfThreshold: PromiseOrValue<BigNumberish>,
+      _wethConversionThreshold: PromiseOrValue<BigNumberish>,
+      _hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setWithdrawFee(
-      _withdrawFeeBps: PromiseOrValue<BigNumberish>,
+    stopVestAndStakeEsGmx(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     swapToken(
       token: PromiseOrValue<string>,
@@ -3756,15 +3526,9 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    usdcConversionThreshold(
-      overrides?: CallOverrides
+    unstakeAndVestEsGmx(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    usdcRedeemSlippage(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdraw(
       assets: PromiseOrValue<BigNumberish>,
@@ -3772,8 +3536,6 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    withdrawFeeBps(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdrawFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }

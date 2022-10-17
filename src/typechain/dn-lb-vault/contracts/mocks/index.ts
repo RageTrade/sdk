@@ -6,3 +6,5 @@ export type { balancer };
 export type { DnGmxJuniorVaultMock } from './DnGmxJuniorVaultMock';
 export type { DnGmxSeniorVaultMock } from './DnGmxSeniorVaultMock';
 export type { FeeSplitStrategyMock } from './FeeSplitStrategyMock';
+export type { StableSwapMock } from './StableSwapMock';
+export type { SwapRouterMock } from './SwapRouterMock';

@@ -5,3 +5,5 @@ export * as balancer from './balancer';
 export { DnGmxJuniorVaultMock__factory } from './DnGmxJuniorVaultMock__factory';
 export { DnGmxSeniorVaultMock__factory } from './DnGmxSeniorVaultMock__factory';
 export { FeeSplitStrategyMock__factory } from './FeeSplitStrategyMock__factory';
+export { StableSwapMock__factory } from './StableSwapMock__factory';
+export { SwapRouterMock__factory } from './SwapRouterMock__factory';

@@ -5,5 +5,7 @@ export type { IGMXBatchingManager } from './IGMXBatchingManager';
 export type { IGlpManager } from './IGlpManager';
 export type { IGlpStakingManager } from './IGlpStakingManager';
 export type { IRewardRouterV2 } from './IRewardRouterV2';
+export type { IRewardTracker } from './IRewardTracker';
 export type { ISGLPExtended } from './ISGLPExtended';
 export type { IVault } from './IVault';
+export type { IVester } from './IVester';

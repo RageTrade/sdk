@@ -193,6 +193,25 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
+        name: 'borrower',
+        type: 'address',
+      },
+    ],
+    name: 'availableBorrow',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'account',
         type: 'address',
       },
@@ -254,19 +273,6 @@ const _abi = [
         internalType: 'uint256',
         name: 'shares',
         type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'decimals',
-    outputs: [
-      {
-        internalType: 'uint8',
-        name: '',
-        type: 'uint8',
       },
     ],
     stateMutability: 'view',
@@ -449,19 +455,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'name',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -577,19 +570,6 @@ const _abi = [
     name: 'repay',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'symbol',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

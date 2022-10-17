@@ -38,6 +38,9 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     'claimFees()': FunctionFragment;
     'compound()': FunctionFragment;
     'compoundForAccount(address)': FunctionFragment;
+    'esGmx()': FunctionFragment;
+    'glpVester()': FunctionFragment;
+    'gmx()': FunctionFragment;
     'handleRewards(bool,bool,bool,bool,bool,bool,bool)': FunctionFragment;
     'mintAndStakeGlp(address,uint256,uint256,uint256)': FunctionFragment;
     'mintAndStakeGlpETH(uint256,uint256)': FunctionFragment;
@@ -45,6 +48,7 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     'stakeEsGmx(uint256)': FunctionFragment;
     'stakeGmx(uint256)': FunctionFragment;
     'stakeGmxForAccount(address,uint256)': FunctionFragment;
+    'stakedGmxTracker()': FunctionFragment;
     'unstakeAndRedeemGlp(address,uint256,uint256,address)': FunctionFragment;
     'unstakeAndRedeemGlpETH(uint256,uint256,address)': FunctionFragment;
     'unstakeEsGmx(uint256)': FunctionFragment;
@@ -61,6 +65,9 @@ export interface IRewardRouterV2Interface extends utils.Interface {
       | 'claimFees'
       | 'compound'
       | 'compoundForAccount'
+      | 'esGmx'
+      | 'glpVester'
+      | 'gmx'
       | 'handleRewards'
       | 'mintAndStakeGlp'
       | 'mintAndStakeGlpETH'
@@ -68,6 +75,7 @@ export interface IRewardRouterV2Interface extends utils.Interface {
       | 'stakeEsGmx'
       | 'stakeGmx'
       | 'stakeGmxForAccount'
+      | 'stakedGmxTracker'
       | 'unstakeAndRedeemGlp'
       | 'unstakeAndRedeemGlpETH'
       | 'unstakeEsGmx'
@@ -97,6 +105,9 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     functionFragment: 'compoundForAccount',
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: 'esGmx', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'glpVester', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'gmx', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'handleRewards',
     values: [
@@ -137,6 +148,10 @@ export interface IRewardRouterV2Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'stakeGmxForAccount',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'stakedGmxTracker',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeAndRedeemGlp',
@@ -184,6 +199,9 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     functionFragment: 'compoundForAccount',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'esGmx', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'glpVester', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'gmx', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'handleRewards',
     data: BytesLike
@@ -204,6 +222,10 @@ export interface IRewardRouterV2Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'stakeGmx', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'stakeGmxForAccount',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'stakedGmxTracker',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -343,14 +365,20 @@ export interface IRewardRouterV2 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    esGmx(overrides?: CallOverrides): Promise<[string]>;
+
+    glpVester(overrides?: CallOverrides): Promise<[string]>;
+
+    gmx(overrides?: CallOverrides): Promise<[string]>;
+
     handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
+      shouldClaimGmx: PromiseOrValue<boolean>,
+      shouldStakeGmx: PromiseOrValue<boolean>,
+      shouldClaimEsGmx: PromiseOrValue<boolean>,
+      shouldStakeEsGmx: PromiseOrValue<boolean>,
+      shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
+      shouldClaimWeth: PromiseOrValue<boolean>,
+      shouldConvertWethToEth: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -388,6 +416,8 @@ export interface IRewardRouterV2 extends BaseContract {
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    stakedGmxTracker(overrides?: CallOverrides): Promise<[string]>;
 
     unstakeAndRedeemGlp(
       _tokenOut: PromiseOrValue<string>,
@@ -452,14 +482,20 @@ export interface IRewardRouterV2 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  esGmx(overrides?: CallOverrides): Promise<string>;
+
+  glpVester(overrides?: CallOverrides): Promise<string>;
+
+  gmx(overrides?: CallOverrides): Promise<string>;
+
   handleRewards(
-    _shouldClaimGmx: PromiseOrValue<boolean>,
-    _shouldStakeGmx: PromiseOrValue<boolean>,
-    _shouldClaimEsGmx: PromiseOrValue<boolean>,
-    _shouldStakeEsGmx: PromiseOrValue<boolean>,
-    _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-    _shouldClaimWeth: PromiseOrValue<boolean>,
-    _shouldConvertWethToEth: PromiseOrValue<boolean>,
+    shouldClaimGmx: PromiseOrValue<boolean>,
+    shouldStakeGmx: PromiseOrValue<boolean>,
+    shouldClaimEsGmx: PromiseOrValue<boolean>,
+    shouldStakeEsGmx: PromiseOrValue<boolean>,
+    shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
+    shouldClaimWeth: PromiseOrValue<boolean>,
+    shouldConvertWethToEth: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -497,6 +533,8 @@ export interface IRewardRouterV2 extends BaseContract {
     _amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  stakedGmxTracker(overrides?: CallOverrides): Promise<string>;
 
   unstakeAndRedeemGlp(
     _tokenOut: PromiseOrValue<string>,
@@ -553,14 +591,20 @@ export interface IRewardRouterV2 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    esGmx(overrides?: CallOverrides): Promise<string>;
+
+    glpVester(overrides?: CallOverrides): Promise<string>;
+
+    gmx(overrides?: CallOverrides): Promise<string>;
+
     handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
+      shouldClaimGmx: PromiseOrValue<boolean>,
+      shouldStakeGmx: PromiseOrValue<boolean>,
+      shouldClaimEsGmx: PromiseOrValue<boolean>,
+      shouldStakeEsGmx: PromiseOrValue<boolean>,
+      shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
+      shouldClaimWeth: PromiseOrValue<boolean>,
+      shouldConvertWethToEth: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -598,6 +642,8 @@ export interface IRewardRouterV2 extends BaseContract {
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    stakedGmxTracker(overrides?: CallOverrides): Promise<string>;
 
     unstakeAndRedeemGlp(
       _tokenOut: PromiseOrValue<string>,
@@ -695,14 +741,20 @@ export interface IRewardRouterV2 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    esGmx(overrides?: CallOverrides): Promise<BigNumber>;
+
+    glpVester(overrides?: CallOverrides): Promise<BigNumber>;
+
+    gmx(overrides?: CallOverrides): Promise<BigNumber>;
+
     handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
+      shouldClaimGmx: PromiseOrValue<boolean>,
+      shouldStakeGmx: PromiseOrValue<boolean>,
+      shouldClaimEsGmx: PromiseOrValue<boolean>,
+      shouldStakeEsGmx: PromiseOrValue<boolean>,
+      shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
+      shouldClaimWeth: PromiseOrValue<boolean>,
+      shouldConvertWethToEth: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -740,6 +792,8 @@ export interface IRewardRouterV2 extends BaseContract {
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    stakedGmxTracker(overrides?: CallOverrides): Promise<BigNumber>;
 
     unstakeAndRedeemGlp(
       _tokenOut: PromiseOrValue<string>,
@@ -805,14 +859,20 @@ export interface IRewardRouterV2 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    esGmx(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    glpVester(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    gmx(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
+      shouldClaimGmx: PromiseOrValue<boolean>,
+      shouldStakeGmx: PromiseOrValue<boolean>,
+      shouldClaimEsGmx: PromiseOrValue<boolean>,
+      shouldStakeEsGmx: PromiseOrValue<boolean>,
+      shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
+      shouldClaimWeth: PromiseOrValue<boolean>,
+      shouldConvertWethToEth: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -850,6 +910,8 @@ export interface IRewardRouterV2 extends BaseContract {
       _amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    stakedGmxTracker(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     unstakeAndRedeemGlp(
       _tokenOut: PromiseOrValue<string>,

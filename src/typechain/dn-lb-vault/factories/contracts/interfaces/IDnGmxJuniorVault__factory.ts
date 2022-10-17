@@ -11,6 +11,63 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: 'ArraysLengthMismatch',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'DepositCapExceeded',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'FlashloanNotInitiated',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidFeeRecipient',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidRebalance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NotBalancerVault',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NotDnGmxSeniorVault',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'msgSender',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'authorisedKeeperAddress',
+        type: 'address',
+      },
+    ],
+    name: 'OnlyKeeperAllowed',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'AllowancesGranted',
+    type: 'event',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -33,6 +90,19 @@ const _abi = [
       },
     ],
     name: 'Approval',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: '_batchingManager',
+        type: 'address',
+      },
+    ],
+    name: 'BatchingManagerUpdated',
     type: 'event',
   },
   {
@@ -64,6 +134,139 @@ const _abi = [
       },
     ],
     name: 'Deposit',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '_newDepositCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'DepositCapUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: '_dnGmxSeniorVault',
+        type: 'address',
+      },
+    ],
+    name: 'DnGmxSeniorVaultUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: '_newFeeRecipient',
+        type: 'address',
+      },
+    ],
+    name: 'FeeRecipientUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'feeAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'FeesWithdrawn',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: '_newKeeper',
+        type: 'address',
+      },
+    ],
+    name: 'KeeperUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint32',
+        name: 'rebalanceTimeThreshold',
+        type: 'uint32',
+      },
+      {
+        indexed: true,
+        internalType: 'uint16',
+        name: 'rebalanceDeltaThreshold',
+        type: 'uint16',
+      },
+    ],
+    name: 'RebalanceParamsUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'Rebalanced',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'wethHarvested',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'esGmxStaked',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'juniorVaultWeth',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'seniorVaultWeth',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'juniorVaultGlp',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'seniorVaultAUsdc',
+        type: 'uint256',
+      },
+    ],
+    name: 'RewardsHarvested',
     type: 'event',
   },
   {
@@ -126,6 +329,56 @@ const _abi = [
       },
     ],
     name: 'Withdraw',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '_withdrawFeeBps',
+        type: 'uint256',
+      },
+    ],
+    name: 'WithdrawFeeUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'slippageThresholdGmx',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint240',
+        name: 'usdcConversionThreshold',
+        type: 'uint240',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'wethConversionThreshold',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'hedgeUsdcAmountThreshold',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'hfThreshold',
+        type: 'uint256',
+      },
+    ],
+    name: 'YieldParamsUpdated',
     type: 'event',
   },
   {
@@ -247,19 +500,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'decimals',
-    outputs: [
-      {
-        internalType: 'uint8',
-        name: '',
-        type: 'uint8',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -346,9 +586,9 @@ const _abi = [
     name: 'getVaultMarketValue',
     outputs: [
       {
-        internalType: 'uint256',
+        internalType: 'int256',
         name: '',
-        type: 'uint256',
+        type: 'int256',
       },
     ],
     stateMutability: 'view',
@@ -462,19 +702,6 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'name',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'uint256',
@@ -577,19 +804,6 @@ const _abi = [
       },
     ],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'symbol',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

@@ -194,7 +194,7 @@ const _abi = [
     name: 'asset',
     outputs: [
       {
-        internalType: 'contract IERC20Metadata',
+        internalType: 'address',
         name: '',
         type: 'address',
       },

@@ -35,7 +35,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'balanceOf(address)': FunctionFragment;
     'convertToAssets(uint256)': FunctionFragment;
     'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
@@ -48,13 +47,11 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'maxRedeem(address)': FunctionFragment;
     'maxWithdraw(address)': FunctionFragment;
     'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
     'previewDeposit(uint256)': FunctionFragment;
     'previewMint(uint256)': FunctionFragment;
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
-    'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
     'transfer(address,uint256)': FunctionFragment;
@@ -70,7 +67,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
       | 'balanceOf'
       | 'convertToAssets'
       | 'convertToShares'
-      | 'decimals'
       | 'deposit'
       | 'depositCap'
       | 'getMarketValue'
@@ -83,13 +79,11 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
       | 'maxRedeem'
       | 'maxWithdraw'
       | 'mint'
-      | 'name'
       | 'previewDeposit'
       | 'previewMint'
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'redeem'
-      | 'symbol'
       | 'totalAssets'
       | 'totalSupply'
       | 'transfer'
@@ -118,7 +112,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'convertToShares',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'deposit',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
@@ -167,7 +160,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'mint',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
     values: [PromiseOrValue<BigNumberish>]
@@ -192,7 +184,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(functionFragment: 'symbol', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'totalAssets',
     values?: undefined
@@ -234,7 +225,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'convertToShares',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'decimals', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
@@ -265,7 +255,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'previewDeposit',
     data: BytesLike
@@ -283,7 +272,6 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'redeem', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'symbol', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'totalAssets',
     data: BytesLike
@@ -300,17 +288,50 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
 
   events: {
+    'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
+    'BatchingManagerUpdated(address)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'DepositCapUpdated(uint256)': EventFragment;
+    'DnGmxSeniorVaultUpdated(address)': EventFragment;
+    'FeeRecipientUpdated(address)': EventFragment;
+    'FeesWithdrawn(uint256)': EventFragment;
+    'KeeperUpdated(address)': EventFragment;
+    'RebalanceParamsUpdated(uint32,uint16)': EventFragment;
+    'Rebalanced()': EventFragment;
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
+    'WithdrawFeeUpdated(uint256)': EventFragment;
+    'YieldParamsUpdated(uint16,uint240,uint256,uint256,uint256)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'BatchingManagerUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeRecipientUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RebalanceParamsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'Rebalanced'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RewardsHarvested'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'WithdrawFeeUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'YieldParamsUpdated'): EventFragment;
 }
+
+export interface AllowancesGrantedEventObject {}
+export type AllowancesGrantedEvent = TypedEvent<
+  [],
+  AllowancesGrantedEventObject
+>;
+
+export type AllowancesGrantedEventFilter =
+  TypedEventFilter<AllowancesGrantedEvent>;
 
 export interface ApprovalEventObject {
   owner: string;
@@ -324,6 +345,17 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
+export interface BatchingManagerUpdatedEventObject {
+  _batchingManager: string;
+}
+export type BatchingManagerUpdatedEvent = TypedEvent<
+  [string],
+  BatchingManagerUpdatedEventObject
+>;
+
+export type BatchingManagerUpdatedEventFilter =
+  TypedEventFilter<BatchingManagerUpdatedEvent>;
+
 export interface DepositEventObject {
   caller: string;
   owner: string;
@@ -336,6 +368,89 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface DepositCapUpdatedEventObject {
+  _newDepositCap: BigNumber;
+}
+export type DepositCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DepositCapUpdatedEventObject
+>;
+
+export type DepositCapUpdatedEventFilter =
+  TypedEventFilter<DepositCapUpdatedEvent>;
+
+export interface DnGmxSeniorVaultUpdatedEventObject {
+  _dnGmxSeniorVault: string;
+}
+export type DnGmxSeniorVaultUpdatedEvent = TypedEvent<
+  [string],
+  DnGmxSeniorVaultUpdatedEventObject
+>;
+
+export type DnGmxSeniorVaultUpdatedEventFilter =
+  TypedEventFilter<DnGmxSeniorVaultUpdatedEvent>;
+
+export interface FeeRecipientUpdatedEventObject {
+  _newFeeRecipient: string;
+}
+export type FeeRecipientUpdatedEvent = TypedEvent<
+  [string],
+  FeeRecipientUpdatedEventObject
+>;
+
+export type FeeRecipientUpdatedEventFilter =
+  TypedEventFilter<FeeRecipientUpdatedEvent>;
+
+export interface FeesWithdrawnEventObject {
+  feeAmount: BigNumber;
+}
+export type FeesWithdrawnEvent = TypedEvent<
+  [BigNumber],
+  FeesWithdrawnEventObject
+>;
+
+export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
+
+export interface KeeperUpdatedEventObject {
+  _newKeeper: string;
+}
+export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
+
+export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
+
+export interface RebalanceParamsUpdatedEventObject {
+  rebalanceTimeThreshold: number;
+  rebalanceDeltaThreshold: number;
+}
+export type RebalanceParamsUpdatedEvent = TypedEvent<
+  [number, number],
+  RebalanceParamsUpdatedEventObject
+>;
+
+export type RebalanceParamsUpdatedEventFilter =
+  TypedEventFilter<RebalanceParamsUpdatedEvent>;
+
+export interface RebalancedEventObject {}
+export type RebalancedEvent = TypedEvent<[], RebalancedEventObject>;
+
+export type RebalancedEventFilter = TypedEventFilter<RebalancedEvent>;
+
+export interface RewardsHarvestedEventObject {
+  wethHarvested: BigNumber;
+  esGmxStaked: BigNumber;
+  juniorVaultWeth: BigNumber;
+  seniorVaultWeth: BigNumber;
+  juniorVaultGlp: BigNumber;
+  seniorVaultAUsdc: BigNumber;
+}
+export type RewardsHarvestedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
+  RewardsHarvestedEventObject
+>;
+
+export type RewardsHarvestedEventFilter =
+  TypedEventFilter<RewardsHarvestedEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -362,6 +477,32 @@ export type WithdrawEvent = TypedEvent<
 >;
 
 export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
+
+export interface WithdrawFeeUpdatedEventObject {
+  _withdrawFeeBps: BigNumber;
+}
+export type WithdrawFeeUpdatedEvent = TypedEvent<
+  [BigNumber],
+  WithdrawFeeUpdatedEventObject
+>;
+
+export type WithdrawFeeUpdatedEventFilter =
+  TypedEventFilter<WithdrawFeeUpdatedEvent>;
+
+export interface YieldParamsUpdatedEventObject {
+  slippageThresholdGmx: number;
+  usdcConversionThreshold: BigNumber;
+  wethConversionThreshold: BigNumber;
+  hedgeUsdcAmountThreshold: BigNumber;
+  hfThreshold: BigNumber;
+}
+export type YieldParamsUpdatedEvent = TypedEvent<
+  [number, BigNumber, BigNumber, BigNumber, BigNumber],
+  YieldParamsUpdatedEventObject
+>;
+
+export type YieldParamsUpdatedEventFilter =
+  TypedEventFilter<YieldParamsUpdatedEvent>;
 
 export interface IDnGmxJuniorVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -421,8 +562,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { shares: BigNumber }>;
 
-    decimals(overrides?: CallOverrides): Promise<[number]>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -472,8 +611,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    name(overrides?: CallOverrides): Promise<[string]>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -500,8 +637,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
 
     totalAssets(
       overrides?: CallOverrides
@@ -559,8 +694,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  decimals(overrides?: CallOverrides): Promise<number>;
-
   deposit(
     assets: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
@@ -610,8 +743,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  name(overrides?: CallOverrides): Promise<string>;
-
   previewDeposit(
     assets: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -638,8 +769,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
     owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
 
   totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -695,8 +824,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    decimals(overrides?: CallOverrides): Promise<number>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -744,8 +871,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<string>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -773,8 +898,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    symbol(overrides?: CallOverrides): Promise<string>;
-
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -801,6 +924,9 @@ export interface IDnGmxJuniorVault extends BaseContract {
   };
 
   filters: {
+    'AllowancesGranted()'(): AllowancesGrantedEventFilter;
+    AllowancesGranted(): AllowancesGrantedEventFilter;
+
     'Approval(address,address,uint256)'(
       owner?: PromiseOrValue<string> | null,
       spender?: PromiseOrValue<string> | null,
@@ -811,6 +937,13 @@ export interface IDnGmxJuniorVault extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    'BatchingManagerUpdated(address)'(
+      _batchingManager?: null
+    ): BatchingManagerUpdatedEventFilter;
+    BatchingManagerUpdated(
+      _batchingManager?: null
+    ): BatchingManagerUpdatedEventFilter;
 
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -824,6 +957,60 @@ export interface IDnGmxJuniorVault extends BaseContract {
       assets?: null,
       shares?: null
     ): DepositEventFilter;
+
+    'DepositCapUpdated(uint256)'(
+      _newDepositCap?: null
+    ): DepositCapUpdatedEventFilter;
+    DepositCapUpdated(_newDepositCap?: null): DepositCapUpdatedEventFilter;
+
+    'DnGmxSeniorVaultUpdated(address)'(
+      _dnGmxSeniorVault?: null
+    ): DnGmxSeniorVaultUpdatedEventFilter;
+    DnGmxSeniorVaultUpdated(
+      _dnGmxSeniorVault?: null
+    ): DnGmxSeniorVaultUpdatedEventFilter;
+
+    'FeeRecipientUpdated(address)'(
+      _newFeeRecipient?: null
+    ): FeeRecipientUpdatedEventFilter;
+    FeeRecipientUpdated(
+      _newFeeRecipient?: null
+    ): FeeRecipientUpdatedEventFilter;
+
+    'FeesWithdrawn(uint256)'(feeAmount?: null): FeesWithdrawnEventFilter;
+    FeesWithdrawn(feeAmount?: null): FeesWithdrawnEventFilter;
+
+    'KeeperUpdated(address)'(_newKeeper?: null): KeeperUpdatedEventFilter;
+    KeeperUpdated(_newKeeper?: null): KeeperUpdatedEventFilter;
+
+    'RebalanceParamsUpdated(uint32,uint16)'(
+      rebalanceTimeThreshold?: PromiseOrValue<BigNumberish> | null,
+      rebalanceDeltaThreshold?: PromiseOrValue<BigNumberish> | null
+    ): RebalanceParamsUpdatedEventFilter;
+    RebalanceParamsUpdated(
+      rebalanceTimeThreshold?: PromiseOrValue<BigNumberish> | null,
+      rebalanceDeltaThreshold?: PromiseOrValue<BigNumberish> | null
+    ): RebalanceParamsUpdatedEventFilter;
+
+    'Rebalanced()'(): RebalancedEventFilter;
+    Rebalanced(): RebalancedEventFilter;
+
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)'(
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
+    ): RewardsHarvestedEventFilter;
+    RewardsHarvested(
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
+    ): RewardsHarvestedEventFilter;
 
     'Transfer(address,address,uint256)'(
       from?: PromiseOrValue<string> | null,
@@ -850,6 +1037,26 @@ export interface IDnGmxJuniorVault extends BaseContract {
       assets?: null,
       shares?: null
     ): WithdrawEventFilter;
+
+    'WithdrawFeeUpdated(uint256)'(
+      _withdrawFeeBps?: null
+    ): WithdrawFeeUpdatedEventFilter;
+    WithdrawFeeUpdated(_withdrawFeeBps?: null): WithdrawFeeUpdatedEventFilter;
+
+    'YieldParamsUpdated(uint16,uint240,uint256,uint256,uint256)'(
+      slippageThresholdGmx?: null,
+      usdcConversionThreshold?: null,
+      wethConversionThreshold?: null,
+      hedgeUsdcAmountThreshold?: null,
+      hfThreshold?: null
+    ): YieldParamsUpdatedEventFilter;
+    YieldParamsUpdated(
+      slippageThresholdGmx?: null,
+      usdcConversionThreshold?: null,
+      wethConversionThreshold?: null,
+      hedgeUsdcAmountThreshold?: null,
+      hfThreshold?: null
+    ): YieldParamsUpdatedEventFilter;
   };
 
   estimateGas: {
@@ -881,8 +1088,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     deposit(
       assets: PromiseOrValue<BigNumberish>,
@@ -933,8 +1138,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -961,8 +1164,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1019,8 +1220,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     deposit(
       assets: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -1072,8 +1271,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     previewDeposit(
       assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -1100,8 +1297,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
