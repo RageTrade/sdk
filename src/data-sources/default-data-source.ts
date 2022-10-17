@@ -3,6 +3,7 @@ import { getNetworkNameFromProvider, NetworkName } from '../contracts';
 import { BaseDataSource } from './base-data-source';
 import { CacheServerDataSource } from './cache-server-data-source';
 import { EthersProviderDataSource } from './ethers-provider-data-source';
+import { EtherscanDataSource } from './etherscan-data-source';
 import {
   FallbackDataSource,
   FallbackDataSourceOptions,
@@ -18,6 +19,7 @@ export function getDefaultDataSourceSync(
   fallbackDataSourceOptions?: FallbackDataSourceOptions
 ) {
   const cacheDS = new CacheServerDataSource(networkName);
+  const etherscanDS = new EtherscanDataSource(networkName);
   const sourcesArray: BaseDataSource[] = [];
 
   if (Array.isArray(providerOrSource)) {
@@ -35,7 +37,7 @@ export function getDefaultDataSourceSync(
   }
 
   return new FallbackDataSource(
-    [cacheDS, ...sourcesArray],
+    [cacheDS, etherscanDS, ...sourcesArray],
     fallbackDataSourceOptions
   );
 }

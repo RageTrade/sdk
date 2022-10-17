@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { fetchJson } from 'ethers/lib/utils';
 import { newError } from './loggers';
 
 export interface FindBlockByTimestampOptions {
@@ -15,6 +16,42 @@ export async function getBlockByTimestamp(
       allowFutureTimestamp: true,
     })
   ).number;
+}
+
+export async function getBlockByTimestampEtherscan(
+  baseUrl: string,
+  timestamp: number,
+  key?: string
+): Promise<number> {
+  if (!key) {
+    key = 'CKP2AR41G_IR584UUF27BQ9MJZ4ES4JHNTB'.replace('_', '');
+  }
+  while (1) {
+    const request = `${baseUrl}/api?module=block&action=getblocknobytime&timestamp=${timestamp}&closest=before&apikey=${key}`;
+    const resp = await fetchJson(request);
+    if (resp.status === '1') {
+      const result = parseInt(resp.result);
+      if (!isNaN(result)) {
+        return result;
+      }
+    }
+    if (JSON.stringify(resp).includes('Max rate limit reached')) {
+      await new Promise((res) =>
+        setTimeout(res, 1000 + Math.floor(Math.random() * 100))
+      );
+      continue; // try again
+    } else {
+      throw new Error(
+        `Arbiscan Api Failed. Request: ${request}. Response: ${JSON.stringify(
+          resp
+        )}`
+      );
+    }
+  }
+
+  throw newError(
+    'this cannot happen, in utils/find-block-by-timestamp/getBlockByTimestamp'
+  );
 }
 
 export async function findBlockByTimestamp(
