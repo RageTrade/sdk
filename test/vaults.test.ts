@@ -7,6 +7,8 @@ import {
   getDefaultDataSourceSync,
 } from '../dist';
 
+jest.setTimeout(200_000);
+
 const skipIf: any = {
   gmx: {
     arbmain: true,
