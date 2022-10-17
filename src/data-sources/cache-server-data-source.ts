@@ -140,14 +140,17 @@ export class CacheServerDataSource extends BaseDataSource {
       avgVaultMarketValue: result.avgVaultMarketValue,
 
       // TODO change this to using D things in the result
-      totalSupplyD18: parseUnits(String(result.totalSupply), 18),
-      totalSharesD18: parseUnits(String(result.totalSupply), 18),
-      totalAssetsD18: parseUnits(String(result.totalAssets), 18),
-      assetPriceD18: parseUnits(String(result.assetPrice), 18),
-      sharePriceD18: parseUnits(String(result.sharePrice), 18),
-      depositCapD18: parseUnits(String(result.depositCap), 18),
-      vaultMarketValueD6: parseUnits(String(result.vaultMarketValue), 6),
-      avgVaultMarketValueD6: parseUnits(String(result.avgVaultMarketValue), 6),
+      totalSupplyD18: parseUnits(result.totalSupply.toFixed(12), 18),
+      totalSharesD18: parseUnits(result.totalSupply.toFixed(12), 18),
+      totalAssetsD18: parseUnits(result.totalAssets.toFixed(12), 18),
+      assetPriceD18: parseUnits(result.assetPrice.toFixed(12), 18),
+      sharePriceD18: parseUnits(result.sharePrice.toFixed(12), 18),
+      depositCapD18: parseUnits(result.depositCap.toFixed(12), 18),
+      vaultMarketValueD6: parseUnits(result.vaultMarketValue.toFixed(6), 6),
+      avgVaultMarketValueD6: parseUnits(
+        result.avgVaultMarketValue.toFixed(6),
+        6
+      ),
     }));
   }
 
