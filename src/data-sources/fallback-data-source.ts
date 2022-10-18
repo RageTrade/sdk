@@ -109,7 +109,12 @@ export class FallbackDataSource extends BaseDataSource {
       0
     );
     const error: any = newError(
-      `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique responses: ${uniqueResponses.length}, Failed queries: ${failedQueriesCount}.`
+      `Quorum target of ${quorum} not achieved. Achieved quorum: ${maxQuorum}, Unique responses: ${
+        uniqueResponses.length
+      }, Failed queries: ${failedQueriesCount}. Errors: ${responses
+        .filter((r) => !!r.error)
+        .map((r) => '[' + JSON.stringify(r.error) + ']')
+        .join(',')}`
     );
     error.responses = responses;
     error.numberOfUniqueResponses = uniqueResponses.length;
