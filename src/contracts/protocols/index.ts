@@ -6,3 +6,4 @@ export * as gmxProtocol from './gmx';
 export * as curve from './curve';
 export * as tokens from './tokens';
 export * as uniswap from './uniswap';
+export * as aave from './aave';
