@@ -27,6 +27,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'InvalidFeeBps',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'InvalidFeeRecipient',
     type: 'error',
   },
@@ -167,12 +172,18 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: 'uint256',
+        name: 'feeBps',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
         internalType: 'address',
         name: '_newFeeRecipient',
         type: 'address',
       },
     ],
-    name: 'FeeRecipientUpdated',
+    name: 'FeeParamsUpdated',
     type: 'event',
   },
   {

@@ -38,6 +38,7 @@ export interface IDebtTokenInterface extends utils.Interface {
     'mint(address,address,uint256,uint256)': FunctionFragment;
     'scaledBalanceOf(address)': FunctionFragment;
     'scaledTotalSupply()': FunctionFragment;
+    'totalSupply()': FunctionFragment;
   };
 
   getFunction(
@@ -51,6 +52,7 @@ export interface IDebtTokenInterface extends utils.Interface {
       | 'mint'
       | 'scaledBalanceOf'
       | 'scaledTotalSupply'
+      | 'totalSupply'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -106,6 +108,10 @@ export interface IDebtTokenInterface extends utils.Interface {
     functionFragment: 'scaledTotalSupply',
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: 'totalSupply',
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: 'UNDERLYING_ASSET_ADDRESS',
@@ -129,6 +135,10 @@ export interface IDebtTokenInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'scaledTotalSupply',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'totalSupply',
     data: BytesLike
   ): Result;
 
@@ -263,6 +273,8 @@ export interface IDebtToken extends BaseContract {
     ): Promise<[BigNumber]>;
 
     scaledTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<string>;
@@ -315,6 +327,8 @@ export interface IDebtToken extends BaseContract {
 
   scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
+  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
     UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<string>;
 
@@ -365,6 +379,8 @@ export interface IDebtToken extends BaseContract {
     ): Promise<BigNumber>;
 
     scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -468,6 +484,8 @@ export interface IDebtToken extends BaseContract {
     ): Promise<BigNumber>;
 
     scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+
+    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -522,5 +540,7 @@ export interface IDebtToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     scaledTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

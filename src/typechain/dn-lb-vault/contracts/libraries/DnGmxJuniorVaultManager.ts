@@ -12,18 +12,18 @@ import type {
   PromiseOrValue,
 } from '../../common';
 
-export interface DnGmxJuniorVaultHelpersInterface extends utils.Interface {
+export interface DnGmxJuniorVaultManagerInterface extends utils.Interface {
   functions: {};
 
   events: {};
 }
 
-export interface DnGmxJuniorVaultHelpers extends BaseContract {
+export interface DnGmxJuniorVaultManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: DnGmxJuniorVaultHelpersInterface;
+  interface: DnGmxJuniorVaultManagerInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

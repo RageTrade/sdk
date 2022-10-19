@@ -18,31 +18,34 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from '../../../common';
+} from '../../../../common';
 
-export interface ISwapRouterGetterInterface extends utils.Interface {
+export interface IBeaconInterface extends utils.Interface {
   functions: {
-    'swapRouter()': FunctionFragment;
+    'implementation()': FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'swapRouter'): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: 'implementation'): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'swapRouter',
+    functionFragment: 'implementation',
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: 'swapRouter', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'implementation',
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
 
-export interface ISwapRouterGetter extends BaseContract {
+export interface IBeacon extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: ISwapRouterGetterInterface;
+  interface: IBeaconInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -64,22 +67,22 @@ export interface ISwapRouterGetter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    swapRouter(overrides?: CallOverrides): Promise<[string]>;
+    implementation(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  swapRouter(overrides?: CallOverrides): Promise<string>;
+  implementation(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    swapRouter(overrides?: CallOverrides): Promise<string>;
+    implementation(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    swapRouter(overrides?: CallOverrides): Promise<BigNumber>;
+    implementation(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    swapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    implementation(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

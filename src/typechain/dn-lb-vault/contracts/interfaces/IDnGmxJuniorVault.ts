@@ -294,7 +294,7 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxSeniorVaultUpdated(address)': EventFragment;
-    'FeeRecipientUpdated(address)': EventFragment;
+    'FeeParamsUpdated(uint256,address)': EventFragment;
     'FeesWithdrawn(uint256)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
     'RebalanceParamsUpdated(uint32,uint16)': EventFragment;
@@ -312,7 +312,7 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeeRecipientUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RebalanceParamsUpdated'): EventFragment;
@@ -391,16 +391,17 @@ export type DnGmxSeniorVaultUpdatedEvent = TypedEvent<
 export type DnGmxSeniorVaultUpdatedEventFilter =
   TypedEventFilter<DnGmxSeniorVaultUpdatedEvent>;
 
-export interface FeeRecipientUpdatedEventObject {
+export interface FeeParamsUpdatedEventObject {
+  feeBps: BigNumber;
   _newFeeRecipient: string;
 }
-export type FeeRecipientUpdatedEvent = TypedEvent<
-  [string],
-  FeeRecipientUpdatedEventObject
+export type FeeParamsUpdatedEvent = TypedEvent<
+  [BigNumber, string],
+  FeeParamsUpdatedEventObject
 >;
 
-export type FeeRecipientUpdatedEventFilter =
-  TypedEventFilter<FeeRecipientUpdatedEvent>;
+export type FeeParamsUpdatedEventFilter =
+  TypedEventFilter<FeeParamsUpdatedEvent>;
 
 export interface FeesWithdrawnEventObject {
   feeAmount: BigNumber;
@@ -970,12 +971,14 @@ export interface IDnGmxJuniorVault extends BaseContract {
       _dnGmxSeniorVault?: null
     ): DnGmxSeniorVaultUpdatedEventFilter;
 
-    'FeeRecipientUpdated(address)'(
+    'FeeParamsUpdated(uint256,address)'(
+      feeBps?: null,
       _newFeeRecipient?: null
-    ): FeeRecipientUpdatedEventFilter;
-    FeeRecipientUpdated(
+    ): FeeParamsUpdatedEventFilter;
+    FeeParamsUpdated(
+      feeBps?: null,
       _newFeeRecipient?: null
-    ): FeeRecipientUpdatedEventFilter;
+    ): FeeParamsUpdatedEventFilter;
 
     'FeesWithdrawn(uint256)'(feeAmount?: null): FeesWithdrawnEventFilter;
     FeesWithdrawn(feeAmount?: null): FeesWithdrawnEventFilter;

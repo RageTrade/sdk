@@ -5,17 +5,17 @@
 import { Contract, Signer, utils } from 'ethers';
 import type { Provider } from '@ethersproject/providers';
 import type {
-  ISwapRouterGetter,
-  ISwapRouterGetterInterface,
-} from '../../../../contracts/libraries/SwapManager.sol/ISwapRouterGetter';
+  IBeacon,
+  IBeaconInterface,
+} from '../../../../../@openzeppelin/contracts/proxy/beacon/IBeacon';
 
 const _abi = [
   {
     inputs: [],
-    name: 'swapRouter',
+    name: 'implementation',
     outputs: [
       {
-        internalType: 'contract ISwapRouter',
+        internalType: 'address',
         name: '',
         type: 'address',
       },
@@ -25,15 +25,15 @@ const _abi = [
   },
 ];
 
-export class ISwapRouterGetter__factory {
+export class IBeacon__factory {
   static readonly abi = _abi;
-  static createInterface(): ISwapRouterGetterInterface {
-    return new utils.Interface(_abi) as ISwapRouterGetterInterface;
+  static createInterface(): IBeaconInterface {
+    return new utils.Interface(_abi) as IBeaconInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): ISwapRouterGetter {
-    return new Contract(address, _abi, signerOrProvider) as ISwapRouterGetter;
+  ): IBeacon {
+    return new Contract(address, _abi, signerOrProvider) as IBeacon;
   }
 }

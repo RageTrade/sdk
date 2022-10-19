@@ -58,7 +58,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'decreaseAllowance(address,uint256)': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
     'depositCap()': FunctionFragment;
+    'dnUsdcDeposited()': FunctionFragment;
+    'getCurrentBorrows()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
+    'getOptimalBorrows(uint256)': FunctionFragment;
     'getPrice(bool)': FunctionFragment;
     'getPriceX128()': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
@@ -86,7 +89,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,address,uint256)': FunctionFragment;
-    'setFeeRecipient(address)': FunctionFragment;
+    'setFeeParams(uint256,address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
     'setRebalanceParams(uint32,uint16)': FunctionFragment;
     'setThresholds(uint16,uint16,uint208,uint256,uint256,uint256)': FunctionFragment;
@@ -116,7 +119,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'decreaseAllowance'
       | 'deposit'
       | 'depositCap'
+      | 'dnUsdcDeposited'
+      | 'getCurrentBorrows'
       | 'getMarketValue'
+      | 'getOptimalBorrows'
       | 'getPrice'
       | 'getPriceX128'
       | 'getUsdcBorrowed'
@@ -144,7 +150,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'redeem'
       | 'renounceOwnership'
       | 'setAdminParams'
-      | 'setFeeRecipient'
+      | 'setFeeParams'
       | 'setHedgeParams'
       | 'setRebalanceParams'
       | 'setThresholds'
@@ -200,7 +206,19 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'dnUsdcDeposited',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getCurrentBorrows',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getMarketValue',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getOptimalBorrows',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -319,8 +337,8 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setFeeRecipient',
-    values: [PromiseOrValue<string>]
+    functionFragment: 'setFeeParams',
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setHedgeParams',
@@ -417,7 +435,19 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'dnUsdcDeposited',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getCurrentBorrows',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getMarketValue',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getOptimalBorrows',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'getPrice', data: BytesLike): Result;
@@ -493,7 +523,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setFeeRecipient',
+    functionFragment: 'setFeeParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -548,7 +578,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxSeniorVaultUpdated(address)': EventFragment;
-    'FeeRecipientUpdated(address)': EventFragment;
+    'FeeParamsUpdated(uint256,address)': EventFragment;
     'FeesWithdrawn(uint256)': EventFragment;
     'Initialized(uint8)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
@@ -570,7 +600,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeeRecipientUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
@@ -653,16 +683,17 @@ export type DnGmxSeniorVaultUpdatedEvent = TypedEvent<
 export type DnGmxSeniorVaultUpdatedEventFilter =
   TypedEventFilter<DnGmxSeniorVaultUpdatedEvent>;
 
-export interface FeeRecipientUpdatedEventObject {
+export interface FeeParamsUpdatedEventObject {
+  feeBps: BigNumber;
   _newFeeRecipient: string;
 }
-export type FeeRecipientUpdatedEvent = TypedEvent<
-  [string],
-  FeeRecipientUpdatedEventObject
+export type FeeParamsUpdatedEvent = TypedEvent<
+  [BigNumber, string],
+  FeeParamsUpdatedEventObject
 >;
 
-export type FeeRecipientUpdatedEventFilter =
-  TypedEventFilter<FeeRecipientUpdatedEvent>;
+export type FeeParamsUpdatedEventFilter =
+  TypedEventFilter<FeeParamsUpdatedEvent>;
 
 export interface FeesWithdrawnEventObject {
   feeAmount: BigNumber;
@@ -875,10 +906,29 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    dnUsdcDeposited(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getCurrentBorrows(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        currentBtcBorrow: BigNumber;
+        currentEthBorrow: BigNumber;
+      }
+    >;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { marketValue: BigNumber }>;
+
+    getOptimalBorrows(
+      glpDeposited: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        optimalBtcBorrow: BigNumber;
+        optimalEthBorrow: BigNumber;
+      }
+    >;
 
     getPrice(
       maximize: PromiseOrValue<boolean>,
@@ -1009,7 +1059,8 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setFeeRecipient(
+    setFeeParams(
+      _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -1135,10 +1186,29 @@ export interface DnGmxJuniorVault extends BaseContract {
 
   depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+  dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getCurrentBorrows(overrides?: CallOverrides): Promise<
+    [BigNumber, BigNumber] & {
+      currentBtcBorrow: BigNumber;
+      currentEthBorrow: BigNumber;
+    }
+  >;
+
   getMarketValue(
     assetAmount: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  getOptimalBorrows(
+    glpDeposited: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      optimalBtcBorrow: BigNumber;
+      optimalEthBorrow: BigNumber;
+    }
+  >;
 
   getPrice(
     maximize: PromiseOrValue<boolean>,
@@ -1265,7 +1335,8 @@ export interface DnGmxJuniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setFeeRecipient(
+  setFeeParams(
+    _feeBps: PromiseOrValue<BigNumberish>,
     _feeRecipient: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -1389,10 +1460,29 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCurrentBorrows(overrides?: CallOverrides): Promise<
+      [BigNumber, BigNumber] & {
+        currentBtcBorrow: BigNumber;
+        currentEthBorrow: BigNumber;
+      }
+    >;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getOptimalBorrows(
+      glpDeposited: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        optimalBtcBorrow: BigNumber;
+        optimalEthBorrow: BigNumber;
+      }
+    >;
 
     getPrice(
       maximize: PromiseOrValue<boolean>,
@@ -1509,7 +1599,8 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setFeeRecipient(
+    setFeeParams(
+      _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1625,12 +1716,14 @@ export interface DnGmxJuniorVault extends BaseContract {
       _dnGmxSeniorVault?: null
     ): DnGmxSeniorVaultUpdatedEventFilter;
 
-    'FeeRecipientUpdated(address)'(
+    'FeeParamsUpdated(uint256,address)'(
+      feeBps?: null,
       _newFeeRecipient?: null
-    ): FeeRecipientUpdatedEventFilter;
-    FeeRecipientUpdated(
+    ): FeeParamsUpdatedEventFilter;
+    FeeParamsUpdated(
+      feeBps?: null,
       _newFeeRecipient?: null
-    ): FeeRecipientUpdatedEventFilter;
+    ): FeeParamsUpdatedEventFilter;
 
     'FeesWithdrawn(uint256)'(feeAmount?: null): FeesWithdrawnEventFilter;
     FeesWithdrawn(feeAmount?: null): FeesWithdrawnEventFilter;
@@ -1782,8 +1875,17 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
+    dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCurrentBorrows(overrides?: CallOverrides): Promise<BigNumber>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getOptimalBorrows(
+      glpDeposited: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1912,7 +2014,8 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setFeeRecipient(
+    setFeeParams(
+      _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -2039,8 +2142,17 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    dnUsdcDeposited(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getCurrentBorrows(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getMarketValue(
       assetAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getOptimalBorrows(
+      glpDeposited: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2171,7 +2283,8 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setFeeRecipient(
+    setFeeParams(
+      _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
