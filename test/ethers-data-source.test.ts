@@ -154,5 +154,12 @@ describe('ethers data source', () => {
       );
       expect(sglpAmount.gt(0)).toBeTruthy();
     });
+
+    it('getGmxVaultInfoByTokenAddress', async () => {
+      const { result: dnGmxInfo } = await ds.getDnGmxVaultsInfo();
+      console.log(dnGmxInfo);
+
+      // expect(gmxInfo.seniorVault).toBeGreaterThan(0);
+    });
   });
 });

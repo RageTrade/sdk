@@ -4,6 +4,7 @@ import { core, getNetworkNameFromProvider, VaultName } from '../contracts';
 import { getBlockByTimestamp, ResultWithMetadata } from '../utils';
 import { BaseDataSource } from './base-data-source';
 import { getVaultInfo } from './scripts';
+import { getDnGmxVaultsInfo } from './scripts/get-dn-gmx-vaults-info';
 import { getGmxVaultInfo } from './scripts/get-gmx-vault-info';
 import { getGmxVaultInfoByTokenAddress } from './scripts/get-gmx-vault-info-by-token-address';
 import { getPoolInfo } from './scripts/get-pool-info';
@@ -62,6 +63,10 @@ export class EthersProviderDataSource extends BaseDataSource {
     return getResultWithMetadata(
       await getGmxVaultInfoByTokenAddress(this._provider, tokenAddress)
     );
+  }
+
+  async getDnGmxVaultsInfo() {
+    return getResultWithMetadata(await getDnGmxVaultsInfo(this._provider));
   }
 }
 

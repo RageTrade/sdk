@@ -9,6 +9,7 @@ import {
   GmxVaultInfoResult,
   GmxVaultInfoByTokenAddressResult,
 } from './scripts';
+import { DnGmxVaultsInfoResult } from './scripts/get-dn-gmx-vaults-info';
 
 export type MethodNames =
   | 'getNetworkName'
@@ -19,7 +20,8 @@ export type MethodNames =
   | 'getPoolInfo'
   | 'getVaultInfo'
   | 'getGmxVaultInfo'
-  | 'getGmxVaultInfoByTokenAddress';
+  | 'getGmxVaultInfoByTokenAddress'
+  | 'getDnGmxVaultsInfo';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -80,6 +82,10 @@ export abstract class BaseDataSource {
     tokenAddress: string
   ): Promise<ResultWithMetadata<GmxVaultInfoByTokenAddressResult>> {
     return this.perform('getGmxVaultInfoByTokenAddress', [tokenAddress]);
+  }
+
+  getDnGmxVaultsInfo(): Promise<ResultWithMetadata<DnGmxVaultsInfoResult>> {
+    return this.perform('getDnGmxVaultsInfo', []);
   }
 
   perform<MethodName extends MethodNames>(
