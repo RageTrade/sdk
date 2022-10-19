@@ -4,6 +4,8 @@ import { core, getProvider, tricryptoVault } from '../dist';
 
 config();
 
+jest.setTimeout(200_000);
+
 const arbmain = new ethers.providers.StaticJsonRpcProvider(
   'https://arb1.arbitrum.io/rpc'
 );
