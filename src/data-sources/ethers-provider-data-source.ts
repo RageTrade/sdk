@@ -3,12 +3,14 @@ import { BigNumberish, ethers } from 'ethers';
 import { core, getNetworkNameFromProvider, VaultName } from '../contracts';
 import { getBlockByTimestamp, ResultWithMetadata } from '../utils';
 import { BaseDataSource } from './base-data-source';
-import { getVaultInfo } from './scripts';
-import { getDnGmxVaultsInfo } from './scripts/get-dn-gmx-vaults-info';
-import { getGmxVaultInfo } from './scripts/get-gmx-vault-info';
-import { getGmxVaultInfoByTokenAddress } from './scripts/get-gmx-vault-info-by-token-address';
-import { getPoolInfo } from './scripts/get-pool-info';
-import { getPrices } from './scripts/get-prices';
+import {
+  getVaultInfo,
+  getDnGmxVaultsInfo,
+  getGmxVaultInfo,
+  getGmxVaultInfoByTokenAddress,
+  getPoolInfo,
+  getPrices,
+} from './scripts';
 
 export class EthersProviderDataSource extends BaseDataSource {
   _provider: ethers.providers.Provider;

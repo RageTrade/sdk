@@ -10,6 +10,7 @@ import {
 
 import { BaseDataSource } from './base-data-source';
 import {
+  DnGmxVaultsInfoResult,
   GmxVaultInfoByTokenAddressResult,
   GmxVaultInfoResult,
   PoolInfoResult,
@@ -175,6 +176,42 @@ export class CacheServerDataSource extends BaseDataSource {
       underlyingVaultMinPriceD30: BigNumber.from(
         result.underlyingVaultMinPriceD30
       ),
+    }));
+  }
+
+  async getDnGmxVaultsInfo() {
+    const response = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-dn-gmx-vault-info?networkName=${this._networkName}`
+    )) as ApiResponse<BigNumberStringified<DnGmxVaultsInfoResult>>;
+    return getResultWithMetadata(response, (result) => ({
+      juniorVault: {
+        currentExposureInGlp: {
+          btcD8: BigNumber.from(result.juniorVault.currentExposureInGlp.btcD8),
+          ethD18: BigNumber.from(
+            result.juniorVault.currentExposureInGlp.ethD18
+          ),
+        },
+        currentShortPositionInAave: {
+          btcD8: BigNumber.from(
+            result.juniorVault.currentShortPositionInAave.btcD8
+          ),
+          ethD18: BigNumber.from(
+            result.juniorVault.currentShortPositionInAave.ethD18
+          ),
+        },
+        currentBorrowValueD6: BigNumber.from(
+          result.juniorVault.currentBorrowValueD6
+        ),
+      },
+      seniorVault: {
+        usdcLentToAaveD6: BigNumber.from(result.seniorVault.usdcLentToAaveD6),
+        positionD6: BigNumber.from(result.seniorVault.positionD6),
+        withdrawableAmountD18: BigNumber.from(
+          result.seniorVault.withdrawableAmountD18
+        ),
+        earnedInterestRate: result.seniorVault.earnedInterestRate,
+        utilizationRatio: result.seniorVault.utilizationRatio,
+      },
     }));
   }
 }
