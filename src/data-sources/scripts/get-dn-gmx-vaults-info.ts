@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import { formatEther, parseEther } from 'ethers/lib/utils';
 import { aave, dnLbVault } from '../../contracts';
+import { safeDiv } from '../../utils';
 
 export interface DnGmxVaultsInfoResult {
   juniorVault: {
@@ -41,7 +42,7 @@ export async function getDnGmxVaultsInfo(
     // senior vault
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
-    dnGmxSeniorVault_previewWithdraw_totalSupply,
+    dnGmxSeniorVault_maxUtilizationBps,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
@@ -53,24 +54,30 @@ export async function getDnGmxVaultsInfo(
     // senior vault
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
-    dnGmxSeniorVault.previewWithdraw(dnGmxSeniorVault.totalSupply()),
+    dnGmxSeniorVault.maxUtilizationBps(),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
   ] as const);
 
-  const oneEther = parseEther('1');
+  const D18 = parseEther('1');
 
-  const utilizationRatioD18 = oneEther.mul(
-    dnGmxSeniorVault_totalUsdcBorrowed.div(dnGmxSeniorVault_totalAssets)
+  const utilizationRatioD18 = safeDiv(
+    D18.mul(dnGmxSeniorVault_totalUsdcBorrowed),
+    dnGmxSeniorVault_totalAssets
   );
 
-  const earnedInterestRateD18 = oneEther.mul(
-    dnGmxJuniorVault_dnUsdcDeposited
-      .add(dnGmxSeniorVault_totalAssets)
-      .div(dnGmxSeniorVault_totalAssets)
+  const earnedInterestRateD18 = safeDiv(
+    D18.mul(dnGmxJuniorVault_dnUsdcDeposited.add(dnGmxSeniorVault_totalAssets)),
+    dnGmxSeniorVault_totalAssets
   );
 
-  const withdrawableAmountD18 = dnGmxSeniorVault_previewWithdraw_totalSupply;
+  const withdrawableAmountD18_A = dnGmxSeniorVault_totalAssets.sub(
+    dnGmxJuniorVault_getUsdcBorrowed
+  );
+  const withdrawableAmountD18_B = dnGmxSeniorVault_totalAssets
+    .sub(dnGmxSeniorVault_totalUsdcBorrowed)
+    .mul(dnGmxSeniorVault_maxUtilizationBps)
+    .div(10_000);
 
   return {
     juniorVault: {
@@ -92,7 +99,9 @@ export async function getDnGmxVaultsInfo(
       positionD6: dnGmxSeniorVault_totalUsdcBorrowed,
       earnedInterestRate: Number(formatEther(earnedInterestRateD18)),
       utilizationRatio: Number(formatEther(utilizationRatioD18)),
-      withdrawableAmountD18,
+      withdrawableAmountD18: withdrawableAmountD18_A.lt(withdrawableAmountD18_B)
+        ? withdrawableAmountD18_A
+        : withdrawableAmountD18_B,
     },
   };
 }
