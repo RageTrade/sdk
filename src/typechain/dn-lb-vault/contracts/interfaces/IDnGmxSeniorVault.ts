@@ -292,17 +292,32 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
 
   events: {
+    'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
+    'BorrowCapUpdated(address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
+    'DepositCapUpdated(uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'BorrowCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
+
+export interface AllowancesGrantedEventObject {}
+export type AllowancesGrantedEvent = TypedEvent<
+  [],
+  AllowancesGrantedEventObject
+>;
+
+export type AllowancesGrantedEventFilter =
+  TypedEventFilter<AllowancesGrantedEvent>;
 
 export interface ApprovalEventObject {
   owner: string;
@@ -316,6 +331,18 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
+export interface BorrowCapUpdatedEventObject {
+  vault: string;
+  newCap: BigNumber;
+}
+export type BorrowCapUpdatedEvent = TypedEvent<
+  [string, BigNumber],
+  BorrowCapUpdatedEventObject
+>;
+
+export type BorrowCapUpdatedEventFilter =
+  TypedEventFilter<BorrowCapUpdatedEvent>;
+
 export interface DepositEventObject {
   caller: string;
   owner: string;
@@ -328,6 +355,17 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface DepositCapUpdatedEventObject {
+  _newDepositCap: BigNumber;
+}
+export type DepositCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DepositCapUpdatedEventObject
+>;
+
+export type DepositCapUpdatedEventFilter =
+  TypedEventFilter<DepositCapUpdatedEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -799,6 +837,9 @@ export interface IDnGmxSeniorVault extends BaseContract {
   };
 
   filters: {
+    'AllowancesGranted()'(): AllowancesGrantedEventFilter;
+    AllowancesGranted(): AllowancesGrantedEventFilter;
+
     'Approval(address,address,uint256)'(
       owner?: PromiseOrValue<string> | null,
       spender?: PromiseOrValue<string> | null,
@@ -809,6 +850,12 @@ export interface IDnGmxSeniorVault extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    'BorrowCapUpdated(address,uint256)'(
+      vault?: null,
+      newCap?: null
+    ): BorrowCapUpdatedEventFilter;
+    BorrowCapUpdated(vault?: null, newCap?: null): BorrowCapUpdatedEventFilter;
 
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -822,6 +869,11 @@ export interface IDnGmxSeniorVault extends BaseContract {
       assets?: null,
       shares?: null
     ): DepositEventFilter;
+
+    'DepositCapUpdated(uint256)'(
+      _newDepositCap?: null
+    ): DepositCapUpdatedEventFilter;
+    DepositCapUpdated(_newDepositCap?: null): DepositCapUpdatedEventFilter;
 
     'Transfer(address,address,uint256)'(
       from?: PromiseOrValue<string> | null,

@@ -6,6 +6,8 @@ import type {
   BigNumber,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -23,17 +25,28 @@ import type {
 export interface IBorrowerInterface extends utils.Interface {
   functions: {
     'getUsdcBorrowed()': FunctionFragment;
+    'harvestFees()': FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'getUsdcBorrowed'): FunctionFragment;
+  getFunction(
+    nameOrSignatureOrTopic: 'getUsdcBorrowed' | 'harvestFees'
+  ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'getUsdcBorrowed',
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: 'harvestFees',
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: 'getUsdcBorrowed',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'harvestFees',
     data: BytesLike
   ): Result;
 
@@ -68,21 +81,39 @@ export interface IBorrower extends BaseContract {
 
   functions: {
     getUsdcBorrowed(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    harvestFees(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
 
+  harvestFees(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    harvestFees(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
     getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    harvestFees(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     getUsdcBorrowed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    harvestFees(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

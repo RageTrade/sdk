@@ -43,45 +43,8 @@ const _abi = [
     type: 'error',
   },
   {
-    inputs: [
-      {
-        internalType: 'bool',
-        name: 'currentValue',
-        type: 'bool',
-      },
-    ],
-    name: 'InvalidSetDepositPaused',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'vault',
-        type: 'address',
-      },
-    ],
-    name: 'InvalidVault',
-    type: 'error',
-  },
-  {
     inputs: [],
     name: 'NoUsdcBalance',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'VaultAlreadyAdded',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'VaultsLimitExceeded',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'ZeroBalance',
     type: 'error',
   },
   {
@@ -220,12 +183,12 @@ const _abi = [
     inputs: [
       {
         indexed: false,
-        internalType: 'address',
-        name: 'vault',
-        type: 'address',
+        internalType: 'uint256',
+        name: 'newSlippageThresholdGmx',
+        type: 'uint256',
       },
     ],
-    name: 'VaultAdded',
+    name: 'ThresholdsUpdated',
     type: 'event',
   },
   {

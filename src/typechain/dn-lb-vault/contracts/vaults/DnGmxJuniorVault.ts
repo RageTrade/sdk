@@ -27,21 +27,19 @@ import type {
   PromiseOrValue,
 } from '../../common';
 
-export declare namespace DnGmxJuniorVault {
+export declare namespace DnGmxJuniorVaultManager {
   export type TokensStruct = {
     weth: PromiseOrValue<string>;
     wbtc: PromiseOrValue<string>;
     sGlp: PromiseOrValue<string>;
     usdc: PromiseOrValue<string>;
-    usdt: PromiseOrValue<string>;
   };
 
-  export type TokensStructOutput = [string, string, string, string, string] & {
+  export type TokensStructOutput = [string, string, string, string] & {
     weth: string;
     wbtc: string;
     sGlp: string;
     usdc: string;
-    usdt: string;
   };
 }
 
@@ -69,7 +67,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'grantAllowances()': FunctionFragment;
     'harvestFees()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(string,string,address,address,(address,address,address,address,address),address)': FunctionFragment;
+    'initialize(string,string,address,address,(address,address,address,address),address)': FunctionFragment;
     'isValidRebalance()': FunctionFragment;
     'maxDeposit(address)': FunctionFragment;
     'maxMint(address)': FunctionFragment;
@@ -256,7 +254,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      DnGmxJuniorVault.TokensStruct,
+      DnGmxJuniorVaultManager.TokensStruct,
       PromiseOrValue<string>
     ]
   ): string;
@@ -964,7 +962,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVault.TokensStruct,
+      _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -1240,7 +1238,7 @@ export interface DnGmxJuniorVault extends BaseContract {
     _symbol: PromiseOrValue<string>,
     _swapRouter: PromiseOrValue<string>,
     _rewardRouter: PromiseOrValue<string>,
-    _tokens: DnGmxJuniorVault.TokensStruct,
+    _tokens: DnGmxJuniorVaultManager.TokensStruct,
     _poolAddressesProvider: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -1510,7 +1508,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVault.TokensStruct,
+      _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -1919,7 +1917,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVault.TokensStruct,
+      _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -2188,7 +2186,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVault.TokensStruct,
+      _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

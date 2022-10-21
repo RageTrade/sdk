@@ -90,7 +90,8 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     'repay(uint256)': FunctionFragment;
     'setDepositCap(uint256)': FunctionFragment;
     'setDnGmxJuniorVault(address)': FunctionFragment;
-    'setMaxUtilizationBps(uint16)': FunctionFragment;
+    'setLeveragePool(address)': FunctionFragment;
+    'setMaxUtilizationBps(uint256)': FunctionFragment;
     'symbol()': FunctionFragment;
     'totalAssets()': FunctionFragment;
     'totalSupply()': FunctionFragment;
@@ -145,6 +146,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
       | 'repay'
       | 'setDepositCap'
       | 'setDnGmxJuniorVault'
+      | 'setLeveragePool'
       | 'setMaxUtilizationBps'
       | 'symbol'
       | 'totalAssets'
@@ -313,6 +315,10 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setLeveragePool',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setMaxUtilizationBps',
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -463,6 +469,10 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setDnGmxJuniorVault',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setLeveragePool',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -785,7 +795,7 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    maxUtilizationBps(overrides?: CallOverrides): Promise<[number]>;
+    maxUtilizationBps(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxWithdraw(
       owner: PromiseOrValue<string>,
@@ -847,6 +857,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     setDnGmxJuniorVault(
       _dnGmxJuniorVault: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setLeveragePool(
+      _leveragePool: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1016,7 +1031,7 @@ export interface DnGmxSeniorVault extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  maxUtilizationBps(overrides?: CallOverrides): Promise<number>;
+  maxUtilizationBps(overrides?: CallOverrides): Promise<BigNumber>;
 
   maxWithdraw(
     owner: PromiseOrValue<string>,
@@ -1078,6 +1093,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
   setDnGmxJuniorVault(
     _dnGmxJuniorVault: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setLeveragePool(
+    _leveragePool: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1241,7 +1261,7 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    maxUtilizationBps(overrides?: CallOverrides): Promise<number>;
+    maxUtilizationBps(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxWithdraw(
       owner: PromiseOrValue<string>,
@@ -1301,6 +1321,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     setDnGmxJuniorVault(
       _dnGmxJuniorVault: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setLeveragePool(
+      _leveragePool: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1609,6 +1634,11 @@ export interface DnGmxSeniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setLeveragePool(
+      _leveragePool: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setMaxUtilizationBps(
       _maxUtilizationBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1831,6 +1861,11 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     setDnGmxJuniorVault(
       _dnGmxJuniorVault: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setLeveragePool(
+      _leveragePool: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -156,7 +156,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
-    'VaultAdded(address)': EventFragment;
+    'ThresholdsUpdated(uint256)': EventFragment;
     'VaultDeposit(uint256)': EventFragment;
   };
 
@@ -165,7 +165,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultAdded'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
@@ -227,12 +227,16 @@ export type SharesClaimedEvent = TypedEvent<
 
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
-export interface VaultAddedEventObject {
-  vault: string;
+export interface ThresholdsUpdatedEventObject {
+  newSlippageThresholdGmx: BigNumber;
 }
-export type VaultAddedEvent = TypedEvent<[string], VaultAddedEventObject>;
+export type ThresholdsUpdatedEvent = TypedEvent<
+  [BigNumber],
+  ThresholdsUpdatedEventObject
+>;
 
-export type VaultAddedEventFilter = TypedEventFilter<VaultAddedEvent>;
+export type ThresholdsUpdatedEventFilter =
+  TypedEventFilter<ThresholdsUpdatedEvent>;
 
 export interface VaultDepositEventObject {
   vaultGlpAmount: BigNumber;
@@ -464,8 +468,12 @@ export interface IDnGmxBatchingManager extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
-    'VaultAdded(address)'(vault?: null): VaultAddedEventFilter;
-    VaultAdded(vault?: null): VaultAddedEventFilter;
+    'ThresholdsUpdated(uint256)'(
+      newSlippageThresholdGmx?: null
+    ): ThresholdsUpdatedEventFilter;
+    ThresholdsUpdated(
+      newSlippageThresholdGmx?: null
+    ): ThresholdsUpdatedEventFilter;
 
     'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
     VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;

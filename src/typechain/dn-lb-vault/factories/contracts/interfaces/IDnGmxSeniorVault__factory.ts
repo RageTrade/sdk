@@ -11,6 +11,42 @@ import type {
 
 const _abi = [
   {
+    inputs: [],
+    name: 'CallerNotBorrower',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'DepositCapExceeded',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidBorrowAmount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidBorrowerAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCapUpdate',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MaxUtilizationBreached',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: 'AllowancesGranted',
+    type: 'event',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -33,6 +69,25 @@ const _abi = [
       },
     ],
     name: 'Approval',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'vault',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'newCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'BorrowCapUpdated',
     type: 'event',
   },
   {
@@ -64,6 +119,19 @@ const _abi = [
       },
     ],
     name: 'Deposit',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '_newDepositCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'DepositCapUpdated',
     type: 'event',
   },
   {

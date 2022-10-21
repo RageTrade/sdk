@@ -72,13 +72,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'roundGlpStaked()': FunctionFragment;
     'roundUsdcBalance()': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
+    'setThresholds(uint256)': FunctionFragment;
+    'slippageThresholdGmx()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
     'unpauseDeposit()': FunctionFragment;
     'usdcBalance(address)': FunctionFragment;
     'userDeposits(address)': FunctionFragment;
     'vaultBatchingState()': FunctionFragment;
-    'vaultCount()': FunctionFragment;
   };
 
   getFunction(
@@ -102,13 +103,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'roundGlpStaked'
       | 'roundUsdcBalance'
       | 'setKeeper'
+      | 'setThresholds'
+      | 'slippageThresholdGmx'
       | 'transferOwnership'
       | 'unclaimedShares'
       | 'unpauseDeposit'
       | 'usdcBalance'
       | 'userDeposits'
       | 'vaultBatchingState'
-      | 'vaultCount'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -190,6 +192,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setThresholds',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'slippageThresholdGmx',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'transferOwnership',
     values: [PromiseOrValue<string>]
   ): string;
@@ -211,10 +221,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'vaultBatchingState',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'vaultCount',
     values?: undefined
   ): string;
 
@@ -277,6 +283,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'setThresholds',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'slippageThresholdGmx',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'transferOwnership',
     data: BytesLike
   ): Result;
@@ -300,7 +314,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     functionFragment: 'vaultBatchingState',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'vaultCount', data: BytesLike): Result;
 
   events: {
     'BatchDeposit(uint256,uint256,uint256,uint256)': EventFragment;
@@ -311,8 +324,8 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'OwnershipTransferred(address,address)': EventFragment;
     'Paused(address)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
+    'ThresholdsUpdated(uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
-    'VaultAdded(address)': EventFragment;
     'VaultDeposit(uint256)': EventFragment;
   };
 
@@ -324,8 +337,8 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultAdded'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
@@ -413,19 +426,23 @@ export type SharesClaimedEvent = TypedEvent<
 
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
+export interface ThresholdsUpdatedEventObject {
+  newSlippageThresholdGmx: BigNumber;
+}
+export type ThresholdsUpdatedEvent = TypedEvent<
+  [BigNumber],
+  ThresholdsUpdatedEventObject
+>;
+
+export type ThresholdsUpdatedEventFilter =
+  TypedEventFilter<ThresholdsUpdatedEvent>;
+
 export interface UnpausedEventObject {
   account: string;
 }
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface VaultAddedEventObject {
-  vault: string;
-}
-export type VaultAddedEvent = TypedEvent<[string], VaultAddedEventObject>;
-
-export type VaultAddedEventFilter = TypedEventFilter<VaultAddedEvent>;
 
 export interface VaultDepositEventObject {
   vaultGlpAmount: BigNumber;
@@ -539,6 +556,13 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setThresholds(
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    slippageThresholdGmx(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -566,12 +590,10 @@ export interface DnGmxBatchingManager extends BaseContract {
     vaultBatchingState(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         currentRound: BigNumber;
-        roundUsdcBalance: BigNumber;
         roundGlpStaked: BigNumber;
+        roundUsdcBalance: BigNumber;
       }
     >;
-
-    vaultCount(overrides?: CallOverrides): Promise<[number]>;
   };
 
   claim(
@@ -649,6 +671,13 @@ export interface DnGmxBatchingManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setThresholds(
+    _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  slippageThresholdGmx(overrides?: CallOverrides): Promise<BigNumber>;
+
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -676,12 +705,10 @@ export interface DnGmxBatchingManager extends BaseContract {
   vaultBatchingState(overrides?: CallOverrides): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       currentRound: BigNumber;
-      roundUsdcBalance: BigNumber;
       roundGlpStaked: BigNumber;
+      roundUsdcBalance: BigNumber;
     }
   >;
-
-  vaultCount(overrides?: CallOverrides): Promise<number>;
 
   callStatic: {
     claim(
@@ -749,6 +776,13 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setThresholds(
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    slippageThresholdGmx(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -774,12 +808,10 @@ export interface DnGmxBatchingManager extends BaseContract {
     vaultBatchingState(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         currentRound: BigNumber;
-        roundUsdcBalance: BigNumber;
         roundGlpStaked: BigNumber;
+        roundUsdcBalance: BigNumber;
       }
     >;
-
-    vaultCount(overrides?: CallOverrides): Promise<number>;
   };
 
   filters: {
@@ -851,11 +883,15 @@ export interface DnGmxBatchingManager extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
+    'ThresholdsUpdated(uint256)'(
+      newSlippageThresholdGmx?: null
+    ): ThresholdsUpdatedEventFilter;
+    ThresholdsUpdated(
+      newSlippageThresholdGmx?: null
+    ): ThresholdsUpdatedEventFilter;
+
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
-
-    'VaultAdded(address)'(vault?: null): VaultAddedEventFilter;
-    VaultAdded(vault?: null): VaultAddedEventFilter;
 
     'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
     VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;
@@ -937,6 +973,13 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setThresholds(
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    slippageThresholdGmx(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -962,8 +1005,6 @@ export interface DnGmxBatchingManager extends BaseContract {
     ): Promise<BigNumber>;
 
     vaultBatchingState(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vaultCount(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1044,6 +1085,15 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setThresholds(
+      _slippageThresholdGmx: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    slippageThresholdGmx(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1071,7 +1121,5 @@ export interface DnGmxBatchingManager extends BaseContract {
     vaultBatchingState(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    vaultCount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
