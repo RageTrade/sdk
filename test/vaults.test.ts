@@ -64,8 +64,8 @@ describe('vaults', () => {
                 vaultName,
                 getDefaultDataSourceSync(networkName)
               );
-              expect(vaultInfo.assetPrice).toBeGreaterThan(0);
-              expect(vaultInfo.depositCap).toBeGreaterThan(0);
+              expect(+vaultInfo.assetPrice.formatted).toBeGreaterThan(0);
+              expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
             });
           });
         }

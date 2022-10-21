@@ -96,13 +96,15 @@ describe('cache data source', () => {
             const ds = new CacheServerDataSource(networkName, baseUrl);
             const resp = await ds.getVaultInfo(vaultName);
 
-            expect(resp.result.totalSupply).toBeGreaterThan(0);
-            expect(resp.result.totalAssets).toBeGreaterThan(0);
-            expect(resp.result.assetPrice).toBeGreaterThan(0);
-            expect(resp.result.sharePrice).toBeGreaterThan(0);
-            expect(resp.result.depositCap).toBeGreaterThan(0);
-            expect(resp.result.vaultMarketValue).toBeGreaterThan(0);
-            expect(resp.result.avgVaultMarketValue).toBeGreaterThan(0);
+            expect(+resp.result.totalSupply.formatted).toBeGreaterThan(0);
+            expect(+resp.result.totalAssets.formatted).toBeGreaterThan(0);
+            expect(+resp.result.assetPrice.formatted).toBeGreaterThan(0);
+            expect(+resp.result.sharePrice.formatted).toBeGreaterThan(0);
+            expect(+resp.result.depositCap.formatted).toBeGreaterThan(0);
+            expect(+resp.result.vaultMarketValue.formatted).toBeGreaterThan(0);
+            expect(+resp.result.avgVaultMarketValue.formatted).toBeGreaterThan(
+              0
+            );
           });
         }
       });

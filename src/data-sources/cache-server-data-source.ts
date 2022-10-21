@@ -1,10 +1,10 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { NetworkName, getNetworkName } from '../contracts';
 import {
   ApiResponse,
   BigNumberStringified,
   getResultWithMetadata,
+  parseAmount,
   ResultWithMetadata,
 } from '../utils';
 
@@ -131,27 +131,14 @@ export class CacheServerDataSource extends BaseDataSource {
         nativePercentage: result.poolComposition.nativePercentage,
       },
 
-      totalSupply: result.totalSupply,
-      totalShares: result.totalSupply,
-      totalAssets: result.totalAssets,
-      assetPrice: result.assetPrice,
-      sharePrice: result.sharePrice,
-      depositCap: result.depositCap,
-      vaultMarketValue: result.vaultMarketValue,
-      avgVaultMarketValue: result.avgVaultMarketValue,
-
-      // TODO change this to using D things in the result
-      totalSupplyD18: parseUnits(result.totalSupply.toFixed(12), 18),
-      totalSharesD18: parseUnits(result.totalSupply.toFixed(12), 18),
-      totalAssetsD18: parseUnits(result.totalAssets.toFixed(12), 18),
-      assetPriceD18: parseUnits(result.assetPrice.toFixed(12), 18),
-      sharePriceD18: parseUnits(result.sharePrice.toFixed(12), 18),
-      depositCapD18: parseUnits(result.depositCap.toFixed(12), 18),
-      vaultMarketValueD6: parseUnits(result.vaultMarketValue.toFixed(6), 6),
-      avgVaultMarketValueD6: parseUnits(
-        result.avgVaultMarketValue.toFixed(6),
-        6
-      ),
+      totalSupply: parseAmount(result.totalSupply),
+      totalShares: parseAmount(result.totalSupply),
+      totalAssets: parseAmount(result.totalAssets),
+      assetPrice: parseAmount(result.assetPrice),
+      sharePrice: parseAmount(result.sharePrice),
+      depositCap: parseAmount(result.depositCap),
+      vaultMarketValue: parseAmount(result.vaultMarketValue),
+      avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
     }));
   }
 

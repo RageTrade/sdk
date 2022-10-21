@@ -49,13 +49,13 @@ describe('ethers data source', () => {
 
     it('getVaultInfo tricrypto', async () => {
       const { result: vaultInfo } = await ds.getVaultInfo('tricrypto');
-      expect(vaultInfo.depositCap).toBeGreaterThan(0);
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
     });
 
     it.skip('getVaultInfo gmx', async () => {
       const { result: vaultInfo } = await ds.getVaultInfo('gmx');
-      expect(vaultInfo.depositCap).toBeGreaterThan(0);
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('GMX');
     });
 
@@ -122,13 +122,13 @@ describe('ethers data source', () => {
 
     it('getVaultInfo tricrypto', async () => {
       const { result: vaultInfo } = await ds.getVaultInfo('tricrypto');
-      expect(vaultInfo.depositCap).toBeGreaterThan(0);
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
     });
 
     it('getVaultInfo gmx', async () => {
       const { result: vaultInfo } = await ds.getVaultInfo('gmx');
-      expect(vaultInfo.depositCap).toBeGreaterThan(0);
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
       expect(vaultInfo.nativeProtocolName).toEqual('GMX');
     });
 

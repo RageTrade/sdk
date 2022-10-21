@@ -1,11 +1,10 @@
 import { BigNumber } from 'ethers';
 import { BaseVault } from '../../typechain';
-import { formatUsdc } from '../../utils';
+import { Amount, bigNumberToAmount } from '../../utils';
 import { BaseDataSource } from '../base-data-source';
 
 export interface AvgVaultMarketValueResult {
-  avgVaultMarketValue: number;
-  avgVaultMarketValueD6: BigNumber;
+  avgVaultMarketValue: Amount;
 }
 
 export async function getAvgVaultMarketValue(
@@ -38,7 +37,6 @@ export async function getAvgVaultMarketValue(
 
   const avgVaultMarketValueD6 = vmvSum.div(i);
   return {
-    avgVaultMarketValueD6,
-    avgVaultMarketValue: Number(formatUsdc(avgVaultMarketValueD6)),
+    avgVaultMarketValue: bigNumberToAmount(avgVaultMarketValueD6, 6),
   };
 }
