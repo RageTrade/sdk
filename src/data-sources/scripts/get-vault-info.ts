@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { parseEther, parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from 'ethers/lib/utils';
 import {
   VaultName,
   getVault,
@@ -70,13 +70,15 @@ export async function getVaultInfo(
   );
 
   // share price
-  const assetsPerShareD18 = await vault.convertToAssets(
+  const assetsPerShareDX = await vault.convertToAssets(
     parseUnits('1', shareDecimals)
   );
   const sharePrice = stringToAmount(
     (
       await priceX128ToPrice(
-        assetPriceX128.mul(assetsPerShareD18).div(parseEther('1')),
+        assetPriceX128
+          .mul(assetsPerShareDX)
+          .div(parseUnits('1', assetDecimals)),
         6,
         shareDecimals
       )

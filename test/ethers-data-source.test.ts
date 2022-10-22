@@ -132,6 +132,20 @@ describe('ethers data source', () => {
       expect(vaultInfo.nativeProtocolName).toEqual('GMX');
     });
 
+    it('getVaultInfo dn_gmx_junior', async () => {
+      const { result: vaultInfo } = await ds.getVaultInfo('dn_gmx_junior');
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
+      expect(vaultInfo.nativeProtocolName).toEqual('GMX');
+      expect(+vaultInfo.sharePrice.formatted).toBeGreaterThan(0);
+    });
+
+    it('getVaultInfo dn_gmx_senior', async () => {
+      const { result: vaultInfo } = await ds.getVaultInfo('dn_gmx_senior');
+      expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
+      expect(vaultInfo.nativeProtocolName).toEqual('GMX');
+      expect(+vaultInfo.sharePrice.formatted).toBeGreaterThan(0);
+    });
+
     it('getGmxVaultInfo', async () => {
       const { result: gmxInfo } = await ds.getGmxVaultInfo();
       expect(gmxInfo.aumInUsdg).toBeGreaterThan(0);
