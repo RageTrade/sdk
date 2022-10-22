@@ -19,7 +19,7 @@ import {
 } from './scripts';
 
 export class CacheServerDataSource extends BaseDataSource {
-  // _baseUrl = 'http://localhost:3000';
+  // _baseUrl = 'http://localhost:3000'; // use constructor arg
   _baseUrl = 'https://apis.rage.trade';
   _networkName: NetworkName;
 
