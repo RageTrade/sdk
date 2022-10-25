@@ -153,6 +153,7 @@ export class CacheServerDataSource extends BaseDataSource {
       glpSupply: result.glpSupply,
       aumInUsdgD18: BigNumber.from(result.aumInUsdg),
       glpSupplyD18: BigNumber.from(result.glpSupply),
+      gmxBatchingManager: result.gmxBatchingManager,
     }));
   }
 
@@ -201,6 +202,7 @@ export class CacheServerDataSource extends BaseDataSource {
         earnedInterestRate: result.seniorVault.earnedInterestRate,
         utilizationRatio: result.seniorVault.utilizationRatio,
       },
+      dnGmxBatchingManager: result.dnGmxBatchingManager,
     }));
   }
 }

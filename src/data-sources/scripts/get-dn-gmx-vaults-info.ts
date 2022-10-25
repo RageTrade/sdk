@@ -22,14 +22,16 @@ export interface DnGmxVaultsInfoResult {
     earnedInterestRate: number;
     utilizationRatio: number;
   };
+  dnGmxBatchingManager: {
+    paused: boolean;
+  };
 }
 
 export async function getDnGmxVaultsInfo(
   provider: ethers.providers.Provider
 ): Promise<DnGmxVaultsInfoResult> {
-  const { dnGmxJuniorVault, dnGmxSeniorVault } = await dnLbVault.getContracts(
-    provider
-  );
+  const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
+    await dnLbVault.getContracts(provider);
 
   const { aUsdc } = await aave.getContracts(provider);
 
@@ -43,6 +45,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
     dnGmxSeniorVault_maxUtilizationBps,
+    // batching manager
+    dnGmxBatchingManager_paused,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
@@ -55,6 +59,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
     dnGmxSeniorVault.maxUtilizationBps(),
+    // batching manager
+    dnGmxBatchingManager.paused(),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
   ] as const);
@@ -102,6 +108,9 @@ export async function getDnGmxVaultsInfo(
       withdrawableAmountD18: withdrawableAmountD18_A.lt(withdrawableAmountD18_B)
         ? withdrawableAmountD18_A
         : withdrawableAmountD18_B,
+    },
+    dnGmxBatchingManager: {
+      paused: dnGmxBatchingManager_paused,
     },
   };
 }
