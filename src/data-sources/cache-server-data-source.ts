@@ -112,6 +112,8 @@ export class CacheServerDataSource extends BaseDataSource {
       realTwapPriceD18: BigNumber.from(result.realTwapPriceD18),
       virtualTwapPriceD18: BigNumber.from(result.virtualTwapPriceD18),
       fundingRateD18: BigNumber.from(result.fundingRateD18),
+
+      info: result.info,
     }));
   }
 

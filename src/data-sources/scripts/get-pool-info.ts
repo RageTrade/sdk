@@ -38,6 +38,21 @@ export interface PoolInfoResult {
   realTwapPriceD18: BigNumber;
   virtualTwapPriceD18: BigNumber;
   fundingRateD18: BigNumber;
+
+  info: {
+    vToken: string;
+    vPool: string;
+    vPoolWrapper: string;
+    settings: {
+      initialMarginRatioBps: number;
+      maintainanceMarginRatioBps: number;
+      maxVirtualPriceDeviationRatioBps: number;
+      twapDuration: number;
+      isAllowedForTrade: boolean;
+      isCrossMargined: boolean;
+      oracle: string;
+    };
+  };
 }
 
 export async function getPoolInfo(
@@ -104,5 +119,21 @@ export async function getPoolInfo(
       formatFundingRate(fundingRateX128).toFixed(18),
       18
     ),
+
+    info: {
+      vToken: pool.vToken,
+      vPool: pool.vPool,
+      vPoolWrapper: pool.vPoolWrapper,
+      settings: {
+        initialMarginRatioBps: pool.settings.initialMarginRatioBps,
+        maintainanceMarginRatioBps: pool.settings.maintainanceMarginRatioBps,
+        maxVirtualPriceDeviationRatioBps:
+          pool.settings.maxVirtualPriceDeviationRatioBps,
+        twapDuration: pool.settings.twapDuration,
+        isAllowedForTrade: pool.settings.isAllowedForTrade,
+        isCrossMargined: pool.settings.isCrossMargined,
+        oracle: pool.settings.oracle,
+      },
+    },
   };
 }
