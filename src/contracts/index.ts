@@ -2,6 +2,8 @@ import {
   Account__factory,
   ClearingHouse__factory,
   CurveYieldStrategy__factory,
+  GMXBatchingManager__factory,
+  GMXYieldStrategy__factory,
   InsuranceFund__factory,
   IOracle__factory,
   ProxyAdmin__factory,
@@ -11,7 +13,11 @@ import {
   VPoolWrapper__factory,
   VQuote__factory,
   VToken__factory,
+  DnGmxSeniorVault__factory,
+  DnGmxJuniorVault__factory,
+  DnGmxBatchingManager__factory,
 } from '../typechain';
+
 import { warn } from '../utils/loggers';
 import { SignerOrProvider } from './common';
 
@@ -35,6 +41,11 @@ export function getEthersInterfaces() {
     SwapSimulator__factory.createInterface(),
     CurveYieldStrategy__factory.createInterface(),
     VaultPeriphery__factory.createInterface(),
+    GMXYieldStrategy__factory.createInterface(),
+    GMXBatchingManager__factory.createInterface(),
+    DnGmxBatchingManager__factory.createInterface(),
+    DnGmxJuniorVault__factory.createInterface(),
+    DnGmxSeniorVault__factory.createInterface(),
   ];
 }
 
