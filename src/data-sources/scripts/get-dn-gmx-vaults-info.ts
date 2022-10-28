@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import { formatEther, parseEther } from 'ethers/lib/utils';
+import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
 import { aave, dnLbVault } from '../../contracts';
 import { safeDiv } from '../../utils';
 
@@ -21,6 +21,7 @@ export interface DnGmxVaultsInfoResult {
     withdrawableAmountD18: BigNumber;
     earnedInterestRate: number;
     utilizationRatio: number;
+    ethRewardsSplitRate: number;
   };
   dnGmxBatchingManager: {
     paused: boolean;
@@ -45,6 +46,7 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
     dnGmxSeniorVault_maxUtilizationBps,
+    dnGmxSeniorVault_getEthRewardsSplitRate,
     // batching manager
     dnGmxBatchingManager_paused,
     // other
@@ -59,6 +61,7 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
     dnGmxSeniorVault.maxUtilizationBps(),
+    dnGmxSeniorVault.getEthRewardsSplitRate(),
     // batching manager
     dnGmxBatchingManager.paused(),
     // other
@@ -108,6 +111,9 @@ export async function getDnGmxVaultsInfo(
       withdrawableAmountD18: withdrawableAmountD18_A.lt(withdrawableAmountD18_B)
         ? withdrawableAmountD18_A
         : withdrawableAmountD18_B,
+      ethRewardsSplitRate: Number(
+        formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
+      ),
     },
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,

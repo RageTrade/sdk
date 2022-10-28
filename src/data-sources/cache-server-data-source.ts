@@ -201,6 +201,7 @@ export class CacheServerDataSource extends BaseDataSource {
         ),
         earnedInterestRate: result.seniorVault.earnedInterestRate,
         utilizationRatio: result.seniorVault.utilizationRatio,
+        ethRewardsSplitRate: result.seniorVault.ethRewardsSplitRate,
       },
       dnGmxBatchingManager: result.dnGmxBatchingManager,
     }));
