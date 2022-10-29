@@ -23,7 +23,7 @@ export function getDeployments(
       return arbgoerli.getDeployments();
     default:
       throw newError(
-        `dn-lb-vault deployment not present for ${networkName} network`
+        `delta-neutral-gmx-vaults deployment not present for ${networkName} network`
       );
   }
 }
