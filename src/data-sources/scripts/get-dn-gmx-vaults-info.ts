@@ -18,7 +18,7 @@ export interface DnGmxVaultsInfoResult {
   seniorVault: {
     usdcLentToAaveD6: BigNumber;
     positionD6: BigNumber;
-    withdrawableAmountD18: BigNumber;
+    withdrawableAmountD6: BigNumber;
     earnedInterestRate: number;
     utilizationRatio: number;
     ethRewardsSplitRate: number;
@@ -80,10 +80,10 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault_totalAssets
   );
 
-  const withdrawableAmountD18_A = dnGmxSeniorVault_totalAssets.sub(
+  const withdrawableAmountD6_A = dnGmxSeniorVault_totalAssets.sub(
     dnGmxJuniorVault_getUsdcBorrowed
   );
-  const withdrawableAmountD18_B = dnGmxSeniorVault_totalAssets
+  const withdrawableAmountD6_B = dnGmxSeniorVault_totalAssets
     .sub(dnGmxSeniorVault_totalUsdcBorrowed)
     .mul(dnGmxSeniorVault_maxUtilizationBps)
     .div(10_000);
@@ -108,9 +108,9 @@ export async function getDnGmxVaultsInfo(
       positionD6: dnGmxSeniorVault_totalUsdcBorrowed,
       earnedInterestRate: Number(formatEther(earnedInterestRateD18)),
       utilizationRatio: Number(formatEther(utilizationRatioD18)),
-      withdrawableAmountD18: withdrawableAmountD18_A.lt(withdrawableAmountD18_B)
-        ? withdrawableAmountD18_A
-        : withdrawableAmountD18_B,
+      withdrawableAmountD6: withdrawableAmountD6_A.lt(withdrawableAmountD6_B)
+        ? withdrawableAmountD6_A
+        : withdrawableAmountD6_B,
       ethRewardsSplitRate: Number(
         formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
       ),

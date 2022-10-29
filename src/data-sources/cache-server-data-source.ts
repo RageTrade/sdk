@@ -196,8 +196,8 @@ export class CacheServerDataSource extends BaseDataSource {
       seniorVault: {
         usdcLentToAaveD6: BigNumber.from(result.seniorVault.usdcLentToAaveD6),
         positionD6: BigNumber.from(result.seniorVault.positionD6),
-        withdrawableAmountD18: BigNumber.from(
-          result.seniorVault.withdrawableAmountD18
+        withdrawableAmountD6: BigNumber.from(
+          result.seniorVault.withdrawableAmountD6
         ),
         earnedInterestRate: result.seniorVault.earnedInterestRate,
         utilizationRatio: result.seniorVault.utilizationRatio,
