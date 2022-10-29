@@ -55,7 +55,7 @@ export async function getDnGmxVaultsInfo(
     // junior vault
     dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets()),
     dnGmxJuniorVault.getCurrentBorrows(),
-    dnGmxJuniorVault.dnUsdcDeposited(),
+    dnGmxJuniorVault.dnUsdcDeposited(), // TODO remove; this call is failing
     dnGmxJuniorVault.getUsdcBorrowed(),
     // senior vault
     dnGmxSeniorVault.totalUsdcBorrowed(),
