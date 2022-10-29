@@ -1,7 +1,7 @@
 import { BaseVault__factory } from '../typechain';
 import { newError } from '../utils/loggers';
 import { NetworkName, SignerOrProvider } from './common';
-import { dnLbVault, gmxVault, tricryptoVault } from './protocols';
+import { deltaNeutralGmxVaults, gmxVault, tricryptoVault } from './protocols';
 
 export const supportedVaultNames = [
   'tricrypto',
@@ -59,7 +59,7 @@ export async function getVault(
         ),
       };
     case 'dn_gmx_senior':
-      const { dnGmxSeniorVault } = await dnLbVault.getContracts(
+      const { dnGmxSeniorVault } = await deltaNeutralGmxVaults.getContracts(
         signerOrProvider
       );
       return {
@@ -70,7 +70,7 @@ export async function getVault(
         ),
       };
     case 'dn_gmx_junior':
-      const { dnGmxJuniorVault } = await dnLbVault.getContracts(
+      const { dnGmxJuniorVault } = await deltaNeutralGmxVaults.getContracts(
         signerOrProvider
       );
       return {
@@ -148,8 +148,8 @@ export function getVaultDeployBlockNumber(
     case 'dn_gmx_junior':
     case 'dn_gmx_senior':
       return (
-        dnLbVault.getDeployments(networkName).DnGmxJuniorVaultDeployment
-          ?.receipt?.blockNumber || 0
+        deltaNeutralGmxVaults.getDeployments(networkName)
+          .DnGmxJuniorVaultDeployment?.receipt?.blockNumber || 0
       );
     default:
       return 0;

@@ -1632,10 +1632,10 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/dn-lb-vault@^1.0.0-arbgoerli.3":
-  version "1.0.0-arbgoerli.3"
-  resolved "https://registry.yarnpkg.com/@ragetrade/dn-lb-vault/-/dn-lb-vault-1.0.0-arbgoerli.3.tgz#cc64cc73b18aa20f68a6f55ae5eb1125295ae051"
-  integrity sha512-NpddykRYovHXqNh91vmHCEog4/UviF5m3MZZmHzaq1y/UMxSYv8B8H+6aWJ7ys2jsr18893Yx+FMsZu8AkUtgA==
+"@ragetrade/delta-neutral-gmx-vaults@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.0.tgz#e47be7bc303e399f89efa720c6811b92e660b9b1"
+  integrity sha512-OuC26/yNuaDLrfBAa5xzyX7Kw2AOs1fdrcmh5NQglR6lt7nC6zdlbMx0m9ENXt97X4ZuaZog4B6xgql6DkYg6w==
   dependencies:
     "@aave/core-v3" "^1.16.2"
     "@aave/periphery-v3" "^1.19.2"

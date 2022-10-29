@@ -76,7 +76,7 @@ export {
   DnGmxSeniorVault,
   DnGmxJuniorVault,
   DnGmxBatchingManager,
-} from './dn-lb-vault';
+} from './delta-neutral-gmx-vaults';
 
 export { IUniswapV3Factory__factory, IUniswapV3Factory } from './uniswap-core';
 export {

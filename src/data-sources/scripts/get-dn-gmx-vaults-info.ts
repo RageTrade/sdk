@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
-import { aave, dnLbVault } from '../../contracts';
+import { aave, deltaNeutralGmxVaults } from '../../contracts';
 import { safeDiv } from '../../utils';
 
 export interface DnGmxVaultsInfoResult {
@@ -32,7 +32,7 @@ export async function getDnGmxVaultsInfo(
   provider: ethers.providers.Provider
 ): Promise<DnGmxVaultsInfoResult> {
   const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
-    await dnLbVault.getContracts(provider);
+    await deltaNeutralGmxVaults.getContracts(provider);
 
   const { aUsdc } = await aave.getContracts(provider);
 

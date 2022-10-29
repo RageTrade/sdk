@@ -38,7 +38,7 @@
     "update:core": "REPO=core PACKAGE=@ragetrade/core yarn update:repo-package",
     "update:tricrypto": "REPO=tricrypto-vault PACKAGE=@ragetrade/tricrypto-vault yarn update:repo-package",
     "update:gmx": "REPO=gmx-vault PACKAGE=@ragetrade/gmx-vault yarn update:repo-package",
-    "update:dn": "REPO=dn-lb-vault PACKAGE=@ragetrade/dn-lb-vault yarn update:repo-package",
+    "update:dn": "REPO=delta-neutral-gmx-vaults PACKAGE=@ragetrade/delta-neutral-gmx-vaults yarn update:repo-package",
     "update:uniswap:core": "REPO=uniswap-core PACKAGE=@uniswap/v3-core yarn update:repo-package",
     "update:uniswap:periphery": "REPO=uniswap-periphery PACKAGE=@uniswap/v3-periphery yarn update:repo-package",
     "update:repo-package": "./update-repo-package.sh",
@@ -69,7 +69,7 @@
   ],
   "devDependencies": {
     "@ragetrade/core": "^1.0.4-arbgoerli.5",
-    "@ragetrade/dn-lb-vault": "^1.0.0-arbgoerli.3",
+    "@ragetrade/delta-neutral-gmx-vaults": "^1.0.0",
     "@ragetrade/gmx-vault": "^1.0.1-arbgoerli.4",
     "@ragetrade/tricrypto-vault": "^1.0.0-arbgoerli.5",
     "@size-limit/preset-small-lib": "^7.0.5",

@@ -1,7 +1,7 @@
 import {
   IAToken__factory,
   IPoolAddressesProvider__factory,
-} from '../../typechain/dn-lb-vault';
+} from '../../typechain/delta-neutral-gmx-vaults';
 import { newError } from '../../utils/loggers';
 import {
   getChainIdFromProvider,
