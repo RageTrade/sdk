@@ -53,6 +53,7 @@ describe('ethers data source', () => {
       expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
     });
 
+    // TODO skip until gmx-vault contracts are deployed on arbmain
     it.skip('getVaultInfo gmx', async () => {
       const { result: vaultInfo } = await ds.getVaultInfo('gmx');
       expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
@@ -72,7 +73,7 @@ describe('ethers data source', () => {
       expect(gmxInfo.underlyingVaultMinPrice).toBeGreaterThan(0);
     });
 
-    it('deriveSglpAmountForGmxVault', async () => {
+    it.skip('deriveSglpAmountForGmxVault', async () => {
       const { usdcAddress } = tokens.getAddresses(networkName);
       const { result: sglpAmount } = await ds.deriveSglpAmountForGmxVault(
         usdcAddress,
