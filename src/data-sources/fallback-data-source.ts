@@ -113,7 +113,7 @@ export class FallbackDataSource extends BaseDataSource {
         uniqueResponses.length
       }, Failed queries: ${failedQueriesCount}. Errors: ${responses
         .filter((r) => !!r.error)
-        .map((r) => '[' + JSON.stringify(r.error) + ']')
+        .map((r) => '[' + r.error.message + ']')
         .join(',')}`
     );
     error.responses = responses;
