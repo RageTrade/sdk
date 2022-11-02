@@ -73,9 +73,11 @@ export {
   DnGmxSeniorVault__factory,
   DnGmxJuniorVault__factory,
   DnGmxBatchingManager__factory,
+  WithdrawPeriphery__factory,
   DnGmxSeniorVault,
   DnGmxJuniorVault,
   DnGmxBatchingManager,
+  WithdrawPeriphery,
 } from './delta-neutral-gmx-vaults';
 
 export { IUniswapV3Factory__factory, IUniswapV3Factory } from './uniswap-core';

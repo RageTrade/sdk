@@ -2,6 +2,7 @@ import {
   DnGmxBatchingManager__factory,
   DnGmxJuniorVault__factory,
   DnGmxSeniorVault__factory,
+  WithdrawPeriphery__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
@@ -51,6 +52,10 @@ export function getContractsSync(
       signerOrProvider
     ),
     dnGmxBatchingManager: DnGmxBatchingManager__factory.connect(
+      deployments.DnGmxBatchingManagerDeployment.address,
+      signerOrProvider
+    ),
+    withdrawPeriphery: WithdrawPeriphery__factory.connect(
       deployments.DnGmxBatchingManagerDeployment.address,
       signerOrProvider
     ),
