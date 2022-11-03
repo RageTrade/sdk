@@ -637,6 +637,9 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'Unpaused(address)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
     'WithdrawFeeUpdated(uint256)': EventFragment;
+    'GlpSwapped(uint256,uint256,bool)': EventFragment;
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
+    'TokenSwapped(address,address,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
@@ -660,6 +663,9 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'WithdrawFeeUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'GlpSwapped'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'RewardsHarvested'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TokenSwapped'): EventFragment;
 }
 
 export interface AdminParamsUpdatedEventObject {
@@ -903,6 +909,47 @@ export type WithdrawFeeUpdatedEvent = TypedEvent<
 
 export type WithdrawFeeUpdatedEventFilter =
   TypedEventFilter<WithdrawFeeUpdatedEvent>;
+
+export interface GlpSwappedEventObject {
+  glpQuantity: BigNumber;
+  usdcQuantity: BigNumber;
+  fromGlpToUsdc: boolean;
+}
+export type GlpSwappedEvent = TypedEvent<
+  [BigNumber, BigNumber, boolean],
+  GlpSwappedEventObject
+>;
+
+export type GlpSwappedEventFilter = TypedEventFilter<GlpSwappedEvent>;
+
+export interface RewardsHarvestedEventObject {
+  wethHarvested: BigNumber;
+  esGmxStaked: BigNumber;
+  juniorVaultWeth: BigNumber;
+  seniorVaultWeth: BigNumber;
+  juniorVaultGlp: BigNumber;
+  seniorVaultAUsdc: BigNumber;
+}
+export type RewardsHarvestedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
+  RewardsHarvestedEventObject
+>;
+
+export type RewardsHarvestedEventFilter =
+  TypedEventFilter<RewardsHarvestedEvent>;
+
+export interface TokenSwappedEventObject {
+  fromToken: string;
+  toToken: string;
+  fromQuantity: BigNumber;
+  toQuantity: BigNumber;
+}
+export type TokenSwappedEvent = TypedEvent<
+  [string, string, BigNumber, BigNumber],
+  TokenSwappedEventObject
+>;
+
+export type TokenSwappedEventFilter = TypedEventFilter<TokenSwappedEvent>;
 
 export interface DnGmxJuniorVault extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -2076,6 +2123,47 @@ export interface DnGmxJuniorVault extends BaseContract {
       _withdrawFeeBps?: null
     ): WithdrawFeeUpdatedEventFilter;
     WithdrawFeeUpdated(_withdrawFeeBps?: null): WithdrawFeeUpdatedEventFilter;
+
+    'GlpSwapped(uint256,uint256,bool)'(
+      glpQuantity?: null,
+      usdcQuantity?: null,
+      fromGlpToUsdc?: null
+    ): GlpSwappedEventFilter;
+    GlpSwapped(
+      glpQuantity?: null,
+      usdcQuantity?: null,
+      fromGlpToUsdc?: null
+    ): GlpSwappedEventFilter;
+
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)'(
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
+    ): RewardsHarvestedEventFilter;
+    RewardsHarvested(
+      wethHarvested?: null,
+      esGmxStaked?: null,
+      juniorVaultWeth?: null,
+      seniorVaultWeth?: null,
+      juniorVaultGlp?: null,
+      seniorVaultAUsdc?: null
+    ): RewardsHarvestedEventFilter;
+
+    'TokenSwapped(address,address,uint256,uint256)'(
+      fromToken?: PromiseOrValue<string> | null,
+      toToken?: PromiseOrValue<string> | null,
+      fromQuantity?: null,
+      toQuantity?: null
+    ): TokenSwappedEventFilter;
+    TokenSwapped(
+      fromToken?: PromiseOrValue<string> | null,
+      toToken?: PromiseOrValue<string> | null,
+      fromQuantity?: null,
+      toQuantity?: null
+    ): TokenSwappedEventFilter;
   };
 
   estimateGas: {
