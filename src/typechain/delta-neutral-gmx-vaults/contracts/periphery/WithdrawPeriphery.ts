@@ -125,8 +125,8 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
     'AddressesUpdated(address,address)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
     'SlippageThresholdUpdated(uint256)': EventFragment;
-    'TokenRedeemed(address,address,address,uint256,uint256)': EventFragment;
-    'TokenWithdrawn(address,address,address,uint256,uint256)': EventFragment;
+    'TokenRedeemed(address,address,address,uint256,uint256,uint256)': EventFragment;
+    'TokenWithdrawn(address,address,address,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AddressesUpdated'): EventFragment;
@@ -175,11 +175,12 @@ export interface TokenRedeemedEventObject {
   from: string;
   receiver: string;
   token: string;
-  sharesAmount: BigNumber;
-  tokensRecevied: BigNumber;
+  assets: BigNumber;
+  shares: BigNumber;
+  tokensReceived: BigNumber;
 }
 export type TokenRedeemedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
+  [string, string, string, BigNumber, BigNumber, BigNumber],
   TokenRedeemedEventObject
 >;
 
@@ -189,11 +190,12 @@ export interface TokenWithdrawnEventObject {
   from: string;
   receiver: string;
   token: string;
-  sGlpAmount: BigNumber;
-  tokensRecevied: BigNumber;
+  assets: BigNumber;
+  shares: BigNumber;
+  tokensReceived: BigNumber;
 }
 export type TokenWithdrawnEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
+  [string, string, string, BigNumber, BigNumber, BigNumber],
   TokenWithdrawnEventObject
 >;
 
@@ -373,34 +375,38 @@ export interface WithdrawPeriphery extends BaseContract {
       newSlippageThreshold?: null
     ): SlippageThresholdUpdatedEventFilter;
 
-    'TokenRedeemed(address,address,address,uint256,uint256)'(
+    'TokenRedeemed(address,address,address,uint256,uint256,uint256)'(
       from?: PromiseOrValue<string> | null,
       receiver?: PromiseOrValue<string> | null,
       token?: null,
-      sharesAmount?: null,
-      tokensRecevied?: null
+      assets?: null,
+      shares?: null,
+      tokensReceived?: null
     ): TokenRedeemedEventFilter;
     TokenRedeemed(
       from?: PromiseOrValue<string> | null,
       receiver?: PromiseOrValue<string> | null,
       token?: null,
-      sharesAmount?: null,
-      tokensRecevied?: null
+      assets?: null,
+      shares?: null,
+      tokensReceived?: null
     ): TokenRedeemedEventFilter;
 
-    'TokenWithdrawn(address,address,address,uint256,uint256)'(
+    'TokenWithdrawn(address,address,address,uint256,uint256,uint256)'(
       from?: PromiseOrValue<string> | null,
       receiver?: PromiseOrValue<string> | null,
       token?: null,
-      sGlpAmount?: null,
-      tokensRecevied?: null
+      assets?: null,
+      shares?: null,
+      tokensReceived?: null
     ): TokenWithdrawnEventFilter;
     TokenWithdrawn(
       from?: PromiseOrValue<string> | null,
       receiver?: PromiseOrValue<string> | null,
       token?: null,
-      sGlpAmount?: null,
-      tokensRecevied?: null
+      assets?: null,
+      shares?: null,
+      tokensReceived?: null
     ): TokenWithdrawnEventFilter;
   };
 
