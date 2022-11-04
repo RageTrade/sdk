@@ -56,7 +56,7 @@ export function getContractsSync(
       signerOrProvider
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(
-      deployments.DnGmxBatchingManagerDeployment.address,
+      deployments.WithdrawPeripheryDeployment.address,
       signerOrProvider
     ),
   };
