@@ -16,6 +16,7 @@ import {
   PoolInfoResult,
   PricesResult,
   VaultInfoResult,
+  VaultMarketValueResult,
 } from './scripts';
 
 export class CacheServerDataSource extends BaseDataSource {
@@ -121,6 +122,9 @@ export class CacheServerDataSource extends BaseDataSource {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
+    const response2 = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-vault-market-value?networkName=${this._networkName}&vaultName=${vaultName}`
+    )) as ApiResponse<BigNumberStringified<VaultMarketValueResult>>;
     return getResultWithMetadata(response, (result) => ({
       nativeProtocolName: result.nativeProtocolName,
 
@@ -139,7 +143,9 @@ export class CacheServerDataSource extends BaseDataSource {
       assetPrice: parseAmount(result.assetPrice),
       sharePrice: parseAmount(result.sharePrice),
       depositCap: parseAmount(result.depositCap),
-      vaultMarketValue: parseAmount(result.vaultMarketValue),
+      vaultMarketValue: parseAmount(
+        response2.result!.vaultMarketValue ?? result.vaultMarketValue
+      ),
       avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
     }));
   }
