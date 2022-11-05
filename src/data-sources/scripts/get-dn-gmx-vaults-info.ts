@@ -14,6 +14,7 @@ export interface DnGmxVaultsInfoResult {
       ethD18: BigNumber;
     };
     currentBorrowValueD6: BigNumber;
+    ethRewardsSplitRate: number;
   };
   seniorVault: {
     usdcLentToAaveD6: BigNumber;
@@ -88,6 +89,9 @@ export async function getDnGmxVaultsInfo(
     .mul(dnGmxSeniorVault_maxUtilizationBps)
     .div(10_000);
 
+  const seniorVault_ethRewardsSplitRate = Number(
+    formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
+  );
   return {
     juniorVault: {
       currentExposureInGlp: {
@@ -102,6 +106,7 @@ export async function getDnGmxVaultsInfo(
       },
       // check with finquant, done, awaiting findev
       currentBorrowValueD6: dnGmxJuniorVault_getUsdcBorrowed,
+      ethRewardsSplitRate: 1 - seniorVault_ethRewardsSplitRate,
     },
     seniorVault: {
       usdcLentToAaveD6: aUsdc_balanceOf_dnGmxSeniorVault,
@@ -111,9 +116,7 @@ export async function getDnGmxVaultsInfo(
       withdrawableAmountD6: withdrawableAmountD6_A.lt(withdrawableAmountD6_B)
         ? withdrawableAmountD6_A
         : withdrawableAmountD6_B,
-      ethRewardsSplitRate: Number(
-        formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
-      ),
+      ethRewardsSplitRate: seniorVault_ethRewardsSplitRate,
     },
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,

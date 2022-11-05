@@ -10,6 +10,7 @@ import {
 
 import { BaseDataSource } from './base-data-source';
 import {
+  DnGmxVaultsInfoFastResult,
   DnGmxVaultsInfoResult,
   GmxVaultInfoByTokenAddressResult,
   GmxVaultInfoResult,
@@ -122,9 +123,14 @@ export class CacheServerDataSource extends BaseDataSource {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
-    const response2 = (await ethers.utils.fetchJson(
-      `${this._baseUrl}/data/v2/get-vault-market-value?networkName=${this._networkName}&vaultName=${vaultName}`
-    )) as ApiResponse<BigNumberStringified<VaultMarketValueResult>>;
+    let response2:
+      | ApiResponse<BigNumberStringified<VaultMarketValueResult>>
+      | undefined;
+    try {
+      response2 = await ethers.utils.fetchJson(
+        `${this._baseUrl}/data/v2/get-vault-market-value?networkName=${this._networkName}&vaultName=${vaultName}`
+      );
+    } catch {}
     return getResultWithMetadata(response, (result) => ({
       nativeProtocolName: result.nativeProtocolName,
 
@@ -144,7 +150,7 @@ export class CacheServerDataSource extends BaseDataSource {
       sharePrice: parseAmount(result.sharePrice),
       depositCap: parseAmount(result.depositCap),
       vaultMarketValue: parseAmount(
-        response2.result!.vaultMarketValue ?? result.vaultMarketValue
+        response2?.result?.vaultMarketValue ?? result.vaultMarketValue
       ),
       avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
     }));
@@ -179,6 +185,14 @@ export class CacheServerDataSource extends BaseDataSource {
     const response = (await ethers.utils.fetchJson(
       `${this._baseUrl}/data/v2/get-dn-gmx-vault-info?networkName=${this._networkName}`
     )) as ApiResponse<BigNumberStringified<DnGmxVaultsInfoResult>>;
+    let response2:
+      | ApiResponse<BigNumberStringified<DnGmxVaultsInfoFastResult>>
+      | undefined;
+    try {
+      response2 = await ethers.utils.fetchJson(
+        `${this._baseUrl}/data/v2/get-dn-gmx-vault-info-fast?networkName=${this._networkName}`
+      );
+    } catch {}
     return getResultWithMetadata(response, (result) => ({
       juniorVault: {
         currentExposureInGlp: {
@@ -198,6 +212,9 @@ export class CacheServerDataSource extends BaseDataSource {
         currentBorrowValueD6: BigNumber.from(
           result.juniorVault.currentBorrowValueD6
         ),
+        ethRewardsSplitRate:
+          response2?.result?.juniorVault.ethRewardsSplitRate ||
+          result.juniorVault.ethRewardsSplitRate,
       },
       seniorVault: {
         usdcLentToAaveD6: BigNumber.from(result.seniorVault.usdcLentToAaveD6),
@@ -206,8 +223,12 @@ export class CacheServerDataSource extends BaseDataSource {
           result.seniorVault.withdrawableAmountD6
         ),
         earnedInterestRate: result.seniorVault.earnedInterestRate,
-        utilizationRatio: result.seniorVault.utilizationRatio,
-        ethRewardsSplitRate: result.seniorVault.ethRewardsSplitRate,
+        utilizationRatio:
+          response2?.result?.seniorVault.utilizationRatio ||
+          result.seniorVault.utilizationRatio,
+        ethRewardsSplitRate:
+          response2?.result?.seniorVault.ethRewardsSplitRate ||
+          result.seniorVault.ethRewardsSplitRate,
       },
       dnGmxBatchingManager: result.dnGmxBatchingManager,
     }));
