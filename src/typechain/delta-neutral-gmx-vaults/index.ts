@@ -130,6 +130,8 @@ export type { StableSwapMock } from './contracts/mocks/StableSwapMock';
 export { StableSwapMock__factory } from './factories/contracts/mocks/StableSwapMock__factory';
 export type { SwapRouterMock } from './contracts/mocks/SwapRouterMock';
 export { SwapRouterMock__factory } from './factories/contracts/mocks/SwapRouterMock__factory';
+export type { BatchingManagerBypass } from './contracts/periphery/BatchingManagerBypass';
+export { BatchingManagerBypass__factory } from './factories/contracts/periphery/BatchingManagerBypass__factory';
 export type { WithdrawPeriphery } from './contracts/periphery/WithdrawPeriphery';
 export { WithdrawPeriphery__factory } from './factories/contracts/periphery/WithdrawPeriphery__factory';
 export type { DnGmxBatchingManager } from './contracts/vaults/DnGmxBatchingManager';

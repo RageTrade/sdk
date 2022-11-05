@@ -72,6 +72,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'roundDeposits(uint256)': FunctionFragment;
     'roundGlpStaked()': FunctionFragment;
     'roundUsdcBalance()': FunctionFragment;
+    'setBypass(address)': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
     'setThresholds(uint256)': FunctionFragment;
     'slippageThresholdGmxBps()': FunctionFragment;
@@ -104,6 +105,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'roundDeposits'
       | 'roundGlpStaked'
       | 'roundUsdcBalance'
+      | 'setBypass'
       | 'setKeeper'
       | 'setThresholds'
       | 'slippageThresholdGmxBps'
@@ -192,6 +194,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'roundUsdcBalance',
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setBypass',
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setKeeper',
@@ -291,6 +297,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     functionFragment: 'roundUsdcBalance',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'setBypass', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'setThresholds',
@@ -582,6 +589,11 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    setBypass(
+      _bypass: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -702,6 +714,11 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
+  setBypass(
+    _bypass: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setKeeper(
     _keeper: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -811,6 +828,11 @@ export interface DnGmxBatchingManager extends BaseContract {
     roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    setBypass(
+      _bypass: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setKeeper(
       _keeper: PromiseOrValue<string>,
@@ -1027,6 +1049,11 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
+    setBypass(
+      _bypass: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1143,6 +1170,11 @@ export interface DnGmxBatchingManager extends BaseContract {
     roundGlpStaked(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setBypass(
+      _bypass: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     setKeeper(
       _keeper: PromiseOrValue<string>,
