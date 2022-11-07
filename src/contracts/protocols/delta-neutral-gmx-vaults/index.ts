@@ -4,6 +4,7 @@ import {
   DnGmxSeniorVault__factory,
   WithdrawPeriphery__factory,
 } from '../../../typechain';
+import { BatchingManagerBypass__factory } from '../../../typechain/delta-neutral-gmx-vaults';
 import { newError } from '../../../utils/loggers';
 import {
   getChainIdFromProvider,
@@ -57,6 +58,10 @@ export function getContractsSync(
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(
       deployments.WithdrawPeripheryDeployment.address,
+      signerOrProvider
+    ),
+    batchingManagerBypass: BatchingManagerBypass__factory.connect(
+      deployments.BatchingManagerBypassDeployment.address,
       signerOrProvider
     ),
   };
