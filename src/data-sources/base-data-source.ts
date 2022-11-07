@@ -89,7 +89,7 @@ export abstract class BaseDataSource {
     return this.perform('getDnGmxVaultsInfo', []);
   }
 
-  async getDnGmxVaultsApyBreakdown(): Promise<
+  getDnGmxVaultsApyBreakdown(): Promise<
     ResultWithMetadata<{
       seniorVault: {
         aaveSupplyApy: number;

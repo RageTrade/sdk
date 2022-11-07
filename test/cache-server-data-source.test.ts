@@ -108,6 +108,20 @@ describe('cache data source', () => {
           });
         }
       });
+      if (networkName === 'arbgoerli') {
+        it(`getDnGmxVaultsApyBreakdown ${networkName}`, async () => {
+          const ds = new CacheServerDataSource(networkName, baseUrl);
+          const resp = await ds.getDnGmxVaultsApyBreakdown();
+
+          expect(resp.result.seniorVault.aaveSupplyApy).toBeGreaterThan(0);
+          // expect(resp.result.seniorVault.glpRewardsPct).toBeGreaterThan(0);
+
+          expect(resp.result.juniorVault.btcBorrowApy).toBeGreaterThan(0);
+          expect(resp.result.juniorVault.ethBorrowApy).toBeGreaterThan(0);
+          expect(resp.result.juniorVault.glpTraderPnl).toBeGreaterThan(0);
+          // expect(resp.result.juniorVault.glpRewardsPct).toBeGreaterThan(0);
+        });
+      }
     });
   }
 });
