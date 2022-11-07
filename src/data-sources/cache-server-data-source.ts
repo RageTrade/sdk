@@ -233,4 +233,15 @@ export class CacheServerDataSource extends BaseDataSource {
       dnGmxBatchingManager: result.dnGmxBatchingManager,
     }));
   }
+
+  async getDnGmxVaultsApyBreakdown() {
+    const response = await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-dn-gmx-apy-breakdown?networkName=${this._networkName}`
+    );
+    return getResultWithMetadata(response) as Awaited<
+      ReturnType<
+        InstanceType<typeof BaseDataSource>['getDnGmxVaultsApyBreakdown']
+      >
+    >;
+  }
 }

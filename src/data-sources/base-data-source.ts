@@ -21,7 +21,8 @@ export type MethodNames =
   | 'getVaultInfo'
   | 'getGmxVaultInfo'
   | 'getGmxVaultInfoByTokenAddress'
-  | 'getDnGmxVaultsInfo';
+  | 'getDnGmxVaultsInfo'
+  | 'getDnGmxVaultsApyBreakdown';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -86,6 +87,23 @@ export abstract class BaseDataSource {
 
   getDnGmxVaultsInfo(): Promise<ResultWithMetadata<DnGmxVaultsInfoResult>> {
     return this.perform('getDnGmxVaultsInfo', []);
+  }
+
+  async getDnGmxVaultsApyBreakdown(): Promise<
+    ResultWithMetadata<{
+      seniorVault: {
+        aaveSupplyApy: number;
+        glpRewardsPct: number;
+      };
+      juniorVault: {
+        btcBorrowApy: number;
+        ethBorrowApy: number;
+        glpTraderPnl: number;
+        glpRewardsPct: number;
+      };
+    }>
+  > {
+    return this.perform('getDnGmxVaultsApyBreakdown', []);
   }
 
   perform<MethodName extends MethodNames>(
