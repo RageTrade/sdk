@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { getEthersInterfaces } from '../contracts/index';
 import { newError } from './loggers';
 
@@ -10,6 +10,19 @@ export function parseError(errorData: string) {
       return iface.parseError(errorData);
     } catch {}
   }
+
+  try {
+    const iface = new utils.Interface([
+      'function Error(string) public view',
+      'function Panic(uint256) public view',
+    ]);
+    const args = iface.decodeFunctionData(errorData.slice(0, 10), errorData);
+    return {
+      name: iface.getFunction(errorData.slice(0, 10)).name,
+      args,
+    };
+  } catch {}
+
   throw newError(`Could not parseError ${errorData}`);
 }
 
