@@ -14,6 +14,7 @@ import {
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbgoerli from './arbgoerli';
+import * as arbmain from './arbmain';
 import { DnGmxVaultDeployments } from './interface';
 
 export function getDeployments(
@@ -21,6 +22,8 @@ export function getDeployments(
 ): DnGmxVaultDeployments {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
+    case 'arbmain':
+      return arbmain.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:

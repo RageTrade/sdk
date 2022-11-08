@@ -4,27 +4,30 @@ describe('delta neutral gmx vaults', () => {
   beforeEach(async () => {});
 
   describe('#getContracts', () => {
-    it('arbgoerli', async () => {
-      const {
-        dnGmxSeniorVault,
-        dnGmxJuniorVault,
-        dnGmxBatchingManager,
-        withdrawPeriphery,
-        batchingManagerBypass,
-      } = await sdk.deltaNeutralGmxVaults.getContracts(
-        sdk.getProvider('arbgoerli')
-      );
+    const networkNames: sdk.NetworkName[] = ['arbmain', 'arbgoerli'];
+    for (const networkName of networkNames) {
+      it(networkName, async () => {
+        const {
+          dnGmxSeniorVault,
+          dnGmxJuniorVault,
+          dnGmxBatchingManager,
+          withdrawPeriphery,
+          batchingManagerBypass,
+        } = await sdk.deltaNeutralGmxVaults.getContracts(
+          sdk.getProvider(networkName)
+        );
 
-      const addresses = [
-        dnGmxSeniorVault.address,
-        dnGmxJuniorVault.address,
-        dnGmxBatchingManager.address,
-        withdrawPeriphery.address,
-        batchingManagerBypass.address,
-      ];
+        const addresses = [
+          dnGmxSeniorVault.address,
+          dnGmxJuniorVault.address,
+          dnGmxBatchingManager.address,
+          withdrawPeriphery.address,
+          batchingManagerBypass.address,
+        ];
 
-      // ensure no addresses are repeated
-      expect(addresses.length).toEqual(new Set(addresses).size);
-    });
+        // ensure no addresses are repeated
+        expect(addresses.length).toEqual(new Set(addresses).size);
+      });
+    }
   });
 });
