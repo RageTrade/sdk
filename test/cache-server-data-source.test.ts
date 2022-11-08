@@ -113,13 +113,27 @@ describe('cache data source', () => {
           const ds = new CacheServerDataSource(networkName, baseUrl);
           const resp = await ds.getDnGmxVaultsApyBreakdown();
 
-          expect(resp.result.seniorVault.aaveSupplyApy).toBeGreaterThan(0);
+          expect(resp.result.seniorVault.aaveSupplyApy).toBeTruthy();
+          expect(typeof resp.result.seniorVault.aaveSupplyApy).toEqual(
+            'number'
+          );
           // expect(resp.result.seniorVault.glpRewardsPct).toBeGreaterThan(0);
 
-          expect(resp.result.juniorVault.btcBorrowApy).toBeGreaterThan(0);
-          expect(resp.result.juniorVault.ethBorrowApy).toBeGreaterThan(0);
-          expect(resp.result.juniorVault.glpTraderPnl).toBeGreaterThan(0);
+          expect(resp.result.juniorVault.btcBorrowApy).toBeTruthy();
+          expect(resp.result.juniorVault.ethBorrowApy).toBeTruthy();
+          expect(resp.result.juniorVault.glpTraderPnl).toBeTruthy();
+          expect(typeof resp.result.juniorVault.btcBorrowApy).toEqual('number');
+          expect(typeof resp.result.juniorVault.ethBorrowApy).toEqual('number');
+          expect(typeof resp.result.juniorVault.glpTraderPnl).toEqual('number');
           // expect(resp.result.juniorVault.glpRewardsPct).toBeGreaterThan(0);
+        });
+        it(`getDnGmxVaultsMaxDepositWithdraw ${networkName}`, async () => {
+          const ds = new CacheServerDataSource(networkName, baseUrl);
+          const resp = await ds.getDnGmxVaultsMaxDepositWithdraw();
+
+          expect(resp.result.maxDepositInUsd).toBeTruthy();
+          expect(typeof resp.result.maxDepositInUsd).toEqual('string');
+          expect(typeof resp.result.maxWithdrawInUsd).toEqual('string');
         });
       }
     });

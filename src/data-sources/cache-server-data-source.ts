@@ -244,4 +244,16 @@ export class CacheServerDataSource extends BaseDataSource {
       >
     >;
   }
+
+  async getDnGmxVaultsMaxDepositWithdraw() {
+    // https://apis.rage.trade/data/v2/get-dn-gmx-max-deposit-withdraw?networkName=arbgoerli
+    const response = await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-dn-gmx-max-deposit-withdraw?networkName=${this._networkName}`
+    );
+    return getResultWithMetadata(response) as Awaited<
+      ReturnType<
+        InstanceType<typeof BaseDataSource>['getDnGmxVaultsMaxDepositWithdraw']
+      >
+    >;
+  }
 }

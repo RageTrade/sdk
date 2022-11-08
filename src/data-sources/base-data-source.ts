@@ -22,7 +22,8 @@ export type MethodNames =
   | 'getGmxVaultInfo'
   | 'getGmxVaultInfoByTokenAddress'
   | 'getDnGmxVaultsInfo'
-  | 'getDnGmxVaultsApyBreakdown';
+  | 'getDnGmxVaultsApyBreakdown'
+  | 'getDnGmxVaultsMaxDepositWithdraw';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -104,6 +105,14 @@ export abstract class BaseDataSource {
     }>
   > {
     return this.perform('getDnGmxVaultsApyBreakdown', []);
+  }
+  getDnGmxVaultsMaxDepositWithdraw(): Promise<
+    ResultWithMetadata<{
+      maxDepositInUsd: string;
+      maxWithdrawInUsd: string;
+    }>
+  > {
+    return this.perform('getDnGmxVaultsMaxDepositWithdraw', []);
   }
 
   perform<MethodName extends MethodNames>(
