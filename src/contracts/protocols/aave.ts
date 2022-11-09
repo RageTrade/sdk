@@ -32,6 +32,27 @@ export function getAddresses(
 ): AaveAddresses {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
+    case 'arbmain':
+      return {
+        poolAddressProviderAddress:
+          '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
+        // usdc
+        usdcATokenAddress: '0x625E7708f30cA75bfd92586e17077590C60eb4cD',
+        usdcVariableDebtTokenAddress:
+          '0xFCCf3cAbbe80101232d343252614b6A3eE81C989',
+        // usdt
+        usdtATokenAddress: '0x6ab707Aca953eDAeFBc4fD23bA73294241490620',
+        usdtVariableDebtTokenAddress:
+          '0xfb00AC187a8Eb5AFAE4eACE434F493Eb62672df7',
+        // wbtc
+        wbtcATokenAddress: '0x078f358208685046a11C85e8ad32895DED33A249',
+        wbtcVariableDebtTokenAddress:
+          '0x92b42c66840C7AD907b4BF74879FF3eF7c529473',
+        // weth
+        wethATokenAddress: '0xe50fA9b3c56FfB159cB0FCA61F5c9D750e8128c8',
+        wethVariableDebtTokenAddress:
+          '0x0c84331e39d6658Cd6e6b9ba04736cC4c4734351',
+      };
     case 'arbgoerli':
       return {
         poolAddressProviderAddress:
