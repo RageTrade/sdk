@@ -101,6 +101,8 @@ export abstract class BaseDataSource {
         ethBorrowApy: number;
         glpTraderPnl: number;
         glpRewardsPct: number;
+        esGmxForGlp: number;
+        esGmxForEsGmx: number;
       };
     }>
   > {
