@@ -53,6 +53,11 @@ describe('ethers data source', () => {
         const { result: vaultInfo } = await ds.getVaultInfo('tricrypto');
         expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
         expect(vaultInfo.nativeProtocolName).toEqual('CurveFinance');
+
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeGreaterThan(0.00001);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeGreaterThan(0.00001);
       });
 
       if (networkName === 'arbgoerli') {
@@ -60,6 +65,15 @@ describe('ethers data source', () => {
           const { result: vaultInfo } = await ds.getVaultInfo('gmx');
           expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
           expect(vaultInfo.nativeProtocolName).toEqual('GMX');
+
+          expect(Number(vaultInfo.assetPrice.formatted)).toBeLessThan(10000);
+          expect(Number(vaultInfo.assetPrice.formatted)).toBeGreaterThan(
+            0.00001
+          );
+          expect(Number(vaultInfo.sharePrice.formatted)).toBeLessThan(10000);
+          expect(Number(vaultInfo.sharePrice.formatted)).toBeGreaterThan(
+            0.00001
+          );
         });
 
         it('getGmxVaultInfo', async () => {
@@ -91,6 +105,11 @@ describe('ethers data source', () => {
         expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
         expect(vaultInfo.nativeProtocolName).toEqual('GMX');
         expect(+vaultInfo.sharePrice.formatted).toBeGreaterThan(0);
+
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeGreaterThan(0.00001);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeGreaterThan(0.00001);
       });
 
       it('getVaultInfo dn_gmx_senior', async () => {
@@ -98,6 +117,11 @@ describe('ethers data source', () => {
         expect(+vaultInfo.depositCap.formatted).toBeGreaterThan(0);
         expect(vaultInfo.nativeProtocolName).toEqual('GMX');
         expect(+vaultInfo.sharePrice.formatted).toBeGreaterThan(0);
+
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.assetPrice.formatted)).toBeGreaterThan(0.00001);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeLessThan(10000);
+        expect(Number(vaultInfo.sharePrice.formatted)).toBeGreaterThan(0.00001);
       });
 
       it('getDnGmxVaultsInfo', async () => {

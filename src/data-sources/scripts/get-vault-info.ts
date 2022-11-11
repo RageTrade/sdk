@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import {
   VaultName,
@@ -7,11 +7,13 @@ import {
   getVaultDeployBlockNumber,
 } from '../../contracts';
 import { IERC20Metadata__factory } from '../../typechain';
+import { DnGmxJuniorVault__factory } from '../../typechain/delta-neutral-gmx-vaults';
 import {
   priceX128ToPrice,
   Amount,
   bigNumberToAmount,
   stringToAmount,
+  Q128,
 } from '../../utils';
 import { BaseDataSource } from '../base-data-source';
 import { getAvgVaultMarketValue } from './get-avg-vault-market-value';
@@ -61,13 +63,24 @@ export async function getVaultInfo(
   );
 
   // asset price
-  const assetPriceX128 = await vault.getPriceX128(); // dollars per asset
-  const assetPrice = stringToAmount(
-    (
-      await priceX128ToPrice(assetPriceX128, USD_DECIMALS, assetDecimals)
-    ).toFixed(USD_DECIMALS),
-    USD_DECIMALS
-  );
+  let assetPrice: Amount;
+  let assetPriceX128: BigNumber;
+  try {
+    assetPriceX128 = await vault.getPriceX128(); // dollars per asset
+    assetPrice = stringToAmount(
+      (
+        await priceX128ToPrice(assetPriceX128, USD_DECIMALS, assetDecimals)
+      ).toFixed(USD_DECIMALS),
+      USD_DECIMALS
+    );
+  } catch {
+    const priceD18 = await DnGmxJuniorVault__factory.connect(
+      vault.address,
+      provider
+    ).getPrice(false);
+    assetPrice = bigNumberToAmount(priceD18, 18);
+    assetPriceX128 = priceD18.mul(Q128).div(BigNumber.from(10).pow(18 + 12));
+  }
 
   // share price
   const assetsPerShareDX = await vault.convertToAssets(
