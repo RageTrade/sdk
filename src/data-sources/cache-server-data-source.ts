@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { NetworkName, getNetworkName } from '../contracts';
 import {
+  Amount,
   ApiResponse,
   BigNumberStringified,
   getResultWithMetadata,
@@ -17,7 +18,6 @@ import {
   PoolInfoResult,
   PricesResult,
   VaultInfoResult,
-  VaultMarketValueResult,
 } from './scripts';
 
 export class CacheServerDataSource extends BaseDataSource {
@@ -124,16 +124,23 @@ export class CacheServerDataSource extends BaseDataSource {
       `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
     let response2:
-      | ApiResponse<BigNumberStringified<VaultMarketValueResult>>
+      | ApiResponse<
+          BigNumberStringified<{
+            totalSupply: Amount;
+            totalShares: Amount;
+            totalAssets: Amount;
+            vaultMarketValue: Amount;
+          }>
+        >
       | undefined;
     try {
       response2 = await ethers.utils.fetchJson(
-        `${this._baseUrl}/data/v2/get-vault-market-value?networkName=${this._networkName}&vaultName=${vaultName}`
+        `${this._baseUrl}/data/v2/get-vault-info-fast?networkName=${this._networkName}&vaultName=${vaultName}`
       );
     } catch {}
     return getResultWithMetadata(response, (result) => ({
+      // uses response1
       nativeProtocolName: result.nativeProtocolName,
-
       poolComposition: {
         rageAmountD6: BigNumber.from(result.poolComposition.rageAmountD6),
         nativeAmountD6: BigNumber.from(result.poolComposition.nativeAmountD6),
@@ -142,17 +149,24 @@ export class CacheServerDataSource extends BaseDataSource {
         ragePercentage: result.poolComposition.ragePercentage,
         nativePercentage: result.poolComposition.nativePercentage,
       },
-
-      totalSupply: parseAmount(result.totalSupply),
-      totalShares: parseAmount(result.totalSupply),
-      totalAssets: parseAmount(result.totalAssets),
       assetPrice: parseAmount(result.assetPrice),
       sharePrice: parseAmount(result.sharePrice),
       depositCap: parseAmount(result.depositCap),
+      avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
+
+      // uses response2
+      totalSupply: parseAmount(
+        response2?.result?.totalSupply ?? result.totalSupply
+      ),
+      totalShares: parseAmount(
+        response2?.result?.totalSupply ?? result.totalSupply
+      ),
+      totalAssets: parseAmount(
+        response2?.result?.totalAssets ?? result.totalAssets
+      ),
       vaultMarketValue: parseAmount(
         response2?.result?.vaultMarketValue ?? result.vaultMarketValue
       ),
-      avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
     }));
   }
 
