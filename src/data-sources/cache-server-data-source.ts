@@ -130,6 +130,16 @@ export class CacheServerDataSource extends BaseDataSource {
         `${this._baseUrl}/data/v2/get-vault-info-fast?networkName=${this._networkName}&vaultName=${vaultName}`
       );
     } catch {}
+
+    // if response1 is latest then use it and ignore response2
+    if (
+      response?.cacheTimestamp &&
+      response2?.cacheTimestamp &&
+      response.cacheTimestamp > response2.cacheTimestamp
+    ) {
+      response2 = undefined;
+    }
+
     return getResultWithMetadata(response, (result) => ({
       // uses response1
       nativeProtocolName:
@@ -228,6 +238,16 @@ export class CacheServerDataSource extends BaseDataSource {
         `${this._baseUrl}/data/v2/get-dn-gmx-vault-info-fast?networkName=${this._networkName}`
       );
     } catch {}
+
+    // if response1 is latest then use it and ignore response2
+    if (
+      response?.cacheTimestamp &&
+      response2?.cacheTimestamp &&
+      response.cacheTimestamp > response2.cacheTimestamp
+    ) {
+      response2 = undefined;
+    }
+
     return getResultWithMetadata(response, (result) => ({
       juniorVault: {
         currentExposureInGlp: {
