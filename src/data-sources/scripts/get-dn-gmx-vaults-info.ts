@@ -1,9 +1,10 @@
 import { BigNumber, ethers } from 'ethers';
 import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
 import { aave, deltaNeutralGmxVaults } from '../../contracts';
-import { safeDiv } from '../../utils';
+import { Amount, bigNumberToAmount, safeDiv } from '../../utils';
+import { DnGmxVaultsInfoFastResult } from './get-dn-gmx-vaults-info-fast';
 
-export interface DnGmxVaultsInfoResult {
+export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
   juniorVault: {
     currentExposureInGlp: {
       btcD8: BigNumber;
@@ -15,6 +16,8 @@ export interface DnGmxVaultsInfoResult {
     };
     currentBorrowValueD6: BigNumber;
     ethRewardsSplitRate: number;
+    assetPriceMinimized: Amount;
+    assetPriceMaximized: Amount;
   };
   seniorVault: {
     usdcLentToAaveD6: BigNumber;
@@ -43,6 +46,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxJuniorVault_getCurrentBorrows,
     dnGmxJuniorVault_dnUsdcDeposited,
     dnGmxJuniorVault_getUsdcBorrowed,
+    dnGmxJuniorVault_getPrice_false,
+    dnGmxJuniorVault_getPrice_true,
     // senior vault
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
@@ -58,6 +63,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxJuniorVault.getCurrentBorrows(),
     dnGmxJuniorVault.dnUsdcDeposited(), // TODO remove; this call is failing
     dnGmxJuniorVault.getUsdcBorrowed(),
+    dnGmxJuniorVault.getPrice(false),
+    dnGmxJuniorVault.getPrice(true),
     // senior vault
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
@@ -107,6 +114,14 @@ export async function getDnGmxVaultsInfo(
       // check with finquant, done, awaiting findev
       currentBorrowValueD6: dnGmxJuniorVault_getUsdcBorrowed,
       ethRewardsSplitRate: 1 - seniorVault_ethRewardsSplitRate,
+      assetPriceMinimized: bigNumberToAmount(
+        dnGmxJuniorVault_getPrice_false,
+        18
+      ),
+      assetPriceMaximized: bigNumberToAmount(
+        dnGmxJuniorVault_getPrice_true,
+        18
+      ),
     },
     seniorVault: {
       usdcLentToAaveD6: aUsdc_balanceOf_dnGmxSeniorVault,

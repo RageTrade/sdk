@@ -1,11 +1,13 @@
 import { ethers } from 'ethers';
 import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
 import { deltaNeutralGmxVaults } from '../../contracts';
-import { safeDiv } from '../../utils';
+import { Amount, bigNumberToAmount, safeDiv } from '../../utils';
 
 export interface DnGmxVaultsInfoFastResult {
   juniorVault: {
     ethRewardsSplitRate: number;
+    assetPriceMinimized: Amount;
+    assetPriceMaximized: Amount;
   };
   seniorVault: {
     utilizationRatio: number;
@@ -19,10 +21,13 @@ export interface DnGmxVaultsInfoFastResult {
 export async function getDnGmxVaultsInfoFast(
   provider: ethers.providers.Provider
 ): Promise<DnGmxVaultsInfoFastResult> {
-  const { dnGmxSeniorVault, dnGmxBatchingManager } =
+  const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
     await deltaNeutralGmxVaults.getContracts(provider);
 
   const [
+    // junior vault
+    dnGmxJuniorVault_getPrice_false,
+    dnGmxJuniorVault_getPrice_true,
     // senior vault
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
@@ -30,6 +35,9 @@ export async function getDnGmxVaultsInfoFast(
     // batching manager
     dnGmxBatchingManager_paused,
   ] = await Promise.all([
+    // junior vault
+    dnGmxJuniorVault.getPrice(false),
+    dnGmxJuniorVault.getPrice(true),
     // senior vault
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
@@ -51,6 +59,14 @@ export async function getDnGmxVaultsInfoFast(
   return {
     juniorVault: {
       ethRewardsSplitRate: 1 - seniorVault_ethRewardsSplitRate,
+      assetPriceMinimized: bigNumberToAmount(
+        dnGmxJuniorVault_getPrice_false,
+        18
+      ),
+      assetPriceMaximized: bigNumberToAmount(
+        dnGmxJuniorVault_getPrice_true,
+        18
+      ),
     },
     seniorVault: {
       utilizationRatio: Number(formatEther(utilizationRatioD18)),

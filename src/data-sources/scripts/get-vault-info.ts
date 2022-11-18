@@ -30,6 +30,7 @@ export interface VaultInfoResult {
   totalSupply: Amount;
   totalShares: Amount;
   totalAssets: Amount;
+  assetsPerShare: Amount;
   assetPrice: Amount;
   sharePrice: Amount;
   depositCap: Amount;
@@ -86,6 +87,7 @@ export async function getVaultInfo(
   const assetsPerShareDX = await vault.convertToAssets(
     parseUnits('1', shareDecimals)
   );
+  const assetsPerShare = bigNumberToAmount(assetsPerShareDX, assetDecimals);
   const sharePrice = stringToAmount(
     (
       await priceX128ToPrice(
@@ -129,6 +131,7 @@ export async function getVaultInfo(
     totalSupply,
     totalShares: totalSupply,
     totalAssets,
+    assetsPerShare,
     assetPrice,
     sharePrice,
     depositCap,

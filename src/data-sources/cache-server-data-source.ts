@@ -1,7 +1,6 @@
 import { BigNumber, BigNumberish, ethers } from 'ethers';
 import { NetworkName, getNetworkName } from '../contracts';
 import {
-  Amount,
   ApiResponse,
   BigNumberStringified,
   getResultWithMetadata,
@@ -124,14 +123,7 @@ export class CacheServerDataSource extends BaseDataSource {
       `${this._baseUrl}/data/v2/get-vault-info?networkName=${this._networkName}&vaultName=${vaultName}`
     )) as ApiResponse<BigNumberStringified<VaultInfoResult>>;
     let response2:
-      | ApiResponse<
-          BigNumberStringified<{
-            totalSupply: Amount;
-            totalShares: Amount;
-            totalAssets: Amount;
-            vaultMarketValue: Amount;
-          }>
-        >
+      | ApiResponse<BigNumberStringified<VaultInfoResult>>
       | undefined;
     try {
       response2 = await ethers.utils.fetchJson(
@@ -140,21 +132,30 @@ export class CacheServerDataSource extends BaseDataSource {
     } catch {}
     return getResultWithMetadata(response, (result) => ({
       // uses response1
-      nativeProtocolName: result.nativeProtocolName,
+      nativeProtocolName:
+        response2?.result?.nativeProtocolName ?? result.nativeProtocolName,
       poolComposition: {
-        rageAmountD6: BigNumber.from(result.poolComposition.rageAmountD6),
-        nativeAmountD6: BigNumber.from(result.poolComposition.nativeAmountD6),
-        rageAmount: result.poolComposition.rageAmount,
-        nativeAmount: result.poolComposition.nativeAmount,
-        ragePercentage: result.poolComposition.ragePercentage,
-        nativePercentage: result.poolComposition.nativePercentage,
+        rageAmountD6: BigNumber.from(
+          response2?.result?.poolComposition?.rageAmountD6 ??
+            result.poolComposition.rageAmountD6
+        ),
+        nativeAmountD6: BigNumber.from(
+          response2?.result?.poolComposition?.nativeAmountD6 ??
+            result.poolComposition.nativeAmountD6
+        ),
+        rageAmount:
+          response2?.result?.poolComposition?.rageAmount ??
+          result.poolComposition.rageAmount,
+        nativeAmount:
+          response2?.result?.poolComposition?.nativeAmount ??
+          result.poolComposition.nativeAmount,
+        ragePercentage:
+          response2?.result?.poolComposition?.ragePercentage ??
+          result.poolComposition.ragePercentage,
+        nativePercentage:
+          response2?.result?.poolComposition?.nativePercentage ??
+          result.poolComposition.nativePercentage,
       },
-      assetPrice: parseAmount(result.assetPrice),
-      sharePrice: parseAmount(result.sharePrice),
-      depositCap: parseAmount(result.depositCap),
-      avgVaultMarketValue: parseAmount(result.avgVaultMarketValue),
-
-      // uses response2
       totalSupply: parseAmount(
         response2?.result?.totalSupply ?? result.totalSupply
       ),
@@ -164,8 +165,28 @@ export class CacheServerDataSource extends BaseDataSource {
       totalAssets: parseAmount(
         response2?.result?.totalAssets ?? result.totalAssets
       ),
+      assetsPerShare: parseAmount(
+        response2?.result?.assetsPerShare ??
+          result.assetsPerShare ?? {
+            value: '0',
+            decimals: 18,
+            formatted: '0.0',
+          }
+      ),
+      assetPrice: parseAmount(
+        response2?.result?.assetPrice ?? result.assetPrice
+      ),
+      sharePrice: parseAmount(
+        response2?.result?.sharePrice ?? result.sharePrice
+      ),
+      depositCap: parseAmount(
+        response2?.result?.depositCap ?? result.depositCap
+      ),
       vaultMarketValue: parseAmount(
         response2?.result?.vaultMarketValue ?? result.vaultMarketValue
+      ),
+      avgVaultMarketValue: parseAmount(
+        response2?.result?.avgVaultMarketValue ?? result.avgVaultMarketValue
       ),
     }));
   }
@@ -227,8 +248,24 @@ export class CacheServerDataSource extends BaseDataSource {
           result.juniorVault.currentBorrowValueD6
         ),
         ethRewardsSplitRate:
-          response2?.result?.juniorVault.ethRewardsSplitRate ||
+          response2?.result?.juniorVault.ethRewardsSplitRate ??
           result.juniorVault.ethRewardsSplitRate,
+        assetPriceMinimized: parseAmount(
+          response2?.result?.juniorVault.assetPriceMinimized ??
+            result.juniorVault.assetPriceMinimized ?? {
+              value: '0',
+              decimals: 18,
+              formatted: '0.0',
+            }
+        ),
+        assetPriceMaximized: parseAmount(
+          response2?.result?.juniorVault.assetPriceMaximized ??
+            result.juniorVault.assetPriceMaximized ?? {
+              value: '0',
+              decimals: 18,
+              formatted: '0.0',
+            }
+        ),
       },
       seniorVault: {
         usdcLentToAaveD6: BigNumber.from(result.seniorVault.usdcLentToAaveD6),
@@ -238,10 +275,10 @@ export class CacheServerDataSource extends BaseDataSource {
         ),
         earnedInterestRate: result.seniorVault.earnedInterestRate,
         utilizationRatio:
-          response2?.result?.seniorVault.utilizationRatio ||
+          response2?.result?.seniorVault.utilizationRatio ??
           result.seniorVault.utilizationRatio,
         ethRewardsSplitRate:
-          response2?.result?.seniorVault.ethRewardsSplitRate ||
+          response2?.result?.seniorVault.ethRewardsSplitRate ??
           result.seniorVault.ethRewardsSplitRate,
       },
       dnGmxBatchingManager: result.dnGmxBatchingManager,
