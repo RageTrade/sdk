@@ -5,6 +5,7 @@ import type * as balancer from './balancer';
 export type { balancer };
 import type * as gmx from './gmx';
 export type { gmx };
+export type { IBatchingManagerBypass } from './IBatchingManagerBypass';
 export type { IBorrower } from './IBorrower';
 export type { IDebtToken } from './IDebtToken';
 export type { IDnGmxBatchingManager } from './IDnGmxBatchingManager';

@@ -309,13 +309,7 @@ const _abi = [
       },
     ],
     name: 'depositUsdc',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'glpStaked',
-        type: 'uint256',
-      },
-    ],
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },

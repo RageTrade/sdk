@@ -74,6 +74,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'getAdminParams()': FunctionFragment;
     'getBorrowValue(uint256,uint256)': FunctionFragment;
     'getCurrentBorrows()': FunctionFragment;
+    'getGlpPriceInUsdc(bool)': FunctionFragment;
     'getHedgeParams()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
     'getOptimalBorrows(uint256)': FunctionFragment;
@@ -120,7 +121,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setAdminParams(address,address,uint256,address,uint16)': FunctionFragment;
+    'setAdminParams(address,address,uint256,address,uint16,uint24)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
     'setMocks(address)': FunctionFragment;
@@ -176,6 +177,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'getAdminParams'
       | 'getBorrowValue'
       | 'getCurrentBorrows'
+      | 'getGlpPriceInUsdc'
       | 'getHedgeParams'
       | 'getMarketValue'
       | 'getOptimalBorrows'
@@ -378,6 +380,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'getGlpPriceInUsdc',
+    values: [PromiseOrValue<boolean>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getHedgeParams',
     values?: undefined
   ): string;
@@ -574,6 +580,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -784,6 +791,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getCurrentBorrows',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getGlpPriceInUsdc',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1466,12 +1477,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     >;
 
     getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string, number] & {
+      [string, string, BigNumber, string, number, number] & {
         keeper: string;
         dnGmxSeniorVault: string;
         depositCap: BigNumber;
         batchingManager: string;
         withdrawFeeBps: number;
+        feeTierWethWbtcPool: number;
       }
     >;
 
@@ -1487,6 +1499,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
         currentEthBorrow: BigNumber;
       }
     >;
+
+    getGlpPriceInUsdc(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     getHedgeParams(overrides?: CallOverrides): Promise<
       [string, string, BigNumber, string] & {
@@ -1737,6 +1754,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1993,12 +2011,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
   >;
 
   getAdminParams(overrides?: CallOverrides): Promise<
-    [string, string, BigNumber, string, number] & {
+    [string, string, BigNumber, string, number, number] & {
       keeper: string;
       dnGmxSeniorVault: string;
       depositCap: BigNumber;
       batchingManager: string;
       withdrawFeeBps: number;
+      feeTierWethWbtcPool: number;
     }
   >;
 
@@ -2014,6 +2033,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       currentEthBorrow: BigNumber;
     }
   >;
+
+  getGlpPriceInUsdc(
+    maximize: PromiseOrValue<boolean>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   getHedgeParams(overrides?: CallOverrides): Promise<
     [string, string, BigNumber, string] & {
@@ -2260,6 +2284,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     newDepositCap: PromiseOrValue<BigNumberish>,
     batchingManager: PromiseOrValue<string>,
     withdrawFeeBps: PromiseOrValue<BigNumberish>,
+    feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -2510,12 +2535,13 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     >;
 
     getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string, number] & {
+      [string, string, BigNumber, string, number, number] & {
         keeper: string;
         dnGmxSeniorVault: string;
         depositCap: BigNumber;
         batchingManager: string;
         withdrawFeeBps: number;
+        feeTierWethWbtcPool: number;
       }
     >;
 
@@ -2531,6 +2557,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
         currentEthBorrow: BigNumber;
       }
     >;
+
+    getGlpPriceInUsdc(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getHedgeParams(overrides?: CallOverrides): Promise<
       [string, string, BigNumber, string] & {
@@ -2765,6 +2796,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3202,6 +3234,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getCurrentBorrows(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getGlpPriceInUsdc(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getHedgeParams(overrides?: CallOverrides): Promise<BigNumber>;
 
     getMarketValue(
@@ -3404,6 +3441,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -3662,6 +3700,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getCurrentBorrows(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getGlpPriceInUsdc(
+      maximize: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getHedgeParams(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getMarketValue(
@@ -3874,6 +3917,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

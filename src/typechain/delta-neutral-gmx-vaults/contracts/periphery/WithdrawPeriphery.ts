@@ -30,13 +30,13 @@ import type {
 export interface WithdrawPeripheryInterface extends utils.Interface {
   functions: {
     'owner()': FunctionFragment;
-    'redeemToken(address,address,address,uint256)': FunctionFragment;
+    'redeemToken(address,address,uint256)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setAddresses(address,address)': FunctionFragment;
     'setSlippageThreshold(uint256)': FunctionFragment;
     'slippageThreshold()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
-    'withdrawToken(address,address,address,uint256)': FunctionFragment;
+    'withdrawToken(address,address,uint256)': FunctionFragment;
   };
 
   getFunction(
@@ -55,7 +55,6 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'redeemToken',
     values: [
-      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
@@ -84,7 +83,6 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'withdrawToken',
     values: [
-      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>
@@ -231,7 +229,6 @@ export interface WithdrawPeriphery extends BaseContract {
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     redeemToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sharesAmount: PromiseOrValue<BigNumberish>,
@@ -261,7 +258,6 @@ export interface WithdrawPeriphery extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdrawToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sGlpAmount: PromiseOrValue<BigNumberish>,
@@ -272,7 +268,6 @@ export interface WithdrawPeriphery extends BaseContract {
   owner(overrides?: CallOverrides): Promise<string>;
 
   redeemToken(
-    from: PromiseOrValue<string>,
     token: PromiseOrValue<string>,
     receiver: PromiseOrValue<string>,
     sharesAmount: PromiseOrValue<BigNumberish>,
@@ -302,7 +297,6 @@ export interface WithdrawPeriphery extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdrawToken(
-    from: PromiseOrValue<string>,
     token: PromiseOrValue<string>,
     receiver: PromiseOrValue<string>,
     sGlpAmount: PromiseOrValue<BigNumberish>,
@@ -313,7 +307,6 @@ export interface WithdrawPeriphery extends BaseContract {
     owner(overrides?: CallOverrides): Promise<string>;
 
     redeemToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sharesAmount: PromiseOrValue<BigNumberish>,
@@ -341,7 +334,6 @@ export interface WithdrawPeriphery extends BaseContract {
     ): Promise<void>;
 
     withdrawToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sGlpAmount: PromiseOrValue<BigNumberish>,
@@ -414,7 +406,6 @@ export interface WithdrawPeriphery extends BaseContract {
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sharesAmount: PromiseOrValue<BigNumberish>,
@@ -444,7 +435,6 @@ export interface WithdrawPeriphery extends BaseContract {
     ): Promise<BigNumber>;
 
     withdrawToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sGlpAmount: PromiseOrValue<BigNumberish>,
@@ -456,7 +446,6 @@ export interface WithdrawPeriphery extends BaseContract {
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeemToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sharesAmount: PromiseOrValue<BigNumberish>,
@@ -486,7 +475,6 @@ export interface WithdrawPeriphery extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdrawToken(
-      from: PromiseOrValue<string>,
       token: PromiseOrValue<string>,
       receiver: PromiseOrValue<string>,
       sGlpAmount: PromiseOrValue<BigNumberish>,

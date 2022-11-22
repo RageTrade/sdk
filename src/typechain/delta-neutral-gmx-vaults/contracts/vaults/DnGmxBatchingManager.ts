@@ -788,7 +788,7 @@ export interface DnGmxBatchingManager extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
 
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 

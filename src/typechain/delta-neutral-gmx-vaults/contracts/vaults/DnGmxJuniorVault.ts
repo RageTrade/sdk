@@ -90,7 +90,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setAdminParams(address,address,uint256,address,uint16)': FunctionFragment;
+    'setAdminParams(address,address,uint256,address,uint16,uint24)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
     'setRebalanceParams(uint32,uint16,uint16)': FunctionFragment;
@@ -355,6 +355,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
@@ -1030,12 +1031,13 @@ export interface DnGmxJuniorVault extends BaseContract {
     dnUsdcDeposited(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string, number] & {
+      [string, string, BigNumber, string, number, number] & {
         keeper: string;
         dnGmxSeniorVault: string;
         depositCap: BigNumber;
         batchingManager: string;
         withdrawFeeBps: number;
+        feeTierWethWbtcPool: number;
       }
     >;
 
@@ -1226,6 +1228,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1362,12 +1365,13 @@ export interface DnGmxJuniorVault extends BaseContract {
   dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
 
   getAdminParams(overrides?: CallOverrides): Promise<
-    [string, string, BigNumber, string, number] & {
+    [string, string, BigNumber, string, number, number] & {
       keeper: string;
       dnGmxSeniorVault: string;
       depositCap: BigNumber;
       batchingManager: string;
       withdrawFeeBps: number;
+      feeTierWethWbtcPool: number;
     }
   >;
 
@@ -1554,6 +1558,7 @@ export interface DnGmxJuniorVault extends BaseContract {
     newDepositCap: PromiseOrValue<BigNumberish>,
     batchingManager: PromiseOrValue<string>,
     withdrawFeeBps: PromiseOrValue<BigNumberish>,
+    feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1688,12 +1693,13 @@ export interface DnGmxJuniorVault extends BaseContract {
     dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
 
     getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string, number] & {
+      [string, string, BigNumber, string, number, number] & {
         keeper: string;
         dnGmxSeniorVault: string;
         depositCap: BigNumber;
         batchingManager: string;
         withdrawFeeBps: number;
+        feeTierWethWbtcPool: number;
       }
     >;
 
@@ -1870,6 +1876,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2360,6 +2367,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2642,6 +2650,7 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       batchingManager: PromiseOrValue<string>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
+      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

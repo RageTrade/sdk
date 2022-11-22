@@ -102,6 +102,8 @@ export type { IVault } from './contracts/interfaces/gmx/IVault';
 export { IVault__factory } from './factories/contracts/interfaces/gmx/IVault__factory';
 export type { IVester } from './contracts/interfaces/gmx/IVester';
 export { IVester__factory } from './factories/contracts/interfaces/gmx/IVester__factory';
+export type { IBatchingManagerBypass } from './contracts/interfaces/IBatchingManagerBypass';
+export { IBatchingManagerBypass__factory } from './factories/contracts/interfaces/IBatchingManagerBypass__factory';
 export type { IBorrower } from './contracts/interfaces/IBorrower';
 export { IBorrower__factory } from './factories/contracts/interfaces/IBorrower__factory';
 export type { IDebtToken } from './contracts/interfaces/IDebtToken';
