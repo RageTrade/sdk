@@ -97,7 +97,8 @@ function getArbiscanProvider(chainName) {
     if (chainName === 'arbrinkeby' || chainName === 'arbtest') {
       throw new Error('some issue is there');
     }
-    return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
+    return sdk.getProvider(chainName);
+    // return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
   } catch {}
 }
 
