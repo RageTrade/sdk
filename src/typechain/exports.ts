@@ -80,6 +80,13 @@ export {
   WithdrawPeriphery,
 } from './delta-neutral-gmx-vaults';
 
+export {
+  DnGmxJIT__factory,
+  DnGmxRouter__factory,
+  DnGmxJIT,
+  DnGmxRouter,
+} from './delta-neutral-gmx-jit';
+
 export { IUniswapV3Factory__factory, IUniswapV3Factory } from './uniswap-core';
 export {
   INonfungiblePositionManager__factory,
