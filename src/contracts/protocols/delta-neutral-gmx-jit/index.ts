@@ -8,6 +8,7 @@ import {
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbgoerli from './arbgoerli';
+import * as arbmain from './arbmain';
 import { DnGmxJITDeployments } from './interface';
 
 export function getDeployments(
@@ -15,6 +16,8 @@ export function getDeployments(
 ): DnGmxJITDeployments {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
+    case 'arbmain':
+      return arbmain.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:
