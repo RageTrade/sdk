@@ -1745,6 +1745,20 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
+"@ragetrade/delta-neutral-gmx-vaults@^1.0.2-alpha":
+  version "1.0.2-alpha"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.2-alpha.tgz#82246835fd09f048af82fe1878cbe927a32a56b6"
+  integrity sha512-LX42zst2Trz8AjuAo1CNJ1OKNzhPRtKBwaS9/xqVFYCK216NihMgWruUnq0QdoLT1cA8w46s8Fom/yTmRaqtlw==
+  dependencies:
+    "@aave/core-v3" "^1.16.2"
+    "@aave/periphery-v3" "^1.19.2"
+    "@openzeppelin/contracts" "^4.7.3"
+    "@openzeppelin/contracts-upgradeable" "^4.7.3"
+    "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
+    "@solidity-parser/parser" "^0.14.3"
+    "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
+    "@uniswap/v3-periphery" "^1.4.0"
+
 "@ragetrade/gmx-vault@^1.0.1-arbgoerli.4":
   version "1.0.1-arbgoerli.4"
   resolved "https://registry.yarnpkg.com/@ragetrade/gmx-vault/-/gmx-vault-1.0.1-arbgoerli.4.tgz#38f22b4d5f6fb9231da7a9448396bbe74f68ffcf"
