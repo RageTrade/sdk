@@ -58,6 +58,7 @@ export interface JITManagerInterface extends utils.Interface {
     'transferOwnership(address)': FunctionFragment;
     'uniswapV3Factory()': FunctionFragment;
     'withdrawFunds(address)': FunctionFragment;
+    'withdrawTokenFunds()': FunctionFragment;
   };
 
   getFunction(
@@ -91,6 +92,7 @@ export interface JITManagerInterface extends utils.Interface {
       | 'transferOwnership'
       | 'uniswapV3Factory'
       | 'withdrawFunds'
+      | 'withdrawTokenFunds'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -203,6 +205,10 @@ export interface JITManagerInterface extends utils.Interface {
     functionFragment: 'withdrawFunds',
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: 'withdrawTokenFunds',
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: 'addLiquidity',
@@ -282,6 +288,10 @@ export interface JITManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'withdrawFunds',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'withdrawTokenFunds',
     data: BytesLike
   ): Result;
 
@@ -448,6 +458,10 @@ export interface JITManager extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    withdrawTokenFunds(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   addLiquidity(
@@ -557,6 +571,10 @@ export interface JITManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  withdrawTokenFunds(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     addLiquidity(
       isToken0: PromiseOrValue<boolean>,
@@ -660,6 +678,8 @@ export interface JITManager extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    withdrawTokenFunds(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -777,6 +797,10 @@ export interface JITManager extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    withdrawTokenFunds(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -884,6 +908,10 @@ export interface JITManager extends BaseContract {
 
     withdrawFunds(
       token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawTokenFunds(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

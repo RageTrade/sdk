@@ -1718,16 +1718,16 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/delta-neutral-gmx-jit@^1.0.0-alpha.5":
-  version "1.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.0-alpha.5.tgz#ac2083743ba7304e40470dcbdd7cb3f8008604a3"
-  integrity sha512-LfRSf0qQ5xa/E7axtDg2v+rjzhIfSSwUD0hLz/zx+B5aSO5NYrvvak+xlX8jhkKY8bOc6myI2vbMg/8LXsF8Jg==
+"@ragetrade/delta-neutral-gmx-jit@^1.0.0-alpha.6":
+  version "1.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.0-alpha.6.tgz#df7b054fb57e46ecc3bcc093102298bf518d9506"
+  integrity sha512-RbCDqVDkyLH5GeEncl8P8tsmaHvRfpgLcMPLH/cBXTFVpG9GlDp4IZAqbhVRczEAX3IpPdh+DZVX3irghYkOFw==
   dependencies:
     "@chainlink/contracts" "^0.5.1"
     "@openzeppelin/contracts" "^4.8.0"
     "@openzeppelin/contracts-upgradeable" "^4.8.0"
     "@ragetrade/delta-neutral-gmx-vaults" "^1.0.2"
-    "@ragetrade/sdk" "^1.0.0-alpha.43"
+    "@ragetrade/sdk" "^1.0.0-alpha.48"
     "@uniswap/v3-core" "https://github.com/Uniswap/v3-core#6562c52e8f75f0c10f9deaf44861847585fc8129"
     "@uniswap/v3-periphery" "https://github.com/Uniswap/v3-periphery#b325bb0905d922ae61fcc7df85ee802e8df5e96c"
 
@@ -1775,10 +1775,10 @@
     "@uniswap/v3-periphery" "^1.4.0"
     hardhat-dependency-compiler "^1.1.2"
 
-"@ragetrade/sdk@^1.0.0-alpha.43":
-  version "1.0.0-alpha.43"
-  resolved "https://registry.yarnpkg.com/@ragetrade/sdk/-/sdk-1.0.0-alpha.43.tgz#d20c7751f2dce535cbdc4194b1c3be0853c6d48e"
-  integrity sha512-GPX4vsK/Dse2T0aW3kO8P948gkGXRx8vD9aFSIS1wo4cobOz/4kHZhM9ySzabSTZ24uR9l31vefCyQ26NmRadQ==
+"@ragetrade/sdk@^1.0.0-alpha.48":
+  version "1.0.0-alpha.48"
+  resolved "https://registry.yarnpkg.com/@ragetrade/sdk/-/sdk-1.0.0-alpha.48.tgz#11ed39ed8dcd4144d869a162346a1700a662b98a"
+  integrity sha512-l6kMP9fdw5vKDgRXXOw6LgrSE7xJ1q61IUSNQEhcWlQ6RXnaq6FZFtafFcP321mkgQKoQ2dGRYH/1RUiPE8Jmg==
   dependencies:
     "@uniswap/v3-sdk" "^3.8.2"
     ethers-repl "^1.0.3"
