@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as balancer from './balancer';
+export * as gmx from './gmx';
 export { IBorrower__factory } from './IBorrower__factory';
 export { IDnGmxBatchingManager__factory } from './IDnGmxBatchingManager__factory';
 export { IDnGmxJuniorVault__factory } from './IDnGmxJuniorVault__factory';

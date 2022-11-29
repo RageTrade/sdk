@@ -2,5 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from './interfaces';
-export { DnGmxJIT__factory } from './DnGmxJIT__factory';
 export { DnGmxRouter__factory } from './DnGmxRouter__factory';
+export { JITManager__factory } from './JITManager__factory';

@@ -81,9 +81,9 @@ export {
 } from './delta-neutral-gmx-vaults';
 
 export {
-  DnGmxJIT__factory,
+  JITManager__factory,
   DnGmxRouter__factory,
-  DnGmxJIT,
+  JITManager,
   DnGmxRouter,
 } from './delta-neutral-gmx-jit';
 

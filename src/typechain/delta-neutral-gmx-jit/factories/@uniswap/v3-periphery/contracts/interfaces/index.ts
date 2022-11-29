@@ -6,4 +6,5 @@ export { INonfungiblePositionManager__factory } from './INonfungiblePositionMana
 export { IPeripheryImmutableState__factory } from './IPeripheryImmutableState__factory';
 export { IPeripheryPayments__factory } from './IPeripheryPayments__factory';
 export { IPoolInitializer__factory } from './IPoolInitializer__factory';
+export { IQuoter__factory } from './IQuoter__factory';
 export { ISwapRouter__factory } from './ISwapRouter__factory';

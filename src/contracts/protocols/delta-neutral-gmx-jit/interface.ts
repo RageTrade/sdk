@@ -1,6 +1,7 @@
 import { ContractDeployment } from '../../common';
 
 export interface DnGmxJITDeployments {
-  DnGmxJITDeployment: ContractDeployment;
+  JITManager1Deployment: ContractDeployment;
+  JITManager2Deployment: ContractDeployment;
   DnGmxRouterDeployment: ContractDeployment;
 }

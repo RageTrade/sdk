@@ -31,28 +31,44 @@ export interface DnGmxRouterInterface extends utils.Interface {
   functions: {
     'deposit(uint256,address)': FunctionFragment;
     'dnGmxBatchingManager()': FunctionFragment;
-    'dnGmxJIT()': FunctionFragment;
     'dnGmxJuniorVault()': FunctionFragment;
     'executeBatchDeposit()': FunctionFragment;
-    'initialize(address,address,address,address)': FunctionFragment;
+    'getQuotes(uint256)': FunctionFragment;
+    'getQuotesJitRevert(uint256)': FunctionFragment;
+    'gmxVault()': FunctionFragment;
+    'initialize(address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
+    'jitManager1()': FunctionFragment;
+    'jitManager2()': FunctionFragment;
     'owner()': FunctionFragment;
+    'quoterV1()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'sGLP()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
+    'usdc()': FunctionFragment;
+    'wbtc()': FunctionFragment;
+    'weth()': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | 'deposit'
       | 'dnGmxBatchingManager'
-      | 'dnGmxJIT'
       | 'dnGmxJuniorVault'
       | 'executeBatchDeposit'
+      | 'getQuotes'
+      | 'getQuotesJitRevert'
+      | 'gmxVault'
       | 'initialize'
+      | 'jitManager1'
+      | 'jitManager2'
       | 'owner'
+      | 'quoterV1'
       | 'renounceOwnership'
       | 'sGLP'
       | 'transferOwnership'
+      | 'usdc'
+      | 'wbtc'
+      | 'weth'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -63,7 +79,6 @@ export interface DnGmxRouterInterface extends utils.Interface {
     functionFragment: 'dnGmxBatchingManager',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'dnGmxJIT', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'dnGmxJuniorVault',
     values?: undefined
@@ -73,15 +88,39 @@ export interface DnGmxRouterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'getQuotes',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getQuotesJitRevert',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(functionFragment: 'gmxVault', values?: undefined): string;
+  encodeFunctionData(
     functionFragment: 'initialize',
     values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(
+    functionFragment: 'jitManager1',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'jitManager2',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'quoterV1', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
     values?: undefined
@@ -91,13 +130,15 @@ export interface DnGmxRouterInterface extends utils.Interface {
     functionFragment: 'transferOwnership',
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: 'usdc', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'wbtc', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
 
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'dnGmxBatchingManager',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'dnGmxJIT', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'dnGmxJuniorVault',
     data: BytesLike
@@ -106,8 +147,23 @@ export interface DnGmxRouterInterface extends utils.Interface {
     functionFragment: 'executeBatchDeposit',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'getQuotes', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getQuotesJitRevert',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'gmxVault', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'jitManager1',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'jitManager2',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'quoterV1', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'renounceOwnership',
     data: BytesLike
@@ -117,6 +173,9 @@ export interface DnGmxRouterInterface extends utils.Interface {
     functionFragment: 'transferOwnership',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'usdc', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'wbtc', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
 
   events: {
     'Initialized(uint8)': EventFragment;
@@ -181,23 +240,45 @@ export interface DnGmxRouter extends BaseContract {
 
     dnGmxBatchingManager(overrides?: CallOverrides): Promise<[string]>;
 
-    dnGmxJIT(overrides?: CallOverrides): Promise<[string]>;
-
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<[string]>;
 
     executeBatchDeposit(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _dnGmxJIT: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
+    getQuotes(
+      assets: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getQuotesJitRevert(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    gmxVault(overrides?: CallOverrides): Promise<[string]>;
+
+    initialize(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    jitManager1(overrides?: CallOverrides): Promise<[string]>;
+
+    jitManager2(overrides?: CallOverrides): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    quoterV1(overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -209,6 +290,12 @@ export interface DnGmxRouter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    usdc(overrides?: CallOverrides): Promise<[string]>;
+
+    wbtc(overrides?: CallOverrides): Promise<[string]>;
+
+    weth(overrides?: CallOverrides): Promise<[string]>;
   };
 
   deposit(
@@ -219,23 +306,45 @@ export interface DnGmxRouter extends BaseContract {
 
   dnGmxBatchingManager(overrides?: CallOverrides): Promise<string>;
 
-  dnGmxJIT(overrides?: CallOverrides): Promise<string>;
-
   dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
   executeBatchDeposit(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  initialize(
-    _dnGmxJuniorVault: PromiseOrValue<string>,
-    _dnGmxBatchingManager: PromiseOrValue<string>,
-    _dnGmxJIT: PromiseOrValue<string>,
-    _sGLP: PromiseOrValue<string>,
+  getQuotes(
+    assets: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getQuotesJitRevert(
+    assets: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  gmxVault(overrides?: CallOverrides): Promise<string>;
+
+  initialize(
+    _dnGmxJuniorVault: PromiseOrValue<string>,
+    _dnGmxBatchingManager: PromiseOrValue<string>,
+    _gmxVault: PromiseOrValue<string>,
+    _jitManager1: PromiseOrValue<string>,
+    _jitManager2: PromiseOrValue<string>,
+    _quoterV1: PromiseOrValue<string>,
+    _sGLP: PromiseOrValue<string>,
+    _weth: PromiseOrValue<string>,
+    _wbtc: PromiseOrValue<string>,
+    _usdc: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  jitManager1(overrides?: CallOverrides): Promise<string>;
+
+  jitManager2(overrides?: CallOverrides): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
+
+  quoterV1(overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -248,6 +357,12 @@ export interface DnGmxRouter extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  usdc(overrides?: CallOverrides): Promise<string>;
+
+  wbtc(overrides?: CallOverrides): Promise<string>;
+
+  weth(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     deposit(
       amount: PromiseOrValue<BigNumberish>,
@@ -257,21 +372,50 @@ export interface DnGmxRouter extends BaseContract {
 
     dnGmxBatchingManager(overrides?: CallOverrides): Promise<string>;
 
-    dnGmxJIT(overrides?: CallOverrides): Promise<string>;
-
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
     executeBatchDeposit(overrides?: CallOverrides): Promise<void>;
 
-    initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _dnGmxJIT: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
+    getQuotes(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber, BigNumber, BigNumber] & {
+        ethQuoteWithoutJIT: BigNumber;
+        btcQuoteWithoutJIT: BigNumber;
+        ethQuoteWithJIT: BigNumber;
+        btcQuoteWithJIT: BigNumber;
+      }
+    >;
+
+    getQuotesJitRevert(
+      assets: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    gmxVault(overrides?: CallOverrides): Promise<string>;
+
+    initialize(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    jitManager1(overrides?: CallOverrides): Promise<string>;
+
+    jitManager2(overrides?: CallOverrides): Promise<string>;
+
     owner(overrides?: CallOverrides): Promise<string>;
+
+    quoterV1(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -281,6 +425,12 @@ export interface DnGmxRouter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    usdc(overrides?: CallOverrides): Promise<string>;
+
+    wbtc(overrides?: CallOverrides): Promise<string>;
+
+    weth(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -306,23 +456,45 @@ export interface DnGmxRouter extends BaseContract {
 
     dnGmxBatchingManager(overrides?: CallOverrides): Promise<BigNumber>;
 
-    dnGmxJIT(overrides?: CallOverrides): Promise<BigNumber>;
-
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeBatchDeposit(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _dnGmxJIT: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
+    getQuotes(
+      assets: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getQuotesJitRevert(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    gmxVault(overrides?: CallOverrides): Promise<BigNumber>;
+
+    initialize(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    jitManager1(overrides?: CallOverrides): Promise<BigNumber>;
+
+    jitManager2(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    quoterV1(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -334,6 +506,12 @@ export interface DnGmxRouter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    usdc(overrides?: CallOverrides): Promise<BigNumber>;
+
+    wbtc(overrides?: CallOverrides): Promise<BigNumber>;
+
+    weth(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -347,23 +525,45 @@ export interface DnGmxRouter extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    dnGmxJIT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     executeBatchDeposit(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _dnGmxJIT: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
+    getQuotes(
+      assets: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    getQuotesJitRevert(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    gmxVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    initialize(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    jitManager1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    jitManager2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    quoterV1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -375,5 +575,11 @@ export interface DnGmxRouter extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    usdc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    wbtc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

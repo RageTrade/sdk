@@ -52,6 +52,8 @@ export type { IERC165 } from './@openzeppelin/contracts/utils/introspection/IERC
 export { IERC165__factory } from './factories/@openzeppelin/contracts/utils/introspection/IERC165__factory';
 export type { IBalancerVault } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/balancer/IBalancerVault';
 export { IBalancerVault__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/balancer/IBalancerVault__factory';
+export type { IVault } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IVault';
+export { IVault__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IVault__factory';
 export type { IBorrower } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IBorrower';
 export { IBorrower__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IBorrower__factory';
 export type { IDnGmxBatchingManager } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IDnGmxBatchingManager';
@@ -62,8 +64,6 @@ export type { IERC4626 } from './@ragetrade/delta-neutral-gmx-vaults/contracts/i
 export { IERC4626__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IERC4626__factory';
 export type { IUniswapV3SwapCallback } from './@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback';
 export { IUniswapV3SwapCallback__factory } from './factories/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback__factory';
-export type { IERC20Minimal } from './@uniswap/v3-core/contracts/interfaces/IERC20Minimal';
-export { IERC20Minimal__factory } from './factories/@uniswap/v3-core/contracts/interfaces/IERC20Minimal__factory';
 export type { IUniswapV3Factory } from './@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory';
 export { IUniswapV3Factory__factory } from './factories/@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory__factory';
 export type { IUniswapV3Pool } from './@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool';
@@ -94,13 +94,15 @@ export type { IPeripheryPayments } from './@uniswap/v3-periphery/contracts/inter
 export { IPeripheryPayments__factory } from './factories/@uniswap/v3-periphery/contracts/interfaces/IPeripheryPayments__factory';
 export type { IPoolInitializer } from './@uniswap/v3-periphery/contracts/interfaces/IPoolInitializer';
 export { IPoolInitializer__factory } from './factories/@uniswap/v3-periphery/contracts/interfaces/IPoolInitializer__factory';
+export type { IQuoter } from './@uniswap/v3-periphery/contracts/interfaces/IQuoter';
+export { IQuoter__factory } from './factories/@uniswap/v3-periphery/contracts/interfaces/IQuoter__factory';
 export type { ISwapRouter } from './@uniswap/v3-periphery/contracts/interfaces/ISwapRouter';
 export { ISwapRouter__factory } from './factories/@uniswap/v3-periphery/contracts/interfaces/ISwapRouter__factory';
-export type { DnGmxJIT } from './contracts/DnGmxJIT';
-export { DnGmxJIT__factory } from './factories/contracts/DnGmxJIT__factory';
 export type { DnGmxRouter } from './contracts/DnGmxRouter';
 export { DnGmxRouter__factory } from './factories/contracts/DnGmxRouter__factory';
-export type { IDnGmxJIT } from './contracts/interfaces/IDnGmxJIT';
-export { IDnGmxJIT__factory } from './factories/contracts/interfaces/IDnGmxJIT__factory';
 export type { IDnGmxRouter } from './contracts/interfaces/IDnGmxRouter';
 export { IDnGmxRouter__factory } from './factories/contracts/interfaces/IDnGmxRouter__factory';
+export type { IJITManager } from './contracts/interfaces/IJITManager';
+export { IJITManager__factory } from './factories/contracts/interfaces/IJITManager__factory';
+export type { JITManager } from './contracts/JITManager';
+export { JITManager__factory } from './factories/contracts/JITManager__factory';

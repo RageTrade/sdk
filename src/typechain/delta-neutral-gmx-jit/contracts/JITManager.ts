@@ -27,17 +27,16 @@ import type {
   PromiseOrValue,
 } from '../common';
 
-export interface DnGmxJITInterface extends utils.Interface {
+export interface JITManagerInterface extends utils.Interface {
   functions: {
-    'addLiquidity()': FunctionFragment;
-    'chainlinkBtcFeed()': FunctionFragment;
-    'chainlinkEthFeed()': FunctionFragment;
-    'dnGmxRouter()': FunctionFragment;
+    'addLiquidity(bool)': FunctionFragment;
+    'authorizedCaller()': FunctionFragment;
     'feeTier()': FunctionFragment;
     'getDeviationFromChainlink(uint160)': FunctionFragment;
     'getDollarValue()': FunctionFragment;
-    'getTickRange()': FunctionFragment;
-    'initialize(address,address,address,address)': FunctionFragment;
+    'getPrice(address)': FunctionFragment;
+    'getTickRange(bool)': FunctionFragment;
+    'initialize(address,address,address,address,uint24)': FunctionFragment;
     'keeper()': FunctionFragment;
     'liquidity()': FunctionFragment;
     'nfpm()': FunctionFragment;
@@ -47,27 +46,28 @@ export interface DnGmxJITInterface extends utils.Interface {
     'priceDeviationThresholdBPS()': FunctionFragment;
     'removeLiquidity()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setValues(address,address,uint24,address,address,uint256,uint256,uint256)': FunctionFragment;
+    'setValues(address,address,address,address,uint256,uint256,uint256)': FunctionFragment;
     'sqrtPriceThresholdBPS()': FunctionFragment;
     'swapLossThresholdBPS()': FunctionFragment;
-    'swapWbtc(address,bytes)': FunctionFragment;
+    'swapTokens(address,bytes,bool)': FunctionFragment;
     'tickSpacing()': FunctionFragment;
+    'token0()': FunctionFragment;
+    'token0PriceFeed()': FunctionFragment;
+    'token1()': FunctionFragment;
+    'token1PriceFeed()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'uniswapV3Factory()': FunctionFragment;
-    'wbtc()': FunctionFragment;
-    'weth()': FunctionFragment;
     'withdrawFunds(address)': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | 'addLiquidity'
-      | 'chainlinkBtcFeed'
-      | 'chainlinkEthFeed'
-      | 'dnGmxRouter'
+      | 'authorizedCaller'
       | 'feeTier'
       | 'getDeviationFromChainlink'
       | 'getDollarValue'
+      | 'getPrice'
       | 'getTickRange'
       | 'initialize'
       | 'keeper'
@@ -82,29 +82,23 @@ export interface DnGmxJITInterface extends utils.Interface {
       | 'setValues'
       | 'sqrtPriceThresholdBPS'
       | 'swapLossThresholdBPS'
-      | 'swapWbtc'
+      | 'swapTokens'
       | 'tickSpacing'
+      | 'token0'
+      | 'token0PriceFeed'
+      | 'token1'
+      | 'token1PriceFeed'
       | 'transferOwnership'
       | 'uniswapV3Factory'
-      | 'wbtc'
-      | 'weth'
       | 'withdrawFunds'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'addLiquidity',
-    values?: undefined
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
-    functionFragment: 'chainlinkBtcFeed',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'chainlinkEthFeed',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'dnGmxRouter',
+    functionFragment: 'authorizedCaller',
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: 'feeTier', values?: undefined): string;
@@ -117,8 +111,12 @@ export interface DnGmxJITInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'getPrice',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'getTickRange',
-    values?: undefined
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -126,7 +124,8 @@ export interface DnGmxJITInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<string>
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
@@ -155,7 +154,6 @@ export interface DnGmxJITInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
@@ -172,11 +170,25 @@ export interface DnGmxJITInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'swapWbtc',
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+    functionFragment: 'swapTokens',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<boolean>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'tickSpacing',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'token0', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'token0PriceFeed',
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: 'token1', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'token1PriceFeed',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -187,8 +199,6 @@ export interface DnGmxJITInterface extends utils.Interface {
     functionFragment: 'uniswapV3Factory',
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: 'wbtc', values?: undefined): string;
-  encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'withdrawFunds',
     values: [PromiseOrValue<string>]
@@ -199,15 +209,7 @@ export interface DnGmxJITInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'chainlinkBtcFeed',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'chainlinkEthFeed',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'dnGmxRouter',
+    functionFragment: 'authorizedCaller',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'feeTier', data: BytesLike): Result;
@@ -219,6 +221,7 @@ export interface DnGmxJITInterface extends utils.Interface {
     functionFragment: 'getDollarValue',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'getPrice', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'getTickRange',
     data: BytesLike
@@ -254,9 +257,19 @@ export interface DnGmxJITInterface extends utils.Interface {
     functionFragment: 'swapLossThresholdBPS',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'swapWbtc', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'swapTokens', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'tickSpacing',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'token0', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'token0PriceFeed',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: 'token1', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'token1PriceFeed',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -267,8 +280,6 @@ export interface DnGmxJITInterface extends utils.Interface {
     functionFragment: 'uniswapV3Factory',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'wbtc', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'withdrawFunds',
     data: BytesLike
@@ -302,12 +313,12 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
-export interface DnGmxJIT extends BaseContract {
+export interface JITManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: DnGmxJITInterface;
+  interface: JITManagerInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -330,14 +341,11 @@ export interface DnGmxJIT extends BaseContract {
 
   functions: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    chainlinkBtcFeed(overrides?: CallOverrides): Promise<[string]>;
-
-    chainlinkEthFeed(overrides?: CallOverrides): Promise<[string]>;
-
-    dnGmxRouter(overrides?: CallOverrides): Promise<[string]>;
+    authorizedCaller(overrides?: CallOverrides): Promise<[string]>;
 
     feeTier(overrides?: CallOverrides): Promise<[number]>;
 
@@ -356,15 +364,22 @@ export interface DnGmxJIT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { dollarValueD6: BigNumber }>;
 
+    getPrice(
+      priceFeed: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getTickRange(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
 
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
+      _token0: PromiseOrValue<string>,
+      _token1: PromiseOrValue<string>,
+      _feeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -392,10 +407,9 @@ export interface DnGmxJIT extends BaseContract {
 
     setValues(
       _keeper: PromiseOrValue<string>,
-      _dnGmxRouter: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
-      _chainlinkEthFeed: PromiseOrValue<string>,
-      _chainlinkBtcFeed: PromiseOrValue<string>,
+      _authorizedCaller: PromiseOrValue<string>,
+      _token0PriceFeed: PromiseOrValue<string>,
+      _token1PriceFeed: PromiseOrValue<string>,
       _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
       _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
       _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
@@ -406,13 +420,22 @@ export interface DnGmxJIT extends BaseContract {
 
     swapLossThresholdBPS(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     tickSpacing(overrides?: CallOverrides): Promise<[number]>;
+
+    token0(overrides?: CallOverrides): Promise<[string]>;
+
+    token0PriceFeed(overrides?: CallOverrides): Promise<[string]>;
+
+    token1(overrides?: CallOverrides): Promise<[string]>;
+
+    token1PriceFeed(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -421,10 +444,6 @@ export interface DnGmxJIT extends BaseContract {
 
     uniswapV3Factory(overrides?: CallOverrides): Promise<[string]>;
 
-    wbtc(overrides?: CallOverrides): Promise<[string]>;
-
-    weth(overrides?: CallOverrides): Promise<[string]>;
-
     withdrawFunds(
       token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -432,14 +451,11 @@ export interface DnGmxJIT extends BaseContract {
   };
 
   addLiquidity(
+    isToken0: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  chainlinkBtcFeed(overrides?: CallOverrides): Promise<string>;
-
-  chainlinkEthFeed(overrides?: CallOverrides): Promise<string>;
-
-  dnGmxRouter(overrides?: CallOverrides): Promise<string>;
+  authorizedCaller(overrides?: CallOverrides): Promise<string>;
 
   feeTier(overrides?: CallOverrides): Promise<number>;
 
@@ -456,15 +472,22 @@ export interface DnGmxJIT extends BaseContract {
 
   getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getPrice(
+    priceFeed: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getTickRange(
+    isToken0: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
 
   initialize(
     _uniswapV3Factory: PromiseOrValue<string>,
     _nfpm: PromiseOrValue<string>,
-    _weth: PromiseOrValue<string>,
-    _wbtc: PromiseOrValue<string>,
+    _token0: PromiseOrValue<string>,
+    _token1: PromiseOrValue<string>,
+    _feeTier: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -492,10 +515,9 @@ export interface DnGmxJIT extends BaseContract {
 
   setValues(
     _keeper: PromiseOrValue<string>,
-    _dnGmxRouter: PromiseOrValue<string>,
-    _feeTier: PromiseOrValue<BigNumberish>,
-    _chainlinkEthFeed: PromiseOrValue<string>,
-    _chainlinkBtcFeed: PromiseOrValue<string>,
+    _authorizedCaller: PromiseOrValue<string>,
+    _token0PriceFeed: PromiseOrValue<string>,
+    _token1PriceFeed: PromiseOrValue<string>,
     _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
     _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
     _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
@@ -506,13 +528,22 @@ export interface DnGmxJIT extends BaseContract {
 
   swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
 
-  swapWbtc(
+  swapTokens(
     to: PromiseOrValue<string>,
     data: PromiseOrValue<BytesLike>,
+    approveToken0: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   tickSpacing(overrides?: CallOverrides): Promise<number>;
+
+  token0(overrides?: CallOverrides): Promise<string>;
+
+  token0PriceFeed(overrides?: CallOverrides): Promise<string>;
+
+  token1(overrides?: CallOverrides): Promise<string>;
+
+  token1PriceFeed(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -521,23 +552,18 @@ export interface DnGmxJIT extends BaseContract {
 
   uniswapV3Factory(overrides?: CallOverrides): Promise<string>;
 
-  wbtc(overrides?: CallOverrides): Promise<string>;
-
-  weth(overrides?: CallOverrides): Promise<string>;
-
   withdrawFunds(
     token: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addLiquidity(overrides?: CallOverrides): Promise<void>;
+    addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
-    chainlinkBtcFeed(overrides?: CallOverrides): Promise<string>;
-
-    chainlinkEthFeed(overrides?: CallOverrides): Promise<string>;
-
-    dnGmxRouter(overrides?: CallOverrides): Promise<string>;
+    authorizedCaller(overrides?: CallOverrides): Promise<string>;
 
     feeTier(overrides?: CallOverrides): Promise<number>;
 
@@ -554,15 +580,22 @@ export interface DnGmxJIT extends BaseContract {
 
     getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getPrice(
+      priceFeed: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getTickRange(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
 
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
+      _token0: PromiseOrValue<string>,
+      _token1: PromiseOrValue<string>,
+      _feeTier: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -586,10 +619,9 @@ export interface DnGmxJIT extends BaseContract {
 
     setValues(
       _keeper: PromiseOrValue<string>,
-      _dnGmxRouter: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
-      _chainlinkEthFeed: PromiseOrValue<string>,
-      _chainlinkBtcFeed: PromiseOrValue<string>,
+      _authorizedCaller: PromiseOrValue<string>,
+      _token0PriceFeed: PromiseOrValue<string>,
+      _token1PriceFeed: PromiseOrValue<string>,
       _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
       _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
       _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
@@ -600,13 +632,22 @@ export interface DnGmxJIT extends BaseContract {
 
     swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     tickSpacing(overrides?: CallOverrides): Promise<number>;
+
+    token0(overrides?: CallOverrides): Promise<string>;
+
+    token0PriceFeed(overrides?: CallOverrides): Promise<string>;
+
+    token1(overrides?: CallOverrides): Promise<string>;
+
+    token1PriceFeed(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -614,10 +655,6 @@ export interface DnGmxJIT extends BaseContract {
     ): Promise<void>;
 
     uniswapV3Factory(overrides?: CallOverrides): Promise<string>;
-
-    wbtc(overrides?: CallOverrides): Promise<string>;
-
-    weth(overrides?: CallOverrides): Promise<string>;
 
     withdrawFunds(
       token: PromiseOrValue<string>,
@@ -641,14 +678,11 @@ export interface DnGmxJIT extends BaseContract {
 
   estimateGas: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    chainlinkBtcFeed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    chainlinkEthFeed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dnGmxRouter(overrides?: CallOverrides): Promise<BigNumber>;
+    authorizedCaller(overrides?: CallOverrides): Promise<BigNumber>;
 
     feeTier(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -659,13 +693,22 @@ export interface DnGmxJIT extends BaseContract {
 
     getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getTickRange(overrides?: CallOverrides): Promise<BigNumber>;
+    getPrice(
+      priceFeed: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTickRange(
+      isToken0: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
+      _token0: PromiseOrValue<string>,
+      _token1: PromiseOrValue<string>,
+      _feeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -693,10 +736,9 @@ export interface DnGmxJIT extends BaseContract {
 
     setValues(
       _keeper: PromiseOrValue<string>,
-      _dnGmxRouter: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
-      _chainlinkEthFeed: PromiseOrValue<string>,
-      _chainlinkBtcFeed: PromiseOrValue<string>,
+      _authorizedCaller: PromiseOrValue<string>,
+      _token0PriceFeed: PromiseOrValue<string>,
+      _token1PriceFeed: PromiseOrValue<string>,
       _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
       _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
       _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
@@ -707,13 +749,22 @@ export interface DnGmxJIT extends BaseContract {
 
     swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     tickSpacing(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token0(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token0PriceFeed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token1(overrides?: CallOverrides): Promise<BigNumber>;
+
+    token1PriceFeed(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -721,10 +772,6 @@ export interface DnGmxJIT extends BaseContract {
     ): Promise<BigNumber>;
 
     uniswapV3Factory(overrides?: CallOverrides): Promise<BigNumber>;
-
-    wbtc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    weth(overrides?: CallOverrides): Promise<BigNumber>;
 
     withdrawFunds(
       token: PromiseOrValue<string>,
@@ -734,14 +781,11 @@ export interface DnGmxJIT extends BaseContract {
 
   populateTransaction: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    chainlinkBtcFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    chainlinkEthFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    dnGmxRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    authorizedCaller(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     feeTier(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -752,13 +796,22 @@ export interface DnGmxJIT extends BaseContract {
 
     getDollarValue(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getTickRange(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getPrice(
+      priceFeed: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTickRange(
+      isToken0: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
+      _token0: PromiseOrValue<string>,
+      _token1: PromiseOrValue<string>,
+      _feeTier: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -788,10 +841,9 @@ export interface DnGmxJIT extends BaseContract {
 
     setValues(
       _keeper: PromiseOrValue<string>,
-      _dnGmxRouter: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
-      _chainlinkEthFeed: PromiseOrValue<string>,
-      _chainlinkBtcFeed: PromiseOrValue<string>,
+      _authorizedCaller: PromiseOrValue<string>,
+      _token0PriceFeed: PromiseOrValue<string>,
+      _token1PriceFeed: PromiseOrValue<string>,
       _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
       _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
       _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
@@ -806,13 +858,22 @@ export interface DnGmxJIT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     tickSpacing(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token0(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token0PriceFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    token1PriceFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -820,10 +881,6 @@ export interface DnGmxJIT extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     uniswapV3Factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    wbtc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     withdrawFunds(
       token: PromiseOrValue<string>,

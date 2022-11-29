@@ -22,28 +22,32 @@ import type {
   PromiseOrValue,
 } from '../../common';
 
-export interface IDnGmxJITInterface extends utils.Interface {
+export interface IJITManagerInterface extends utils.Interface {
   functions: {
-    'addLiquidity()': FunctionFragment;
+    'addLiquidity(bool)': FunctionFragment;
     'removeLiquidity()': FunctionFragment;
-    'swapWbtc(address,bytes)': FunctionFragment;
+    'swapTokens(address,bytes,bool)': FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: 'addLiquidity' | 'removeLiquidity' | 'swapWbtc'
+    nameOrSignatureOrTopic: 'addLiquidity' | 'removeLiquidity' | 'swapTokens'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'addLiquidity',
-    values?: undefined
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLiquidity',
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'swapWbtc',
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+    functionFragment: 'swapTokens',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<boolean>
+    ]
   ): string;
 
   decodeFunctionResult(
@@ -54,17 +58,17 @@ export interface IDnGmxJITInterface extends utils.Interface {
     functionFragment: 'removeLiquidity',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'swapWbtc', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'swapTokens', data: BytesLike): Result;
 
   events: {};
 }
 
-export interface IDnGmxJIT extends BaseContract {
+export interface IJITManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IDnGmxJITInterface;
+  interface: IJITManagerInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -87,6 +91,7 @@ export interface IDnGmxJIT extends BaseContract {
 
   functions: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -94,14 +99,16 @@ export interface IDnGmxJIT extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   addLiquidity(
+    isToken0: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -109,20 +116,25 @@ export interface IDnGmxJIT extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  swapWbtc(
+  swapTokens(
     to: PromiseOrValue<string>,
     data: PromiseOrValue<BytesLike>,
+    approveToken0: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addLiquidity(overrides?: CallOverrides): Promise<void>;
+    addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     removeLiquidity(overrides?: CallOverrides): Promise<void>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -131,6 +143,7 @@ export interface IDnGmxJIT extends BaseContract {
 
   estimateGas: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -138,15 +151,17 @@ export interface IDnGmxJIT extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     addLiquidity(
+      isToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -154,9 +169,10 @@ export interface IDnGmxJIT extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    swapWbtc(
+    swapTokens(
       to: PromiseOrValue<string>,
       data: PromiseOrValue<BytesLike>,
+      approveToken0: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

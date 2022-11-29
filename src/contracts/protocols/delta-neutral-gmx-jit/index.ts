@@ -1,4 +1,4 @@
-import { DnGmxJIT__factory, DnGmxRouter__factory } from '../../../typechain';
+import { JITManager__factory, DnGmxRouter__factory } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
   getChainIdFromProvider,
@@ -7,7 +7,7 @@ import {
   SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
-import * as arbgoerli from './arbgoerli';
+
 import * as arbmain from './arbmain';
 import { DnGmxJITDeployments } from './interface';
 
@@ -18,8 +18,6 @@ export function getDeployments(
   switch (networkName) {
     case 'arbmain':
       return arbmain.getDeployments();
-    case 'arbgoerli':
-      return arbgoerli.getDeployments();
     default:
       throw newError(
         `delta-neutral-gmx-jit deployment not present for ${networkName} network`
@@ -41,8 +39,12 @@ export function getContractsSync(
     signerOrProvider = getProvider(networkNameOrChainId);
   }
   return {
-    dnGmxJIT: DnGmxJIT__factory.connect(
-      deployments.DnGmxJITDeployment.address,
+    jitManager1: JITManager__factory.connect(
+      deployments.JITManager1Deployment.address,
+      signerOrProvider
+    ),
+    jitManager2: JITManager__factory.connect(
+      deployments.JITManager2Deployment.address,
       signerOrProvider
     ),
     dnGmxRouter: DnGmxRouter__factory.connect(

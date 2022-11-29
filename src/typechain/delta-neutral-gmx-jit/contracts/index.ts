@@ -3,5 +3,5 @@
 /* eslint-disable */
 import type * as interfaces from './interfaces';
 export type { interfaces };
-export type { DnGmxJIT } from './DnGmxJIT';
 export type { DnGmxRouter } from './DnGmxRouter';
+export type { JITManager } from './JITManager';

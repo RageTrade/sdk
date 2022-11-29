@@ -1718,10 +1718,10 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/delta-neutral-gmx-jit@^1.0.0-alpha.3":
-  version "1.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.0-alpha.3.tgz#fe3395469f12861010f5965b01b8f4ea05c17206"
-  integrity sha512-mmA3OQbPlbWCCyjh9ico09b5lchq9N9CaNyQoe+1nbR7VktVm9EZCNVUlu8XuKMGHkWR1x+ZdkPuzCco94pFug==
+"@ragetrade/delta-neutral-gmx-jit@^1.0.0-alpha.4":
+  version "1.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.0-alpha.4.tgz#d477b090c3aa4497ccc5c9eebf727323557a59b0"
+  integrity sha512-xs3EcXY6IBrydYCFlOZ9QVRCJuScX61KIDyrX57f1KPYqWvhwyPtDAdMrkiQa60Ge/xkCK7EvTkWftdGm7Gy1g==
   dependencies:
     "@chainlink/contracts" "^0.5.1"
     "@openzeppelin/contracts" "^4.8.0"

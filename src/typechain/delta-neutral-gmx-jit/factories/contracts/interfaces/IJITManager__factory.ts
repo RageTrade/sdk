@@ -5,13 +5,19 @@
 import { Contract, Signer, utils } from 'ethers';
 import type { Provider } from '@ethersproject/providers';
 import type {
-  IDnGmxJIT,
-  IDnGmxJITInterface,
-} from '../../../contracts/interfaces/IDnGmxJIT';
+  IJITManager,
+  IJITManagerInterface,
+} from '../../../contracts/interfaces/IJITManager';
 
 const _abi = [
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'bool',
+        name: 'isToken0',
+        type: 'bool',
+      },
+    ],
     name: 'addLiquidity',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -36,23 +42,28 @@ const _abi = [
         name: 'data',
         type: 'bytes',
       },
+      {
+        internalType: 'bool',
+        name: 'approveToken0',
+        type: 'bool',
+      },
     ],
-    name: 'swapWbtc',
+    name: 'swapTokens',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
 ];
 
-export class IDnGmxJIT__factory {
+export class IJITManager__factory {
   static readonly abi = _abi;
-  static createInterface(): IDnGmxJITInterface {
-    return new utils.Interface(_abi) as IDnGmxJITInterface;
+  static createInterface(): IJITManagerInterface {
+    return new utils.Interface(_abi) as IJITManagerInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IDnGmxJIT {
-    return new Contract(address, _abi, signerOrProvider) as IDnGmxJIT;
+  ): IJITManager {
+    return new Contract(address, _abi, signerOrProvider) as IJITManager;
   }
 }

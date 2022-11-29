@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as balancer from './balancer';
 export type { balancer };
+import type * as gmx from './gmx';
+export type { gmx };
 export type { IBorrower } from './IBorrower';
 export type { IDnGmxBatchingManager } from './IDnGmxBatchingManager';
 export type { IDnGmxJuniorVault } from './IDnGmxJuniorVault';
