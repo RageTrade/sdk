@@ -70,7 +70,7 @@
   ],
   "devDependencies": {
     "@ragetrade/core": "^1.0.4-arbgoerli.5",
-    "@ragetrade/delta-neutral-gmx-jit": "^1.0.0-alpha.4",
+    "@ragetrade/delta-neutral-gmx-jit": "^1.0.0-alpha.5",
     "@ragetrade/delta-neutral-gmx-vaults": "^1.0.2-alpha",
     "@ragetrade/gmx-vault": "^1.0.1-arbgoerli.4",
     "@ragetrade/tricrypto-vault": "^1.0.0-arbgoerli.5",
