@@ -9,6 +9,7 @@ import {
 import { getProvider } from '../../providers';
 
 import * as arbmain from './arbmain';
+import * as arbgoerli from './arbgoerli';
 import { DnGmxJITDeployments } from './interface';
 
 export function getDeployments(
@@ -18,6 +19,8 @@ export function getDeployments(
   switch (networkName) {
     case 'arbmain':
       return arbmain.getDeployments();
+    case 'arbgoerli':
+      return arbgoerli.getDeployments();
     default:
       throw newError(
         `delta-neutral-gmx-jit deployment not present for ${networkName} network`

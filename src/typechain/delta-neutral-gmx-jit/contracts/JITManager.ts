@@ -36,7 +36,7 @@ export interface JITManagerInterface extends utils.Interface {
     'getDollarValue()': FunctionFragment;
     'getPrice(address)': FunctionFragment;
     'getTickRange(bool)': FunctionFragment;
-    'initialize(address,address,address,address,uint24)': FunctionFragment;
+    'initialize(address,address,address)': FunctionFragment;
     'keeper()': FunctionFragment;
     'liquidity()': FunctionFragment;
     'nfpm()': FunctionFragment;
@@ -125,9 +125,7 @@ export interface JITManagerInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
+      PromiseOrValue<string>
     ]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
@@ -387,9 +385,7 @@ export interface JITManager extends BaseContract {
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _token0: PromiseOrValue<string>,
-      _token1: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
+      _pool: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -499,9 +495,7 @@ export interface JITManager extends BaseContract {
   initialize(
     _uniswapV3Factory: PromiseOrValue<string>,
     _nfpm: PromiseOrValue<string>,
-    _token0: PromiseOrValue<string>,
-    _token1: PromiseOrValue<string>,
-    _feeTier: PromiseOrValue<BigNumberish>,
+    _pool: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -611,9 +605,7 @@ export interface JITManager extends BaseContract {
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _token0: PromiseOrValue<string>,
-      _token1: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
+      _pool: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -726,9 +718,7 @@ export interface JITManager extends BaseContract {
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _token0: PromiseOrValue<string>,
-      _token1: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
+      _pool: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -833,9 +823,7 @@ export interface JITManager extends BaseContract {
     initialize(
       _uniswapV3Factory: PromiseOrValue<string>,
       _nfpm: PromiseOrValue<string>,
-      _token0: PromiseOrValue<string>,
-      _token1: PromiseOrValue<string>,
-      _feeTier: PromiseOrValue<BigNumberish>,
+      _pool: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
