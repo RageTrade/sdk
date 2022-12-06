@@ -3,7 +3,7 @@ import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-v
 import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/DnGmxSeniorVault.json';
 import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/WithdrawPeriphery.json';
 import BatchingManagerBypassDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/BatchingManagerBypass.json';
-// import DepositPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/DepositPeriphery.json';
+import DepositPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/DepositPeriphery.json';
 
 import { DnGmxVaultDeployments } from './interface';
 
@@ -14,8 +14,6 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxSeniorVaultDeployment,
     WithdrawPeripheryDeployment,
     BatchingManagerBypassDeployment,
-    DepositPeripheryDeployment: {
-      address: '0x0000000000000000000000000000000000000000',
-    },
+    DepositPeripheryDeployment,
   };
 }
