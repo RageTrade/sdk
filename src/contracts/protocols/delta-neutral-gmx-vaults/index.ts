@@ -69,7 +69,7 @@ export function getContractsSync(
       signerOrProvider
     ),
     depositPeriphery: DepositPeriphery__factory.connect(
-      deployments.BatchingManagerBypassDeployment.address,
+      deployments.DepositPeripheryDeployment.address,
       signerOrProvider
     ),
   };
