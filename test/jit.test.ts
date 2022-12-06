@@ -9,7 +9,7 @@ import {
 
 config();
 
-describe('curve strategy', () => {
+describe('jit', () => {
   describe('arbmain', () => {
     const provider = new ethers.providers.StaticJsonRpcProvider(
       'https://arb1.arbitrum.io/rpc'
