@@ -32,7 +32,7 @@ export interface JITManagerInterface extends utils.Interface {
     'addLiquidity(bool)': FunctionFragment;
     'authorizedCaller()': FunctionFragment;
     'feeTier()': FunctionFragment;
-    'getDeviationFromChainlink(uint160)': FunctionFragment;
+    'getDeviationFromChainlink()': FunctionFragment;
     'getDollarValue()': FunctionFragment;
     'getPrice(address)': FunctionFragment;
     'getTickRange(bool)': FunctionFragment;
@@ -106,7 +106,7 @@ export interface JITManagerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'feeTier', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'getDeviationFromChainlink',
-    values: [PromiseOrValue<BigNumberish>]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'getDollarValue',
@@ -295,10 +295,12 @@ export interface JITManagerInterface extends utils.Interface {
 
   events: {
     'Initialized(uint8)': EventFragment;
+    'JITLiquidity(int24,int24,uint128)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'JITLiquidity'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
 }
 
@@ -308,6 +310,18 @@ export interface InitializedEventObject {
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface JITLiquidityEventObject {
+  tickLower: number;
+  tickUpper: number;
+  liquidity: BigNumber;
+}
+export type JITLiquidityEvent = TypedEvent<
+  [number, number, BigNumber],
+  JITLiquidityEventObject
+>;
+
+export type JITLiquidityEventFilter = TypedEventFilter<JITLiquidityEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -357,10 +371,7 @@ export interface JITManager extends BaseContract {
 
     feeTier(overrides?: CallOverrides): Promise<[number]>;
 
-    getDeviationFromChainlink(
-      sqrtPrice: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
+    getDeviationFromChainlink(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         deviationBPS: BigNumber;
         uniswapPriceX128: BigNumber;
@@ -469,10 +480,7 @@ export interface JITManager extends BaseContract {
 
   feeTier(overrides?: CallOverrides): Promise<number>;
 
-  getDeviationFromChainlink(
-    sqrtPrice: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
+  getDeviationFromChainlink(overrides?: CallOverrides): Promise<
     [BigNumber, BigNumber, BigNumber] & {
       deviationBPS: BigNumber;
       uniswapPriceX128: BigNumber;
@@ -573,16 +581,13 @@ export interface JITManager extends BaseContract {
     addLiquidity(
       isToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     authorizedCaller(overrides?: CallOverrides): Promise<string>;
 
     feeTier(overrides?: CallOverrides): Promise<number>;
 
-    getDeviationFromChainlink(
-      sqrtPrice: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
+    getDeviationFromChainlink(overrides?: CallOverrides): Promise<
       [BigNumber, BigNumber, BigNumber] & {
         deviationBPS: BigNumber;
         uniswapPriceX128: BigNumber;
@@ -678,6 +683,17 @@ export interface JITManager extends BaseContract {
     'Initialized(uint8)'(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
+    'JITLiquidity(int24,int24,uint128)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null
+    ): JITLiquidityEventFilter;
+    JITLiquidity(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null
+    ): JITLiquidityEventFilter;
+
     'OwnershipTransferred(address,address)'(
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
@@ -698,10 +714,7 @@ export interface JITManager extends BaseContract {
 
     feeTier(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getDeviationFromChainlink(
-      sqrtPrice: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    getDeviationFromChainlink(overrides?: CallOverrides): Promise<BigNumber>;
 
     getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -804,7 +817,6 @@ export interface JITManager extends BaseContract {
     feeTier(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getDeviationFromChainlink(
-      sqrtPrice: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

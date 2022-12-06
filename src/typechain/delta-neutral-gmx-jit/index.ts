@@ -38,6 +38,8 @@ export type { IERC20Upgradeable } from './@openzeppelin/contracts-upgradeable/to
 export { IERC20Upgradeable__factory } from './factories/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable__factory';
 export type { ContextUpgradeable } from './@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable';
 export { ContextUpgradeable__factory } from './factories/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable__factory';
+export type { Ownable } from './@openzeppelin/contracts/access/Ownable';
+export { Ownable__factory } from './factories/@openzeppelin/contracts/access/Ownable__factory';
 export type { IERC20Metadata } from './@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata';
 export { IERC20Metadata__factory } from './factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory';
 export type { IERC20 } from './@openzeppelin/contracts/token/ERC20/IERC20';
@@ -52,6 +54,12 @@ export type { IERC165 } from './@openzeppelin/contracts/utils/introspection/IERC
 export { IERC165__factory } from './factories/@openzeppelin/contracts/utils/introspection/IERC165__factory';
 export type { IBalancerVault } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/balancer/IBalancerVault';
 export { IBalancerVault__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/balancer/IBalancerVault__factory';
+export type { IGlpManager } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IGlpManager';
+export { IGlpManager__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IGlpManager__factory';
+export type { IRewardRouterV2 } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IRewardRouterV2';
+export { IRewardRouterV2__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IRewardRouterV2__factory';
+export type { ISglpExtended } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/ISglpExtended';
+export { ISglpExtended__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/ISglpExtended__factory';
 export type { IVault } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IVault';
 export { IVault__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IVault__factory';
 export type { IBorrower } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IBorrower';
@@ -62,6 +70,8 @@ export type { IDnGmxJuniorVault } from './@ragetrade/delta-neutral-gmx-vaults/co
 export { IDnGmxJuniorVault__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IDnGmxJuniorVault__factory';
 export type { IERC4626 } from './@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IERC4626';
 export { IERC4626__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/IERC4626__factory';
+export type { DepositPeriphery } from './@ragetrade/delta-neutral-gmx-vaults/contracts/periphery/DepositPeriphery';
+export { DepositPeriphery__factory } from './factories/@ragetrade/delta-neutral-gmx-vaults/contracts/periphery/DepositPeriphery__factory';
 export type { IUniswapV3SwapCallback } from './@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback';
 export { IUniswapV3SwapCallback__factory } from './factories/@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3SwapCallback__factory';
 export type { IUniswapV3Factory } from './@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory';

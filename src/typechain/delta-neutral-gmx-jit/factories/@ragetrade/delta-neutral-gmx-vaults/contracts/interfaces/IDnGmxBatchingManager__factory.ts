@@ -21,6 +21,11 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'DepositCapBreached',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -138,6 +143,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'newDepositCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'DepositCapUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: 'uint256',
         name: 'round',
@@ -189,6 +207,31 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: 'uint256',
+        name: 'round',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'partialGlpAmount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'partialShareAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'PartialBatchDeposit',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: 'address',
         name: 'from',
         type: 'address',
@@ -216,6 +259,12 @@ const _abi = [
         indexed: false,
         internalType: 'uint256',
         name: 'newSlippageThresholdGmx',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'newGlpDepositPendingThreshold',
         type: 'uint256',
       },
     ],
@@ -327,7 +376,13 @@ const _abi = [
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'depositAmount',
+        type: 'uint256',
+      },
+    ],
     name: 'executeBatchDeposit',
     outputs: [],
     stateMutability: 'nonpayable',

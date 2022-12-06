@@ -7,7 +7,7 @@ import type { Provider } from '@ethersproject/providers';
 import type {
   IGlpManager,
   IGlpManagerInterface,
-} from '../../../../contracts/interfaces/gmx/IGlpManager';
+} from '../../../../../../@ragetrade/delta-neutral-gmx-vaults/contracts/interfaces/gmx/IGlpManager';
 
 const _abi = [
   {

@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { BatchingManagerBypass__factory } from './BatchingManagerBypass__factory';
+export { DepositPeriphery__factory } from './DepositPeriphery__factory';
 export { WithdrawPeriphery__factory } from './WithdrawPeriphery__factory';

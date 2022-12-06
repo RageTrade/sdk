@@ -92,7 +92,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'grantAllowances()': FunctionFragment;
     'harvestFees()': FunctionFragment;
     'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(string,string,address,address,(address,address,address,address),address)': FunctionFragment;
+    'initialize(string,string,address,address,address,(address,address,address,address),address)': FunctionFragment;
     'isValidRebalance()': FunctionFragment;
     'isValidRebalanceDeviation()': FunctionFragment;
     'isValidRebalanceHF()': FunctionFragment;
@@ -454,6 +454,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
@@ -1623,6 +1624,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _mintBurnRewardRouter: PromiseOrValue<string>,
       _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2153,6 +2155,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     _symbol: PromiseOrValue<string>,
     _swapRouter: PromiseOrValue<string>,
     _rewardRouter: PromiseOrValue<string>,
+    _mintBurnRewardRouter: PromiseOrValue<string>,
     _tokens: DnGmxJuniorVaultManager.TokensStruct,
     _poolAddressesProvider: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -2673,6 +2676,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _mintBurnRewardRouter: PromiseOrValue<string>,
       _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -3310,6 +3314,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _mintBurnRewardRouter: PromiseOrValue<string>,
       _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -3780,6 +3785,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       _symbol: PromiseOrValue<string>,
       _swapRouter: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _mintBurnRewardRouter: PromiseOrValue<string>,
       _tokens: DnGmxJuniorVaultManager.TokensStruct,
       _poolAddressesProvider: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }

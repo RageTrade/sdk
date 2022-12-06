@@ -11,6 +11,31 @@ import type {
 
 const _abi = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickLower',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'int24',
+        name: 'tickUpper',
+        type: 'int24',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'liquidity',
+        type: 'uint128',
+      },
+    ],
+    name: 'JITLiquidity',
+    type: 'event',
+  },
+  {
     inputs: [
       {
         internalType: 'bool',
@@ -19,7 +44,13 @@ const _abi = [
       },
     ],
     name: 'addLiquidity',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'liquidity',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },

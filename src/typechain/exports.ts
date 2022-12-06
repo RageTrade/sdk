@@ -74,10 +74,14 @@ export {
   DnGmxJuniorVault__factory,
   DnGmxBatchingManager__factory,
   WithdrawPeriphery__factory,
+  BatchingManagerBypass__factory,
+  DepositPeriphery__factory,
   DnGmxSeniorVault,
   DnGmxJuniorVault,
   DnGmxBatchingManager,
   WithdrawPeriphery,
+  BatchingManagerBypass,
+  DepositPeriphery,
 } from './delta-neutral-gmx-vaults';
 
 export {

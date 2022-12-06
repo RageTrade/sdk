@@ -134,6 +134,8 @@ export type { SwapRouterMock } from './contracts/mocks/SwapRouterMock';
 export { SwapRouterMock__factory } from './factories/contracts/mocks/SwapRouterMock__factory';
 export type { BatchingManagerBypass } from './contracts/periphery/BatchingManagerBypass';
 export { BatchingManagerBypass__factory } from './factories/contracts/periphery/BatchingManagerBypass__factory';
+export type { DepositPeriphery } from './contracts/periphery/DepositPeriphery';
+export { DepositPeriphery__factory } from './factories/contracts/periphery/DepositPeriphery__factory';
 export type { WithdrawPeriphery } from './contracts/periphery/WithdrawPeriphery';
 export { WithdrawPeriphery__factory } from './factories/contracts/periphery/WithdrawPeriphery__factory';
 export type { DnGmxBatchingManager } from './contracts/vaults/DnGmxBatchingManager';

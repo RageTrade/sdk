@@ -46,7 +46,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'depositToken(address,uint256,uint256)': FunctionFragment;
     'depositUsdc(uint256,address)': FunctionFragment;
     'dnGmxJuniorVaultGlpBalance()': FunctionFragment;
-    'executeBatchDeposit()': FunctionFragment;
+    'executeBatchDeposit(uint256)': FunctionFragment;
     'executeBatchStake()': FunctionFragment;
     'roundDeposits(uint256)': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
@@ -93,7 +93,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchDeposit',
-    values?: undefined
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchStake',
@@ -154,18 +154,22 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'BatchDeposit(uint256,uint256,uint256,uint256)': EventFragment;
     'BatchStake(uint256,uint256,uint256)': EventFragment;
     'ClaimedAndRedeemed(address,address,uint256,uint256)': EventFragment;
+    'DepositCapUpdated(uint256)': EventFragment;
     'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
+    'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
-    'ThresholdsUpdated(uint256)': EventFragment;
+    'ThresholdsUpdated(uint256,uint256)': EventFragment;
     'VaultDeposit(uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'BatchStake'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ClaimedAndRedeemed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
@@ -210,6 +214,17 @@ export type ClaimedAndRedeemedEvent = TypedEvent<
 export type ClaimedAndRedeemedEventFilter =
   TypedEventFilter<ClaimedAndRedeemedEvent>;
 
+export interface DepositCapUpdatedEventObject {
+  newDepositCap: BigNumber;
+}
+export type DepositCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  DepositCapUpdatedEventObject
+>;
+
+export type DepositCapUpdatedEventFilter =
+  TypedEventFilter<DepositCapUpdatedEvent>;
+
 export interface DepositTokenEventObject {
   round: BigNumber;
   token: string;
@@ -231,6 +246,19 @@ export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
 export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
 
+export interface PartialBatchDepositEventObject {
+  round: BigNumber;
+  partialGlpAmount: BigNumber;
+  partialShareAmount: BigNumber;
+}
+export type PartialBatchDepositEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  PartialBatchDepositEventObject
+>;
+
+export type PartialBatchDepositEventFilter =
+  TypedEventFilter<PartialBatchDepositEvent>;
+
 export interface SharesClaimedEventObject {
   from: string;
   receiver: string;
@@ -245,9 +273,10 @@ export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
   newSlippageThresholdGmx: BigNumber;
+  newGlpDepositPendingThreshold: BigNumber;
 }
 export type ThresholdsUpdatedEvent = TypedEvent<
-  [BigNumber],
+  [BigNumber, BigNumber],
   ThresholdsUpdatedEventObject
 >;
 
@@ -317,6 +346,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     ): Promise<[BigNumber] & { balance: BigNumber }>;
 
     executeBatchDeposit(
+      depositAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -364,6 +394,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
   dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
   executeBatchDeposit(
+    depositAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -410,7 +441,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executeBatchDeposit(overrides?: CallOverrides): Promise<void>;
+    executeBatchDeposit(
+      depositAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     executeBatchStake(overrides?: CallOverrides): Promise<void>;
 
@@ -468,6 +502,11 @@ export interface IDnGmxBatchingManager extends BaseContract {
       assetsReceived?: null
     ): ClaimedAndRedeemedEventFilter;
 
+    'DepositCapUpdated(uint256)'(
+      newDepositCap?: null
+    ): DepositCapUpdatedEventFilter;
+    DepositCapUpdated(newDepositCap?: null): DepositCapUpdatedEventFilter;
+
     'DepositToken(uint256,address,address,uint256,uint256)'(
       round?: PromiseOrValue<BigNumberish> | null,
       token?: PromiseOrValue<string> | null,
@@ -486,6 +525,17 @@ export interface IDnGmxBatchingManager extends BaseContract {
     'KeeperUpdated(address)'(newKeeper?: null): KeeperUpdatedEventFilter;
     KeeperUpdated(newKeeper?: null): KeeperUpdatedEventFilter;
 
+    'PartialBatchDeposit(uint256,uint256,uint256)'(
+      round?: PromiseOrValue<BigNumberish> | null,
+      partialGlpAmount?: null,
+      partialShareAmount?: null
+    ): PartialBatchDepositEventFilter;
+    PartialBatchDeposit(
+      round?: PromiseOrValue<BigNumberish> | null,
+      partialGlpAmount?: null,
+      partialShareAmount?: null
+    ): PartialBatchDepositEventFilter;
+
     'SharesClaimed(address,address,uint256)'(
       from?: PromiseOrValue<string> | null,
       receiver?: PromiseOrValue<string> | null,
@@ -497,11 +547,13 @@ export interface IDnGmxBatchingManager extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
-    'ThresholdsUpdated(uint256)'(
-      newSlippageThresholdGmx?: null
+    'ThresholdsUpdated(uint256,uint256)'(
+      newSlippageThresholdGmx?: null,
+      newGlpDepositPendingThreshold?: null
     ): ThresholdsUpdatedEventFilter;
     ThresholdsUpdated(
-      newSlippageThresholdGmx?: null
+      newSlippageThresholdGmx?: null,
+      newGlpDepositPendingThreshold?: null
     ): ThresholdsUpdatedEventFilter;
 
     'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
@@ -533,6 +585,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeBatchDeposit(
+      depositAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -583,6 +636,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeBatchDeposit(
+      depositAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -26,7 +26,7 @@ import type {
 export interface IDnGmxRouterInterface extends utils.Interface {
   functions: {
     'deposit(uint256,address)': FunctionFragment;
-    'executeBatchDeposit()': FunctionFragment;
+    'executeBatchDeposit(uint256)': FunctionFragment;
   };
 
   getFunction(
@@ -39,7 +39,7 @@ export interface IDnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchDeposit',
-    values?: undefined
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
 
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
@@ -85,6 +85,7 @@ export interface IDnGmxRouter extends BaseContract {
     ): Promise<ContractTransaction>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
@@ -96,6 +97,7 @@ export interface IDnGmxRouter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   executeBatchDeposit(
+    amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -104,9 +106,12 @@ export interface IDnGmxRouter extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
-    executeBatchDeposit(overrides?: CallOverrides): Promise<void>;
+    executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
@@ -119,6 +124,7 @@ export interface IDnGmxRouter extends BaseContract {
     ): Promise<BigNumber>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -131,6 +137,7 @@ export interface IDnGmxRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

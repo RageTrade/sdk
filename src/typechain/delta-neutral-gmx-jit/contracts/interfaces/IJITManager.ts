@@ -12,7 +12,11 @@ import type {
   Signer,
   utils,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from '@ethersproject/abi';
 import type { Listener, Provider } from '@ethersproject/providers';
 import type {
   TypedEventFilter,
@@ -60,8 +64,24 @@ export interface IJITManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'swapTokens', data: BytesLike): Result;
 
-  events: {};
+  events: {
+    'JITLiquidity(int24,int24,uint128)': EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: 'JITLiquidity'): EventFragment;
 }
+
+export interface JITLiquidityEventObject {
+  tickLower: number;
+  tickUpper: number;
+  liquidity: BigNumber;
+}
+export type JITLiquidityEvent = TypedEvent<
+  [number, number, BigNumber],
+  JITLiquidityEventObject
+>;
+
+export type JITLiquidityEventFilter = TypedEventFilter<JITLiquidityEvent>;
 
 export interface IJITManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -127,7 +147,7 @@ export interface IJITManager extends BaseContract {
     addLiquidity(
       isToken0: PromiseOrValue<boolean>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     removeLiquidity(overrides?: CallOverrides): Promise<void>;
 
@@ -139,7 +159,18 @@ export interface IJITManager extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    'JITLiquidity(int24,int24,uint128)'(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null
+    ): JITLiquidityEventFilter;
+    JITLiquidity(
+      tickLower?: null,
+      tickUpper?: null,
+      liquidity?: null
+    ): JITLiquidityEventFilter;
+  };
 
   estimateGas: {
     addLiquidity(

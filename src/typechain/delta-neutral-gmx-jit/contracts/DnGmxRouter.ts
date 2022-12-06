@@ -29,20 +29,25 @@ import type {
 
 export interface DnGmxRouterInterface extends utils.Interface {
   functions: {
+    'batchingManagerKeeper()': FunctionFragment;
     'deposit(uint256,address)': FunctionFragment;
+    'depositPeriphery()': FunctionFragment;
+    'depositToken(address,address,uint256)': FunctionFragment;
     'dnGmxBatchingManager()': FunctionFragment;
     'dnGmxJuniorVault()': FunctionFragment;
-    'executeBatchDeposit()': FunctionFragment;
+    'executeBatchDeposit(uint256)': FunctionFragment;
+    'executeBatchStake()': FunctionFragment;
     'getQuotes(uint256)': FunctionFragment;
     'getQuotesJitRevert(uint256)': FunctionFragment;
     'gmxVault()': FunctionFragment;
-    'initialize(address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
+    'initialize(address,address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
     'jitManager1()': FunctionFragment;
     'jitManager2()': FunctionFragment;
     'owner()': FunctionFragment;
     'quoterV1()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'sGLP()': FunctionFragment;
+    'setBatchingManagerKeeper(address)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'usdc()': FunctionFragment;
     'wbtc()': FunctionFragment;
@@ -51,10 +56,14 @@ export interface DnGmxRouterInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'batchingManagerKeeper'
       | 'deposit'
+      | 'depositPeriphery'
+      | 'depositToken'
       | 'dnGmxBatchingManager'
       | 'dnGmxJuniorVault'
       | 'executeBatchDeposit'
+      | 'executeBatchStake'
       | 'getQuotes'
       | 'getQuotesJitRevert'
       | 'gmxVault'
@@ -65,6 +74,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
       | 'quoterV1'
       | 'renounceOwnership'
       | 'sGLP'
+      | 'setBatchingManagerKeeper'
       | 'transferOwnership'
       | 'usdc'
       | 'wbtc'
@@ -72,8 +82,24 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(
+    functionFragment: 'batchingManagerKeeper',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'deposit',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'depositPeriphery',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'depositToken',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'dnGmxBatchingManager',
@@ -85,6 +111,10 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchDeposit',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'executeBatchStake',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -99,6 +129,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
@@ -127,6 +158,10 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'sGLP', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'setBatchingManagerKeeper',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'transferOwnership',
     values: [PromiseOrValue<string>]
   ): string;
@@ -134,7 +169,19 @@ export interface DnGmxRouterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'wbtc', values?: undefined): string;
   encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: 'batchingManagerKeeper',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'deposit', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'depositPeriphery',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'depositToken',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'dnGmxBatchingManager',
     data: BytesLike
@@ -145,6 +192,10 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'executeBatchDeposit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'executeBatchStake',
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'getQuotes', data: BytesLike): Result;
@@ -169,6 +220,10 @@ export interface DnGmxRouterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'sGLP', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'setBatchingManagerKeeper',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: 'transferOwnership',
     data: BytesLike
@@ -232,9 +287,20 @@ export interface DnGmxRouter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    batchingManagerKeeper(overrides?: CallOverrides): Promise<[string]>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    depositPeriphery(overrides?: CallOverrides): Promise<[string]>;
+
+    depositToken(
+      token: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -243,6 +309,11 @@ export interface DnGmxRouter extends BaseContract {
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<[string]>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    executeBatchStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -261,6 +332,7 @@ export interface DnGmxRouter extends BaseContract {
     initialize(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
       _gmxVault: PromiseOrValue<string>,
       _jitManager1: PromiseOrValue<string>,
       _jitManager2: PromiseOrValue<string>,
@@ -286,6 +358,11 @@ export interface DnGmxRouter extends BaseContract {
 
     sGLP(overrides?: CallOverrides): Promise<[string]>;
 
+    setBatchingManagerKeeper(
+      _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -298,9 +375,20 @@ export interface DnGmxRouter extends BaseContract {
     weth(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  batchingManagerKeeper(overrides?: CallOverrides): Promise<string>;
+
   deposit(
     amount: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  depositPeriphery(overrides?: CallOverrides): Promise<string>;
+
+  depositToken(
+    token: PromiseOrValue<string>,
+    receiver: PromiseOrValue<string>,
+    tokenAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -309,6 +397,11 @@ export interface DnGmxRouter extends BaseContract {
   dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
   executeBatchDeposit(
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  executeBatchStake(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -327,6 +420,7 @@ export interface DnGmxRouter extends BaseContract {
   initialize(
     _dnGmxJuniorVault: PromiseOrValue<string>,
     _dnGmxBatchingManager: PromiseOrValue<string>,
+    _depositPeriphery: PromiseOrValue<string>,
     _gmxVault: PromiseOrValue<string>,
     _jitManager1: PromiseOrValue<string>,
     _jitManager2: PromiseOrValue<string>,
@@ -352,6 +446,11 @@ export interface DnGmxRouter extends BaseContract {
 
   sGLP(overrides?: CallOverrides): Promise<string>;
 
+  setBatchingManagerKeeper(
+    _bmKeeper: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -364,17 +463,33 @@ export interface DnGmxRouter extends BaseContract {
   weth(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    batchingManagerKeeper(overrides?: CallOverrides): Promise<string>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
+
+    depositPeriphery(overrides?: CallOverrides): Promise<string>;
+
+    depositToken(
+      token: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     dnGmxBatchingManager(overrides?: CallOverrides): Promise<string>;
 
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
 
-    executeBatchDeposit(overrides?: CallOverrides): Promise<void>;
+    executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    executeBatchStake(overrides?: CallOverrides): Promise<void>;
 
     getQuotes(
       assets: PromiseOrValue<BigNumberish>,
@@ -398,6 +513,7 @@ export interface DnGmxRouter extends BaseContract {
     initialize(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
       _gmxVault: PromiseOrValue<string>,
       _jitManager1: PromiseOrValue<string>,
       _jitManager2: PromiseOrValue<string>,
@@ -420,6 +536,11 @@ export interface DnGmxRouter extends BaseContract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     sGLP(overrides?: CallOverrides): Promise<string>;
+
+    setBatchingManagerKeeper(
+      _bmKeeper: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -448,9 +569,20 @@ export interface DnGmxRouter extends BaseContract {
   };
 
   estimateGas: {
+    batchingManagerKeeper(overrides?: CallOverrides): Promise<BigNumber>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    depositPeriphery(overrides?: CallOverrides): Promise<BigNumber>;
+
+    depositToken(
+      token: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -459,6 +591,11 @@ export interface DnGmxRouter extends BaseContract {
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    executeBatchStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -477,6 +614,7 @@ export interface DnGmxRouter extends BaseContract {
     initialize(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
       _gmxVault: PromiseOrValue<string>,
       _jitManager1: PromiseOrValue<string>,
       _jitManager2: PromiseOrValue<string>,
@@ -502,6 +640,11 @@ export interface DnGmxRouter extends BaseContract {
 
     sGLP(overrides?: CallOverrides): Promise<BigNumber>;
 
+    setBatchingManagerKeeper(
+      _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -515,9 +658,22 @@ export interface DnGmxRouter extends BaseContract {
   };
 
   populateTransaction: {
+    batchingManagerKeeper(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     deposit(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    depositPeriphery(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    depositToken(
+      token: PromiseOrValue<string>,
+      receiver: PromiseOrValue<string>,
+      tokenAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -528,6 +684,11 @@ export interface DnGmxRouter extends BaseContract {
     dnGmxJuniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     executeBatchDeposit(
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    executeBatchStake(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -546,6 +707,7 @@ export interface DnGmxRouter extends BaseContract {
     initialize(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
       _gmxVault: PromiseOrValue<string>,
       _jitManager1: PromiseOrValue<string>,
       _jitManager2: PromiseOrValue<string>,
@@ -570,6 +732,11 @@ export interface DnGmxRouter extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     sGLP(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    setBatchingManagerKeeper(
+      _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

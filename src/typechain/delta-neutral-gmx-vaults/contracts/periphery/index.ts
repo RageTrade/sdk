@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { BatchingManagerBypass } from './BatchingManagerBypass';
+export type { DepositPeriphery } from './DepositPeriphery';
 export type { WithdrawPeriphery } from './WithdrawPeriphery';

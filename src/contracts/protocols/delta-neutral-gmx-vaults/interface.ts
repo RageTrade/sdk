@@ -6,4 +6,5 @@ export interface DnGmxVaultDeployments {
   DnGmxSeniorVaultDeployment: ContractDeployment;
   WithdrawPeripheryDeployment: ContractDeployment;
   BatchingManagerBypassDeployment: ContractDeployment;
+  DepositPeripheryDeployment: ContractDeployment;
 }

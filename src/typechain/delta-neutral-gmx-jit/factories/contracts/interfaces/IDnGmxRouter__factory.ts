@@ -24,12 +24,24 @@ const _abi = [
       },
     ],
     name: 'deposit',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
     name: 'executeBatchDeposit',
     outputs: [],
     stateMutability: 'nonpayable',
