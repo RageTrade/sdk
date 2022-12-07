@@ -123,6 +123,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,address,uint16,uint24)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
+    'setGmxParams(address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
     'setMocks(address)': FunctionFragment;
     'setRebalanceParams(uint32,uint16,uint16)': FunctionFragment;
@@ -226,6 +227,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'renounceOwnership'
       | 'setAdminParams'
       | 'setFeeParams'
+      | 'setGmxParams'
       | 'setHedgeParams'
       | 'setMocks'
       | 'setRebalanceParams'
@@ -588,6 +590,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'setFeeParams',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setGmxParams',
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setHedgeParams',
@@ -955,6 +961,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setFeeParams',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setGmxParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1766,6 +1776,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setHedgeParams(
       vault: PromiseOrValue<string>,
       swapRouter: PromiseOrValue<string>,
@@ -2297,6 +2312,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setGmxParams(
+    _glpManager: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setHedgeParams(
     vault: PromiseOrValue<string>,
     swapRouter: PromiseOrValue<string>,
@@ -2807,6 +2827,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     setFeeParams(
       _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3456,6 +3481,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setHedgeParams(
       vault: PromiseOrValue<string>,
       swapRouter: PromiseOrValue<string>,
@@ -3930,6 +3960,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     setFeeParams(
       _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

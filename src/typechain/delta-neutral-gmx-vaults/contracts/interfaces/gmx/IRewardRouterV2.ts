@@ -39,6 +39,7 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     'compound()': FunctionFragment;
     'compoundForAccount(address)': FunctionFragment;
     'esGmx()': FunctionFragment;
+    'glpManager()': FunctionFragment;
     'glpVester()': FunctionFragment;
     'gmx()': FunctionFragment;
     'handleRewards(bool,bool,bool,bool,bool,bool,bool)': FunctionFragment;
@@ -66,6 +67,7 @@ export interface IRewardRouterV2Interface extends utils.Interface {
       | 'compound'
       | 'compoundForAccount'
       | 'esGmx'
+      | 'glpManager'
       | 'glpVester'
       | 'gmx'
       | 'handleRewards'
@@ -106,6 +108,10 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: 'esGmx', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'glpManager',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'glpVester', values?: undefined): string;
   encodeFunctionData(functionFragment: 'gmx', values?: undefined): string;
   encodeFunctionData(
@@ -200,6 +206,7 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'esGmx', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'glpManager', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'glpVester', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'gmx', data: BytesLike): Result;
   decodeFunctionResult(
@@ -367,6 +374,8 @@ export interface IRewardRouterV2 extends BaseContract {
 
     esGmx(overrides?: CallOverrides): Promise<[string]>;
 
+    glpManager(overrides?: CallOverrides): Promise<[string]>;
+
     glpVester(overrides?: CallOverrides): Promise<[string]>;
 
     gmx(overrides?: CallOverrides): Promise<[string]>;
@@ -484,6 +493,8 @@ export interface IRewardRouterV2 extends BaseContract {
 
   esGmx(overrides?: CallOverrides): Promise<string>;
 
+  glpManager(overrides?: CallOverrides): Promise<string>;
+
   glpVester(overrides?: CallOverrides): Promise<string>;
 
   gmx(overrides?: CallOverrides): Promise<string>;
@@ -592,6 +603,8 @@ export interface IRewardRouterV2 extends BaseContract {
     ): Promise<void>;
 
     esGmx(overrides?: CallOverrides): Promise<string>;
+
+    glpManager(overrides?: CallOverrides): Promise<string>;
 
     glpVester(overrides?: CallOverrides): Promise<string>;
 
@@ -743,6 +756,8 @@ export interface IRewardRouterV2 extends BaseContract {
 
     esGmx(overrides?: CallOverrides): Promise<BigNumber>;
 
+    glpManager(overrides?: CallOverrides): Promise<BigNumber>;
+
     glpVester(overrides?: CallOverrides): Promise<BigNumber>;
 
     gmx(overrides?: CallOverrides): Promise<BigNumber>;
@@ -860,6 +875,8 @@ export interface IRewardRouterV2 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     esGmx(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    glpManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     glpVester(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

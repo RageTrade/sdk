@@ -32,7 +32,7 @@ export interface DepositPeripheryInterface extends utils.Interface {
     'depositToken(address,address,uint256)': FunctionFragment;
     'owner()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
-    'setAddresses(address,address)': FunctionFragment;
+    'setAddresses(address,address,address)': FunctionFragment;
     'setSlippageThreshold(uint256)': FunctionFragment;
     'slippageThreshold()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
@@ -64,7 +64,11 @@ export interface DepositPeripheryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setAddresses',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'setSlippageThreshold',
@@ -211,6 +215,7 @@ export interface DepositPeriphery extends BaseContract {
     setAddresses(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _glpManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -243,6 +248,7 @@ export interface DepositPeriphery extends BaseContract {
   setAddresses(
     _dnGmxJuniorVault: PromiseOrValue<string>,
     _rewardRouter: PromiseOrValue<string>,
+    _glpManager: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -273,6 +279,7 @@ export interface DepositPeriphery extends BaseContract {
     setAddresses(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _glpManager: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -350,6 +357,7 @@ export interface DepositPeriphery extends BaseContract {
     setAddresses(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _glpManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -383,6 +391,7 @@ export interface DepositPeriphery extends BaseContract {
     setAddresses(
       _dnGmxJuniorVault: PromiseOrValue<string>,
       _rewardRouter: PromiseOrValue<string>,
+      _glpManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

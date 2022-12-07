@@ -92,6 +92,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,address,uint16,uint24)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
+    'setGmxParams(address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
     'setRebalanceParams(uint32,uint16,uint16)': FunctionFragment;
     'setThresholds(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)': FunctionFragment;
@@ -157,6 +158,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'renounceOwnership'
       | 'setAdminParams'
       | 'setFeeParams'
+      | 'setGmxParams'
       | 'setHedgeParams'
       | 'setRebalanceParams'
       | 'setThresholds'
@@ -365,6 +367,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setGmxParams',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setHedgeParams',
     values: [
       PromiseOrValue<string>,
@@ -570,6 +576,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setFeeParams',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setGmxParams',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1240,6 +1250,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setHedgeParams(
       vault: PromiseOrValue<string>,
       swapRouter: PromiseOrValue<string>,
@@ -1571,6 +1586,11 @@ export interface DnGmxJuniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setGmxParams(
+    _glpManager: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setHedgeParams(
     vault: PromiseOrValue<string>,
     swapRouter: PromiseOrValue<string>,
@@ -1887,6 +1907,11 @@ export interface DnGmxJuniorVault extends BaseContract {
     setFeeParams(
       _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2382,6 +2407,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setHedgeParams(
       vault: PromiseOrValue<string>,
       swapRouter: PromiseOrValue<string>,
@@ -2663,6 +2693,11 @@ export interface DnGmxJuniorVault extends BaseContract {
     setFeeParams(
       _feeBps: PromiseOrValue<BigNumberish>,
       _feeRecipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setGmxParams(
+      _glpManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
