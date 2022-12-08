@@ -40,7 +40,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
     'getQuotes(uint256)': FunctionFragment;
     'getQuotesJitRevert(uint256)': FunctionFragment;
     'gmxVault()': FunctionFragment;
-    'initialize(address,address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
+    'initialize()': FunctionFragment;
     'jitManager1()': FunctionFragment;
     'jitManager2()': FunctionFragment;
     'owner()': FunctionFragment;
@@ -48,6 +48,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
     'renounceOwnership()': FunctionFragment;
     'sGLP()': FunctionFragment;
     'setBatchingManagerKeeper(address)': FunctionFragment;
+    'setValues(address,address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'usdc()': FunctionFragment;
     'wbtc()': FunctionFragment;
@@ -75,6 +76,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
       | 'renounceOwnership'
       | 'sGLP'
       | 'setBatchingManagerKeeper'
+      | 'setValues'
       | 'transferOwnership'
       | 'usdc'
       | 'wbtc'
@@ -128,19 +130,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'gmxVault', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'jitManager1',
@@ -160,6 +150,22 @@ export interface DnGmxRouterInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'setBatchingManagerKeeper',
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setValues',
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
@@ -224,6 +230,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
     functionFragment: 'setBatchingManagerKeeper',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'setValues', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'transferOwnership',
     data: BytesLike
@@ -330,17 +337,6 @@ export interface DnGmxRouter extends BaseContract {
     gmxVault(overrides?: CallOverrides): Promise<[string]>;
 
     initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -360,6 +356,21 @@ export interface DnGmxRouter extends BaseContract {
 
     setBatchingManagerKeeper(
       _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setValues(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -418,17 +429,6 @@ export interface DnGmxRouter extends BaseContract {
   gmxVault(overrides?: CallOverrides): Promise<string>;
 
   initialize(
-    _dnGmxJuniorVault: PromiseOrValue<string>,
-    _dnGmxBatchingManager: PromiseOrValue<string>,
-    _depositPeriphery: PromiseOrValue<string>,
-    _gmxVault: PromiseOrValue<string>,
-    _jitManager1: PromiseOrValue<string>,
-    _jitManager2: PromiseOrValue<string>,
-    _quoterV1: PromiseOrValue<string>,
-    _sGLP: PromiseOrValue<string>,
-    _weth: PromiseOrValue<string>,
-    _wbtc: PromiseOrValue<string>,
-    _usdc: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -448,6 +448,21 @@ export interface DnGmxRouter extends BaseContract {
 
   setBatchingManagerKeeper(
     _bmKeeper: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setValues(
+    _dnGmxJuniorVault: PromiseOrValue<string>,
+    _dnGmxBatchingManager: PromiseOrValue<string>,
+    _depositPeriphery: PromiseOrValue<string>,
+    _gmxVault: PromiseOrValue<string>,
+    _jitManager1: PromiseOrValue<string>,
+    _jitManager2: PromiseOrValue<string>,
+    _quoterV1: PromiseOrValue<string>,
+    _sGLP: PromiseOrValue<string>,
+    _weth: PromiseOrValue<string>,
+    _wbtc: PromiseOrValue<string>,
+    _usdc: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -510,20 +525,7 @@ export interface DnGmxRouter extends BaseContract {
 
     gmxVault(overrides?: CallOverrides): Promise<string>;
 
-    initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    initialize(overrides?: CallOverrides): Promise<void>;
 
     jitManager1(overrides?: CallOverrides): Promise<string>;
 
@@ -539,6 +541,21 @@ export interface DnGmxRouter extends BaseContract {
 
     setBatchingManagerKeeper(
       _bmKeeper: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setValues(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -612,17 +629,6 @@ export interface DnGmxRouter extends BaseContract {
     gmxVault(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -642,6 +648,21 @@ export interface DnGmxRouter extends BaseContract {
 
     setBatchingManagerKeeper(
       _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setValues(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -705,17 +726,6 @@ export interface DnGmxRouter extends BaseContract {
     gmxVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     initialize(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -735,6 +745,21 @@ export interface DnGmxRouter extends BaseContract {
 
     setBatchingManagerKeeper(
       _bmKeeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setValues(
+      _dnGmxJuniorVault: PromiseOrValue<string>,
+      _dnGmxBatchingManager: PromiseOrValue<string>,
+      _depositPeriphery: PromiseOrValue<string>,
+      _gmxVault: PromiseOrValue<string>,
+      _jitManager1: PromiseOrValue<string>,
+      _jitManager2: PromiseOrValue<string>,
+      _quoterV1: PromiseOrValue<string>,
+      _sGLP: PromiseOrValue<string>,
+      _weth: PromiseOrValue<string>,
+      _wbtc: PromiseOrValue<string>,
+      _usdc: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

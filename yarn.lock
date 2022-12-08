@@ -1718,16 +1718,16 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/delta-neutral-gmx-jit@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.1.tgz#e33ce07f3564923edfde4fb979c828b696d65d8d"
-  integrity sha512-Ldo0GOkIJAihTYBJc525PsOyrIDfPaMM9amTDZgAGeAp66CQuY3eYLTRY4YZOGdFntAXEi7Pee8ns48cTL/5Ew==
+"@ragetrade/delta-neutral-gmx-jit@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-jit/-/delta-neutral-gmx-jit-1.0.2.tgz#a548d735c84b66d59fc91d6ab7de30f9d045553f"
+  integrity sha512-fAV7hY9jy7mtC5odKkwQzDAvr5GW/VGlm+nZlhUVqsHkDm3XPEC2/anjoZ+p6UFwJzIPiepaxOfpsET7AuNaKw==
   dependencies:
     "@chainlink/contracts" "^0.5.1"
     "@openzeppelin/contracts" "^4.8.0"
     "@openzeppelin/contracts-upgradeable" "^4.8.0"
     "@ragetrade/delta-neutral-gmx-vaults" "^1.0.2-alpha.1"
-    "@ragetrade/sdk" "^1.0.0-alpha.50"
+    "@ragetrade/sdk" "^1.0.1"
     "@uniswap/v3-core" "https://github.com/Uniswap/v3-core#6562c52e8f75f0c10f9deaf44861847585fc8129"
     "@uniswap/v3-periphery" "https://github.com/Uniswap/v3-periphery#b325bb0905d922ae61fcc7df85ee802e8df5e96c"
 
@@ -1775,10 +1775,10 @@
     "@uniswap/v3-periphery" "^1.4.0"
     hardhat-dependency-compiler "^1.1.2"
 
-"@ragetrade/sdk@^1.0.0-alpha.50":
-  version "1.0.0-alpha.50"
-  resolved "https://registry.yarnpkg.com/@ragetrade/sdk/-/sdk-1.0.0-alpha.50.tgz#d2edbb3df60bdf6d7d95c91f9467bf04b87b3c71"
-  integrity sha512-dLNPOsLqCSLmmgWTynmrwUK8/v3AEfOt4CS1Oa+WjsDq/McnCDMa1ozLZjl8RD0o+vL635mZgtUU80BQcUB52A==
+"@ragetrade/sdk@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/sdk/-/sdk-1.0.1.tgz#64f467553e8818861cd3594bf34ef72d2de9d33d"
+  integrity sha512-LlrFsYVK9uRJvyoPh5eH4bWzl+2zxioQtpptAzSn9mytPlHNzUsGNtpSjkHIOc34aQlYlomV6fUcYKjD+4B6hA==
   dependencies:
     "@uniswap/v3-sdk" "^3.8.2"
     ethers-repl "^1.0.3"
