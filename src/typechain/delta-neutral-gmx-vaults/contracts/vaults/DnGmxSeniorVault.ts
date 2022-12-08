@@ -80,6 +80,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     'mint(uint256,address)': FunctionFragment;
     'name()': FunctionFragment;
     'owner()': FunctionFragment;
+    'pause()': FunctionFragment;
     'paused()': FunctionFragment;
     'previewDeposit(uint256)': FunctionFragment;
     'previewMint(uint256)': FunctionFragment;
@@ -99,6 +100,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     'transfer(address,uint256)': FunctionFragment;
     'transferFrom(address,address,uint256)': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
+    'unpause()': FunctionFragment;
     'updateBorrowCap(address,uint256)': FunctionFragment;
     'updateFeeStrategyParams((uint128,uint128,uint128,uint128))': FunctionFragment;
     'withdraw(uint256,address,address)': FunctionFragment;
@@ -136,6 +138,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
       | 'mint'
       | 'name'
       | 'owner'
+      | 'pause'
       | 'paused'
       | 'previewDeposit'
       | 'previewMint'
@@ -155,6 +158,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
       | 'transfer'
       | 'transferFrom'
       | 'transferOwnership'
+      | 'unpause'
       | 'updateBorrowCap'
       | 'updateFeeStrategyParams'
       | 'withdraw'
@@ -273,6 +277,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
+  encodeFunctionData(functionFragment: 'pause', values?: undefined): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
@@ -351,6 +356,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'transferOwnership',
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'updateBorrowCap',
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
@@ -440,6 +446,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'mint', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'name', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: 'pause', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'paused', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'previewDeposit',
@@ -501,6 +508,7 @@ export interface DnGmxSeniorVaultInterface extends utils.Interface {
     functionFragment: 'transferOwnership',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'unpause', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'updateBorrowCap',
     data: BytesLike
@@ -851,6 +859,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     previewDeposit(
@@ -936,6 +948,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1087,6 +1103,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  pause(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   previewDeposit(
@@ -1168,6 +1188,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  unpause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1317,6 +1341,8 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
+    pause(overrides?: CallOverrides): Promise<void>;
+
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     previewDeposit(
@@ -1398,6 +1424,8 @@ export interface DnGmxSeniorVault extends BaseContract {
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
 
     updateBorrowCap(
       borrowerAddress: PromiseOrValue<string>,
@@ -1644,6 +1672,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     previewDeposit(
@@ -1725,6 +1757,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1874,6 +1910,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    pause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     previewDeposit(
@@ -1955,6 +1995,10 @@ export interface DnGmxSeniorVault extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
