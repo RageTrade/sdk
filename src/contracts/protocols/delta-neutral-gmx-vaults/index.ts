@@ -5,6 +5,7 @@ import {
   WithdrawPeriphery__factory,
   BatchingManagerBypass__factory,
   DepositPeriphery__factory,
+  ProxyAdmin__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
@@ -70,6 +71,10 @@ export function getContractsSync(
     ),
     depositPeriphery: DepositPeriphery__factory.connect(
       deployments.DepositPeripheryDeployment.address,
+      signerOrProvider
+    ),
+    proxyAdmin: ProxyAdmin__factory.connect(
+      deployments.ProxyAdmin.address,
       signerOrProvider
     ),
   };

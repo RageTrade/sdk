@@ -1,19 +1,29 @@
-import DnGmxBatchingManagerDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManager.json';
-import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVault.json';
-import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVault.json';
-import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/WithdrawPeriphery.json';
 import BatchingManagerBypassDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/BatchingManagerBypass.json';
 import DepositPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DepositPeriphery.json';
+import DnGmxBatchingManagerDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManager.json';
+import DnGmxBatchingManagerLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManagerLogic.json';
+import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVault.json';
+import DnGmxJuniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultLogic.json';
+import DnGmxJuniorVaultManagerLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultManagerLibrary.json';
+import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVault.json';
+import DnGmxSeniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVaultLogic.json';
+import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/WithdrawPeriphery.json';
+import ProxyAdmin from '../../../deployments/delta-neutral-gmx-vaults/arbmain/ProxyAdmin.json';
 
 import { DnGmxVaultDeployments } from './interface';
 
 export function getDeployments(): DnGmxVaultDeployments {
   return {
-    DnGmxBatchingManagerDeployment,
-    DnGmxJuniorVaultDeployment,
-    DnGmxSeniorVaultDeployment,
-    WithdrawPeripheryDeployment,
     BatchingManagerBypassDeployment,
     DepositPeripheryDeployment,
+    DnGmxBatchingManagerDeployment,
+    DnGmxBatchingManagerLogicDeployment,
+    DnGmxJuniorVaultDeployment,
+    DnGmxJuniorVaultLogicDeployment,
+    DnGmxJuniorVaultManagerLibraryDeployment,
+    DnGmxSeniorVaultDeployment,
+    DnGmxSeniorVaultLogicDeployment,
+    WithdrawPeripheryDeployment,
+    ProxyAdmin,
   };
 }
