@@ -9,6 +9,8 @@ import {
 
 config();
 
+jest.setTimeout(200_000);
+
 describe('jit', () => {
   describe('arbmain', () => {
     const provider = new ethers.providers.StaticJsonRpcProvider(
@@ -27,6 +29,16 @@ describe('jit', () => {
         dnGmxBatchingManager.address
       );
     });
+
+    // it(
+    //   'should have same proxy admin as junior vault'
+    //   // , async () => {
+    //   //   const { dnGmxRouter } = await deltaNeutralGmxJIT.getContracts(provider);
+    //   //   const { proxyAdmin, dnGmxJuniorVault } =
+    //   //     await deltaNeutralGmxVaults.getContracts(provider);
+
+    //   // }
+    // );
   });
   describe('arbgoerli', () => {
     const provider = getProvider('arbgoerli');
