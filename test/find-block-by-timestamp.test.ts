@@ -10,7 +10,7 @@ config();
 const arbmain = getProvider('arbmain');
 
 describe('find block by timestamp', () => {
-  it.only('works on arbitrum 24 hr', async () => {
+  it('works on arbitrum 24 hr', async () => {
     const target = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
     const block = await findBlockByTimestamp(arbmain, target);
     expect(Math.abs(block.timestamp - target)).toBeLessThan(1000);
@@ -33,7 +33,9 @@ describe('find block by timestamp', () => {
     try {
       await findBlockByTimestamp(arbmain, target);
     } catch (error: any) {
-      expect(error.message).toEqual('Timestamp is in the future');
+      expect(error.message).toEqual(
+        '@ragetrade/sdk: Timestamp is in the future'
+      );
     }
   }, 20000);
 

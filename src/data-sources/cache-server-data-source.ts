@@ -18,6 +18,7 @@ import {
   PricesResult,
   VaultInfoResult,
 } from './scripts';
+import { MintBurnConversionIntermediateResult } from './scripts/get-mint-burn-conversion-intermediate';
 
 export class CacheServerDataSource extends BaseDataSource {
   // _baseUrl = 'http://localhost:3000'; // use constructor arg
@@ -324,6 +325,28 @@ export class CacheServerDataSource extends BaseDataSource {
     return getResultWithMetadata(response) as Awaited<
       ReturnType<
         InstanceType<typeof BaseDataSource>['getDnGmxVaultsMaxDepositWithdraw']
+      >
+    >;
+  }
+
+  async getGlpMintBurnConversionIntermediate() {
+    const response = (await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-mint-burn-conversion-intermediate?networkName=${this._networkName}`
+    )) as ApiResponse<
+      BigNumberStringified<MintBurnConversionIntermediateResult>
+    >;
+    return getResultWithMetadata(response, (result) => ({
+      initialAmount: BigNumber.from(result.initialAmount),
+      usdgSupply: BigNumber.from(result.usdgSupply),
+      usdcWeight: BigNumber.from(result.usdcWeight),
+      totalWeights: BigNumber.from(result.totalWeights),
+      feeBasisPoints: BigNumber.from(result.feeBasisPoints),
+      taxBasisPoints: BigNumber.from(result.taxBasisPoints),
+    })) as Awaited<
+      ReturnType<
+        InstanceType<
+          typeof BaseDataSource
+        >['getGlpMintBurnConversionIntermediate']
       >
     >;
   }

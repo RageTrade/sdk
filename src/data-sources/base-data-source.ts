@@ -3,13 +3,14 @@ import { NetworkName, VaultName } from '../contracts';
 import { ResultWithMetadata } from '../utils';
 import { newError, warn } from '../utils/loggers';
 import {
-  PricesResult,
-  PoolInfoResult,
-  VaultInfoResult,
+  DnGmxVaultsInfoResult,
   GmxVaultInfoResult,
   GmxVaultInfoByTokenAddressResult,
+  MintBurnConversionIntermediateResult,
+  PoolInfoResult,
+  PricesResult,
+  VaultInfoResult,
 } from './scripts';
-import { DnGmxVaultsInfoResult } from './scripts/get-dn-gmx-vaults-info';
 
 export type MethodNames =
   | 'getNetworkName'
@@ -23,7 +24,9 @@ export type MethodNames =
   | 'getGmxVaultInfoByTokenAddress'
   | 'getDnGmxVaultsInfo'
   | 'getDnGmxVaultsApyBreakdown'
-  | 'getDnGmxVaultsMaxDepositWithdraw';
+  | 'getDnGmxVaultsMaxDepositWithdraw'
+  | 'getGlpMintBurnConversionIntermediate'
+  | 'getGlpMintBurnConversion';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -187,5 +190,74 @@ export abstract class BaseDataSource {
           ? Math.min(timestamp1, timestamp2)
           : undefined,
     };
+  }
+
+  async getGlpMintBurnConversionIntermediate(): Promise<
+    ResultWithMetadata<MintBurnConversionIntermediateResult>
+  > {
+    return this.perform('getGlpMintBurnConversionIntermediate', []);
+  }
+
+  async getGlpMintBurnConversion(
+    dollarValueD18: BigNumber,
+    isUsdcToGlp: boolean
+  ): Promise<ResultWithMetadata<number>> {
+    const {
+      result: {
+        initialAmount,
+        usdgSupply,
+        usdcWeight,
+        totalWeights,
+        feeBasisPoints,
+        taxBasisPoints,
+      },
+      ...other
+    } = await this.getGlpMintBurnConversionIntermediate();
+
+    let nextAmount = initialAmount.add(dollarValueD18);
+
+    if (!isUsdcToGlp) {
+      nextAmount = dollarValueD18.gt(initialAmount)
+        ? BigNumber.from(0)
+        : initialAmount.sub(dollarValueD18);
+    }
+
+    const targetAmount = usdgSupply.mul(usdcWeight).div(totalWeights);
+
+    if (!targetAmount || targetAmount.eq(0)) {
+      return returnResult(feeBasisPoints.toNumber());
+    }
+
+    const initialDiff = initialAmount.gt(targetAmount)
+      ? initialAmount.sub(targetAmount)
+      : targetAmount.sub(initialAmount);
+
+    const nextDiff = nextAmount.gt(targetAmount)
+      ? nextAmount.sub(targetAmount)
+      : targetAmount.sub(nextAmount);
+
+    if (nextDiff.lt(initialDiff)) {
+      const rebateBps = taxBasisPoints.mul(initialDiff).div(targetAmount);
+
+      return returnResult(
+        rebateBps.gt(feeBasisPoints)
+          ? 0
+          : feeBasisPoints.sub(rebateBps).toNumber()
+      );
+    }
+
+    let averageDiff = initialDiff.add(nextDiff).div(2);
+
+    if (averageDiff.gt(targetAmount)) {
+      averageDiff = targetAmount;
+    }
+
+    const taxBps = taxBasisPoints.mul(averageDiff).div(targetAmount);
+
+    return returnResult(feeBasisPoints.add(taxBps).toNumber());
+
+    function returnResult(result: number) {
+      return { result, ...other };
+    }
   }
 }

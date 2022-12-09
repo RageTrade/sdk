@@ -10,6 +10,7 @@ import {
   getGmxVaultInfoByTokenAddress,
   getPoolInfo,
   getPrices,
+  getGlpMintBurnConversionIntermediate,
 } from './scripts';
 
 export class EthersProviderDataSource extends BaseDataSource {
@@ -69,6 +70,12 @@ export class EthersProviderDataSource extends BaseDataSource {
 
   async getDnGmxVaultsInfo() {
     return getResultWithMetadata(await getDnGmxVaultsInfo(this._provider));
+  }
+
+  async getGlpMintBurnConversionIntermediate() {
+    return getResultWithMetadata(
+      await getGlpMintBurnConversionIntermediate(this._provider)
+    );
   }
 }
 

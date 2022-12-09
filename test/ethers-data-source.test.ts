@@ -1,3 +1,4 @@
+import { parseUnits } from 'ethers/lib/utils';
 import {
   EthersProviderDataSource,
   getProvider,
@@ -129,6 +130,14 @@ describe('ethers data source', () => {
         console.log(dnGmxInfo);
 
         // expect(gmxInfo.seniorVault).toBeGreaterThan(0);
+      });
+
+      it('getGlpMintBurnConversion', async () => {
+        const { result: amount } = await ds.getGlpMintBurnConversion(
+          parseUnits('10', 18),
+          true
+        );
+        expect(amount).toBeGreaterThan(0);
       });
     });
   }

@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { parseUnits } from 'ethers/lib/utils';
 
 import {
   tricryptoVault,
@@ -136,6 +137,15 @@ describe('cache data source', () => {
           expect(typeof resp.result.maxWithdrawInUsd).toEqual('string');
         });
       }
+
+      it('getGlpMintBurnConversion', async () => {
+        const ds = new CacheServerDataSource(networkName, baseUrl);
+        const { result: amount } = await ds.getGlpMintBurnConversion(
+          parseUnits('10', 18),
+          true
+        );
+        expect(amount).toBeGreaterThan(0);
+      });
     });
   }
 });
