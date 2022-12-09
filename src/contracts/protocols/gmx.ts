@@ -21,6 +21,7 @@ export interface GmxAddresses {
   fsGLPAddress: string;
   glpManagerAddress: string;
   rewardRouterAddress: string;
+  mintBurnRewardRouterAddress: string;
   vaultAddress: string;
 }
 
@@ -35,8 +36,9 @@ export function getAddresses(
         glpAddress: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',
         sGLPAddress: '0x2F546AD4eDD93B956C8999Be404cdCAFde3E89AE',
         fsGLPAddress: '0x1aDDD80E6039594eE970E5872D247bf0414C8903',
-        glpManagerAddress: '0x321F653eED006AD1C29D174e17d96351BDe22649',
+        glpManagerAddress: '0x3963FfC9dff443c2A94f21b129D429891E32ec18',
         rewardRouterAddress: '0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1',
+        mintBurnRewardRouterAddress: '0xB95DB5B167D75e6d04227CfFFA61069348d271F5',
         vaultAddress: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
       };
     case 'arbrinkeby':
@@ -48,6 +50,7 @@ export function getAddresses(
         fsGLPAddress: '0x5964b93A672CAbb2E7D8c482B882Ec66ED15da23',
         glpManagerAddress: '0x9f3be2329E1698eEfFE1c9358a3AB2e7fdBeF527',
         rewardRouterAddress: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
+        mintBurnRewardRouterAddress: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
         vaultAddress: '0x613512Ec9906975d29e1308f87454485D1b264fD',
       };
     case 'arbgoerli':
@@ -58,6 +61,7 @@ export function getAddresses(
         fsGLPAddress: '0x88f69b7c69a0326bc0Bc960ad9Cd30305D6eC8E6',
         glpManagerAddress: '0x17e14B4C2C519DC119ffE9E01520650D938fcD94',
         rewardRouterAddress: '0xB627689d94BE29451b3E4Fa734F9cA4Be83b7eE3',
+        mintBurnRewardRouterAddress: '0xB627689d94BE29451b3E4Fa734F9cA4Be83b7eE3',
         vaultAddress: '0x0178CAb9fD21167F01425b9c1C0327168a2164EF',
       };
     default:
@@ -101,6 +105,10 @@ export function getContractsSync(
     ),
     rewardRouter: IRewardRouterV2__factory.connect(
       addresses.rewardRouterAddress,
+      signerOrProvider
+    ),
+    mintBurnRewardRouter: IRewardRouterV2__factory.connect(
+      addresses.mintBurnRewardRouterAddress,
       signerOrProvider
     ),
     gmxUnderlyingVault: IVault__factory.connect(
