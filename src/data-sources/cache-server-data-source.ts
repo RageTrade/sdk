@@ -302,7 +302,11 @@ export class CacheServerDataSource extends BaseDataSource {
           response2?.result?.seniorVault.ethRewardsSplitRate ??
           result.seniorVault.ethRewardsSplitRate,
       },
-      dnGmxBatchingManager: result.dnGmxBatchingManager,
+      dnGmxBatchingManager: {
+        paused:
+          response2?.result?.dnGmxBatchingManager.paused ??
+          result.dnGmxBatchingManager.paused,
+      },
     }));
   }
 
