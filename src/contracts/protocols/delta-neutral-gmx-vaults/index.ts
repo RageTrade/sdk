@@ -53,12 +53,24 @@ export function getContractsSync(
       deployments.DnGmxSeniorVaultDeployment.address,
       signerOrProvider
     ),
+    dnGmxSeniorVaultLogic: DnGmxSeniorVault__factory.connect(
+      deployments.DnGmxSeniorVaultLogicDeployment.address,
+      signerOrProvider
+    ),
     dnGmxJuniorVault: DnGmxJuniorVault__factory.connect(
       deployments.DnGmxJuniorVaultDeployment.address,
       signerOrProvider
     ),
+    dnGmxJuniorVaultLogic: DnGmxJuniorVault__factory.connect(
+      deployments.DnGmxJuniorVaultLogicDeployment.address,
+      signerOrProvider
+    ),
     dnGmxBatchingManager: DnGmxBatchingManager__factory.connect(
       deployments.DnGmxBatchingManagerDeployment.address,
+      signerOrProvider
+    ),
+    dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
+      deployments.DnGmxBatchingManagerLogicDeployment.address,
       signerOrProvider
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(

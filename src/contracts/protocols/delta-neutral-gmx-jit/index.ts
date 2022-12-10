@@ -54,5 +54,9 @@ export function getContractsSync(
       deployments.DnGmxRouterDeployment.address,
       signerOrProvider
     ),
+    dnGmxRouterLogic: DnGmxRouter__factory.connect(
+      deployments.DnGmxRouterLogicDeployment.address,
+      signerOrProvider
+    ),
   };
 }
