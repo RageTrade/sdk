@@ -29,6 +29,8 @@ export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
   };
   dnGmxBatchingManager: {
     paused: boolean;
+    depositCap: Amount;
+    roundUsdcBalance: Amount;
   };
 }
 
@@ -55,6 +57,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault_getEthRewardsSplitRate,
     // batching manager
     dnGmxBatchingManager_paused,
+    dnGmxBatchingManager_depositCap,
+    dnGmxBatchingManager_roundUsdcBalance,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
@@ -72,6 +76,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxSeniorVault.getEthRewardsSplitRate(),
     // batching manager
     dnGmxBatchingManager.paused(),
+    dnGmxBatchingManager.depositCap(),
+    dnGmxBatchingManager.roundUsdcBalance(),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
   ] as const);
@@ -135,6 +141,11 @@ export async function getDnGmxVaultsInfo(
     },
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,
+      depositCap: bigNumberToAmount(dnGmxBatchingManager_depositCap, 6),
+      roundUsdcBalance: bigNumberToAmount(
+        dnGmxBatchingManager_roundUsdcBalance,
+        6
+      ),
     },
   };
 }

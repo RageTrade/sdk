@@ -15,6 +15,7 @@ export interface DnGmxVaultsInfoFastResult {
   };
   dnGmxBatchingManager: {
     paused: boolean;
+    roundUsdcBalance: Amount;
   };
 }
 
@@ -34,6 +35,7 @@ export async function getDnGmxVaultsInfoFast(
     dnGmxSeniorVault_getEthRewardsSplitRate,
     // batching manager
     dnGmxBatchingManager_paused,
+    dnGmxBatchingManager_roundUsdcBalance,
   ] = await Promise.all([
     // junior vault
     dnGmxJuniorVault.getPrice(false),
@@ -44,6 +46,7 @@ export async function getDnGmxVaultsInfoFast(
     dnGmxSeniorVault.getEthRewardsSplitRate(),
     // batching manager
     dnGmxBatchingManager.paused(),
+    dnGmxBatchingManager.roundUsdcBalance(),
   ] as const);
 
   const D18 = parseEther('1');
@@ -74,6 +77,10 @@ export async function getDnGmxVaultsInfoFast(
     },
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,
+      roundUsdcBalance: bigNumberToAmount(
+        dnGmxBatchingManager_roundUsdcBalance,
+        6
+      ),
     },
   };
 }

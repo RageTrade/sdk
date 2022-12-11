@@ -310,6 +310,11 @@ export class CacheServerDataSource extends BaseDataSource {
         paused:
           response2?.result?.dnGmxBatchingManager.paused ??
           result.dnGmxBatchingManager.paused,
+        depositCap: parseAmount(result.dnGmxBatchingManager.depositCap),
+        roundUsdcBalance: parseAmount(
+          response2?.result?.dnGmxBatchingManager.roundUsdcBalance ??
+            result.dnGmxBatchingManager.roundUsdcBalance
+        ),
       },
     }));
   }
