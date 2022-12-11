@@ -5,6 +5,8 @@ import {
   getVault,
   getNetworkNameFromProvider,
   getVaultDeployBlockNumber,
+  tokens,
+  deltaNeutralGmxVaults,
 } from '../../contracts';
 import { IERC20Metadata__factory } from '../../typechain';
 import { DnGmxJuniorVault__factory } from '../../typechain/delta-neutral-gmx-vaults';
@@ -35,6 +37,7 @@ export interface VaultInfoResult {
   sharePrice: Amount;
   depositCap: Amount;
   vaultMarketValue: Amount;
+  vaultMarketValuePending: Amount;
   avgVaultMarketValue: Amount;
 }
 
@@ -45,6 +48,10 @@ export async function getVaultInfo(
   vaultName: VaultName,
   dataSource: BaseDataSource
 ): Promise<VaultInfoResult> {
+  if (vaultName === undefined) {
+    throw new Error('vaultName is undefined');
+  }
+
   const { vault, nativeProtocolName } = await getVault(provider, vaultName);
 
   const shareDecimals = await vault.decimals();
@@ -121,6 +128,30 @@ export async function getVaultInfo(
     vaultDeployBlockNumber
   );
 
+  // vault market value pending
+  let vaultMarketValuePending = stringToAmount('0', USD_DECIMALS);
+  if (vaultName === 'dn_gmx_junior') {
+    const { usdc, fsGLP } = await tokens.getContracts(provider);
+    const { dnGmxBatchingManager } = await deltaNeutralGmxVaults.getContracts(
+      provider
+    );
+
+    const usdcBalance = await usdc.balanceOf(dnGmxBatchingManager.address);
+    const sglpBalance = await fsGLP.balanceOf(dnGmxBatchingManager.address);
+    const sglpBalanceOfJuniorVault =
+      await dnGmxBatchingManager.dnGmxJuniorVaultGlpBalance();
+
+    const sglpInDollars = sglpBalance
+      .sub(sglpBalanceOfJuniorVault)
+      .mul(assetPriceX128)
+      .div(Q128);
+
+    vaultMarketValuePending = bigNumberToAmount(
+      usdcBalance.add(sglpInDollars),
+      6
+    );
+  }
+
   const poolComposition = await getPoolComposition(provider, vaultName);
 
   return {
@@ -136,6 +167,7 @@ export async function getVaultInfo(
     sharePrice,
     depositCap,
     vaultMarketValue,
+    vaultMarketValuePending,
     avgVaultMarketValue,
   };
 }

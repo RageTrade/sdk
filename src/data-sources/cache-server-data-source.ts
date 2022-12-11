@@ -196,6 +196,10 @@ export class CacheServerDataSource extends BaseDataSource {
       vaultMarketValue: parseAmount(
         response2?.result?.vaultMarketValue ?? result.vaultMarketValue
       ),
+      vaultMarketValuePending: parseAmount(
+        response2?.result?.vaultMarketValuePending ??
+          result.vaultMarketValuePending
+      ),
       avgVaultMarketValue: parseAmount(
         response2?.result?.avgVaultMarketValue ?? result.avgVaultMarketValue
       ),
