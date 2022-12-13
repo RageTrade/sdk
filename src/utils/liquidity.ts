@@ -47,9 +47,9 @@ export function amountsForLiquidity(
   const sqrtPriceUpperJSBI = TickMath.getSqrtRatioAtTick(tickUpper);
   const sqrtPriceCurrentJSBI = JSBI.BigInt(sqrtPriceCurrent.toString());
   let sqrtPriceMiddleJSBI = sqrtPriceCurrentJSBI;
-  if (sqrtPriceMiddleJSBI < sqrtPriceLowerJSBI) {
+  if (JSBI.lessThan(sqrtPriceMiddleJSBI, sqrtPriceLowerJSBI)) {
     sqrtPriceMiddleJSBI = sqrtPriceLowerJSBI;
-  } else if (sqrtPriceMiddleJSBI > sqrtPriceUpperJSBI) {
+  } else if (JSBI.greaterThan(sqrtPriceMiddleJSBI, sqrtPriceUpperJSBI)) {
     sqrtPriceMiddleJSBI = sqrtPriceUpperJSBI;
   }
 
