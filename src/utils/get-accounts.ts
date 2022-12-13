@@ -1,13 +1,18 @@
 import { BigNumber } from 'ethers';
-import { formatEther } from 'ethers/lib/utils';
+import { formatEther, formatUnits } from 'ethers/lib/utils';
 import { core, getNetworkName, NetworkName } from '../contracts';
 import pools from '../pools.json';
-import { ClearingHouse, IClearingHouse } from '../typechain';
+import {
+  ClearingHouse,
+  IClearingHouse,
+  IERC20Metadata__factory,
+} from '../typechain';
 import * as typechain from '../typechain';
 import { formatUsdc } from './amounts';
 import { amountsForLiquidity } from './liquidity';
 import { unrealizedLpFees } from './lp-fees';
 import { tickToPrice } from './price-tick';
+import { fpBillForLp, fpBillForTrader } from './funding-payment';
 
 export async function getAccountIdsByAddress(
   addr: string,
@@ -43,15 +48,24 @@ export async function getAccountInfo(
     await clearingHouseLens.getAccountInfo(accountId);
 
   const activeCollaterals = await Promise.all(
-    activeCollateralIds.map((collateralId) =>
-      clearingHouseLens
-        .getAccountCollateralInfo(accountId, collateralId)
-        .then((collateralInfo) => ({
-          collateralAddress: collateralInfo.collateral,
-          collateralId,
-          balance: collateralInfo.balance,
-        }))
-    )
+    activeCollateralIds.map(async (collateralId) => {
+      const collateralInfo = await clearingHouseLens.getAccountCollateralInfo(
+        accountId,
+        collateralId
+      );
+      const collateralAddress = collateralInfo.collateral;
+      const token = IERC20Metadata__factory.connect(
+        collateralAddress,
+        clearingHouseLens.provider
+      );
+      const tokenDecimals = await token.decimals();
+      return {
+        collateralAddress,
+        collateralId,
+        balance: collateralInfo.balance,
+        balanceFormatted: formatUnits(collateralInfo.balance, tokenDecimals),
+      };
+    })
   );
 
   const activePools = await Promise.all(
@@ -78,6 +92,13 @@ export async function getAccountInfo(
         clearingHouseLens.provider
       );
 
+      const sumAX128 = await vPoolWrapper.getExtrapolatedSumAX128();
+      const unrealizedFundingPayment = fpBillForTrader(
+        sumAX128,
+        sumALastX128,
+        netTraderPosition
+      );
+
       const { sqrtPriceX96 } = await vPool.slot0();
 
       const liquidityPositions = await Promise.all(
@@ -100,14 +121,22 @@ export async function getAccountInfo(
           const priceLower = await tickToPrice(tickRange.tickLower, 6, 18);
           const priceUpper = await tickToPrice(tickRange.tickUpper, 6, 18);
 
-          const { sumFeeInsideX128 } =
-            await vPoolWrapper.getExtrapolatedValuesInside(
-              tickRange.tickLower,
-              tickRange.tickUpper
-            );
+          const valuesInside = await vPoolWrapper.getExtrapolatedValuesInside(
+            tickRange.tickLower,
+            tickRange.tickUpper
+          );
           const unrealizedLpFeesAmount = unrealizedLpFees(
-            sumFeeInsideX128,
+            valuesInside.sumFeeInsideX128,
             lpInfo.sumFeeInsideLastX128,
+            lpInfo.liquidity
+          );
+
+          const unrealizedFundingPayment = fpBillForLp(
+            valuesInside.sumAX128,
+            valuesInside.sumFpInsideX128,
+            lpInfo.sumALastX128,
+            lpInfo.sumBInsideLastX128,
+            lpInfo.sumFpInsideLastX128,
             lpInfo.liquidity
           );
 
@@ -119,9 +148,13 @@ export async function getAccountInfo(
             vQuoteAmountFormatted: formatUsdc(vQuoteAmount),
             vTokenAmountFormatted: formatEther(vTokenAmount),
             unrealizedLpFeesAmountFormatted: formatUsdc(unrealizedLpFeesAmount),
+            unrealizedFundingPaymentFormatted: formatUsdc(
+              unrealizedFundingPayment
+            ),
             vQuoteAmount,
             vTokenAmount,
             unrealizedLpFeesAmount,
+            unrealizedFundingPayment,
             limitOrderType: lpInfo.limitOrderType,
             liquidity: lpInfo.liquidity,
             vTokenAmountIn: lpInfo.vTokenAmountIn,
@@ -135,8 +168,12 @@ export async function getAccountInfo(
 
       return {
         poolId,
+        balanceFormatted: formatEther(balance),
+        netTraderPositionFormatted: formatEther(netTraderPosition),
+        unrealizedFundingPaymentFormatted: formatUsdc(unrealizedFundingPayment),
         balance,
         netTraderPosition,
+        unrealizedFundingPayment,
         sumALastX128,
         liquidityPositions,
       };
