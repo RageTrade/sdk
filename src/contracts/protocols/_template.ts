@@ -15,6 +15,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return {};
     case 'arbgoerli':
       return {};

@@ -28,6 +28,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
     case 'arbgoerli':
       return {
         uniswapV3FactoryAddress: '0x4584E64B9cae7c86810a8a0A3c4469c4d164459f',

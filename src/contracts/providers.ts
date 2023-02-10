@@ -9,6 +9,10 @@ export function getProvider(networkNameOrChainId: NetworkName | number) {
       return new ethers.providers.JsonRpcProvider(
         'https://arb1.arbitrum.io/rpc'
       );
+    case 'mainnetfork':
+      return new ethers.providers.JsonRpcProvider(
+        'https://internal-rpc.rage.trade'
+      );
     case 'arbgoerli':
       return new ethers.providers.JsonRpcProvider(
         'https://goerli-rollup.arbitrum.io/rpc'

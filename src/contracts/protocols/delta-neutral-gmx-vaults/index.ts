@@ -25,6 +25,7 @@ export function getDeployments(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return arbmain.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();

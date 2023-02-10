@@ -26,6 +26,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return {
         crvAddress: '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978',
         tricryptoAddress: '0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2',

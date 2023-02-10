@@ -31,6 +31,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return {
         gmxAddress: '0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a',
         glpAddress: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',

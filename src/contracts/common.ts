@@ -1,7 +1,11 @@
 import { Signer, providers } from 'ethers';
 import { newError } from '../utils/loggers';
 
-export const supportedNetworkNames = ['arbmain', 'arbgoerli'] as const;
+export const supportedNetworkNames = [
+  'arbmain',
+  'arbgoerli',
+  'mainnetfork',
+] as const;
 
 export type ChainIds = {
   [K in typeof supportedNetworkNames[number]]: number;
@@ -9,6 +13,7 @@ export type ChainIds = {
 export const chainIds: ChainIds = {
   arbmain: 42161,
   arbgoerli: 421613,
+  mainnetfork: 31337,
 };
 
 export type NetworkName = keyof typeof chainIds;

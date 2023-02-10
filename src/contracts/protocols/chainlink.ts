@@ -19,6 +19,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return {
         btcUsdAggregatorAddress: '0x6ce185860a4963106506C203335A2910413708e9',
         ethUsdAggregatorAddress: '0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612',

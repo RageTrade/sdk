@@ -31,6 +31,7 @@ export async function getGlpMintBurnConversionIntermediate(
   const usdgAddress = (() => {
     switch (networkName) {
       case 'arbmain':
+      case 'mainnetfork':
         return '0x45096e7aA921f27590f8F19e457794EB09678141';
       case 'arbgoerli':
         return '0xef07455D59B4234EE8260048446EC92d18F09CA3';

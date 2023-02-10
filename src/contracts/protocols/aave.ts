@@ -33,6 +33,7 @@ export function getAddresses(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
+    case 'mainnetfork':
       return {
         poolAddressProviderAddress:
           '0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb',
