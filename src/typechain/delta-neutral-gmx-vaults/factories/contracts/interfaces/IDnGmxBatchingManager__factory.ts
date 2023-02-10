@@ -264,7 +264,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'newGlpDepositPendingThreshold',
+        name: 'minUsdcConversionAmount',
         type: 'uint256',
       },
     ],
@@ -318,35 +318,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'token',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'minUSDG',
-        type: 'uint256',
-      },
-    ],
-    name: 'depositToken',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'glpStaked',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
@@ -378,19 +349,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'depositAmount',
-        type: 'uint256',
+        internalType: 'uint128',
+        name: 'usdcConversionFractionBps',
+        type: 'uint128',
       },
     ],
-    name: 'executeBatchDeposit',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'executeBatchStake',
+    name: 'executeBatch',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { DnGmxJuniorVaultManager__factory } from './DnGmxJuniorVaultManager__factory';
+export { QuoterLib__factory } from './QuoterLib__factory';

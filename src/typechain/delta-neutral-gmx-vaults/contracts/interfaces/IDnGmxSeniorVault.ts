@@ -298,9 +298,11 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxJuniorVaultUpdated(address)': EventFragment;
+    'FeeStrategyUpdated(uint128,uint128,uint128,uint128)': EventFragment;
     'LeveragePoolUpdated(address)': EventFragment;
     'MaxUtilizationBpsUpdated(uint256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
+    'VaultState(uint256,uint256,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
@@ -310,9 +312,11 @@ export interface IDnGmxSeniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxJuniorVaultUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeStrategyUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'LeveragePoolUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'MaxUtilizationBpsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'VaultState'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
 
@@ -384,6 +388,20 @@ export type DnGmxJuniorVaultUpdatedEvent = TypedEvent<
 export type DnGmxJuniorVaultUpdatedEventFilter =
   TypedEventFilter<DnGmxJuniorVaultUpdatedEvent>;
 
+export interface FeeStrategyUpdatedEventObject {
+  optimalUtilizationRate: BigNumber;
+  baseVariableBorrowRate: BigNumber;
+  variableRateSlope1: BigNumber;
+  variableRateSlope2: BigNumber;
+}
+export type FeeStrategyUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber],
+  FeeStrategyUpdatedEventObject
+>;
+
+export type FeeStrategyUpdatedEventFilter =
+  TypedEventFilter<FeeStrategyUpdatedEvent>;
+
 export interface LeveragePoolUpdatedEventObject {
   leveragePool: string;
 }
@@ -417,6 +435,18 @@ export type TransferEvent = TypedEvent<
 >;
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
+
+export interface VaultStateEventObject {
+  eventType: BigNumber;
+  juniorVaultAusdc: BigNumber;
+  seniorVaultAusdc: BigNumber;
+}
+export type VaultStateEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  VaultStateEventObject
+>;
+
+export type VaultStateEventFilter = TypedEventFilter<VaultStateEvent>;
 
 export interface WithdrawEventObject {
   caller: string;
@@ -477,8 +507,8 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     availableBorrow(
       borrower: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     balanceOf(
       account: PromiseOrValue<string>,
@@ -617,8 +647,8 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
   availableBorrow(
     borrower: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   balanceOf(
     account: PromiseOrValue<string>,
@@ -921,6 +951,19 @@ export interface IDnGmxSeniorVault extends BaseContract {
       dnGmxJuniorVault?: null
     ): DnGmxJuniorVaultUpdatedEventFilter;
 
+    'FeeStrategyUpdated(uint128,uint128,uint128,uint128)'(
+      optimalUtilizationRate?: null,
+      baseVariableBorrowRate?: null,
+      variableRateSlope1?: null,
+      variableRateSlope2?: null
+    ): FeeStrategyUpdatedEventFilter;
+    FeeStrategyUpdated(
+      optimalUtilizationRate?: null,
+      baseVariableBorrowRate?: null,
+      variableRateSlope1?: null,
+      variableRateSlope2?: null
+    ): FeeStrategyUpdatedEventFilter;
+
     'LeveragePoolUpdated(address)'(
       leveragePool?: null
     ): LeveragePoolUpdatedEventFilter;
@@ -943,6 +986,17 @@ export interface IDnGmxSeniorVault extends BaseContract {
       to?: PromiseOrValue<string> | null,
       value?: null
     ): TransferEventFilter;
+
+    'VaultState(uint256,uint256,uint256)'(
+      eventType?: PromiseOrValue<BigNumberish> | null,
+      juniorVaultAusdc?: null,
+      seniorVaultAusdc?: null
+    ): VaultStateEventFilter;
+    VaultState(
+      eventType?: PromiseOrValue<BigNumberish> | null,
+      juniorVaultAusdc?: null,
+      seniorVaultAusdc?: null
+    ): VaultStateEventFilter;
 
     'Withdraw(address,address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -977,7 +1031,7 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     availableBorrow(
       borrower: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     balanceOf(
@@ -1116,7 +1170,7 @@ export interface IDnGmxSeniorVault extends BaseContract {
 
     availableBorrow(
       borrower: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     balanceOf(

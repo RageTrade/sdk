@@ -157,6 +157,37 @@ const _abi = [
     inputs: [
       {
         indexed: false,
+        internalType: 'uint128',
+        name: 'optimalUtilizationRate',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'baseVariableBorrowRate',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'variableRateSlope1',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'variableRateSlope2',
+        type: 'uint128',
+      },
+    ],
+    name: 'FeeStrategyUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'contract IBorrower',
         name: 'leveragePool',
         type: 'address',
@@ -201,6 +232,31 @@ const _abi = [
       },
     ],
     name: 'Transfer',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'eventType',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'juniorVaultAusdc',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'seniorVaultAusdc',
+        type: 'uint256',
+      },
+    ],
+    name: 'VaultState',
     type: 'event',
   },
   {
@@ -317,7 +373,7 @@ const _abi = [
         type: 'uint256',
       },
     ],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
     type: 'function',
   },
   {

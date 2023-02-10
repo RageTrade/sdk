@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { DnGmxBatchingManager } from './DnGmxBatchingManager';
+export type { DnGmxBatchingManagerGlp } from './DnGmxBatchingManagerGlp';
 export type { DnGmxJuniorVault } from './DnGmxJuniorVault';
 export type { DnGmxSeniorVault } from './DnGmxSeniorVault';
+export type { DnGmxTraderHedgeStrategy } from './DnGmxTraderHedgeStrategy';

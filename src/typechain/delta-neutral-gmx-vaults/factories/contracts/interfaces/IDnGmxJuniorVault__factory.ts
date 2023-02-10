@@ -76,6 +76,22 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [
+      {
+        internalType: 'int128',
+        name: 'btcTraderOIHedge',
+        type: 'int128',
+      },
+      {
+        internalType: 'int128',
+        name: 'ethTraderOIHedge',
+        type: 'int128',
+      },
+    ],
+    name: 'InvalidTraderOIHedges',
+    type: 'error',
+  },
+  {
     inputs: [],
     name: 'InvalidWithdrawFeeBps',
     type: 'error',
@@ -104,6 +120,38 @@ const _abi = [
       },
     ],
     name: 'OnlyKeeperAllowed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'msgSender',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'authorisedKeeperAddress',
+        type: 'address',
+      },
+    ],
+    name: 'OnlyTraderHedgeStrategyAllowed',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'netSlippage',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+    ],
+    name: 'TooMuchSlippage',
     type: 'error',
   },
   {
@@ -178,19 +226,6 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: 'address',
-        name: '_batchingManager',
-        type: 'address',
-      },
-    ],
-    name: 'BatchingManagerUpdated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: true,
         internalType: 'address',
         name: 'caller',
@@ -250,6 +285,32 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'EsGmxStaked',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'EsGmxVested',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
         name: 'feeBps',
         type: 'uint256',
       },
@@ -274,6 +335,19 @@ const _abi = [
       },
     ],
     name: 'FeesWithdrawn',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'GmxClaimed',
     type: 'event',
   },
   {
@@ -330,6 +404,25 @@ const _abi = [
       },
     ],
     name: 'KeeperUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint128',
+        name: 'rebalanceProfitUsdcAmountThreshold',
+        type: 'uint128',
+      },
+      {
+        indexed: false,
+        internalType: 'contract IDnGmxTraderHedgeStrategy',
+        name: 'dnGmxTraderHedgeStrategy',
+        type: 'address',
+      },
+    ],
+    name: 'ParamsV1Updated',
     type: 'event',
   },
   {
@@ -416,6 +509,25 @@ const _abi = [
       },
     ],
     name: 'ThresholdsUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'btcTraderOIHedge',
+        type: 'int256',
+      },
+      {
+        indexed: false,
+        internalType: 'int256',
+        name: 'ethTraderOIHedge',
+        type: 'int256',
+      },
+    ],
+    name: 'TraderOIHedgesUpdated',
     type: 'event',
   },
   {

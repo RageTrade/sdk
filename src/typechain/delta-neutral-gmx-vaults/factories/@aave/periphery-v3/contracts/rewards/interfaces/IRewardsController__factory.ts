@@ -127,25 +127,6 @@ const _abi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'oldEmissionManager',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newEmissionManager',
-        type: 'address',
-      },
-    ],
-    name: 'EmissionManagerUpdated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
         name: 'reward',
         type: 'address',
       },
@@ -214,6 +195,19 @@ const _abi = [
     ],
     name: 'TransferStrategyInstalled',
     type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'EMISSION_MANAGER',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
@@ -506,6 +500,35 @@ const _abi = [
     inputs: [
       {
         internalType: 'address',
+        name: 'asset',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'reward',
+        type: 'address',
+      },
+    ],
+    name: 'getAssetIndex',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'user',
         type: 'address',
       },
@@ -758,12 +781,12 @@ const _abi = [
       },
       {
         internalType: 'uint256',
-        name: 'userBalance',
+        name: 'totalSupply',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'totalSupply',
+        name: 'userBalance',
         type: 'uint256',
       },
     ],
@@ -809,19 +832,6 @@ const _abi = [
       },
     ],
     name: 'setDistributionEnd',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'emissionManager',
-        type: 'address',
-      },
-    ],
-    name: 'setEmissionManager',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

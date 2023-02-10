@@ -57,26 +57,24 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'claimAndRedeem(address)': FunctionFragment;
     'currentRound()': FunctionFragment;
     'depositCap()': FunctionFragment;
-    'depositToken(address,uint256,uint256)': FunctionFragment;
     'depositUsdc(uint256,address)': FunctionFragment;
     'dnGmxJuniorVault()': FunctionFragment;
     'dnGmxJuniorVaultGlpBalance()': FunctionFragment;
-    'executeBatchDeposit(uint256)': FunctionFragment;
-    'executeBatchStake()': FunctionFragment;
-    'glpDepositPendingThreshold()': FunctionFragment;
+    'executeBatch(uint128)': FunctionFragment;
     'grantAllowances()': FunctionFragment;
     'initialize(address,address,address,address,address,address)': FunctionFragment;
     'keeper()': FunctionFragment;
+    'minUsdcConversionAmount()': FunctionFragment;
     'owner()': FunctionFragment;
     'pauseDeposit()': FunctionFragment;
     'paused()': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
+    'rescueFees()': FunctionFragment;
     'roundDeposits(uint256)': FunctionFragment;
     'roundGlpDepositPending()': FunctionFragment;
     'roundGlpStaked()': FunctionFragment;
     'roundSharesMinted()': FunctionFragment;
     'roundUsdcBalance()': FunctionFragment;
-    'setBypass(address)': FunctionFragment;
     'setDepositCap(uint256)': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
     'setThresholds(uint256,uint256)': FunctionFragment;
@@ -95,26 +93,24 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'claimAndRedeem'
       | 'currentRound'
       | 'depositCap'
-      | 'depositToken'
       | 'depositUsdc'
       | 'dnGmxJuniorVault'
       | 'dnGmxJuniorVaultGlpBalance'
-      | 'executeBatchDeposit'
-      | 'executeBatchStake'
-      | 'glpDepositPendingThreshold'
+      | 'executeBatch'
       | 'grantAllowances'
       | 'initialize'
       | 'keeper'
+      | 'minUsdcConversionAmount'
       | 'owner'
       | 'pauseDeposit'
       | 'paused'
       | 'renounceOwnership'
+      | 'rescueFees'
       | 'roundDeposits'
       | 'roundGlpDepositPending'
       | 'roundGlpStaked'
       | 'roundSharesMinted'
       | 'roundUsdcBalance'
-      | 'setBypass'
       | 'setDepositCap'
       | 'setKeeper'
       | 'setThresholds'
@@ -144,14 +140,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'depositToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'depositUsdc',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
@@ -164,16 +152,8 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'executeBatchDeposit',
+    functionFragment: 'executeBatch',
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'executeBatchStake',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'glpDepositPendingThreshold',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'grantAllowances',
@@ -191,6 +171,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'minUsdcConversionAmount',
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'pauseDeposit',
@@ -199,6 +183,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rescueFees',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -220,10 +208,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'roundUsdcBalance',
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'setBypass',
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setDepositCap',
@@ -277,10 +261,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'depositCap', data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: 'depositToken',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'depositUsdc',
     data: BytesLike
   ): Result;
@@ -293,15 +273,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'executeBatchDeposit',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'executeBatchStake',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'glpDepositPendingThreshold',
+    functionFragment: 'executeBatch',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -310,6 +282,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'keeper', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'minUsdcConversionAmount',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'pauseDeposit',
@@ -320,6 +296,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     functionFragment: 'renounceOwnership',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'rescueFees', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'roundDeposits',
     data: BytesLike
@@ -340,7 +317,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     functionFragment: 'roundUsdcBalance',
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: 'setBypass', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'setDepositCap',
     data: BytesLike
@@ -536,7 +512,7 @@ export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
   newSlippageThresholdGmx: BigNumber;
-  newGlpDepositPendingThreshold: BigNumber;
+  minUsdcConversionAmount: BigNumber;
 }
 export type ThresholdsUpdatedEvent = TypedEvent<
   [BigNumber, BigNumber],
@@ -605,13 +581,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -622,16 +591,10 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
+    executeBatch(
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    glpDepositPendingThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     grantAllowances(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -649,6 +612,8 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     keeper(overrides?: CallOverrides): Promise<[string]>;
 
+    minUsdcConversionAmount(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     pauseDeposit(
@@ -658,6 +623,10 @@ export interface DnGmxBatchingManager extends BaseContract {
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    rescueFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -674,11 +643,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    setBypass(
-      _bypass: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     setDepositCap(
       _depositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -691,7 +655,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      _glpDepositPendingThreshold: PromiseOrValue<BigNumberish>,
+      _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -747,13 +711,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
-  depositToken(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    minUSDG: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   depositUsdc(
     amount: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
@@ -764,16 +721,10 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-  executeBatchDeposit(
-    depositAmount: PromiseOrValue<BigNumberish>,
+  executeBatch(
+    usdcAmountToConvert: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  executeBatchStake(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  glpDepositPendingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
   grantAllowances(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -791,6 +742,8 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   keeper(overrides?: CallOverrides): Promise<string>;
 
+  minUsdcConversionAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   pauseDeposit(
@@ -800,6 +753,10 @@ export interface DnGmxBatchingManager extends BaseContract {
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  rescueFees(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -816,11 +773,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-  setBypass(
-    _bypass: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   setDepositCap(
     _depositCap: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -833,7 +785,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
   setThresholds(
     _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-    _glpDepositPendingThreshold: PromiseOrValue<BigNumberish>,
+    _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -889,13 +841,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -906,14 +851,10 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
+    executeBatch(
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    executeBatchStake(overrides?: CallOverrides): Promise<void>;
-
-    glpDepositPendingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantAllowances(overrides?: CallOverrides): Promise<void>;
 
@@ -929,6 +870,8 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     keeper(overrides?: CallOverrides): Promise<string>;
 
+    minUsdcConversionAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<string>;
 
     pauseDeposit(overrides?: CallOverrides): Promise<void>;
@@ -936,6 +879,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    rescueFees(overrides?: CallOverrides): Promise<void>;
 
     roundDeposits(
       round: PromiseOrValue<BigNumberish>,
@@ -950,11 +895,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setBypass(
-      _bypass: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setDepositCap(
       _depositCap: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -967,7 +907,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      _glpDepositPendingThreshold: PromiseOrValue<BigNumberish>,
+      _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1106,11 +1046,11 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     'ThresholdsUpdated(uint256,uint256)'(
       newSlippageThresholdGmx?: null,
-      newGlpDepositPendingThreshold?: null
+      minUsdcConversionAmount?: null
     ): ThresholdsUpdatedEventFilter;
     ThresholdsUpdated(
       newSlippageThresholdGmx?: null,
-      newGlpDepositPendingThreshold?: null
+      minUsdcConversionAmount?: null
     ): ThresholdsUpdatedEventFilter;
 
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
@@ -1136,13 +1076,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<BigNumber>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -1153,16 +1086,10 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
+    executeBatch(
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    glpDepositPendingThreshold(overrides?: CallOverrides): Promise<BigNumber>;
 
     grantAllowances(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1180,6 +1107,8 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     keeper(overrides?: CallOverrides): Promise<BigNumber>;
 
+    minUsdcConversionAmount(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     pauseDeposit(
@@ -1189,6 +1118,10 @@ export interface DnGmxBatchingManager extends BaseContract {
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    rescueFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1205,11 +1138,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    setBypass(
-      _bypass: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     setDepositCap(
       _depositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1222,7 +1150,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      _glpDepositPendingThreshold: PromiseOrValue<BigNumberish>,
+      _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1271,13 +1199,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -1290,17 +1211,9 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
+    executeBatch(
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    glpDepositPendingThreshold(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     grantAllowances(
@@ -1319,6 +1232,10 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    minUsdcConversionAmount(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pauseDeposit(
@@ -1328,6 +1245,10 @@ export interface DnGmxBatchingManager extends BaseContract {
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    rescueFees(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1346,11 +1267,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     roundUsdcBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    setBypass(
-      _bypass: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     setDepositCap(
       _depositCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1363,7 +1279,7 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      _glpDepositPendingThreshold: PromiseOrValue<BigNumberish>,
+      _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

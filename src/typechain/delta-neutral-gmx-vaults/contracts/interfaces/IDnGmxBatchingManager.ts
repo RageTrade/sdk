@@ -43,11 +43,9 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   functions: {
     'claim(address,uint256)': FunctionFragment;
     'currentRound()': FunctionFragment;
-    'depositToken(address,uint256,uint256)': FunctionFragment;
     'depositUsdc(uint256,address)': FunctionFragment;
     'dnGmxJuniorVaultGlpBalance()': FunctionFragment;
-    'executeBatchDeposit(uint256)': FunctionFragment;
-    'executeBatchStake()': FunctionFragment;
+    'executeBatch(uint128)': FunctionFragment;
     'roundDeposits(uint256)': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
     'usdcBalance(address)': FunctionFragment;
@@ -57,11 +55,9 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | 'claim'
       | 'currentRound'
-      | 'depositToken'
       | 'depositUsdc'
       | 'dnGmxJuniorVaultGlpBalance'
-      | 'executeBatchDeposit'
-      | 'executeBatchStake'
+      | 'executeBatch'
       | 'roundDeposits'
       | 'unclaimedShares'
       | 'usdcBalance'
@@ -76,14 +72,6 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'depositToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'depositUsdc',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
   ): string;
@@ -92,12 +80,8 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'executeBatchDeposit',
+    functionFragment: 'executeBatch',
     values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'executeBatchStake',
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'roundDeposits',
@@ -118,10 +102,6 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'depositToken',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'depositUsdc',
     data: BytesLike
   ): Result;
@@ -130,11 +110,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'executeBatchDeposit',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'executeBatchStake',
+    functionFragment: 'executeBatch',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -273,7 +249,7 @@ export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
   newSlippageThresholdGmx: BigNumber;
-  newGlpDepositPendingThreshold: BigNumber;
+  minUsdcConversionAmount: BigNumber;
 }
 export type ThresholdsUpdatedEvent = TypedEvent<
   [BigNumber, BigNumber],
@@ -328,13 +304,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     currentRound(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -345,12 +314,8 @@ export interface IDnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { balance: BigNumber }>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    executeBatchStake(
+    executeBatch(
+      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -378,13 +343,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
   currentRound(overrides?: CallOverrides): Promise<BigNumber>;
 
-  depositToken(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    minUSDG: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   depositUsdc(
     amount: PromiseOrValue<BigNumberish>,
     receiver: PromiseOrValue<string>,
@@ -393,12 +351,8 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
   dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-  executeBatchDeposit(
-    depositAmount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  executeBatchStake(
+  executeBatch(
+    usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -426,13 +380,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     currentRound(overrides?: CallOverrides): Promise<BigNumber>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -441,12 +388,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
+    executeBatch(
+      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    executeBatchStake(overrides?: CallOverrides): Promise<void>;
 
     roundDeposits(
       round: PromiseOrValue<BigNumberish>,
@@ -549,11 +494,11 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     'ThresholdsUpdated(uint256,uint256)'(
       newSlippageThresholdGmx?: null,
-      newGlpDepositPendingThreshold?: null
+      minUsdcConversionAmount?: null
     ): ThresholdsUpdatedEventFilter;
     ThresholdsUpdated(
       newSlippageThresholdGmx?: null,
-      newGlpDepositPendingThreshold?: null
+      minUsdcConversionAmount?: null
     ): ThresholdsUpdatedEventFilter;
 
     'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
@@ -569,13 +514,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     currentRound(overrides?: CallOverrides): Promise<BigNumber>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -584,12 +522,8 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    executeBatchStake(
+    executeBatch(
+      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -618,13 +552,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     currentRound(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      minUSDG: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     depositUsdc(
       amount: PromiseOrValue<BigNumberish>,
       receiver: PromiseOrValue<string>,
@@ -635,12 +562,8 @@ export interface IDnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    executeBatchDeposit(
-      depositAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    executeBatchStake(
+    executeBatch(
+      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

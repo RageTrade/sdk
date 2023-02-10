@@ -88,7 +88,7 @@ export interface StableSwapMock extends BaseContract {
 
   functions: {
     coins(
-      arg0: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
 
@@ -108,7 +108,7 @@ export interface StableSwapMock extends BaseContract {
   };
 
   coins(
-    arg0: PromiseOrValue<BigNumberish>,
+    index: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
 
@@ -128,7 +128,7 @@ export interface StableSwapMock extends BaseContract {
 
   callStatic: {
     coins(
-      arg0: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -151,7 +151,7 @@ export interface StableSwapMock extends BaseContract {
 
   estimateGas: {
     coins(
-      arg0: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -172,7 +172,7 @@ export interface StableSwapMock extends BaseContract {
 
   populateTransaction: {
     coins(
-      arg0: PromiseOrValue<BigNumberish>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

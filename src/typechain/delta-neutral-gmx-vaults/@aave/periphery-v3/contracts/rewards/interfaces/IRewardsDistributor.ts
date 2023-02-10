@@ -29,8 +29,10 @@ import type {
 
 export interface IRewardsDistributorInterface extends utils.Interface {
   functions: {
+    'EMISSION_MANAGER()': FunctionFragment;
     'getAllUserRewards(address[],address)': FunctionFragment;
     'getAssetDecimals(address)': FunctionFragment;
+    'getAssetIndex(address,address)': FunctionFragment;
     'getDistributionEnd(address,address)': FunctionFragment;
     'getEmissionManager()': FunctionFragment;
     'getRewardsByAsset(address)': FunctionFragment;
@@ -40,14 +42,15 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     'getUserAssetIndex(address,address,address)': FunctionFragment;
     'getUserRewards(address[],address,address)': FunctionFragment;
     'setDistributionEnd(address,address,uint32)': FunctionFragment;
-    'setEmissionManager(address)': FunctionFragment;
     'setEmissionPerSecond(address,address[],uint88[])': FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | 'EMISSION_MANAGER'
       | 'getAllUserRewards'
       | 'getAssetDecimals'
+      | 'getAssetIndex'
       | 'getDistributionEnd'
       | 'getEmissionManager'
       | 'getRewardsByAsset'
@@ -57,10 +60,13 @@ export interface IRewardsDistributorInterface extends utils.Interface {
       | 'getUserAssetIndex'
       | 'getUserRewards'
       | 'setDistributionEnd'
-      | 'setEmissionManager'
       | 'setEmissionPerSecond'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: 'EMISSION_MANAGER',
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: 'getAllUserRewards',
     values: [PromiseOrValue<string>[], PromiseOrValue<string>]
@@ -68,6 +74,10 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'getAssetDecimals',
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getAssetIndex',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getDistributionEnd',
@@ -118,10 +128,6 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: 'setEmissionManager',
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: 'setEmissionPerSecond',
     values: [
       PromiseOrValue<string>,
@@ -131,11 +137,19 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: 'EMISSION_MANAGER',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'getAllUserRewards',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: 'getAssetDecimals',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getAssetIndex',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -175,10 +189,6 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'setEmissionManager',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'setEmissionPerSecond',
     data: BytesLike
   ): Result;
@@ -186,12 +196,10 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   events: {
     'Accrued(address,address,address,uint256,uint256,uint256)': EventFragment;
     'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'EmissionManagerUpdated(address,address)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'Accrued'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AssetConfigUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EmissionManagerUpdated'): EventFragment;
 }
 
 export interface AccruedEventObject {
@@ -226,18 +234,6 @@ export type AssetConfigUpdatedEvent = TypedEvent<
 export type AssetConfigUpdatedEventFilter =
   TypedEventFilter<AssetConfigUpdatedEvent>;
 
-export interface EmissionManagerUpdatedEventObject {
-  oldEmissionManager: string;
-  newEmissionManager: string;
-}
-export type EmissionManagerUpdatedEvent = TypedEvent<
-  [string, string],
-  EmissionManagerUpdatedEventObject
->;
-
-export type EmissionManagerUpdatedEventFilter =
-  TypedEventFilter<EmissionManagerUpdatedEvent>;
-
 export interface IRewardsDistributor extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -265,6 +261,8 @@ export interface IRewardsDistributor extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    EMISSION_MANAGER(overrides?: CallOverrides): Promise<[string]>;
+
     getAllUserRewards(
       assets: PromiseOrValue<string>[],
       user: PromiseOrValue<string>,
@@ -275,6 +273,12 @@ export interface IRewardsDistributor extends BaseContract {
       asset: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[number]>;
+
+    getAssetIndex(
+      asset: PromiseOrValue<string>,
+      reward: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
 
     getDistributionEnd(
       asset: PromiseOrValue<string>,
@@ -324,11 +328,6 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     setEmissionPerSecond(
       asset: PromiseOrValue<string>,
       rewards: PromiseOrValue<string>[],
@@ -336,6 +335,8 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  EMISSION_MANAGER(overrides?: CallOverrides): Promise<string>;
 
   getAllUserRewards(
     assets: PromiseOrValue<string>[],
@@ -347,6 +348,12 @@ export interface IRewardsDistributor extends BaseContract {
     asset: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<number>;
+
+  getAssetIndex(
+    asset: PromiseOrValue<string>,
+    reward: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
 
   getDistributionEnd(
     asset: PromiseOrValue<string>,
@@ -396,11 +403,6 @@ export interface IRewardsDistributor extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setEmissionManager(
-    emissionManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   setEmissionPerSecond(
     asset: PromiseOrValue<string>,
     rewards: PromiseOrValue<string>[],
@@ -409,6 +411,8 @@ export interface IRewardsDistributor extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    EMISSION_MANAGER(overrides?: CallOverrides): Promise<string>;
+
     getAllUserRewards(
       assets: PromiseOrValue<string>[],
       user: PromiseOrValue<string>,
@@ -419,6 +423,12 @@ export interface IRewardsDistributor extends BaseContract {
       asset: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<number>;
+
+    getAssetIndex(
+      asset: PromiseOrValue<string>,
+      reward: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
 
     getDistributionEnd(
       asset: PromiseOrValue<string>,
@@ -468,11 +478,6 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setEmissionPerSecond(
       asset: PromiseOrValue<string>,
       rewards: PromiseOrValue<string>[],
@@ -517,18 +522,11 @@ export interface IRewardsDistributor extends BaseContract {
       newDistributionEnd?: null,
       assetIndex?: null
     ): AssetConfigUpdatedEventFilter;
-
-    'EmissionManagerUpdated(address,address)'(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
-    EmissionManagerUpdated(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
   };
 
   estimateGas: {
+    EMISSION_MANAGER(overrides?: CallOverrides): Promise<BigNumber>;
+
     getAllUserRewards(
       assets: PromiseOrValue<string>[],
       user: PromiseOrValue<string>,
@@ -537,6 +535,12 @@ export interface IRewardsDistributor extends BaseContract {
 
     getAssetDecimals(
       asset: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getAssetIndex(
+      asset: PromiseOrValue<string>,
+      reward: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -588,11 +592,6 @@ export interface IRewardsDistributor extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     setEmissionPerSecond(
       asset: PromiseOrValue<string>,
       rewards: PromiseOrValue<string>[],
@@ -602,6 +601,8 @@ export interface IRewardsDistributor extends BaseContract {
   };
 
   populateTransaction: {
+    EMISSION_MANAGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getAllUserRewards(
       assets: PromiseOrValue<string>[],
       user: PromiseOrValue<string>,
@@ -610,6 +611,12 @@ export interface IRewardsDistributor extends BaseContract {
 
     getAssetDecimals(
       asset: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getAssetIndex(
+      asset: PromiseOrValue<string>,
+      reward: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -660,11 +667,6 @@ export interface IRewardsDistributor extends BaseContract {
       asset: PromiseOrValue<string>,
       reward: PromiseOrValue<string>,
       newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

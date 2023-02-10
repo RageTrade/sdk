@@ -291,17 +291,21 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'AdminParamsUpdated(address,address,uint256,address,uint16)': EventFragment;
     'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
-    'BatchingManagerUpdated(address)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxSeniorVaultUpdated(address)': EventFragment;
+    'EsGmxStaked(uint256)': EventFragment;
+    'EsGmxVested(uint256)': EventFragment;
     'FeeParamsUpdated(uint256,address)': EventFragment;
     'FeesWithdrawn(uint256)': EventFragment;
+    'GmxClaimed(uint256)': EventFragment;
     'HedgeParamsUpdated(address,address,uint256,address,address,address)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
+    'ParamsV1Updated(uint128,address)': EventFragment;
     'RebalanceParamsUpdated(uint32,uint16,uint16)': EventFragment;
     'Rebalanced()': EventFragment;
     'ThresholdsUpdated(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)': EventFragment;
+    'TraderOIHedgesUpdated(int256,int256)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
     'WithdrawFeeUpdated(uint256)': EventFragment;
@@ -310,17 +314,21 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'BatchingManagerUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EsGmxStaked'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'EsGmxVested'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeeParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'GmxClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'HedgeParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ParamsV1Updated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'RebalanceParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Rebalanced'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TraderOIHedgesUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'WithdrawFeeUpdated'): EventFragment;
@@ -362,17 +370,6 @@ export type ApprovalEvent = TypedEvent<
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
 
-export interface BatchingManagerUpdatedEventObject {
-  _batchingManager: string;
-}
-export type BatchingManagerUpdatedEvent = TypedEvent<
-  [string],
-  BatchingManagerUpdatedEventObject
->;
-
-export type BatchingManagerUpdatedEventFilter =
-  TypedEventFilter<BatchingManagerUpdatedEvent>;
-
 export interface DepositEventObject {
   caller: string;
   owner: string;
@@ -408,6 +405,20 @@ export type DnGmxSeniorVaultUpdatedEvent = TypedEvent<
 export type DnGmxSeniorVaultUpdatedEventFilter =
   TypedEventFilter<DnGmxSeniorVaultUpdatedEvent>;
 
+export interface EsGmxStakedEventObject {
+  amount: BigNumber;
+}
+export type EsGmxStakedEvent = TypedEvent<[BigNumber], EsGmxStakedEventObject>;
+
+export type EsGmxStakedEventFilter = TypedEventFilter<EsGmxStakedEvent>;
+
+export interface EsGmxVestedEventObject {
+  amount: BigNumber;
+}
+export type EsGmxVestedEvent = TypedEvent<[BigNumber], EsGmxVestedEventObject>;
+
+export type EsGmxVestedEventFilter = TypedEventFilter<EsGmxVestedEvent>;
+
 export interface FeeParamsUpdatedEventObject {
   feeBps: BigNumber;
   _newFeeRecipient: string;
@@ -429,6 +440,13 @@ export type FeesWithdrawnEvent = TypedEvent<
 >;
 
 export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
+
+export interface GmxClaimedEventObject {
+  amount: BigNumber;
+}
+export type GmxClaimedEvent = TypedEvent<[BigNumber], GmxClaimedEventObject>;
+
+export type GmxClaimedEventFilter = TypedEventFilter<GmxClaimedEvent>;
 
 export interface HedgeParamsUpdatedEventObject {
   vault: string;
@@ -452,6 +470,17 @@ export interface KeeperUpdatedEventObject {
 export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
 export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
+
+export interface ParamsV1UpdatedEventObject {
+  rebalanceProfitUsdcAmountThreshold: BigNumber;
+  dnGmxTraderHedgeStrategy: string;
+}
+export type ParamsV1UpdatedEvent = TypedEvent<
+  [BigNumber, string],
+  ParamsV1UpdatedEventObject
+>;
+
+export type ParamsV1UpdatedEventFilter = TypedEventFilter<ParamsV1UpdatedEvent>;
 
 export interface RebalanceParamsUpdatedEventObject {
   rebalanceTimeThreshold: number;
@@ -497,6 +526,18 @@ export type ThresholdsUpdatedEvent = TypedEvent<
 
 export type ThresholdsUpdatedEventFilter =
   TypedEventFilter<ThresholdsUpdatedEvent>;
+
+export interface TraderOIHedgesUpdatedEventObject {
+  btcTraderOIHedge: BigNumber;
+  ethTraderOIHedge: BigNumber;
+}
+export type TraderOIHedgesUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber],
+  TraderOIHedgesUpdatedEventObject
+>;
+
+export type TraderOIHedgesUpdatedEventFilter =
+  TypedEventFilter<TraderOIHedgesUpdatedEvent>;
 
 export interface TransferEventObject {
   from: string;
@@ -984,13 +1025,6 @@ export interface IDnGmxJuniorVault extends BaseContract {
       value?: null
     ): ApprovalEventFilter;
 
-    'BatchingManagerUpdated(address)'(
-      _batchingManager?: null
-    ): BatchingManagerUpdatedEventFilter;
-    BatchingManagerUpdated(
-      _batchingManager?: null
-    ): BatchingManagerUpdatedEventFilter;
-
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
       owner?: PromiseOrValue<string> | null,
@@ -1016,6 +1050,12 @@ export interface IDnGmxJuniorVault extends BaseContract {
       _dnGmxSeniorVault?: null
     ): DnGmxSeniorVaultUpdatedEventFilter;
 
+    'EsGmxStaked(uint256)'(amount?: null): EsGmxStakedEventFilter;
+    EsGmxStaked(amount?: null): EsGmxStakedEventFilter;
+
+    'EsGmxVested(uint256)'(amount?: null): EsGmxVestedEventFilter;
+    EsGmxVested(amount?: null): EsGmxVestedEventFilter;
+
     'FeeParamsUpdated(uint256,address)'(
       feeBps?: null,
       _newFeeRecipient?: null
@@ -1027,6 +1067,9 @@ export interface IDnGmxJuniorVault extends BaseContract {
 
     'FeesWithdrawn(uint256)'(feeAmount?: null): FeesWithdrawnEventFilter;
     FeesWithdrawn(feeAmount?: null): FeesWithdrawnEventFilter;
+
+    'GmxClaimed(uint256)'(amount?: null): GmxClaimedEventFilter;
+    GmxClaimed(amount?: null): GmxClaimedEventFilter;
 
     'HedgeParamsUpdated(address,address,uint256,address,address,address)'(
       vault?: null,
@@ -1047,6 +1090,15 @@ export interface IDnGmxJuniorVault extends BaseContract {
 
     'KeeperUpdated(address)'(_newKeeper?: null): KeeperUpdatedEventFilter;
     KeeperUpdated(_newKeeper?: null): KeeperUpdatedEventFilter;
+
+    'ParamsV1Updated(uint128,address)'(
+      rebalanceProfitUsdcAmountThreshold?: null,
+      dnGmxTraderHedgeStrategy?: null
+    ): ParamsV1UpdatedEventFilter;
+    ParamsV1Updated(
+      rebalanceProfitUsdcAmountThreshold?: null,
+      dnGmxTraderHedgeStrategy?: null
+    ): ParamsV1UpdatedEventFilter;
 
     'RebalanceParamsUpdated(uint32,uint16,uint16)'(
       rebalanceTimeThreshold?: null,
@@ -1082,6 +1134,15 @@ export interface IDnGmxJuniorVault extends BaseContract {
       partialBtcHedgeUsdcAmountThreshold?: null,
       partialEthHedgeUsdcAmountThreshold?: null
     ): ThresholdsUpdatedEventFilter;
+
+    'TraderOIHedgesUpdated(int256,int256)'(
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null
+    ): TraderOIHedgesUpdatedEventFilter;
+    TraderOIHedgesUpdated(
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null
+    ): TraderOIHedgesUpdatedEventFilter;
 
     'Transfer(address,address,uint256)'(
       from?: PromiseOrValue<string> | null,

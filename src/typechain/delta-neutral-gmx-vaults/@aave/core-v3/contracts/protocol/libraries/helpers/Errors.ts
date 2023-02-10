@@ -28,7 +28,6 @@ export interface ErrorsInterface extends utils.Interface {
     'AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE()': FunctionFragment;
     'ASSET_NOT_BORROWABLE_IN_ISOLATION()': FunctionFragment;
     'ASSET_NOT_LISTED()': FunctionFragment;
-    'ATOKEN_SUPPLY_NOT_ZERO()': FunctionFragment;
     'BORROWING_NOT_ENABLED()': FunctionFragment;
     'BORROW_CAP_EXCEEDED()': FunctionFragment;
     'BRIDGE_PROTOCOL_FEE_INVALID()': FunctionFragment;
@@ -48,6 +47,7 @@ export interface ErrorsInterface extends utils.Interface {
     'DEBT_CEILING_EXCEEDED()': FunctionFragment;
     'DEBT_CEILING_NOT_ZERO()': FunctionFragment;
     'EMODE_CATEGORY_RESERVED()': FunctionFragment;
+    'FLASHLOAN_DISABLED()': FunctionFragment;
     'FLASHLOAN_PREMIUM_INVALID()': FunctionFragment;
     'HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD()': FunctionFragment;
     'HEALTH_FACTOR_NOT_BELOW_THRESHOLD()': FunctionFragment;
@@ -99,7 +99,6 @@ export interface ErrorsInterface extends utils.Interface {
     'RESERVE_INACTIVE()': FunctionFragment;
     'RESERVE_LIQUIDITY_NOT_ZERO()': FunctionFragment;
     'RESERVE_PAUSED()': FunctionFragment;
-    'SAME_BLOCK_BORROW_REPAY()': FunctionFragment;
     'SILOED_BORROWING_VIOLATION()': FunctionFragment;
     'SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER()': FunctionFragment;
     'STABLE_BORROWING_ENABLED()': FunctionFragment;
@@ -109,6 +108,7 @@ export interface ErrorsInterface extends utils.Interface {
     'UNBACKED_MINT_CAP_EXCEEDED()': FunctionFragment;
     'UNDERLYING_BALANCE_ZERO()': FunctionFragment;
     'UNDERLYING_CANNOT_BE_RESCUED()': FunctionFragment;
+    'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO()': FunctionFragment;
     'USER_IN_ISOLATION_MODE()': FunctionFragment;
     'VARIABLE_DEBT_SUPPLY_NOT_ZERO()': FunctionFragment;
     'ZERO_ADDRESS_NOT_VALID()': FunctionFragment;
@@ -122,7 +122,6 @@ export interface ErrorsInterface extends utils.Interface {
       | 'AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE'
       | 'ASSET_NOT_BORROWABLE_IN_ISOLATION'
       | 'ASSET_NOT_LISTED'
-      | 'ATOKEN_SUPPLY_NOT_ZERO'
       | 'BORROWING_NOT_ENABLED'
       | 'BORROW_CAP_EXCEEDED'
       | 'BRIDGE_PROTOCOL_FEE_INVALID'
@@ -142,6 +141,7 @@ export interface ErrorsInterface extends utils.Interface {
       | 'DEBT_CEILING_EXCEEDED'
       | 'DEBT_CEILING_NOT_ZERO'
       | 'EMODE_CATEGORY_RESERVED'
+      | 'FLASHLOAN_DISABLED'
       | 'FLASHLOAN_PREMIUM_INVALID'
       | 'HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD'
       | 'HEALTH_FACTOR_NOT_BELOW_THRESHOLD'
@@ -193,7 +193,6 @@ export interface ErrorsInterface extends utils.Interface {
       | 'RESERVE_INACTIVE'
       | 'RESERVE_LIQUIDITY_NOT_ZERO'
       | 'RESERVE_PAUSED'
-      | 'SAME_BLOCK_BORROW_REPAY'
       | 'SILOED_BORROWING_VIOLATION'
       | 'SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER'
       | 'STABLE_BORROWING_ENABLED'
@@ -203,6 +202,7 @@ export interface ErrorsInterface extends utils.Interface {
       | 'UNBACKED_MINT_CAP_EXCEEDED'
       | 'UNDERLYING_BALANCE_ZERO'
       | 'UNDERLYING_CANNOT_BE_RESCUED'
+      | 'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO'
       | 'USER_IN_ISOLATION_MODE'
       | 'VARIABLE_DEBT_SUPPLY_NOT_ZERO'
       | 'ZERO_ADDRESS_NOT_VALID'
@@ -230,10 +230,6 @@ export interface ErrorsInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'ASSET_NOT_LISTED',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'ATOKEN_SUPPLY_NOT_ZERO',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -310,6 +306,10 @@ export interface ErrorsInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'EMODE_CATEGORY_RESERVED',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'FLASHLOAN_DISABLED',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -517,10 +517,6 @@ export interface ErrorsInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: 'SAME_BLOCK_BORROW_REPAY',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: 'SILOED_BORROWING_VIOLATION',
     values?: undefined
   ): string;
@@ -554,6 +550,10 @@ export interface ErrorsInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'UNDERLYING_CANNOT_BE_RESCUED',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -594,10 +594,6 @@ export interface ErrorsInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'ATOKEN_SUPPLY_NOT_ZERO',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'BORROWING_NOT_ENABLED',
     data: BytesLike
   ): Result;
@@ -671,6 +667,10 @@ export interface ErrorsInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'EMODE_CATEGORY_RESERVED',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'FLASHLOAN_DISABLED',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -878,10 +878,6 @@ export interface ErrorsInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'SAME_BLOCK_BORROW_REPAY',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: 'SILOED_BORROWING_VIOLATION',
     data: BytesLike
   ): Result;
@@ -915,6 +911,10 @@ export interface ErrorsInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'UNDERLYING_CANNOT_BE_RESCUED',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -980,8 +980,6 @@ export interface Errors extends BaseContract {
 
     ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<[string]>;
 
-    ATOKEN_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
-
     BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<[string]>;
 
     BORROW_CAP_EXCEEDED(overrides?: CallOverrides): Promise<[string]>;
@@ -1029,6 +1027,8 @@ export interface Errors extends BaseContract {
     DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
 
     EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<[string]>;
+
+    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<[string]>;
 
     FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1154,8 +1154,6 @@ export interface Errors extends BaseContract {
 
     RESERVE_PAUSED(overrides?: CallOverrides): Promise<[string]>;
 
-    SAME_BLOCK_BORROW_REPAY(overrides?: CallOverrides): Promise<[string]>;
-
     SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<[string]>;
 
     SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
@@ -1175,6 +1173,10 @@ export interface Errors extends BaseContract {
     UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<[string]>;
 
     UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<[string]>;
+
+    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<[string]>;
 
@@ -1196,8 +1198,6 @@ export interface Errors extends BaseContract {
   ASSET_NOT_BORROWABLE_IN_ISOLATION(overrides?: CallOverrides): Promise<string>;
 
   ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<string>;
-
-  ATOKEN_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
 
   BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
 
@@ -1244,6 +1244,8 @@ export interface Errors extends BaseContract {
   DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
 
   EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<string>;
+
+  FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<string>;
 
   FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<string>;
 
@@ -1359,8 +1361,6 @@ export interface Errors extends BaseContract {
 
   RESERVE_PAUSED(overrides?: CallOverrides): Promise<string>;
 
-  SAME_BLOCK_BORROW_REPAY(overrides?: CallOverrides): Promise<string>;
-
   SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<string>;
 
   SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
@@ -1380,6 +1380,10 @@ export interface Errors extends BaseContract {
   UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<string>;
 
   UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<string>;
+
+  UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<string>;
 
@@ -1407,8 +1411,6 @@ export interface Errors extends BaseContract {
     ): Promise<string>;
 
     ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<string>;
-
-    ATOKEN_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
 
     BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
 
@@ -1455,6 +1457,8 @@ export interface Errors extends BaseContract {
     DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
 
     EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<string>;
+
+    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<string>;
 
     FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<string>;
 
@@ -1580,8 +1584,6 @@ export interface Errors extends BaseContract {
 
     RESERVE_PAUSED(overrides?: CallOverrides): Promise<string>;
 
-    SAME_BLOCK_BORROW_REPAY(overrides?: CallOverrides): Promise<string>;
-
     SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<string>;
 
     SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
@@ -1601,6 +1603,10 @@ export interface Errors extends BaseContract {
     UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<string>;
 
     UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<string>;
+
+    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<string>;
 
@@ -1631,8 +1637,6 @@ export interface Errors extends BaseContract {
     ): Promise<BigNumber>;
 
     ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ATOKEN_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
 
     BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1683,6 +1687,8 @@ export interface Errors extends BaseContract {
     DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
 
     EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<BigNumber>;
+
+    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<BigNumber>;
 
     FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1814,8 +1820,6 @@ export interface Errors extends BaseContract {
 
     RESERVE_PAUSED(overrides?: CallOverrides): Promise<BigNumber>;
 
-    SAME_BLOCK_BORROW_REPAY(overrides?: CallOverrides): Promise<BigNumber>;
-
     SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<BigNumber>;
 
     SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
@@ -1835,6 +1839,10 @@ export interface Errors extends BaseContract {
     UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
 
     UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<BigNumber>;
+
+    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1867,10 +1875,6 @@ export interface Errors extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ATOKEN_SUPPLY_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     BORROWING_NOT_ENABLED(
       overrides?: CallOverrides
@@ -1941,6 +1945,10 @@ export interface Errors extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     EMODE_CATEGORY_RESERVED(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    FLASHLOAN_DISABLED(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -2130,10 +2138,6 @@ export interface Errors extends BaseContract {
 
     RESERVE_PAUSED(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    SAME_BLOCK_BORROW_REPAY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     SILOED_BORROWING_VIOLATION(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -2167,6 +2171,10 @@ export interface Errors extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     UNDERLYING_CANNOT_BE_RESCUED(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

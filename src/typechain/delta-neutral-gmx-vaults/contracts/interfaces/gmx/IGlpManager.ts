@@ -31,6 +31,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     'getAum(bool)': FunctionFragment;
     'getAumInUsdg(bool)': FunctionFragment;
     'getAums()': FunctionFragment;
+    'getGlobalShortAveragePrice(address)': FunctionFragment;
     'gov()': FunctionFragment;
     'lastAddedAt(address)': FunctionFragment;
     'removeLiquidity(address,uint256,uint256,address)': FunctionFragment;
@@ -47,6 +48,7 @@ export interface IGlpManagerInterface extends utils.Interface {
       | 'getAum'
       | 'getAumInUsdg'
       | 'getAums'
+      | 'getGlobalShortAveragePrice'
       | 'gov'
       | 'lastAddedAt'
       | 'removeLiquidity'
@@ -88,6 +90,10 @@ export interface IGlpManagerInterface extends utils.Interface {
     values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(functionFragment: 'getAums', values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: 'getGlobalShortAveragePrice',
+    values: [PromiseOrValue<string>]
+  ): string;
   encodeFunctionData(functionFragment: 'gov', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'lastAddedAt',
@@ -136,6 +142,10 @@ export interface IGlpManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'getAums', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'getGlobalShortAveragePrice',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'gov', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'lastAddedAt',
@@ -219,6 +229,11 @@ export interface IGlpManager extends BaseContract {
 
     getAums(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
+    getGlobalShortAveragePrice(
+      token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     gov(overrides?: CallOverrides): Promise<[string]>;
 
     lastAddedAt(
@@ -285,6 +300,11 @@ export interface IGlpManager extends BaseContract {
 
   getAums(overrides?: CallOverrides): Promise<BigNumber[]>;
 
+  getGlobalShortAveragePrice(
+    token: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   gov(overrides?: CallOverrides): Promise<string>;
 
   lastAddedAt(
@@ -348,6 +368,11 @@ export interface IGlpManager extends BaseContract {
     ): Promise<BigNumber>;
 
     getAums(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    getGlobalShortAveragePrice(
+      token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     gov(overrides?: CallOverrides): Promise<string>;
 
@@ -418,6 +443,11 @@ export interface IGlpManager extends BaseContract {
 
     getAums(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getGlobalShortAveragePrice(
+      token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     gov(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastAddedAt(
@@ -484,6 +514,11 @@ export interface IGlpManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getAums(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getGlobalShortAveragePrice(
+      token: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     gov(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

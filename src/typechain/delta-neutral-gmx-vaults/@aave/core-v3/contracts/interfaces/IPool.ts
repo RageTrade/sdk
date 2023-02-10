@@ -1511,7 +1511,7 @@ export interface IPool extends BaseContract {
       amount: PromiseOrValue<BigNumberish>,
       fee: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<BigNumber>;
 
     borrow(
       asset: PromiseOrValue<string>,

@@ -554,6 +554,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxJuniorVaultUpdated(address)': EventFragment;
+    'FeeStrategyUpdated(uint128,uint128,uint128,uint128)': EventFragment;
     'Initialized(uint8)': EventFragment;
     'LeveragePoolUpdated(address)': EventFragment;
     'MaxUtilizationBpsUpdated(uint256)': EventFragment;
@@ -561,6 +562,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
     'Paused(address)': EventFragment;
     'Transfer(address,address,uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
+    'VaultState(uint256,uint256,uint256)': EventFragment;
     'Withdraw(address,address,address,uint256,uint256)': EventFragment;
   };
 
@@ -570,6 +572,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxJuniorVaultUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'FeeStrategyUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'LeveragePoolUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'MaxUtilizationBpsUpdated'): EventFragment;
@@ -577,6 +580,7 @@ export interface DnGmxSeniorVaultMockInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'VaultState'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
 
@@ -648,6 +652,20 @@ export type DnGmxJuniorVaultUpdatedEvent = TypedEvent<
 export type DnGmxJuniorVaultUpdatedEventFilter =
   TypedEventFilter<DnGmxJuniorVaultUpdatedEvent>;
 
+export interface FeeStrategyUpdatedEventObject {
+  optimalUtilizationRate: BigNumber;
+  baseVariableBorrowRate: BigNumber;
+  variableRateSlope1: BigNumber;
+  variableRateSlope2: BigNumber;
+}
+export type FeeStrategyUpdatedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber],
+  FeeStrategyUpdatedEventObject
+>;
+
+export type FeeStrategyUpdatedEventFilter =
+  TypedEventFilter<FeeStrategyUpdatedEvent>;
+
 export interface InitializedEventObject {
   version: number;
 }
@@ -714,6 +732,18 @@ export interface UnpausedEventObject {
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
+
+export interface VaultStateEventObject {
+  eventType: BigNumber;
+  juniorVaultAusdc: BigNumber;
+  seniorVaultAusdc: BigNumber;
+}
+export type VaultStateEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  VaultStateEventObject
+>;
+
+export type VaultStateEventFilter = TypedEventFilter<VaultStateEvent>;
 
 export interface WithdrawEventObject {
   caller: string;
@@ -800,9 +830,9 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     ): Promise<ContractTransaction>;
 
     borrowCaps(
-      arg0: PromiseOrValue<string>,
+      borrower: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[BigNumber] & { cap: BigNumber }>;
 
     convertToAssets(
       shares: PromiseOrValue<BigNumberish>,
@@ -1060,7 +1090,7 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
   ): Promise<ContractTransaction>;
 
   borrowCaps(
-    arg0: PromiseOrValue<string>,
+    borrower: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -1314,7 +1344,7 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     ): Promise<void>;
 
     borrowCaps(
-      arg0: PromiseOrValue<string>,
+      borrower: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1562,6 +1592,19 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
       dnGmxJuniorVault?: null
     ): DnGmxJuniorVaultUpdatedEventFilter;
 
+    'FeeStrategyUpdated(uint128,uint128,uint128,uint128)'(
+      optimalUtilizationRate?: null,
+      baseVariableBorrowRate?: null,
+      variableRateSlope1?: null,
+      variableRateSlope2?: null
+    ): FeeStrategyUpdatedEventFilter;
+    FeeStrategyUpdated(
+      optimalUtilizationRate?: null,
+      baseVariableBorrowRate?: null,
+      variableRateSlope1?: null,
+      variableRateSlope2?: null
+    ): FeeStrategyUpdatedEventFilter;
+
     'Initialized(uint8)'(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
@@ -1602,6 +1645,17 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
 
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
+
+    'VaultState(uint256,uint256,uint256)'(
+      eventType?: PromiseOrValue<BigNumberish> | null,
+      juniorVaultAusdc?: null,
+      seniorVaultAusdc?: null
+    ): VaultStateEventFilter;
+    VaultState(
+      eventType?: PromiseOrValue<BigNumberish> | null,
+      juniorVaultAusdc?: null,
+      seniorVaultAusdc?: null
+    ): VaultStateEventFilter;
 
     'Withdraw(address,address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -1664,7 +1718,7 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     ): Promise<BigNumber>;
 
     borrowCaps(
-      arg0: PromiseOrValue<string>,
+      borrower: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1912,7 +1966,7 @@ export interface DnGmxSeniorVaultMock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     borrowCaps(
-      arg0: PromiseOrValue<string>,
+      borrower: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

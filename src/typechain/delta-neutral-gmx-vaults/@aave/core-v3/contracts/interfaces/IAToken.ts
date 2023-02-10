@@ -38,7 +38,7 @@ export interface IATokenInterface extends utils.Interface {
     'burn(address,address,uint256,uint256)': FunctionFragment;
     'getPreviousIndex(address)': FunctionFragment;
     'getScaledUserBalanceAndSupply(address)': FunctionFragment;
-    'handleRepayment(address,uint256)': FunctionFragment;
+    'handleRepayment(address,address,uint256)': FunctionFragment;
     'initialize(address,address,address,address,uint8,string,string,bytes)': FunctionFragment;
     'mint(address,address,uint256,uint256)': FunctionFragment;
     'mintToTreasury(uint256,uint256)': FunctionFragment;
@@ -124,7 +124,11 @@ export interface IATokenInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'handleRepayment',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -448,6 +452,7 @@ export interface IAToken extends BaseContract {
 
     handleRepayment(
       user: PromiseOrValue<string>,
+      onBehalfOf: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -531,7 +536,7 @@ export interface IAToken extends BaseContract {
     ): Promise<ContractTransaction>;
 
     transferUnderlyingTo(
-      user: PromiseOrValue<string>,
+      target: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -580,6 +585,7 @@ export interface IAToken extends BaseContract {
 
   handleRepayment(
     user: PromiseOrValue<string>,
+    onBehalfOf: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -663,7 +669,7 @@ export interface IAToken extends BaseContract {
   ): Promise<ContractTransaction>;
 
   transferUnderlyingTo(
-    user: PromiseOrValue<string>,
+    target: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -712,6 +718,7 @@ export interface IAToken extends BaseContract {
 
     handleRepayment(
       user: PromiseOrValue<string>,
+      onBehalfOf: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -795,7 +802,7 @@ export interface IAToken extends BaseContract {
     ): Promise<void>;
 
     transferUnderlyingTo(
-      user: PromiseOrValue<string>,
+      target: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -933,6 +940,7 @@ export interface IAToken extends BaseContract {
 
     handleRepayment(
       user: PromiseOrValue<string>,
+      onBehalfOf: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1016,7 +1024,7 @@ export interface IAToken extends BaseContract {
     ): Promise<BigNumber>;
 
     transferUnderlyingTo(
-      user: PromiseOrValue<string>,
+      target: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -1070,6 +1078,7 @@ export interface IAToken extends BaseContract {
 
     handleRepayment(
       user: PromiseOrValue<string>,
+      onBehalfOf: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -1153,7 +1162,7 @@ export interface IAToken extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     transferUnderlyingTo(
-      user: PromiseOrValue<string>,
+      target: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

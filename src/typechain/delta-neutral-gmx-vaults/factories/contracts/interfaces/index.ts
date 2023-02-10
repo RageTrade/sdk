@@ -3,11 +3,14 @@
 /* eslint-disable */
 export * as balancer from './balancer';
 export * as gmx from './gmx';
+export { AggregatorV3Interface__factory } from './AggregatorV3Interface__factory';
 export { IBatchingManagerBypass__factory } from './IBatchingManagerBypass__factory';
 export { IBorrower__factory } from './IBorrower__factory';
 export { IDebtToken__factory } from './IDebtToken__factory';
 export { IDnGmxBatchingManager__factory } from './IDnGmxBatchingManager__factory';
+export { IDnGmxBatchingManagerGlp__factory } from './IDnGmxBatchingManagerGlp__factory';
 export { IDnGmxJuniorVault__factory } from './IDnGmxJuniorVault__factory';
 export { IDnGmxSeniorVault__factory } from './IDnGmxSeniorVault__factory';
+export { IDnGmxTraderHedgeStrategy__factory } from './IDnGmxTraderHedgeStrategy__factory';
 export { IERC4626__factory } from './IERC4626__factory';
 export { IWETH9__factory } from './IWETH9__factory';

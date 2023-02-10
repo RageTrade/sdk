@@ -103,23 +103,17 @@ const _abi = [
     type: 'event',
   },
   {
-    anonymous: false,
-    inputs: [
+    inputs: [],
+    name: 'EMISSION_MANAGER',
+    outputs: [
       {
-        indexed: true,
         internalType: 'address',
-        name: 'oldEmissionManager',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newEmissionManager',
+        name: '',
         type: 'address',
       },
     ],
-    name: 'EmissionManagerUpdated',
-    type: 'event',
+    stateMutability: 'view',
+    type: 'function',
   },
   {
     inputs: [
@@ -164,6 +158,35 @@ const _abi = [
         internalType: 'uint8',
         name: '',
         type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'asset',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'reward',
+        type: 'address',
+      },
+    ],
+    name: 'getAssetIndex',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -378,19 +401,6 @@ const _abi = [
       },
     ],
     name: 'setDistributionEnd',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'emissionManager',
-        type: 'address',
-      },
-    ],
-    name: 'setEmissionManager',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

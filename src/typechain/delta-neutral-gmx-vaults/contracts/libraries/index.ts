@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { DnGmxJuniorVaultManager } from './DnGmxJuniorVaultManager';
+export type { QuoterLib } from './QuoterLib';

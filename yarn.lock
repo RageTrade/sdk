@@ -16,6 +16,11 @@
     axios-curlirize "^1.3.7"
     tmp-promise "^3.0.2"
 
+"@aave/core-v3@^1.17.2":
+  version "1.17.2"
+  resolved "https://registry.yarnpkg.com/@aave/core-v3/-/core-v3-1.17.2.tgz#dfb543da87d4d6429e0c277b46b84057349f590f"
+  integrity sha512-ztCyKTALoeOQy6MlWVRCvHgilh6vT+d6lwjXhIsmlEYlA0v3L6dQBIyTFIzHBUfcpEjs0T3tSmcVxGY+GAUZ1g==
+
 "@aave/periphery-v3@^1.19.2":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@aave/periphery-v3/-/periphery-v3-1.19.2.tgz#f16b54fdc4264413ee19f6f0d6b29b862d5dfc2c"
@@ -1667,7 +1672,7 @@
     node-fetch "^2.6.0"
     semver "^6.3.0"
 
-"@openzeppelin/contracts-upgradeable@^4.1.0", "@openzeppelin/contracts-upgradeable@^4.5.2", "@openzeppelin/contracts-upgradeable@^4.7.3":
+"@openzeppelin/contracts-upgradeable@4.7.3", "@openzeppelin/contracts-upgradeable@^4.1.0", "@openzeppelin/contracts-upgradeable@^4.5.2", "@openzeppelin/contracts-upgradeable@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.7.3.tgz#f1d606e2827d409053f3e908ba4eb8adb1dd6995"
   integrity sha512-+wuegAMaLcZnLCJIvrVUDzA9z/Wp93f0Dla/4jJvIhijRrPabjQbZe6fWiECLaJyfn5ci9fqf9vTw3xpQOad2A==
@@ -1697,7 +1702,7 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.6.0.tgz#c91cf64bc27f573836dba4122758b4743418c1b3"
   integrity sha512-8vi4d50NNya/bQqCmaVzvHNmwHvS0OBKb7HNtuNwEE3scXWrP31fKQoGxNMT+KbzmrNZzatE3QK5p2gFONI/hg==
 
-"@openzeppelin/contracts@^4.0.0", "@openzeppelin/contracts@^4.5.0", "@openzeppelin/contracts@^4.7.3":
+"@openzeppelin/contracts@4.7.3", "@openzeppelin/contracts@^4.0.0", "@openzeppelin/contracts@^4.5.0", "@openzeppelin/contracts@^4.7.3":
   version "4.7.3"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.7.3.tgz#939534757a81f8d69cc854c7692805684ff3111e"
   integrity sha512-dGRS0agJzu8ybo44pCIf3xBaPQN/65AIXNgK8+4gzKd5kbvlqyxryUYVLJv7fK98Seyd2hDZzVEHSWAh0Bt1Yw==
@@ -1745,19 +1750,20 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/delta-neutral-gmx-vaults@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.4.tgz#12c4c82be517f8306be8b8d37839ce50fc1ae6a1"
-  integrity sha512-92M7WjjeW8ekX1bMNpiWYdAhu1dBm5jsa1yrO29Eu1Dgr+CSKK2PnirEF6US+mAbQCJcjsF4qJgo6AS9nCk7Gw==
+"@ragetrade/delta-neutral-gmx-vaults@^1.1.0-alpha":
+  version "1.1.0-alpha"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.1.0-alpha.tgz#6eb089690ff3060b48943aa517d81eff951f4986"
+  integrity sha512-/ES1La+zOnsyPTXvBifggeVMEAEfYZxQRPBhl/Z1zoGXwtCBPaxv/Qy+1/EEVJXoboyrSedDbIHp6hfyM3dhBA==
   dependencies:
-    "@aave/core-v3" "^1.16.2"
+    "@aave/core-v3" "^1.17.2"
     "@aave/periphery-v3" "^1.19.2"
-    "@openzeppelin/contracts" "^4.7.3"
-    "@openzeppelin/contracts-upgradeable" "^4.7.3"
+    "@openzeppelin/contracts" "4.7.3"
+    "@openzeppelin/contracts-upgradeable" "4.7.3"
+    "@ragetrade/core" "^1.0.4-arbgoerli.5"
     "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
     "@solidity-parser/parser" "^0.14.3"
-    "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
-    "@uniswap/v3-periphery" "^1.4.0"
+    "@uniswap/v3-core" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
+    "@uniswap/v3-periphery" "https://github.com/RageTrade/uniswap-v3-periphery.git#2b35edf766db72694a29703b2beb25b10304417d"
 
 "@ragetrade/gmx-vault@^1.0.1-arbgoerli.4":
   version "1.0.1-arbgoerli.4"
@@ -2148,7 +2154,7 @@
     "@uniswap/lib" "1.1.1"
     "@uniswap/v2-core" "1.0.0"
 
-"@uniswap/v3-core-0.8-support@https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5":
+"@uniswap/v3-core-0.8-support@https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5", "@uniswap/v3-core@https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5":
   version "1.0.2-solc-0.8-simulate"
   resolved "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
 
@@ -2176,6 +2182,16 @@
     "@uniswap/v2-core" "1.0.1"
     "@uniswap/v3-core" "1.0.0"
     base64-sol "1.0.1"
+    hardhat-watcher "^2.1.1"
+
+"@uniswap/v3-periphery@https://github.com/RageTrade/uniswap-v3-periphery.git#2b35edf766db72694a29703b2beb25b10304417d":
+  version "1.4.2-solc-0.8"
+  resolved "https://github.com/RageTrade/uniswap-v3-periphery.git#2b35edf766db72694a29703b2beb25b10304417d"
+  dependencies:
+    "@openzeppelin/contracts" "4.6.0"
+    "@uniswap/v2-core" "1.0.1"
+    "@uniswap/v3-core" "1.0.2-solc-0.8-simulate"
+    base64-sol "1.1.0"
     hardhat-watcher "^2.1.1"
 
 "@uniswap/v3-periphery@https://github.com/Uniswap/v3-periphery#b325bb0905d922ae61fcc7df85ee802e8df5e96c":
