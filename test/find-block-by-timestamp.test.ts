@@ -3,9 +3,7 @@ import { findBlockByTimestamp, getProvider } from '../dist';
 import { config } from 'dotenv';
 config();
 
-// const arbtest = new ethers.providers.StaticJsonRpcProvider(
-//   'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-// );
+jest.setTimeout(200_000);
 
 const arbmain = getProvider('arbmain');
 

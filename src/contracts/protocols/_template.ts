@@ -16,9 +16,6 @@ export function getAddresses(
   switch (networkName) {
     case 'arbmain':
       return {};
-    case 'arbrinkeby':
-    case 'arbtest':
-      return {};
     case 'arbgoerli':
       return {};
     default:

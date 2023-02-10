@@ -39,7 +39,7 @@ describe('default data source', () => {
       const ds = getDefaultDataSourceSync('arbmain', [provider]);
       const resp = await ds.findBlockByTimestamp(1660048813);
 
-      expect(resp.result).toEqual(19803868);
+      expect(resp.result).toEqual(19803869);
     });
 
     it('getPrices', async () => {

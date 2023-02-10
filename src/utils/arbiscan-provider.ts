@@ -12,9 +12,6 @@ export class ArbiscanProvider extends ethers.providers.EtherscanProvider {
     switch (this.network ? this.network.name : 'invalid') {
       case 'arbmain':
         return 'https://api.arbiscan.io';
-      case 'arbtest':
-      case 'arbrinkeby':
-        return 'https://api-testnet.arbiscan.io';
       case 'arbgoerli':
         return 'https://api-goerli.arbiscan.io';
       default:

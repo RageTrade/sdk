@@ -33,15 +33,6 @@ export function getAddresses(
         gaugeAddress: '0x97E2768e8E73511cA874545DC5Ff8067eB19B787',
         tricryptoPoolAddress: '0x960ea3e3C7FB317332d990873d354E18d7645590',
       };
-    case 'arbrinkeby':
-    case 'arbtest':
-      return {
-        crvAddress: '0xc6BeC13cBf941E3f9a0D3d21B68c5518475a3bAd',
-        tricryptoAddress: '0x931073e47baA30389A195CABcf5F3549157afdc9',
-        quoterAddress: '0x07E837cAbcC37A8b185051Ae0E984346CECde049',
-        gaugeAddress: '0xcFe36c05f4001E01f0f549Faa3a2d248446D03D2',
-        tricryptoPoolAddress: '0x07E837cAbcC37A8b185051Ae0E984346CECde049',
-      };
     case 'arbgoerli':
       return {
         crvAddress: '0xABd31E80d9c52c1B6c536eAa40D965B3bEc5F9e3',

@@ -1,25 +1,31 @@
 import { BigNumber, ethers } from 'ethers';
-import { core, uniswap, tricryptoVault, tokens, parseUsdc, Q128 } from '../';
+import {
+  core,
+  uniswap,
+  tricryptoVault,
+  tokens,
+  parseUsdc,
+  Q128,
+  getProvider,
+} from '../';
 
 import { config } from 'dotenv';
 import { hexZeroPad } from 'ethers/lib/utils';
 
 config();
 
-const arbtest = new ethers.providers.StaticJsonRpcProvider(
-  'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-);
+const arbgoerli = getProvider('arbgoerli');
 
 const wallet = new ethers.Wallet(
   process.env.PRIVATE_KEY ?? 'pvt key not present, pls enter it in .env file',
-  arbtest
+  arbgoerli
 );
 
 describe.skip('Uniswap quote', () => {
   it('works usdc crv3', async () => {
-    const { usdc, crv3, usdt } = await tokens.getContracts(arbtest);
-    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbtest);
-    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbtest);
+    const { usdc, crv3, usdt } = await tokens.getContracts(arbgoerli);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbgoerli);
+    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbgoerli);
 
     const inputUsdcAmount = parseUsdc('1');
 
@@ -51,10 +57,10 @@ describe.skip('Uniswap quote', () => {
   });
 
   it('works weth crv3', async () => {
-    const { eth_oracle } = await core.getContracts(arbtest);
-    const { weth, usdt, crv3 } = await tokens.getContracts(arbtest);
-    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbtest);
-    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbtest);
+    const { eth_oracle } = await core.getContracts(arbgoerli);
+    const { weth, usdt, crv3 } = await tokens.getContracts(arbgoerli);
+    const { curveYieldStrategy } = await tricryptoVault.getContracts(arbgoerli);
+    const { uniswapV3QuoterV1 } = await uniswap.getContracts(arbgoerli);
 
     const usdcAmount = parseUsdc('1');
     const ethPriceX128 = await eth_oracle.getTwapPriceX128(0);

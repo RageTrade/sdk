@@ -26,16 +26,12 @@ import {
 import { getProvider } from '../../providers';
 import * as arbgoerli from './arbgoerli';
 import * as arbmain from './arbmain';
-import * as arbrinkeby from './arbrinkeby';
 
 export function getDeployments(networkNameOrChainId: NetworkName | number) {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
       return arbmain.getDeployments();
-    case 'arbrinkeby':
-    case 'arbtest':
-      return arbrinkeby.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:

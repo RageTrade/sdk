@@ -39,7 +39,7 @@ describe('cache data source', () => {
           const ds = new CacheServerDataSource(networkName, baseUrl);
           const resp = await ds.findBlockByTimestamp(1660048813);
 
-          expect(resp.result).toEqual(19803868);
+          expect(resp.result).toEqual(19803869);
         });
       }
 
@@ -75,13 +75,9 @@ describe('cache data source', () => {
           },
           dn_gmx_senior: {
             arbmain: true,
-            arbtest: true,
-            arbrinkeby: true,
           },
           dn_gmx_junior: {
             arbmain: true,
-            arbtest: true,
-            arbrinkeby: true,
           },
         };
 

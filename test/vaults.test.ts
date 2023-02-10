@@ -3,7 +3,6 @@ import {
   sdk,
   supportedVaultNames,
   supportedNetworkNames,
-  aliasNetworkNames,
   getDefaultDataSourceSync,
 } from '../dist';
 
@@ -15,13 +14,11 @@ const skipIf: any = {
   },
   dn_gmx_senior: {
     arbmain: true,
-    arbtest: true,
-    arbrinkeby: true,
+    arbgoerli: true,
   },
   dn_gmx_junior: {
     arbmain: true,
-    arbtest: true,
-    arbrinkeby: true,
+    arbgoerli: true,
   },
 };
 
@@ -31,7 +28,6 @@ describe('vaults', () => {
       vaultName,
       () => {
         for (const networkName of supportedNetworkNames) {
-          if (aliasNetworkNames.includes(networkName)) continue;
           ((skipIf?.[vaultName as any]?.[networkName as any] as any) === true
             ? describe.skip
             : describe)(networkName, () => {

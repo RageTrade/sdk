@@ -11,15 +11,12 @@ import {
   SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
-import * as arbrinkeby from './arbrinkeby';
+
 import * as arbgoerli from './arbgoerli';
 
 export function getDeployments(networkNameOrChainId: NetworkName | number) {
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
-    case 'arbrinkeby':
-    case 'arbtest':
-      return arbrinkeby.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:

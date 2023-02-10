@@ -42,21 +42,21 @@ describe('default pools', () => {
     });
   });
 
-  describe('arbtest', () => {
+  describe('arbgoerli', () => {
     it('defaultPool', async () => {
       expect(
-        ethers.utils.isHexString(defaultPools.arbtest.vTokenAddress)
+        ethers.utils.isHexString(defaultPools.arbgoerli.vTokenAddress)
       ).toBeTruthy();
       expect(
-        ethers.utils.isHexString(defaultPools.arbtest.vPoolAddress)
+        ethers.utils.isHexString(defaultPools.arbgoerli.vPoolAddress)
       ).toBeTruthy();
     });
     it('defaultPool', async () => {
       expect(
-        ethers.utils.isHexString(allPools.arbtest[0].vTokenAddress)
+        ethers.utils.isHexString(allPools.arbgoerli[0].vTokenAddress)
       ).toBeTruthy();
       expect(
-        ethers.utils.isHexString(allPools.arbtest[0].vPoolAddress)
+        ethers.utils.isHexString(allPools.arbgoerli[0].vPoolAddress)
       ).toBeTruthy();
     });
   });
@@ -81,7 +81,7 @@ describe('default pools', () => {
   });
 
   it('parseName', async () => {
-    expect(parseName(defaultPools.arbtest.name)).toEqual('Ether');
-    expect(parseSymbol(defaultPools.arbtest.symbol)).toEqual('ETH');
+    expect(parseName(defaultPools.arbgoerli.name)).toEqual('Ether');
+    expect(parseSymbol(defaultPools.arbgoerli.symbol)).toEqual('ETH');
   });
 });

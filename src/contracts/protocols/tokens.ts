@@ -49,20 +49,6 @@ export function getAddresses(
         sGLPAddress,
         fsGLPAddress,
       };
-    case 'arbrinkeby':
-    case 'arbtest':
-      return {
-        wethAddress: '0xFCfbfcC11d12bCf816415794E5dc1BBcc5304e01',
-        wbtcAddress: '0xF2bf2a5CF00c9121A18d161F6738D39Ab576DB68',
-        usdtAddress: '0x237b3B5238D2022aA80cAd1f67dAE53f353F74bF',
-        usdcAddress: coreDeployments.SettlementTokenDeployment.address,
-        crvAddress,
-        tricryptoAddress,
-        gmxAddress,
-        glpAddress,
-        sGLPAddress,
-        fsGLPAddress,
-      };
     case 'arbgoerli':
       return {
         wethAddress: '0xCDa739D69067333974cD73A722aB92E5e0ad8a4F',

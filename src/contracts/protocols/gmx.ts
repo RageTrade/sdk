@@ -42,19 +42,6 @@ export function getAddresses(
           '0xB95DB5B167D75e6d04227CfFFA61069348d271F5',
         vaultAddress: '0x489ee077994B6658eAfA855C308275EAd8097C4A',
       };
-    case 'arbrinkeby':
-    case 'arbtest':
-      return {
-        gmxAddress: '0x0A72Ee78CcC55b979A4a77943745b202A11A931B',
-        glpAddress: '0xc78Cb6Ee5515109064E4DBca1c38759b6da4615f',
-        sGLPAddress: '0xe2f057A1F5A1F100b9bF991709432f89602eAC68',
-        fsGLPAddress: '0x5964b93A672CAbb2E7D8c482B882Ec66ED15da23',
-        glpManagerAddress: '0x9f3be2329E1698eEfFE1c9358a3AB2e7fdBeF527',
-        rewardRouterAddress: '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
-        mintBurnRewardRouterAddress:
-          '0xd007269EbdA744566225FBa7fCCee758d7dCE0FC',
-        vaultAddress: '0x613512Ec9906975d29e1308f87454485D1b264fD',
-      };
     case 'arbgoerli':
       return {
         gmxAddress: '0x2633773f03E411183eA45490eAEcA801a0046AfA',

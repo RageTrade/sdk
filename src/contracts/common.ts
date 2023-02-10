@@ -1,21 +1,13 @@
 import { Signer, providers } from 'ethers';
-import { newError, warn } from '../utils/loggers';
+import { newError } from '../utils/loggers';
 
-export const supportedNetworkNames = [
-  'arbmain',
-  'arbrinkeby',
-  'arbgoerli',
-  'arbtest',
-] as const;
-export const aliasNetworkNames = ['arbtest'];
+export const supportedNetworkNames = ['arbmain', 'arbgoerli'] as const;
 
 export type ChainIds = {
   [K in typeof supportedNetworkNames[number]]: number;
 };
 export const chainIds: ChainIds = {
   arbmain: 42161,
-  arbtest: 421611, // alias TODO remove
-  arbrinkeby: 421611,
   arbgoerli: 421613,
 };
 
@@ -32,8 +24,6 @@ export interface ContractDeployment {
 
 export function getNetworkNameFromChainId(chainId: number): NetworkName {
   for (const networkName of supportedNetworkNames) {
-    if (aliasNetworkNames.includes(networkName)) continue; // ignore alias
-
     if (chainIds[networkName] === chainId) {
       return networkName;
     }
@@ -47,15 +37,7 @@ export function sanitizeNetworkName(networkName: string): NetworkName {
   if (chainId === undefined) {
     throw newError(`networkName ${networkName} not recognized`);
   }
-
   const networkNameSanitized = getNetworkNameFromChainId(chainId);
-
-  if (aliasNetworkNames.includes(networkName)) {
-    warn(
-      `use of networkName "${networkName}" is deprecated, please use "${networkNameSanitized}"`
-    );
-  }
-
   return networkNameSanitized;
 }
 

@@ -39,9 +39,9 @@ async function getPoolsList() {
     const provider = sdk.getProvider(chainName);
     if (provider) {
       try {
-        const providerArbiscan = getArbiscanProvider(chainName);
-        const { rageTradeFactory } = await core.getContracts(
-          providerArbiscan ?? provider
+        const { rageTradeFactory } = await core.getContractsSync(
+          chainName,
+          provider
         );
         const events = await rageTradeFactory.queryFilter(
           rageTradeFactory.filters.PoolInitialized()
@@ -94,41 +94,6 @@ async function getPoolsList() {
 
 function getArbiscanProvider(chainName) {
   try {
-    if (chainName === 'arbrinkeby' || chainName === 'arbtest') {
-      throw new Error('some issue is there');
-    }
-    return sdk.getProvider(chainName);
-    // return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
+    return new sdk.ArbiscanProvider(chainName, process.env.ARBISCAN_KEY);
   } catch {}
 }
-
-// function getProvider(chainName) {
-//   try {
-//     return new providers.AlchemyProvider(
-//       chainName,
-//       process.env.ALCHEMY_API_KEY
-//     );
-//   } catch {}
-
-//   if (!process.env.ALCHEMY_KEY) {
-//     throw new Error('Please provide ALCHEMY_KEY in .env');
-//   }
-
-//   try {
-//     if (chainName === 'arbmain') {
-//       return new providers.StaticJsonRpcProvider(
-//         'https://arb-mainnet.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-//       );
-//     } else if (chainName === 'arbtest') {
-//       return new providers.StaticJsonRpcProvider(
-//         'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-//       );
-//     } else if (chainName === 'arbgoerli') {
-//       return new providers.StaticJsonRpcProvider(
-//         'https://arb-rinkeby.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
-//       );
-//     } else {
-//       return undefined;
-//     }
-//   } catch {}
-// }
