@@ -5,6 +5,8 @@ export interface DnGmxVaultDeployments {
   DepositPeripheryDeployment: ContractDeployment;
   DnGmxBatchingManagerDeployment: ContractDeployment;
   DnGmxBatchingManagerLogicDeployment: ContractDeployment;
+  DnGmxBatchingManagerGlpDeployment: ContractDeployment;
+  DnGmxBatchingManagerGlpLogicDeployment: ContractDeployment;
   DnGmxJuniorVaultDeployment: ContractDeployment;
   DnGmxJuniorVaultLogicDeployment: ContractDeployment;
   DnGmxJuniorVaultManagerLibraryDeployment: ContractDeployment;

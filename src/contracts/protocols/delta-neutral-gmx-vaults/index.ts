@@ -6,6 +6,7 @@ import {
   BatchingManagerBypass__factory,
   DepositPeriphery__factory,
   ProxyAdmin__factory,
+  DnGmxBatchingManagerGlp__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
@@ -15,8 +16,9 @@ import {
   SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
-import * as arbgoerli from './arbgoerli';
 import * as arbmain from './arbmain';
+import * as mainnetfork from './mainnetfork';
+import * as arbgoerli from './arbgoerli';
 import { DnGmxVaultDeployments } from './interface';
 
 export function getDeployments(
@@ -25,8 +27,9 @@ export function getDeployments(
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
-    case 'mainnetfork':
       return arbmain.getDeployments();
+    case 'mainnetfork':
+      return mainnetfork.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:
@@ -68,6 +71,10 @@ export function getContractsSync(
     ),
     dnGmxBatchingManager: DnGmxBatchingManager__factory.connect(
       deployments.DnGmxBatchingManagerDeployment.address,
+      signerOrProvider
+    ),
+    dnGmxBatchingManagerGlp: DnGmxBatchingManagerGlp__factory.connect(
+      deployments.DnGmxBatchingManagerGlpDeployment.address,
       signerOrProvider
     ),
     dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
