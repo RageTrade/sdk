@@ -369,7 +369,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'SharesClaimed(address,address,uint256)': EventFragment;
     'ThresholdsUpdated(uint256,uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
-    'VaultDeposit(uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
@@ -385,7 +384,6 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
 export interface BatchDepositEventObject {
@@ -528,16 +526,6 @@ export interface UnpausedEventObject {
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface VaultDepositEventObject {
-  vaultGlpAmount: BigNumber;
-}
-export type VaultDepositEvent = TypedEvent<
-  [BigNumber],
-  VaultDepositEventObject
->;
-
-export type VaultDepositEventFilter = TypedEventFilter<VaultDepositEvent>;
 
 export interface DnGmxBatchingManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -1055,9 +1043,6 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
-
-    'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
-    VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;
   };
 
   estimateGas: {

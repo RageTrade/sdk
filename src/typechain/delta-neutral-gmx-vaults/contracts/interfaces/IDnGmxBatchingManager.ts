@@ -136,7 +136,6 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
     'ThresholdsUpdated(uint256,uint256)': EventFragment;
-    'VaultDeposit(uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
@@ -148,7 +147,6 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
 export interface BatchDepositEventObject {
@@ -259,16 +257,6 @@ export type ThresholdsUpdatedEvent = TypedEvent<
 export type ThresholdsUpdatedEventFilter =
   TypedEventFilter<ThresholdsUpdatedEvent>;
 
-export interface VaultDepositEventObject {
-  vaultGlpAmount: BigNumber;
-}
-export type VaultDepositEvent = TypedEvent<
-  [BigNumber],
-  VaultDepositEventObject
->;
-
-export type VaultDepositEventFilter = TypedEventFilter<VaultDepositEvent>;
-
 export interface IDnGmxBatchingManager extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -315,7 +303,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     ): Promise<[BigNumber] & { balance: BigNumber }>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -352,7 +340,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
   dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
   executeBatch(
-    usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+    usdcAmountToConvert: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -389,7 +377,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -500,9 +488,6 @@ export interface IDnGmxBatchingManager extends BaseContract {
       newSlippageThresholdGmx?: null,
       minUsdcConversionAmount?: null
     ): ThresholdsUpdatedEventFilter;
-
-    'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
-    VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;
   };
 
   estimateGas: {
@@ -523,7 +508,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     dnGmxJuniorVaultGlpBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -563,7 +548,7 @@ export interface IDnGmxBatchingManager extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      usdcAmountToConvert: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

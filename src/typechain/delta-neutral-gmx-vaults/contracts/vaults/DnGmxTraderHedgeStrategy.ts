@@ -43,6 +43,7 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
     'setKeeper(address)': FunctionFragment;
     'setTraderOIHedgeBps(uint16)': FunctionFragment;
     'setTraderOIHedges()': FunctionFragment;
+    'traderOIHedgeBps()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'wbtc()': FunctionFragment;
     'weth()': FunctionFragment;
@@ -64,6 +65,7 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
       | 'setKeeper'
       | 'setTraderOIHedgeBps'
       | 'setTraderOIHedges'
+      | 'traderOIHedgeBps'
       | 'transferOwnership'
       | 'wbtc'
       | 'weth'
@@ -122,6 +124,10 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: 'traderOIHedgeBps',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'transferOwnership',
     values: [PromiseOrValue<string>]
   ): string;
@@ -161,6 +167,10 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setTraderOIHedges',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'traderOIHedgeBps',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -316,6 +326,8 @@ export interface DnGmxTraderHedgeStrategy extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    traderOIHedgeBps(overrides?: CallOverrides): Promise<[number]>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -377,6 +389,8 @@ export interface DnGmxTraderHedgeStrategy extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  traderOIHedgeBps(overrides?: CallOverrides): Promise<number>;
+
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -433,6 +447,8 @@ export interface DnGmxTraderHedgeStrategy extends BaseContract {
     ): Promise<void>;
 
     setTraderOIHedges(overrides?: CallOverrides): Promise<void>;
+
+    traderOIHedgeBps(overrides?: CallOverrides): Promise<number>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -535,6 +551,8 @@ export interface DnGmxTraderHedgeStrategy extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    traderOIHedgeBps(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -596,6 +614,8 @@ export interface DnGmxTraderHedgeStrategy extends BaseContract {
     setTraderOIHedges(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    traderOIHedgeBps(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

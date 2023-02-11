@@ -316,7 +316,6 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
 
   events: {
     'BatchDeposit(uint256,uint256,uint256,uint256)': EventFragment;
-    'BatchStake(uint256,uint256,uint256)': EventFragment;
     'ClaimedAndRedeemed(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
@@ -328,11 +327,9 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
     'SharesClaimed(address,address,uint256)': EventFragment;
     'ThresholdsUpdated(uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
-    'VaultDeposit(uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'BatchStake'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ClaimedAndRedeemed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
@@ -344,12 +341,11 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
 export interface BatchDepositEventObject {
   round: BigNumber;
-  userUsdcAmount: BigNumber;
+  totalAssets: BigNumber;
   userGlpAmount: BigNumber;
   userShareAmount: BigNumber;
 }
@@ -359,18 +355,6 @@ export type BatchDepositEvent = TypedEvent<
 >;
 
 export type BatchDepositEventFilter = TypedEventFilter<BatchDepositEvent>;
-
-export interface BatchStakeEventObject {
-  round: BigNumber;
-  userUsdcAmount: BigNumber;
-  userGlpAmount: BigNumber;
-}
-export type BatchStakeEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber],
-  BatchStakeEventObject
->;
-
-export type BatchStakeEventFilter = TypedEventFilter<BatchStakeEvent>;
 
 export interface ClaimedAndRedeemedEventObject {
   claimer: string;
@@ -470,7 +454,7 @@ export type SharesClaimedEvent = TypedEvent<
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
-  minUsdcConversionAmount: BigNumber;
+  minGlpDepositThreshold: BigNumber;
 }
 export type ThresholdsUpdatedEvent = TypedEvent<
   [BigNumber],
@@ -486,16 +470,6 @@ export interface UnpausedEventObject {
 export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface VaultDepositEventObject {
-  vaultGlpAmount: BigNumber;
-}
-export type VaultDepositEvent = TypedEvent<
-  [BigNumber],
-  VaultDepositEventObject
->;
-
-export type VaultDepositEventFilter = TypedEventFilter<VaultDepositEvent>;
 
 export interface DnGmxBatchingManagerGlp extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -870,27 +844,16 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
   filters: {
     'BatchDeposit(uint256,uint256,uint256,uint256)'(
       round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
+      totalAssets?: null,
       userGlpAmount?: null,
       userShareAmount?: null
     ): BatchDepositEventFilter;
     BatchDeposit(
       round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
+      totalAssets?: null,
       userGlpAmount?: null,
       userShareAmount?: null
     ): BatchDepositEventFilter;
-
-    'BatchStake(uint256,uint256,uint256)'(
-      round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
-      userGlpAmount?: null
-    ): BatchStakeEventFilter;
-    BatchStake(
-      round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
-      userGlpAmount?: null
-    ): BatchStakeEventFilter;
 
     'ClaimedAndRedeemed(address,address,uint256,uint256)'(
       claimer?: PromiseOrValue<string> | null,
@@ -966,17 +929,14 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
     ): SharesClaimedEventFilter;
 
     'ThresholdsUpdated(uint256)'(
-      minUsdcConversionAmount?: null
+      minGlpDepositThreshold?: null
     ): ThresholdsUpdatedEventFilter;
     ThresholdsUpdated(
-      minUsdcConversionAmount?: null
+      minGlpDepositThreshold?: null
     ): ThresholdsUpdatedEventFilter;
 
     'Unpaused(address)'(account?: null): UnpausedEventFilter;
     Unpaused(account?: null): UnpausedEventFilter;
-
-    'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
-    VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;
   };
 
   estimateGas: {

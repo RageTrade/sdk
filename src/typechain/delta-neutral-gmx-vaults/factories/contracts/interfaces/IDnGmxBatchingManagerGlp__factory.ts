@@ -64,7 +64,7 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'userUsdcAmount',
+        name: 'totalAssets',
         type: 'uint256',
       },
       {
@@ -81,31 +81,6 @@ const _abi = [
       },
     ],
     name: 'BatchDeposit',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'round',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'userUsdcAmount',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'userGlpAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'BatchStake',
     type: 'event',
   },
   {
@@ -258,24 +233,11 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'minUsdcConversionAmount',
+        name: 'minGlpDepositThreshold',
         type: 'uint256',
       },
     ],
     name: 'ThresholdsUpdated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'vaultGlpAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'VaultDeposit',
     type: 'event',
   },
   {
@@ -350,7 +312,7 @@ const _abi = [
     inputs: [
       {
         internalType: 'uint128',
-        name: 'usdcConversionFractionBps',
+        name: 'sGlpToDeposit',
         type: 'uint128',
       },
     ],

@@ -330,19 +330,6 @@ const _abi = [
     type: 'event',
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'vaultGlpAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'VaultDeposit',
-    type: 'event',
-  },
-  {
     inputs: [
       {
         internalType: 'address',

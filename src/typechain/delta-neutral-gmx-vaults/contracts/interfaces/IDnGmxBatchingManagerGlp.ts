@@ -115,7 +115,6 @@ export interface IDnGmxBatchingManagerGlpInterface extends utils.Interface {
 
   events: {
     'BatchDeposit(uint256,uint256,uint256,uint256)': EventFragment;
-    'BatchStake(uint256,uint256,uint256)': EventFragment;
     'ClaimedAndRedeemed(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
@@ -123,11 +122,9 @@ export interface IDnGmxBatchingManagerGlpInterface extends utils.Interface {
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
     'ThresholdsUpdated(uint256)': EventFragment;
-    'VaultDeposit(uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'BatchStake'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ClaimedAndRedeemed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
@@ -135,12 +132,11 @@ export interface IDnGmxBatchingManagerGlpInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultDeposit'): EventFragment;
 }
 
 export interface BatchDepositEventObject {
   round: BigNumber;
-  userUsdcAmount: BigNumber;
+  totalAssets: BigNumber;
   userGlpAmount: BigNumber;
   userShareAmount: BigNumber;
 }
@@ -150,18 +146,6 @@ export type BatchDepositEvent = TypedEvent<
 >;
 
 export type BatchDepositEventFilter = TypedEventFilter<BatchDepositEvent>;
-
-export interface BatchStakeEventObject {
-  round: BigNumber;
-  userUsdcAmount: BigNumber;
-  userGlpAmount: BigNumber;
-}
-export type BatchStakeEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber],
-  BatchStakeEventObject
->;
-
-export type BatchStakeEventFilter = TypedEventFilter<BatchStakeEvent>;
 
 export interface ClaimedAndRedeemedEventObject {
   claimer: string;
@@ -235,7 +219,7 @@ export type SharesClaimedEvent = TypedEvent<
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
-  minUsdcConversionAmount: BigNumber;
+  minGlpDepositThreshold: BigNumber;
 }
 export type ThresholdsUpdatedEvent = TypedEvent<
   [BigNumber],
@@ -244,16 +228,6 @@ export type ThresholdsUpdatedEvent = TypedEvent<
 
 export type ThresholdsUpdatedEventFilter =
   TypedEventFilter<ThresholdsUpdatedEvent>;
-
-export interface VaultDepositEventObject {
-  vaultGlpAmount: BigNumber;
-}
-export type VaultDepositEvent = TypedEvent<
-  [BigNumber],
-  VaultDepositEventObject
->;
-
-export type VaultDepositEventFilter = TypedEventFilter<VaultDepositEvent>;
 
 export interface IDnGmxBatchingManagerGlp extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -302,7 +276,7 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
     ): Promise<ContractTransaction>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      sGlpToDeposit: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -337,7 +311,7 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
   ): Promise<ContractTransaction>;
 
   executeBatch(
-    usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+    sGlpToDeposit: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -372,7 +346,7 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
     ): Promise<void>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      sGlpToDeposit: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -390,27 +364,16 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
   filters: {
     'BatchDeposit(uint256,uint256,uint256,uint256)'(
       round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
+      totalAssets?: null,
       userGlpAmount?: null,
       userShareAmount?: null
     ): BatchDepositEventFilter;
     BatchDeposit(
       round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
+      totalAssets?: null,
       userGlpAmount?: null,
       userShareAmount?: null
     ): BatchDepositEventFilter;
-
-    'BatchStake(uint256,uint256,uint256)'(
-      round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
-      userGlpAmount?: null
-    ): BatchStakeEventFilter;
-    BatchStake(
-      round?: PromiseOrValue<BigNumberish> | null,
-      userUsdcAmount?: null,
-      userGlpAmount?: null
-    ): BatchStakeEventFilter;
 
     'ClaimedAndRedeemed(address,address,uint256,uint256)'(
       claimer?: PromiseOrValue<string> | null,
@@ -471,14 +434,11 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
     ): SharesClaimedEventFilter;
 
     'ThresholdsUpdated(uint256)'(
-      minUsdcConversionAmount?: null
+      minGlpDepositThreshold?: null
     ): ThresholdsUpdatedEventFilter;
     ThresholdsUpdated(
-      minUsdcConversionAmount?: null
+      minGlpDepositThreshold?: null
     ): ThresholdsUpdatedEventFilter;
-
-    'VaultDeposit(uint256)'(vaultGlpAmount?: null): VaultDepositEventFilter;
-    VaultDeposit(vaultGlpAmount?: null): VaultDepositEventFilter;
   };
 
   estimateGas: {
@@ -502,7 +462,7 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
     ): Promise<BigNumber>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      sGlpToDeposit: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -538,7 +498,7 @@ export interface IDnGmxBatchingManagerGlp extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     executeBatch(
-      usdcConversionFractionBps: PromiseOrValue<BigNumberish>,
+      sGlpToDeposit: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
