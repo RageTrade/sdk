@@ -81,6 +81,7 @@ export {
   DnGmxJuniorVault,
   DnGmxBatchingManager,
   DnGmxBatchingManagerGlp,
+  DnGmxTraderHedgeStrategy__factory,
   WithdrawPeriphery,
   BatchingManagerBypass,
   DepositPeriphery,

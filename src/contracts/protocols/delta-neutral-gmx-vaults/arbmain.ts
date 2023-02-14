@@ -30,6 +30,9 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxJuniorVaultManagerLibraryDeployment,
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
+    DnGmxTraderHedgeStrategyDeployment: {
+      address: ethers.constants.AddressZero,
+    },
     WithdrawPeripheryDeployment,
     ProxyAdmin,
   };

@@ -7,6 +7,7 @@ import {
   DepositPeriphery__factory,
   ProxyAdmin__factory,
   DnGmxBatchingManagerGlp__factory,
+  DnGmxTraderHedgeStrategy__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
@@ -79,6 +80,10 @@ export function getContractsSync(
     ),
     dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
       deployments.DnGmxBatchingManagerLogicDeployment.address,
+      signerOrProvider
+    ),
+    dnGmxTraderHedgeStrategy: DnGmxTraderHedgeStrategy__factory.connect(
+      deployments.DnGmxTraderHedgeStrategyDeployment.address,
       signerOrProvider
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(

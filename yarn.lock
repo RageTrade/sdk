@@ -1750,10 +1750,10 @@
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
 
-"@ragetrade/delta-neutral-gmx-vaults@^1.1.0-alpha.1":
-  version "1.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.1.0-alpha.1.tgz#c4c199e1a401154709ead024e0c69abcb0b72c3a"
-  integrity sha512-QZ0Qtys+8q48ZmcTkSBOpvEto1o6ujVJ9JuuJcOHn0aEQLCtxD1ANzUCF6OpPWN9a5mCsQC2w/+YHZCUR98yCw==
+"@ragetrade/delta-neutral-gmx-vaults@^1.1.0-alpha.3":
+  version "1.1.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.1.0-alpha.3.tgz#9cd3030a56ee3908ce962aabc7023775afcce311"
+  integrity sha512-z+FgOYY4CdaULyxorH/x0/xYL2N60gsZ6XiFfcYOYe9ChM11PqS300CYr4gWzDFlRkTMylQ6rtxlWLwNCkRpYQ==
   dependencies:
     "@aave/core-v3" "^1.17.2"
     "@aave/periphery-v3" "^1.19.2"

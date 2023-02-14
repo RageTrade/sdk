@@ -9,6 +9,7 @@ import DnGmxJuniorVaultLogicDeployment from '../../../deployments/delta-neutral-
 import DnGmxJuniorVaultManagerLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxJuniorVaultManagerLibrary.json';
 import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxSeniorVault.json';
 import DnGmxSeniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxSeniorVaultLogic.json';
+import DnGmxTraderHedgeStrategyDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxTraderHedgeStrategy.json';
 import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/WithdrawPeriphery.json';
 import ProxyAdmin from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/ProxyAdmin.json';
 
@@ -27,6 +28,7 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxJuniorVaultManagerLibraryDeployment,
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
+    DnGmxTraderHedgeStrategyDeployment,
     WithdrawPeripheryDeployment,
     ProxyAdmin,
   };
