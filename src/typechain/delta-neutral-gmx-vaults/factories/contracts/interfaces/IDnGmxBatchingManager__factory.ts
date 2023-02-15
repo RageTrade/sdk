@@ -207,6 +207,25 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: 'address',
+        name: 'rewardsHarvestingRouter',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'weth',
+        type: 'address',
+      },
+    ],
+    name: 'ParamsV1Updated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: 'uint256',
         name: 'round',
         type: 'uint256',

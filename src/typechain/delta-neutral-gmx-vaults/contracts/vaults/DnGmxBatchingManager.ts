@@ -77,6 +77,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'roundUsdcBalance()': FunctionFragment;
     'setDepositCap(uint256)': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
+    'setParamsV1(address,address)': FunctionFragment;
     'setThresholds(uint256,uint256)': FunctionFragment;
     'slippageThresholdGmxBps()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
@@ -113,6 +114,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'roundUsdcBalance'
       | 'setDepositCap'
       | 'setKeeper'
+      | 'setParamsV1'
       | 'setThresholds'
       | 'slippageThresholdGmxBps'
       | 'transferOwnership'
@@ -216,6 +218,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'setKeeper',
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setParamsV1',
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setThresholds',
@@ -323,6 +329,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'setParamsV1',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'setThresholds',
     data: BytesLike
   ): Result;
@@ -364,6 +374,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'Initialized(uint8)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
     'OwnershipTransferred(address,address)': EventFragment;
+    'ParamsV1Updated(address,address)': EventFragment;
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'Paused(address)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
@@ -379,6 +390,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ParamsV1Updated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
@@ -475,6 +487,17 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface ParamsV1UpdatedEventObject {
+  rewardsHarvestingRouter: string;
+  weth: string;
+}
+export type ParamsV1UpdatedEvent = TypedEvent<
+  [string, string],
+  ParamsV1UpdatedEventObject
+>;
+
+export type ParamsV1UpdatedEventFilter = TypedEventFilter<ParamsV1UpdatedEvent>;
 
 export interface PartialBatchDepositEventObject {
   round: BigNumber;
@@ -641,6 +664,12 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setParamsV1(
+      _weth: PromiseOrValue<string>,
+      _rewardsHarvestingRouter: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
       _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -771,6 +800,12 @@ export interface DnGmxBatchingManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setParamsV1(
+    _weth: PromiseOrValue<string>,
+    _rewardsHarvestingRouter: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setThresholds(
     _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
     _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -893,6 +928,12 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setParamsV1(
+      _weth: PromiseOrValue<string>,
+      _rewardsHarvestingRouter: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
       _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -1006,6 +1047,15 @@ export interface DnGmxBatchingManager extends BaseContract {
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
+
+    'ParamsV1Updated(address,address)'(
+      rewardsHarvestingRouter?: PromiseOrValue<string> | null,
+      weth?: null
+    ): ParamsV1UpdatedEventFilter;
+    ParamsV1Updated(
+      rewardsHarvestingRouter?: PromiseOrValue<string> | null,
+      weth?: null
+    ): ParamsV1UpdatedEventFilter;
 
     'PartialBatchDeposit(uint256,uint256,uint256)'(
       round?: PromiseOrValue<BigNumberish> | null,
@@ -1130,6 +1180,12 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setKeeper(
       _keeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setParamsV1(
+      _weth: PromiseOrValue<string>,
+      _rewardsHarvestingRouter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1259,6 +1315,12 @@ export interface DnGmxBatchingManager extends BaseContract {
 
     setKeeper(
       _keeper: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setParamsV1(
+      _weth: PromiseOrValue<string>,
+      _rewardsHarvestingRouter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

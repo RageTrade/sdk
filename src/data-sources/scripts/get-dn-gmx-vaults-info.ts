@@ -63,7 +63,7 @@ export async function getDnGmxVaultsInfo(
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
     // junior vault
-    dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets()),
+    dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets(), false),
     dnGmxJuniorVault.getCurrentBorrows(),
     dnGmxJuniorVault.dnUsdcDeposited(), // TODO remove; this call is failing
     dnGmxJuniorVault.getUsdcBorrowed(),

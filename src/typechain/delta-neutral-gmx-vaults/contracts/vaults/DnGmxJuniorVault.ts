@@ -61,7 +61,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'getCurrentBorrows()': FunctionFragment;
     'getHedgeParams()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
-    'getOptimalBorrows(uint256)': FunctionFragment;
+    'getOptimalBorrows(uint256,bool)': FunctionFragment;
     'getPrice(bool)': FunctionFragment;
     'getPriceX128()': FunctionFragment;
     'getRebalanceParams()': FunctionFragment;
@@ -237,7 +237,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getOptimalBorrows',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPrice',
@@ -1169,6 +1169,7 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -1513,6 +1514,7 @@ export interface DnGmxJuniorVault extends BaseContract {
 
   getOptimalBorrows(
     glpDeposited: PromiseOrValue<BigNumberish>,
+    withUpdatedPoolAmounts: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -1851,6 +1853,7 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -2422,6 +2425,7 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -2712,6 +2716,7 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

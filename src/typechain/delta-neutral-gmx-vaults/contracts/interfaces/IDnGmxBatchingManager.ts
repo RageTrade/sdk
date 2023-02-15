@@ -133,6 +133,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'DepositCapUpdated(uint256)': EventFragment;
     'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
     'KeeperUpdated(address)': EventFragment;
+    'ParamsV1Updated(address,address)': EventFragment;
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
     'ThresholdsUpdated(uint256,uint256)': EventFragment;
@@ -144,6 +145,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'ParamsV1Updated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
@@ -219,6 +221,17 @@ export interface KeeperUpdatedEventObject {
 export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
 export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
+
+export interface ParamsV1UpdatedEventObject {
+  rewardsHarvestingRouter: string;
+  weth: string;
+}
+export type ParamsV1UpdatedEvent = TypedEvent<
+  [string, string],
+  ParamsV1UpdatedEventObject
+>;
+
+export type ParamsV1UpdatedEventFilter = TypedEventFilter<ParamsV1UpdatedEvent>;
 
 export interface PartialBatchDepositEventObject {
   round: BigNumber;
@@ -457,6 +470,15 @@ export interface IDnGmxBatchingManager extends BaseContract {
 
     'KeeperUpdated(address)'(newKeeper?: null): KeeperUpdatedEventFilter;
     KeeperUpdated(newKeeper?: null): KeeperUpdatedEventFilter;
+
+    'ParamsV1Updated(address,address)'(
+      rewardsHarvestingRouter?: PromiseOrValue<string> | null,
+      weth?: null
+    ): ParamsV1UpdatedEventFilter;
+    ParamsV1Updated(
+      rewardsHarvestingRouter?: PromiseOrValue<string> | null,
+      weth?: null
+    ): ParamsV1UpdatedEventFilter;
 
     'PartialBatchDeposit(uint256,uint256,uint256)'(
       round?: PromiseOrValue<BigNumberish> | null,

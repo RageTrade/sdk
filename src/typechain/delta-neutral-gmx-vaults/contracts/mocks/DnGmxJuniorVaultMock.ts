@@ -76,7 +76,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'getGlpPriceInUsdc(bool)': FunctionFragment;
     'getHedgeParams()': FunctionFragment;
     'getMarketValue(uint256)': FunctionFragment;
-    'getOptimalBorrows(uint256)': FunctionFragment;
+    'getOptimalBorrows(uint256,bool)': FunctionFragment;
     'getOptimalCappedBorrows(uint256,uint256)': FunctionFragment;
     'getPrice(address)': FunctionFragment;
     'getPrice(address,bool)': FunctionFragment;
@@ -86,7 +86,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'getRebalanceParams()': FunctionFragment;
     'getSlippageAdjustedAssets(uint256,bool)': FunctionFragment;
     'getThresholds()': FunctionFragment;
-    'getTokenReservesInGlp(address,uint256)': FunctionFragment;
+    'getTokenReservesInGlp(address,uint256,bool)': FunctionFragment;
     'getUsdcBorrowed()': FunctionFragment;
     'getVaultMarketValue()': FunctionFragment;
     'grantAllowances()': FunctionFragment;
@@ -397,7 +397,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getOptimalBorrows',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'getOptimalCappedBorrows',
@@ -437,7 +437,11 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTokenReservesInGlp',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUsdcBorrowed',
@@ -1610,6 +1614,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -1688,6 +1693,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -2176,6 +2182,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
   getOptimalBorrows(
     glpDeposited: PromiseOrValue<BigNumberish>,
+    withUpdatedPoolAmounts: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -2254,6 +2261,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
   getTokenReservesInGlp(
     token: PromiseOrValue<string>,
     glpDeposited: PromiseOrValue<BigNumberish>,
+    withUpdatedPoolAmounts: PromiseOrValue<boolean>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -2732,6 +2740,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -2810,6 +2819,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3452,6 +3462,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3494,6 +3505,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -3944,6 +3956,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     getOptimalBorrows(
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -3988,6 +4001,7 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     getTokenReservesInGlp(
       token: PromiseOrValue<string>,
       glpDeposited: PromiseOrValue<BigNumberish>,
+      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
