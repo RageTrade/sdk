@@ -15,6 +15,10 @@ import { DnGmxJITDeployments } from './interface';
 export function getDeployments(
   networkNameOrChainId: NetworkName | number
 ): DnGmxJITDeployments {
+  console.warn(
+    'DO NOT USE JIT CONTRACTS. ANY DEPOSITS WILL GO TO REAL CONTRACTS AND NOT ON THE PARALLEL CONTRACTS'
+  );
+
   const networkName = getNetworkName(networkNameOrChainId);
   switch (networkName) {
     case 'arbmain':
