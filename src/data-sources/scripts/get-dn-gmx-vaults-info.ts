@@ -52,6 +52,8 @@ export async function getDnGmxVaultsInfo(
   const { aUsdc } = await aave.getContracts(provider);
   const { glpManager, fsGLP } = await gmxProtocol.getContracts(provider);
 
+  const zero = () => ethers.constants.Zero;
+
   const [
     // junior vault
     dnGmxJuniorVault_getOptimalBorrows_of_totalAssets,
@@ -79,6 +81,8 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManagerGlp_targetAssetCap,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
+    glpManager_getAum_false,
+    fsGLP_totalSupply,
   ] = await Promise.all([
     // junior vault
     (async () => {
@@ -115,15 +119,17 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager.paused(),
     dnGmxBatchingManager.depositCap(),
     dnGmxBatchingManager.roundUsdcBalance(),
-    dnGmxBatchingManager.targetAssetCap(),
+    dnGmxBatchingManager.targetAssetCap().catch(zero),
     dnGmxBatchingManager.roundGlpStaked(),
     // batching manager glp
-    dnGmxBatchingManagerGlp.paused(),
-    dnGmxBatchingManagerGlp.depositCap(),
-    dnGmxBatchingManagerGlp.roundAssetBalance(),
-    dnGmxBatchingManagerGlp.targetAssetCap(),
+    dnGmxBatchingManagerGlp.paused().catch(() => false),
+    dnGmxBatchingManagerGlp.depositCap().catch(zero),
+    dnGmxBatchingManagerGlp.roundAssetBalance().catch(zero),
+    dnGmxBatchingManagerGlp.targetAssetCap().catch(zero),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
+    glpManager.getAum(false),
+    fsGLP.totalSupply(),
   ] as const);
 
   const D18 = parseEther('1');
@@ -190,11 +196,11 @@ export async function getDnGmxVaultsInfo(
           ethers.constants.Zero,
           min(
             dnGmxBatchingManager_depositCap,
-            await glpToUsdc(
+            glpToUsdc(
               dnGmxBatchingManager_targetAssetCap.sub(
                 dnGmxJuniorVault_totalAssets
                   .add(dnGmxBatchingManagerGlp_roundAssetBalance)
-                  .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+                  .add(usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
               )
             )
           )
@@ -216,7 +222,7 @@ export async function getDnGmxVaultsInfo(
             dnGmxBatchingManagerGlp_targetAssetCap.sub(
               dnGmxJuniorVault_totalAssets
                 .add(dnGmxBatchingManagerGlp_roundAssetBalance)
-                .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+                .add(usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
                 .sub(dnGmxBatchingManager_roundGlpStaked)
             )
           )
@@ -254,23 +260,19 @@ export async function getDnGmxVaultsInfo(
     },
   };
 
-  async function usdcToGlp(amount: BigNumber) {
-    // aum is in 1e30
-    const aum = await glpManager.getAum(false);
-    // totalSupply is in 1e18
-    const totalSupply = await fsGLP.totalSupply();
-
+  function usdcToGlp(amount: BigNumber) {
     // 6 + 18 + 24 - 30 = 18 (glp decimals)
-    return amount.mul(totalSupply).mul(BigNumber.from(10).pow(24)).div(aum);
+    return amount
+      .mul(fsGLP_totalSupply)
+      .mul(BigNumber.from(10).pow(24))
+      .div(glpManager_getAum_false);
   }
 
-  async function glpToUsdc(amount: BigNumber) {
-    // aum is in 1e30
-    const aum = await glpManager.getAum(false);
-    // totalSupply is in 1e18
-    const totalSupply = await fsGLP.totalSupply();
-
-    return amount.mul(aum).div(totalSupply).div(BigNumber.from(10).pow(24));
+  function glpToUsdc(amount: BigNumber) {
+    return amount
+      .mul(glpManager_getAum_false)
+      .div(fsGLP_totalSupply)
+      .div(BigNumber.from(10).pow(24));
   }
 }
 
