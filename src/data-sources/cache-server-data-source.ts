@@ -21,8 +21,7 @@ import {
 import { MintBurnConversionIntermediateResult } from './scripts/get-mint-burn-conversion-intermediate';
 
 export class CacheServerDataSource extends BaseDataSource {
-  // _baseUrl = 'http://localhost:3000'; // use constructor arg
-  _baseUrl = 'https://apis.rage.trade';
+  _baseUrl: string;
   _networkName: NetworkName;
 
   constructor(networkNameOrChainId: NetworkName | number, baseUrl?: string) {
@@ -30,6 +29,8 @@ export class CacheServerDataSource extends BaseDataSource {
     this._networkName = getNetworkName(networkNameOrChainId);
     if (baseUrl) {
       this._baseUrl = baseUrl;
+    } else {
+      this._baseUrl = 'https://apis.rage.trade';
     }
   }
 

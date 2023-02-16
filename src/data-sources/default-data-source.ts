@@ -9,6 +9,13 @@ import {
   FallbackDataSourceOptions,
 } from './fallback-data-source';
 
+/**
+ * Get a default data source for a given network
+ * @param networkName Name of the network
+ * @param providerOrSource Provider(s) or data source(s) to use as fallback, in addition to cache server.
+ * @param options Options for the fallback data source and cache server data source
+ * @returns Fallback data source
+ */
 export function getDefaultDataSourceSync(
   networkName: NetworkName,
   providerOrSource?:
@@ -16,9 +23,12 @@ export function getDefaultDataSourceSync(
     | ethers.providers.Provider[]
     | BaseDataSource
     | BaseDataSource[],
-  fallbackDataSourceOptions?: FallbackDataSourceOptions
+  options?: FallbackDataSourceOptions & { cacheServerBaseUrl?: string }
 ) {
-  const cacheDS = new CacheServerDataSource(networkName);
+  const cacheDS = new CacheServerDataSource(
+    networkName,
+    options?.cacheServerBaseUrl
+  );
   // const etherscanDS = new EtherscanDataSource(networkName);
   const sourcesArray: BaseDataSource[] = [];
 
@@ -34,22 +44,19 @@ export function getDefaultDataSourceSync(
     sourcesArray.push(providerOrSource);
   } else if (ethers.providers.Provider.isProvider(providerOrSource)) {
     sourcesArray.push(new EthersProviderDataSource(providerOrSource));
+  } else if (providerOrSource !== undefined) {
+    throw new Error(
+      'Invalid providerOrSource argument: ' + JSON.stringify(providerOrSource)
+    );
   }
 
-  return new FallbackDataSource(
-    [cacheDS, ...sourcesArray],
-    fallbackDataSourceOptions
-  );
+  return new FallbackDataSource([cacheDS, ...sourcesArray], options);
 }
 
 export async function getDefaultDataSource(
   provider: ethers.providers.Provider,
-  fallbackDataSourceOptions?: FallbackDataSourceOptions
+  options?: FallbackDataSourceOptions & { cacheServerBaseUrl?: string }
 ) {
   const networkName = await getNetworkNameFromProvider(provider);
-  return getDefaultDataSourceSync(
-    networkName,
-    provider,
-    fallbackDataSourceOptions
-  );
+  return getDefaultDataSourceSync(networkName, provider, options);
 }
