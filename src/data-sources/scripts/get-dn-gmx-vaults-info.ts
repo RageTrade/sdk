@@ -63,7 +63,25 @@ export async function getDnGmxVaultsInfo(
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
     // junior vault
-    dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets(), false),
+    (async () => {
+      // TODO remove this IIFE and use following call the upgrade is complete
+      // dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets(), false);
+      const totalAssets = await dnGmxJuniorVault.totalAssets();
+      try {
+        return await dnGmxJuniorVault.getOptimalBorrows(totalAssets, false);
+      } catch {
+        return new ethers.Contract(
+          dnGmxJuniorVault.address,
+          [
+            'function getOptimalBorrows(uint256 glpDeposited) external view returns (uint256 optimalBtcBorrow, uint256 optimalEthBorrow)',
+          ],
+          dnGmxJuniorVault.provider
+        ).getOptimalBorrows(totalAssets) as {
+          optimalBtcBorrow: BigNumber;
+          optimalEthBorrow: BigNumber;
+        };
+      }
+    })(),
     dnGmxJuniorVault.getCurrentBorrows(),
     dnGmxJuniorVault.dnUsdcDeposited(), // TODO remove; this call is failing
     dnGmxJuniorVault.getUsdcBorrowed(),
