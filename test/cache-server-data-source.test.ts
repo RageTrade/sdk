@@ -70,8 +70,13 @@ describe('cache data source', () => {
 
       describe(`getVaultInfo ${networkName}`, () => {
         const skipIf: any = {
+          tricrypto: {
+            arbmain: true,
+            mainnetfork: true,
+          },
           gmx: {
             arbmain: true,
+            mainnetfork: true,
           },
           dn_gmx_senior: {
             arbmain: true,

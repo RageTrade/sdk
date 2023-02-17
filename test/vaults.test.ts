@@ -9,8 +9,12 @@ import {
 jest.setTimeout(200_000);
 
 const skipIf: any = {
+  tricrypto: {
+    mainnetfork: true,
+  },
   gmx: {
     arbmain: true,
+    mainnetfork: true,
   },
   dn_gmx_senior: {
     arbmain: true,
