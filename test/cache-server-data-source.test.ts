@@ -80,9 +80,11 @@ describe('cache data source', () => {
           },
           dn_gmx_senior: {
             arbmain: true,
+            mainnetfork: true,
           },
           dn_gmx_junior: {
             arbmain: true,
+            mainnetfork: true,
           },
         };
 
