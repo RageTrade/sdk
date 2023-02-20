@@ -19,6 +19,7 @@ export function getDeployments(): DnGmxVaultDeployments {
     DepositPeripheryDeployment,
     DnGmxBatchingManagerDeployment,
     DnGmxBatchingManagerLogicDeployment,
+    // TODO remove these when we have the contracts deployed
     DnGmxBatchingManagerGlpDeployment: {
       address: ethers.constants.AddressZero,
     },
@@ -31,6 +32,9 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
     DnGmxTraderHedgeStrategyDeployment: {
+      address: ethers.constants.AddressZero,
+    },
+    DnGmxTraderHedgeStrategyLogicDeployment: {
       address: ethers.constants.AddressZero,
     },
     WithdrawPeripheryDeployment,

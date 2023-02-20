@@ -13,6 +13,7 @@ export interface DnGmxVaultDeployments {
   DnGmxSeniorVaultDeployment: ContractDeployment;
   DnGmxSeniorVaultLogicDeployment: ContractDeployment;
   DnGmxTraderHedgeStrategyDeployment: ContractDeployment;
+  DnGmxTraderHedgeStrategyLogicDeployment: ContractDeployment;
   WithdrawPeripheryDeployment: ContractDeployment;
   ProxyAdmin: ContractDeployment;
 }
