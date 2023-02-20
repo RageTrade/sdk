@@ -1736,6 +1736,21 @@
     "@uniswap/v3-core" "https://github.com/Uniswap/v3-core#6562c52e8f75f0c10f9deaf44861847585fc8129"
     "@uniswap/v3-periphery" "https://github.com/Uniswap/v3-periphery#b325bb0905d922ae61fcc7df85ee802e8df5e96c"
 
+"@ragetrade/delta-neutral-gmx-vaults@^1.0.0-parallel-arbmain.1":
+  version "1.0.0-parallel-arbmain.1"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.0-parallel-arbmain.1.tgz#d7ba8a5beb32d8e45de35ebee4fd17e199696515"
+  integrity sha512-1uXpIDN175fiqtqtCW0CWsPzvAUMy4YEcIRdPI7AEkqmZj1/Cb5+wOJDSpkKdUVCQAVem8q//1dqBcBZx+ugqA==
+  dependencies:
+    "@aave/core-v3" "^1.17.2"
+    "@aave/periphery-v3" "^1.19.2"
+    "@openzeppelin/contracts" "4.7.3"
+    "@openzeppelin/contracts-upgradeable" "4.7.3"
+    "@ragetrade/core" "^1.0.4-arbgoerli.5"
+    "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
+    "@solidity-parser/parser" "^0.14.3"
+    "@uniswap/v3-core" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
+    "@uniswap/v3-periphery" "https://github.com/RageTrade/uniswap-v3-periphery.git#2b35edf766db72694a29703b2beb25b10304417d"
+
 "@ragetrade/delta-neutral-gmx-vaults@^1.0.2-alpha.1":
   version "1.0.2-alpha.1"
   resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.2-alpha.1.tgz#5c5a084f1c4feebc7db370c845dc2beb8c77a464"
@@ -1749,21 +1764,6 @@
     "@solidity-parser/parser" "^0.14.3"
     "@uniswap/v3-core-0.8-support" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
     "@uniswap/v3-periphery" "^1.4.0"
-
-"@ragetrade/delta-neutral-gmx-vaults@^1.1.0-alpha.4":
-  version "1.1.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.1.0-alpha.4.tgz#4e04e8a39efde1f0f5f01d70195952d6e17d93e1"
-  integrity sha512-/2tnyflbET3v296VAauKjJfsZ+niQxlv0MIrUZPwpaQL5DR+dA2zs55aWnEgFLhx6742esbStzLFbXD9L46p/A==
-  dependencies:
-    "@aave/core-v3" "^1.17.2"
-    "@aave/periphery-v3" "^1.19.2"
-    "@openzeppelin/contracts" "4.7.3"
-    "@openzeppelin/contracts-upgradeable" "4.7.3"
-    "@ragetrade/core" "^1.0.4-arbgoerli.5"
-    "@rari-capital/solmate" "https://github.com/Rari-Capital/solmate.git#25015a1d18e75921f8cb1bacd4beb9f364e788a9"
-    "@solidity-parser/parser" "^0.14.3"
-    "@uniswap/v3-core" "https://github.com/uniswap/v3-core.git#d55e297b938e5b56fd1cf9fe668f5bd385be85b5"
-    "@uniswap/v3-periphery" "https://github.com/RageTrade/uniswap-v3-periphery.git#2b35edf766db72694a29703b2beb25b10304417d"
 
 "@ragetrade/gmx-vault@^1.0.1-arbgoerli.4":
   version "1.0.1-arbgoerli.4"
