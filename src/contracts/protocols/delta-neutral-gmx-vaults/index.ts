@@ -71,12 +71,16 @@ export function getContractsSync(
       deployments.DnGmxBatchingManagerDeployment.address,
       signerOrProvider
     ),
+    dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
+      deployments.DnGmxBatchingManagerLogicDeployment.address,
+      signerOrProvider
+    ),
     dnGmxBatchingManagerGlp: DnGmxBatchingManagerGlp__factory.connect(
       deployments.DnGmxBatchingManagerGlpDeployment.address,
       signerOrProvider
     ),
-    dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
-      deployments.DnGmxBatchingManagerLogicDeployment.address,
+    dnGmxBatchingManagerGlpLogic: DnGmxBatchingManagerGlp__factory.connect(
+      deployments.DnGmxBatchingManagerGlpLogicDeployment.address,
       signerOrProvider
     ),
     dnGmxTraderHedgeStrategy: DnGmxTraderHedgeStrategy__factory.connect(
