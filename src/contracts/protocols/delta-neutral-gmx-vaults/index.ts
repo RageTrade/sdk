@@ -18,6 +18,7 @@ import {
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbmain from './arbmain';
+import * as mainnetfork from './mainnetfork';
 import * as arbgoerli from './arbgoerli';
 import { DnGmxVaultDeployments } from './interface';
 
@@ -28,6 +29,8 @@ export function getDeployments(
   switch (networkName) {
     case 'arbmain':
       return arbmain.getDeployments();
+    case 'mainnetfork':
+      return mainnetfork.getDeployments();
     case 'arbgoerli':
       return arbgoerli.getDeployments();
     default:
@@ -85,6 +88,10 @@ export function getContractsSync(
     ),
     dnGmxTraderHedgeStrategy: DnGmxTraderHedgeStrategy__factory.connect(
       deployments.DnGmxTraderHedgeStrategyDeployment.address,
+      signerOrProvider
+    ),
+    dnGmxTraderHedgeStrategyLogic: DnGmxTraderHedgeStrategy__factory.connect(
+      deployments.DnGmxTraderHedgeStrategyLogicDeployment.address,
       signerOrProvider
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(
