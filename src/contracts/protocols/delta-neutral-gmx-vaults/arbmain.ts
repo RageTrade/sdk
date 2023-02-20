@@ -2,6 +2,8 @@ import BatchingManagerBypassDeployment from '../../../deployments/delta-neutral-
 import DepositPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DepositPeriphery.json';
 import DnGmxBatchingManagerDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManager.json';
 import DnGmxBatchingManagerLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManagerLogic.json';
+import DnGmxBatchingManagerGlpDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManagerGlp.json';
+import DnGmxBatchingManagerGlpLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxBatchingManagerGlpLogic.json';
 import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVault.json';
 import DnGmxJuniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultLogic.json';
 import DnGmxJuniorVaultManagerLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultManagerLibrary.json';
@@ -9,9 +11,9 @@ import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-v
 import DnGmxSeniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVaultLogic.json';
 import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/WithdrawPeriphery.json';
 import ProxyAdmin from '../../../deployments/delta-neutral-gmx-vaults/arbmain/ProxyAdmin.json';
+import DnGmxTraderHedgeStrategyDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxTraderHedgeStrategy.json';
 
 import { DnGmxVaultDeployments } from './interface';
-import { ethers } from 'ethers';
 
 export function getDeployments(): DnGmxVaultDeployments {
   return {
@@ -19,20 +21,14 @@ export function getDeployments(): DnGmxVaultDeployments {
     DepositPeripheryDeployment,
     DnGmxBatchingManagerDeployment,
     DnGmxBatchingManagerLogicDeployment,
-    DnGmxBatchingManagerGlpDeployment: {
-      address: ethers.constants.AddressZero,
-    },
-    DnGmxBatchingManagerGlpLogicDeployment: {
-      address: ethers.constants.AddressZero,
-    },
+    DnGmxBatchingManagerGlpDeployment,
+    DnGmxBatchingManagerGlpLogicDeployment,
     DnGmxJuniorVaultDeployment,
     DnGmxJuniorVaultLogicDeployment,
     DnGmxJuniorVaultManagerLibraryDeployment,
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
-    DnGmxTraderHedgeStrategyDeployment: {
-      address: ethers.constants.AddressZero,
-    },
+    DnGmxTraderHedgeStrategyDeployment,
     WithdrawPeripheryDeployment,
     ProxyAdmin,
   };
