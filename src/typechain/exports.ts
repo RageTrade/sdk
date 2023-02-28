@@ -56,14 +56,12 @@ export {
   GlpStakingManager__factory,
   GMXBatchingManager__factory,
   GMXYieldStrategy__factory,
-  IGlpManager__factory,
   IRewardRouterV2__factory,
   ISGLPExtended__factory,
   IVault__factory,
   GlpStakingManager,
   GMXBatchingManager,
   GMXYieldStrategy,
-  IGlpManager,
   IRewardRouterV2,
   ISGLPExtended,
   IVault,
@@ -77,6 +75,7 @@ export {
   WithdrawPeriphery__factory,
   BatchingManagerBypass__factory,
   DepositPeriphery__factory,
+  IGlpManager__factory,
   DnGmxSeniorVault,
   DnGmxJuniorVault,
   DnGmxBatchingManager,
@@ -85,6 +84,7 @@ export {
   WithdrawPeriphery,
   BatchingManagerBypass,
   DepositPeriphery,
+  IGlpManager,
 } from './delta-neutral-gmx-vaults';
 
 export {
