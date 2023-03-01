@@ -204,6 +204,7 @@ export class CacheServerDataSource extends BaseDataSource {
       avgVaultMarketValue: parseAmount(
         response2?.result?.avgVaultMarketValue ?? result.avgVaultMarketValue
       ),
+      paused: response2?.result?.paused ?? result.paused,
     }));
   }
 

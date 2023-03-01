@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { parseUnits } from 'ethers/lib/utils';
 import {
   VaultName,
@@ -39,6 +39,7 @@ export interface VaultInfoResult {
   vaultMarketValue: Amount;
   vaultMarketValuePending: Amount;
   avgVaultMarketValue: Amount;
+  paused: boolean | undefined;
 }
 
 const USD_DECIMALS = 6;
@@ -154,6 +155,17 @@ export async function getVaultInfo(
 
   const poolComposition = await getPoolComposition(provider, vaultName);
 
+  let paused: boolean | undefined;
+
+  try {
+    const pausedInterface = new Contract(
+      vault.address,
+      ['function paused() view returns (bool)'],
+      vault.provider
+    );
+    paused = await pausedInterface.paused();
+  } catch {}
+
   return {
     nativeProtocolName,
 
@@ -169,5 +181,6 @@ export async function getVaultInfo(
     vaultMarketValue,
     vaultMarketValuePending,
     avgVaultMarketValue,
+    paused,
   };
 }
