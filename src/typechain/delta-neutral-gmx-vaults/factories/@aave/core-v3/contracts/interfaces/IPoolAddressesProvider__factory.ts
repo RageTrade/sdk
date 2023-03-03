@@ -506,7 +506,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IPoolAddressesProvider__factory {
   static readonly abi = _abi;

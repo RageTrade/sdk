@@ -133,7 +133,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IQuoter__factory {
   static readonly abi = _abi;

@@ -848,7 +848,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IDnGmxSeniorVault__factory {
   static readonly abi = _abi;

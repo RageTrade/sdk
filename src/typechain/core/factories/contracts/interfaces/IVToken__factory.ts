@@ -237,7 +237,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IVToken__factory {
   static readonly abi = _abi;

@@ -15,7 +15,7 @@ const _abi = [
     name: 'InsufficientCollateralBalance',
     type: 'error',
   },
-];
+] as const;
 
 const _bytecode =
   '0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220c31ee151c709213a7e6a4ead2b9498f89060a0b7caf110abc6699ee45478340e64736f6c634300080e0033';

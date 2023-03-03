@@ -1421,7 +1421,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IVault__factory {
   static readonly abi = _abi;

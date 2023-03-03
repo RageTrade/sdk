@@ -88,7 +88,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'receive',
   },
-];
+] as const;
 
 export class PeripheryPayments__factory {
   static readonly abi = _abi;

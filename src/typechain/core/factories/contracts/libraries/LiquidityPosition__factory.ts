@@ -179,7 +179,7 @@ const _abi = [
     name: 'LiquidityPositionFundingPaymentRealized',
     type: 'event',
   },
-];
+] as const;
 
 const _bytecode =
   '0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212204c15e93e290ab8977f9592e75ab6b358ff6417dd203d6c66530288198ea7c96764736f6c634300080e0033';
