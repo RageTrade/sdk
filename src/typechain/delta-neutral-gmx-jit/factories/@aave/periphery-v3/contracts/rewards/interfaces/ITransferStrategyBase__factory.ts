@@ -119,7 +119,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class ITransferStrategyBase__factory {
   static readonly abi = _abi;

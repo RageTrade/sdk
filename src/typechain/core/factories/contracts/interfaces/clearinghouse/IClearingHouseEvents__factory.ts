@@ -207,7 +207,7 @@ const _abi = [
     name: 'ProtocolSettingsUpdated',
     type: 'event',
   },
-];
+] as const;
 
 export class IClearingHouseEvents__factory {
   static readonly abi = _abi;

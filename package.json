@@ -75,7 +75,7 @@
     "@ragetrade/gmx-vault": "^1.0.1-arbgoerli.4",
     "@ragetrade/tricrypto-vault": "^1.0.0-arbgoerli.5",
     "@size-limit/preset-small-lib": "^7.0.5",
-    "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/ethers-v5": "^10.2.0",
     "@types/fs-extra": "^9.0.13",
     "conditional-type-checks": "^1.0.6",
     "dotenv": "^16.0.0",

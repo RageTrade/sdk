@@ -15,7 +15,7 @@ const _abi = [
     name: 'UV3PH_OracleConsultFailed',
     type: 'error',
   },
-];
+] as const;
 
 const _bytecode =
   '0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220825c3b5a9bf4f7bb6ee864e60764aa6c1d126bcbca52d0adcabe6ff82853f1bd64736f6c634300080e0033';

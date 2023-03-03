@@ -20,7 +20,7 @@ const _abi = [
     name: 'T',
     type: 'error',
   },
-];
+] as const;
 
 const _bytecode =
   '0x6080806040523460175760119081601d823930815050f35b600080fdfe600080fdfea164736f6c6343000812000a';

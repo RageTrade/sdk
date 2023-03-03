@@ -383,7 +383,7 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IGMXBatchingManager__factory {
   static readonly abi = _abi;

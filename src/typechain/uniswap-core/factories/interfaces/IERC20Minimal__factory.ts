@@ -180,7 +180,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IERC20Minimal__factory {
   static readonly abi = _abi;

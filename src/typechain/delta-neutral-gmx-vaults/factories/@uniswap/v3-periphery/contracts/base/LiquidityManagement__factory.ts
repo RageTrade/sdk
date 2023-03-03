@@ -111,7 +111,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'receive',
   },
-];
+] as const;
 
 export class LiquidityManagement__factory {
   static readonly abi = _abi;

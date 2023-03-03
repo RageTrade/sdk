@@ -166,7 +166,7 @@ const _abi = [
     name: 'ZeroAmount',
     type: 'error',
   },
-];
+] as const;
 
 export class IClearingHouseCustomErrors__factory {
   static readonly abi = _abi;

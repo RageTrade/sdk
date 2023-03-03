@@ -162,7 +162,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class SelfPermit__factory {
   static readonly abi = _abi;

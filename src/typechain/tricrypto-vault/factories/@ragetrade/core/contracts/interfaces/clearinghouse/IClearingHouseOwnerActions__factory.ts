@@ -183,7 +183,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IClearingHouseOwnerActions__factory {
   static readonly abi = _abi;

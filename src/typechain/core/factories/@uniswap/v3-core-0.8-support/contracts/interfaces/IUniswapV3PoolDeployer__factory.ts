@@ -43,7 +43,7 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IUniswapV3PoolDeployer__factory {
   static readonly abi = _abi;
