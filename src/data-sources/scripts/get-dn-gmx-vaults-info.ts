@@ -32,6 +32,9 @@ export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
     depositCap: Amount;
     roundUsdcBalance: Amount;
   };
+  dnGmxBatchingManagerGlp: {
+    paused: boolean;
+  };
 }
 
 export async function getDnGmxVaultsInfo(
@@ -164,6 +167,9 @@ export async function getDnGmxVaultsInfo(
         dnGmxBatchingManager_roundUsdcBalance,
         6
       ),
+    },
+    dnGmxBatchingManagerGlp: {
+      paused: dnGmxBatchingManager_paused,
     },
   };
 }
