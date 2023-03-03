@@ -17,13 +17,20 @@ export interface DnGmxVaultsInfoFastResult {
     paused: boolean;
     roundUsdcBalance: Amount;
   };
+  dnGmxBatchingManagerGlp: {
+    paused: boolean;
+  };
 }
 
 export async function getDnGmxVaultsInfoFast(
   provider: ethers.providers.Provider
 ): Promise<DnGmxVaultsInfoFastResult> {
-  const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
-    await deltaNeutralGmxVaults.getContracts(provider);
+  const {
+    dnGmxJuniorVault,
+    dnGmxSeniorVault,
+    dnGmxBatchingManager,
+    dnGmxBatchingManagerGlp,
+  } = await deltaNeutralGmxVaults.getContracts(provider);
 
   const [
     // junior vault
@@ -36,6 +43,8 @@ export async function getDnGmxVaultsInfoFast(
     // batching manager
     dnGmxBatchingManager_paused,
     dnGmxBatchingManager_roundUsdcBalance,
+    // batching manager glp
+    dnGmxBatchingManagerGlp_paused,
   ] = await Promise.all([
     // junior vault
     dnGmxJuniorVault.getPrice(false),
@@ -47,6 +56,8 @@ export async function getDnGmxVaultsInfoFast(
     // batching manager
     dnGmxBatchingManager.paused(),
     dnGmxBatchingManager.roundUsdcBalance(),
+    // batching manager glp
+    dnGmxBatchingManagerGlp.paused(),
   ] as const);
 
   const D18 = parseEther('1');
@@ -81,6 +92,9 @@ export async function getDnGmxVaultsInfoFast(
         dnGmxBatchingManager_roundUsdcBalance,
         6
       ),
+    },
+    dnGmxBatchingManagerGlp: {
+      paused: dnGmxBatchingManagerGlp_paused,
     },
   };
 }
