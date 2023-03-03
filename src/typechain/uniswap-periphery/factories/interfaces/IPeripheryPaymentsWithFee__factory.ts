@@ -119,7 +119,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class IPeripheryPaymentsWithFee__factory {
   static readonly abi = _abi;

@@ -70,7 +70,7 @@ const _abi = [
     name: 'TUM',
     type: 'error',
   },
-];
+] as const;
 
 export class IUniswapV3PoolErrors__factory {
   static readonly abi = _abi;

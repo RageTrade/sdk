@@ -999,7 +999,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class INonfungiblePositionManager__factory {
   static readonly abi = _abi;

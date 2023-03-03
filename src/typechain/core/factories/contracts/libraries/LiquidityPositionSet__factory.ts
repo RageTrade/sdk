@@ -89,7 +89,7 @@ const _abi = [
     name: 'TokenPositionChangedDueToLiquidityChanged',
     type: 'event',
   },
-];
+] as const;
 
 const _bytecode =
   '0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220bc6e640b41df74760d18e492f9f06a31255e0f1a8c71ae8b7788da81f0dbd19464736f6c634300080e0033';

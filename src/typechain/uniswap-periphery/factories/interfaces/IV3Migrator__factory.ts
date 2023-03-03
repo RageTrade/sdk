@@ -295,7 +295,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class IV3Migrator__factory {
   static readonly abi = _abi;

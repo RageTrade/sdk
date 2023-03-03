@@ -111,7 +111,7 @@ const _abi = [
     name: 'TokenPositionFundingPaymentRealized',
     type: 'event',
   },
-];
+] as const;
 
 const _bytecode =
   '0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220f0c268479c011896c6fc2fd6823399bb95f132f0d09e7fc91e3330c74d39251f64736f6c634300080e0033';

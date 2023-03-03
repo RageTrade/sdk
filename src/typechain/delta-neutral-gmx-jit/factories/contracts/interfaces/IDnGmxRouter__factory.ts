@@ -47,7 +47,7 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IDnGmxRouter__factory {
   static readonly abi = _abi;
