@@ -95,6 +95,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'initialize(string,string,address,address,address,(address,address,address,address),address)': FunctionFragment;
     'isValidRebalance()': FunctionFragment;
     'isValidRebalanceDeviation()': FunctionFragment;
+    'isValidRebalanceDueToChangeInHedges()': FunctionFragment;
     'isValidRebalanceHF()': FunctionFragment;
     'isValidRebalanceTime()': FunctionFragment;
     'isWithinAllowedDelta(uint256,uint256)': FunctionFragment;
@@ -204,6 +205,7 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'initialize'
       | 'isValidRebalance'
       | 'isValidRebalanceDeviation'
+      | 'isValidRebalanceDueToChangeInHedges'
       | 'isValidRebalanceHF'
       | 'isValidRebalanceTime'
       | 'isWithinAllowedDelta'
@@ -481,6 +483,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'isValidRebalanceDeviation',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'isValidRebalanceDueToChangeInHedges',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -908,6 +914,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'isValidRebalanceDeviation',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'isValidRebalanceDueToChangeInHedges',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1734,6 +1744,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<[boolean]>;
 
+    isValidRebalanceDueToChangeInHedges(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     isValidRebalanceHF(overrides?: CallOverrides): Promise<[boolean]>;
 
     isValidRebalanceTime(overrides?: CallOverrides): Promise<[boolean]>;
@@ -2298,6 +2312,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
   isValidRebalanceDeviation(overrides?: CallOverrides): Promise<boolean>;
 
+  isValidRebalanceDueToChangeInHedges(
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   isValidRebalanceHF(overrides?: CallOverrides): Promise<boolean>;
 
   isValidRebalanceTime(overrides?: CallOverrides): Promise<boolean>;
@@ -2851,6 +2869,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<boolean>;
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<boolean>;
+
+    isValidRebalanceDueToChangeInHedges(
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     isValidRebalanceHF(overrides?: CallOverrides): Promise<boolean>;
 
@@ -3542,6 +3564,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     isValidRebalanceDeviation(overrides?: CallOverrides): Promise<BigNumber>;
 
+    isValidRebalanceDueToChangeInHedges(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isValidRebalanceHF(overrides?: CallOverrides): Promise<BigNumber>;
 
     isValidRebalanceTime(overrides?: CallOverrides): Promise<BigNumber>;
@@ -4039,6 +4065,10 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     isValidRebalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isValidRebalanceDeviation(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isValidRebalanceDueToChangeInHedges(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
