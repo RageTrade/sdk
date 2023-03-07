@@ -10,6 +10,7 @@ export interface DnGmxVaultDeployments {
   DnGmxJuniorVaultDeployment: ContractDeployment;
   DnGmxJuniorVaultLogicDeployment: ContractDeployment;
   DnGmxJuniorVaultManagerLibraryDeployment: ContractDeployment;
+  QuoterLibraryDeployment: ContractDeployment;
   DnGmxSeniorVaultDeployment: ContractDeployment;
   DnGmxSeniorVaultLogicDeployment: ContractDeployment;
   DnGmxTraderHedgeStrategyDeployment: ContractDeployment;
