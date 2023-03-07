@@ -1,12 +1,11 @@
-import { BigNumber, ethers } from 'ethers';
-import { parseEther, formatEther } from 'ethers/lib/utils';
+import { parseEther, formatEther, Provider } from 'ethers';
 import { VaultName, getVault } from '../../contracts';
 import { core } from '../../contracts';
-import { Q128, formatUsdc, safeDiv, truncate } from '../../utils';
+import { Q128, formatUsdc, safeDiv, truncate, abs } from '../../utils';
 
 export interface PoolCompositionResult {
-  rageAmountD6: BigNumber;
-  nativeAmountD6: BigNumber;
+  rageAmountD6: bigint;
+  nativeAmountD6: bigint;
   rageAmount: number;
   nativeAmount: number;
 
@@ -15,7 +14,7 @@ export interface PoolCompositionResult {
 }
 
 export async function getPoolComposition(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   vaultName: VaultName
 ): Promise<PoolCompositionResult> {
   try {
@@ -23,7 +22,7 @@ export async function getPoolComposition(
 
     const { vault } = await getVault(provider, vaultName);
 
-    const poolId = truncate(eth_vToken.address);
+    const poolId = truncate(await eth_vToken.getAddress());
 
     // TODO
     const vaultAccountId = await vault.rageAccountNo();
@@ -37,12 +36,10 @@ export async function getPoolComposition(
       poolId
     );
 
-    const rageAmountD6 = netPosition.abs().mul(virtualPriceX128).div(Q128);
-    const nativeAmountD6 = (await vault.getVaultMarketValue()).sub(
-      rageAmountD6
-    );
+    const rageAmountD6 = (abs(netPosition) * virtualPriceX128) / Q128;
+    const nativeAmountD6 = (await vault.getVaultMarketValue()) - rageAmountD6;
 
-    const sum = nativeAmountD6.add(rageAmountD6);
+    const sum = nativeAmountD6 + rageAmountD6;
     const oneEth = parseEther('1');
 
     return {
@@ -51,16 +48,14 @@ export async function getPoolComposition(
       rageAmount: Number(formatUsdc(rageAmountD6)),
       nativeAmount: Number(formatUsdc(nativeAmountD6)),
 
-      ragePercentage: Number(
-        formatEther(safeDiv(oneEth.mul(rageAmountD6), sum))
-      ),
+      ragePercentage: Number(formatEther(safeDiv(oneEth * rageAmountD6, sum))),
       nativePercentage: Number(
-        formatEther(safeDiv(oneEth.mul(nativeAmountD6), sum))
+        formatEther(safeDiv(oneEth * nativeAmountD6, sum))
       ),
     };
   } catch {
-    const rageAmountD6 = BigNumber.from(0);
-    const nativeAmountD6 = BigNumber.from(0);
+    const rageAmountD6 = 0n;
+    const nativeAmountD6 = 0n;
     return {
       rageAmountD6,
       nativeAmountD6,

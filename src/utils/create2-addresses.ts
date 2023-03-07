@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { getAddress, isHexString, keccak256 } from 'ethers';
 import { newError } from './loggers';
 
 export function getCreate2Address(
@@ -9,7 +9,7 @@ export function getCreate2Address(
   return getCreate2AddressByBytecodeHash(
     deployerAddress,
     salt,
-    utils.keccak256(bytecode)
+    keccak256(bytecode)
   );
 }
 
@@ -18,9 +18,9 @@ export function getCreate2AddressByBytecodeHash(
   salt: string,
   bytecodeHash: string
 ): string {
-  if (!utils.isHexString(salt) || salt.length !== 66)
+  if (!isHexString(salt) || salt.length !== 66)
     throw newError(`invalid bytes32 salt for create2: ${salt}`);
   const create2Inputs = ['0xff', deployerAddress, salt, bytecodeHash];
   const sanitizedInputs = `0x${create2Inputs.map((i) => i.slice(2)).join('')}`;
-  return utils.getAddress(`0x${utils.keccak256(sanitizedInputs).slice(-40)}`);
+  return getAddress(`0x${keccak256(sanitizedInputs).slice(-40)}`);
 }

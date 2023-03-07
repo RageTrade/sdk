@@ -1,4 +1,4 @@
-import { BigNumberish, BigNumber } from 'ethers';
+import { BigNumberish, toBigInt } from 'ethers';
 
 export function truncate(address: string) {
   let temp = address.slice(34, 42);
@@ -18,5 +18,5 @@ export function parseSymbol(symbol: string) {
   return symbol.slice(0, 1) === 'v' ? symbol.slice(1) : symbol;
 }
 
-export const parseTokenAmount = (value: BigNumberish, decimals: number) =>
-  BigNumber.from(value).mul(BigNumber.from(10).pow(BigNumber.from(decimals)));
+export const parseTokenAmount = (value: BigNumberish, decimals: BigNumberish) =>
+  toBigInt(value) * toBigInt(10) ** toBigInt(decimals);

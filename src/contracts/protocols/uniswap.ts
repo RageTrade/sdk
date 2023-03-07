@@ -1,3 +1,4 @@
+import { ContractRunner } from 'ethers';
 import {
   INonfungiblePositionManager__factory,
   IQuoter__factory,
@@ -6,12 +7,7 @@ import {
   IUniswapV3Factory__factory,
 } from '../../typechain';
 import { newError } from '../../utils/loggers';
-import {
-  getChainIdFromProvider,
-  getNetworkName,
-  NetworkName,
-  SignerOrProvider,
-} from '../common';
+import { getChainIdFromRunner, getNetworkName, NetworkName } from '../common';
 import { getProvider } from '../providers';
 
 export interface UniswapAddresses {
@@ -53,39 +49,36 @@ export function getAddresses(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const addresses = getAddresses(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     uniswapV3Factory: IUniswapV3Factory__factory.connect(
       addresses.uniswapV3FactoryAddress,
-      signerOrProvider
+      runner
     ),
     nonfungiblePositionManager: INonfungiblePositionManager__factory.connect(
       addresses.nonFungiblePositionManagerAddress,
-      signerOrProvider
+      runner
     ),
     uniswapV3RouterAddress: ISwapRouter__factory.connect(
       addresses.uniswapV3RouterAddress,
-      signerOrProvider
+      runner
     ),
-    tickLens: ITickLens__factory.connect(
-      addresses.tickLensAddress,
-      signerOrProvider
-    ),
+    tickLens: ITickLens__factory.connect(addresses.tickLensAddress, runner),
     uniswapV3QuoterV1: IQuoter__factory.connect(
       addresses.uniswapV3QuoterV1Address,
-      signerOrProvider
+      runner
     ),
   };
 }

@@ -1,15 +1,11 @@
+import { ContractRunner } from 'ethers';
 import {
   ERC20PresetMinterPauser__factory,
   ICurveStableSwap__factory,
   ILPPriceGetter__factory,
 } from '../../typechain';
 import { newError } from '../../utils/loggers';
-import {
-  getChainIdFromProvider,
-  getNetworkName,
-  NetworkName,
-  SignerOrProvider,
-} from '../common';
+import { getChainIdFromRunner, getNetworkName, NetworkName } from '../common';
 import { getProvider } from '../providers';
 
 export interface CurveFinanceAddresses {
@@ -49,39 +45,30 @@ export function getAddresses(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const addresses = getAddresses(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
-    crv: ERC20PresetMinterPauser__factory.connect(
-      addresses.crvAddress,
-      signerOrProvider
-    ),
+    crv: ERC20PresetMinterPauser__factory.connect(addresses.crvAddress, runner),
     crv3: ERC20PresetMinterPauser__factory.connect(
       addresses.tricryptoAddress,
-      signerOrProvider
+      runner
     ),
-    quoter: ILPPriceGetter__factory.connect(
-      addresses.quoterAddress,
-      signerOrProvider
-    ),
-    gauge: ILPPriceGetter__factory.connect(
-      addresses.gaugeAddress,
-      signerOrProvider
-    ),
+    quoter: ILPPriceGetter__factory.connect(addresses.quoterAddress, runner),
+    gauge: ILPPriceGetter__factory.connect(addresses.gaugeAddress, runner),
     tricryptoPool: ICurveStableSwap__factory.connect(
       addresses.tricryptoPoolAddress,
-      signerOrProvider
+      runner
     ),
   };
 }

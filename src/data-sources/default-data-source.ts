@@ -1,5 +1,6 @@
-import { ethers } from 'ethers';
-import { getNetworkNameFromProvider, NetworkName } from '../contracts';
+import { Provider } from 'ethers';
+import { getNetworkNameFromRunner, NetworkName } from '../contracts';
+import { isProvider } from '../utils';
 import { BaseDataSource } from './base-data-source';
 import { CacheServerDataSource } from './cache-server-data-source';
 import { EthersProviderDataSource } from './ethers-provider-data-source';
@@ -11,11 +12,7 @@ import {
 
 export function getDefaultDataSourceSync(
   networkName: NetworkName,
-  providerOrSource?:
-    | ethers.providers.Provider
-    | ethers.providers.Provider[]
-    | BaseDataSource
-    | BaseDataSource[],
+  providerOrSource?: Provider | Provider[] | BaseDataSource | BaseDataSource[],
   fallbackDataSourceOptions?: FallbackDataSourceOptions
 ) {
   const cacheDS = new CacheServerDataSource(networkName);
@@ -26,13 +23,13 @@ export function getDefaultDataSourceSync(
     for (const obj of providerOrSource) {
       if (BaseDataSource.isDataSource(obj)) {
         sourcesArray.push(obj);
-      } else if (ethers.providers.Provider.isProvider(obj)) {
+      } else if (isProvider(obj)) {
         sourcesArray.push(new EthersProviderDataSource(obj));
       }
     }
   } else if (BaseDataSource.isDataSource(providerOrSource)) {
     sourcesArray.push(providerOrSource);
-  } else if (ethers.providers.Provider.isProvider(providerOrSource)) {
+  } else if (isProvider(providerOrSource)) {
     sourcesArray.push(new EthersProviderDataSource(providerOrSource));
   }
 
@@ -43,10 +40,10 @@ export function getDefaultDataSourceSync(
 }
 
 export async function getDefaultDataSource(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   fallbackDataSourceOptions?: FallbackDataSourceOptions
 ) {
-  const networkName = await getNetworkNameFromProvider(provider);
+  const networkName = await getNetworkNameFromRunner(provider);
   return getDefaultDataSourceSync(
     networkName,
     provider,

@@ -1,22 +1,31 @@
-import { BigNumber } from 'ethers';
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
+import {
+  BigNumberish,
+  formatUnits,
+  parseUnits,
+  toBigInt,
+  toNumber,
+} from 'ethers';
 import { BigNumberStringified } from './stringify-bignumber';
 
 export function parseUsdc(str: string) {
   return parseUnits(str, 6);
 }
 
-export function formatUsdc(val: BigNumber) {
+export function formatUsdc(val: BigNumberish) {
   return formatUnits(val, 6);
 }
 
 export interface Amount {
-  value: BigNumber;
+  value: bigint;
   decimals: number;
   formatted: string;
 }
 
-export function bigNumberToAmount(value: BigNumber, decimals: number): Amount {
+export function bigNumberToAmount(
+  value: bigint,
+  decimals: BigNumberish
+): Amount {
+  decimals = toNumber(decimals);
   return {
     value,
     decimals,
@@ -35,7 +44,7 @@ export function stringToAmount(str: string, decimals: number): Amount {
 
 export function parseAmount(amount: BigNumberStringified<Amount>): Amount {
   return {
-    value: BigNumber.from(amount.value),
+    value: toBigInt(amount.value),
     decimals: amount.decimals,
     formatted: amount.formatted,
   };

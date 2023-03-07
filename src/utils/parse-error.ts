@@ -1,4 +1,4 @@
-import { BigNumber, utils } from 'ethers';
+import { Interface } from 'ethers';
 import { getEthersInterfaces } from '../contracts/index';
 import { newError } from './loggers';
 
@@ -12,13 +12,17 @@ export function parseError(errorData: string) {
   }
 
   try {
-    const iface = new utils.Interface([
+    const iface = new Interface([
       'function Error(string) public view',
       'function Panic(uint256) public view',
     ]);
     const args = iface.decodeFunctionData(errorData.slice(0, 10), errorData);
+    const fragment = iface.getFunction(errorData.slice(0, 10));
+    if (!fragment) {
+      throw new Error('fragment is nullish');
+    }
     return {
-      name: iface.getFunction(errorData.slice(0, 10)).name,
+      name: fragment.name,
       args,
     };
   } catch {}
@@ -29,6 +33,9 @@ export function parseError(errorData: string) {
 export function formatError(errorData: string): string {
   try {
     const err = parseError(errorData);
+    if (!err) {
+      throw new Error('err is nullish');
+    }
     // TODO display the params as well, will need to fetch the ABI
     //  and map the param to the result
     return `${err.name}(${err.args
@@ -39,9 +46,10 @@ export function formatError(errorData: string): string {
   }
 }
 
+// TODO does this belong here?
 export function stringifyValue(val: any) {
-  if (BigNumber.isBigNumber(val)) {
-    return BigNumber.from(val).toString();
+  if (typeof val === 'bigint') {
+    return val.toString();
   } else if (typeof val === 'number') {
     return val.toString();
   } else {

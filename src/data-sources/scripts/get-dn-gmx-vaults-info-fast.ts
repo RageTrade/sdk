@@ -1,5 +1,4 @@
-import { ethers } from 'ethers';
-import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
+import { formatEther, formatUnits, parseEther, Provider } from 'ethers';
 import { deltaNeutralGmxVaults } from '../../contracts';
 import { Amount, bigNumberToAmount, safeDiv } from '../../utils';
 
@@ -20,7 +19,7 @@ export interface DnGmxVaultsInfoFastResult {
 }
 
 export async function getDnGmxVaultsInfoFast(
-  provider: ethers.providers.Provider
+  provider: Provider
 ): Promise<DnGmxVaultsInfoFastResult> {
   const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
     await deltaNeutralGmxVaults.getContracts(provider);
@@ -52,7 +51,7 @@ export async function getDnGmxVaultsInfoFast(
   const D18 = parseEther('1');
 
   const utilizationRatioD18 = safeDiv(
-    D18.mul(dnGmxSeniorVault_totalUsdcBorrowed),
+    D18 * dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets
   );
 

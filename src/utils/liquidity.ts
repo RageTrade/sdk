@@ -1,28 +1,30 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import {
   TickMath,
   maxLiquidityForAmounts as maxLiquidityForAmounts_,
   SqrtPriceMath,
 } from '@uniswap/v3-sdk';
+import { toBigInt, BigNumberish, toNumber } from 'ethers';
 import JSBI from 'jsbi';
 
 export function maxLiquidityForAmounts(
   sqrtPriceCurrent: BigNumberish,
-  tickLower: number,
-  tickUpper: number,
+  tickLower: BigNumberish,
+  tickUpper: BigNumberish,
   vQuoteAmount: BigNumberish,
   vTokenAmount: BigNumberish,
   useFullPrecision: boolean
 ) {
-  sqrtPriceCurrent = BigNumber.from(sqrtPriceCurrent);
-  vQuoteAmount = BigNumber.from(vQuoteAmount);
-  vTokenAmount = BigNumber.from(vTokenAmount);
+  sqrtPriceCurrent = toBigInt(sqrtPriceCurrent);
+  tickLower = toNumber(tickLower);
+  tickUpper = toNumber(tickUpper);
+  vQuoteAmount = toBigInt(vQuoteAmount);
+  vTokenAmount = toBigInt(vTokenAmount);
   let [amount0, amount1] = [
     JSBI.BigInt(vTokenAmount.toString()),
     JSBI.BigInt(vQuoteAmount.toString()),
   ];
 
-  return BigNumber.from(
+  return toBigInt(
     maxLiquidityForAmounts_(
       JSBI.BigInt(sqrtPriceCurrent.toString()),
       TickMath.getSqrtRatioAtTick(tickLower),
@@ -35,14 +37,16 @@ export function maxLiquidityForAmounts(
 }
 
 export function amountsForLiquidity(
-  tickLower: number,
+  tickLower: BigNumberish,
   sqrtPriceCurrent: BigNumberish,
-  tickUpper: number,
+  tickUpper: BigNumberish,
   liquidity: BigNumberish,
   roundUp?: boolean
 ) {
+  tickLower = toNumber(tickLower);
+  tickUpper = toNumber(tickUpper);
   if (roundUp === undefined) roundUp = liquidity > 0;
-  const liquidityJSBI = JSBI.BigInt(BigNumber.from(liquidity).toString());
+  const liquidityJSBI = JSBI.BigInt(toBigInt(liquidity).toString());
   const sqrtPriceLowerJSBI = TickMath.getSqrtRatioAtTick(tickLower);
   const sqrtPriceUpperJSBI = TickMath.getSqrtRatioAtTick(tickUpper);
   const sqrtPriceCurrentJSBI = JSBI.BigInt(sqrtPriceCurrent.toString());
@@ -70,7 +74,7 @@ export function amountsForLiquidity(
   let vQuoteAmount = amount1;
 
   return {
-    vQuoteAmount: BigNumber.from(vQuoteAmount.toString()),
-    vTokenAmount: BigNumber.from(vTokenAmount.toString()),
+    vQuoteAmount: toBigInt(vQuoteAmount.toString()),
+    vTokenAmount: toBigInt(vTokenAmount.toString()),
   };
 }

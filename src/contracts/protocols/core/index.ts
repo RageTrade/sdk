@@ -17,11 +17,10 @@ import {
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  getChainIdFromProvider,
+  getChainIdFromRunner,
   getNetworkName,
   getNetworkNameFromChainId,
   NetworkName,
-  SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbgoerli from './arbgoerli';
@@ -40,88 +39,88 @@ export function getDeployments(networkNameOrChainId: NetworkName | number) {
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const deployments = getDeployments(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     accountLib: Account__factory.connect(
       deployments.AccountLibraryDeployment.address,
-      signerOrProvider
+      runner
     ),
     clearingHouse: ClearingHouse__factory.connect(
       deployments.ClearingHouseDeployment.address,
-      signerOrProvider
+      runner
     ),
     clearingHouseLens: ClearingHouseLens__factory.connect(
       deployments.ClearingHouseLensDeployment.address,
-      signerOrProvider
+      runner
     ),
     clearingHouseLogic: ClearingHouse__factory.connect(
       deployments.ClearingHouseLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     insuranceFund: InsuranceFund__factory.connect(
       deployments.InsuranceFundDeployment.address,
-      signerOrProvider
+      runner
     ),
     insuranceFundLogic: InsuranceFund__factory.connect(
       deployments.InsuranceFundLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
       deployments.ProxyAdminDeployment.address,
-      signerOrProvider
+      runner
     ),
     timelock: TimelockControllerWithMinDelayOverride__factory.connect(
       deployments.TimelockControllerDeployment.address,
-      signerOrProvider
+      runner
     ),
     rageTradeFactory: RageTradeFactory__factory.connect(
       deployments.RageTradeFactoryDeployment.address,
-      signerOrProvider
+      runner
     ),
     settlementToken: IERC20Metadata__factory.connect(
       deployments.SettlementTokenDeployment.address,
-      signerOrProvider
+      runner
     ),
     vQuote: VQuote__factory.connect(
       deployments.VQuoteDeployment.address,
-      signerOrProvider
+      runner
     ),
     vPoolWrapperLogic: VPoolWrapper__factory.connect(
       deployments.VPoolWrapperLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     swapSimulator: SwapSimulator__factory.connect(
       deployments.SwapSimulatorDeployment.address,
-      signerOrProvider
+      runner
     ),
 
     eth_vToken: VToken__factory.connect(
       deployments.ETH_vTokenDeployment.address,
-      signerOrProvider
+      runner
     ),
     eth_vPool: IUniswapV3Pool__factory.connect(
       deployments.ETH_vPoolDeployment.address,
-      signerOrProvider
+      runner
     ),
     eth_vPoolWrapper: VPoolWrapper__factory.connect(
       deployments.ETH_vPoolWrapperDeployment.address,
-      signerOrProvider
+      runner
     ),
     eth_oracle: IOracle__factory.connect(
       deployments.ETH_IndexOracleDeployment.address,
-      signerOrProvider
+      runner
     ),
   };
 }
@@ -131,38 +130,30 @@ export async function getPoolContracts(rageTradeFactory: RageTradeFactory) {
     rageTradeFactory.filters.PoolInitialized()
   );
   return events.map(({ args: { vToken, vPool, vPoolWrapper } }) => {
-    const signerOrProvider =
-      rageTradeFactory.signer ?? rageTradeFactory.provider;
+    const runner = rageTradeFactory.runner;
     return {
-      vToken: VToken__factory.connect(vToken, signerOrProvider),
-      vPool: IUniswapV3Pool__factory.connect(vPool, signerOrProvider),
-      vPoolWrapper: VPoolWrapper__factory.connect(
-        vPoolWrapper,
-        signerOrProvider
-      ),
+      vToken: VToken__factory.connect(vToken, runner),
+      vPool: IUniswapV3Pool__factory.connect(vPool, runner),
+      vPoolWrapper: VPoolWrapper__factory.connect(vPoolWrapper, runner),
     };
   });
 }
 
 import poolsList from '../../../pools.json';
+import { ContractRunner } from 'ethers';
 
-export async function getPoolContractsCached(
-  signerOrProvider: SignerOrProvider
-) {
+export async function getPoolContractsCached(runner: ContractRunner) {
   const networkName = getNetworkNameFromChainId(
-    await getChainIdFromProvider(signerOrProvider)
+    await getChainIdFromRunner(runner)
   );
 
   return poolsList[networkName].map((pool) => {
     return {
-      vToken: VToken__factory.connect(pool.vTokenAddress, signerOrProvider),
-      vPool: IUniswapV3Pool__factory.connect(
-        pool.vPoolAddress,
-        signerOrProvider
-      ),
+      vToken: VToken__factory.connect(pool.vTokenAddress, runner),
+      vPool: IUniswapV3Pool__factory.connect(pool.vPoolAddress, runner),
       vPoolWrapper: VPoolWrapper__factory.connect(
         pool.vPoolWrapperAddress,
-        signerOrProvider
+        runner
       ),
     };
   });

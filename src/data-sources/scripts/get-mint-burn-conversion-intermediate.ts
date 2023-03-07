@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { Provider, toBigInt } from 'ethers';
 import {
   getNetworkNameFromChainId,
   gmxProtocol,
@@ -8,16 +8,16 @@ import {
 import { IERC20Metadata__factory } from '../../typechain';
 
 export interface MintBurnConversionIntermediateResult {
-  initialAmount: BigNumber;
-  usdgSupply: BigNumber;
-  usdcWeight: BigNumber;
-  totalWeights: BigNumber;
-  feeBasisPoints: BigNumber;
-  taxBasisPoints: BigNumber;
+  initialAmount: bigint;
+  usdgSupply: bigint;
+  usdcWeight: bigint;
+  totalWeights: bigint;
+  feeBasisPoints: bigint;
+  taxBasisPoints: bigint;
 }
 
 export async function getGlpMintBurnConversionIntermediate(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   networkName?: NetworkName
 ): Promise<MintBurnConversionIntermediateResult> {
   const tk = await tokens.getContracts(provider);
@@ -45,17 +45,15 @@ export async function getGlpMintBurnConversionIntermediate(
   const TAX_BASIS_POINTS = 50;
   const MINT_BURN_FEE_BASIS_POINTS = 25;
 
-  let feeBasisPoints = BigNumber.from(MINT_BURN_FEE_BASIS_POINTS);
-  const taxBasisPoints = BigNumber.from(TAX_BASIS_POINTS);
+  let feeBasisPoints = toBigInt(MINT_BURN_FEE_BASIS_POINTS);
+  const taxBasisPoints = toBigInt(TAX_BASIS_POINTS);
 
   const totalWeights = await gmx.gmxUnderlyingVault.totalTokenWeights();
-  const usdcWeight = await gmx.gmxUnderlyingVault.tokenWeights(tk.usdc.address);
+  const usdcWeight = await gmx.gmxUnderlyingVault.tokenWeights(tk.usdc);
 
   const usdgSupply = await usdg.totalSupply();
 
-  const initialAmount = await gmx.gmxUnderlyingVault.usdgAmounts(
-    tk.usdc.address
-  );
+  const initialAmount = await gmx.gmxUnderlyingVault.usdgAmounts(tk.usdc);
 
   return {
     initialAmount,

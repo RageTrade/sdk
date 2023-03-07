@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumberish, toBigInt, toNumber } from 'ethers';
 import { NetworkName, VaultName } from '../contracts';
 import { ResultWithMetadata } from '../utils';
 import { newError, warn } from '../utils/loggers';
@@ -132,7 +132,7 @@ export abstract class BaseDataSource {
 
   async getDerivedAssetAmount(
     tokenAddress: string,
-    depositAmount: BigNumber,
+    depositAmount: bigint,
     decimals: number
   ) {
     warn(
@@ -155,34 +155,36 @@ export abstract class BaseDataSource {
    */
   async deriveSglpAmountForGmxVault(
     tokenAddress: string,
-    depositAmount: BigNumber,
-    decimals: number
-  ): Promise<ResultWithMetadata<BigNumber>> {
-    const slippageThreshold = BigNumber.from(200); // 2%
-    const PRICE_PRECISION = BigNumber.from(10).pow(30);
-    const MAX_BPS = BigNumber.from(10_000);
+    depositAmount: bigint,
+    decimals: BigNumberish
+  ): Promise<ResultWithMetadata<bigint>> {
+    decimals = toBigInt(decimals);
+    const slippageThreshold = toBigInt(200); // 2%
+    const PRICE_PRECISION = toBigInt(10) ** 30n;
+    const MAX_BPS = toBigInt(10_000);
 
     const {
       result: { underlyingVaultMinPriceD30 },
       cacheTimestamp: timestamp1,
     } = await this.getGmxVaultInfoByTokenAddress(tokenAddress);
 
-    const usdgUnit = BigNumber.from(10).pow(18);
-    const depositAmountUnit = BigNumber.from(10).pow(decimals);
+    const usdgUnit = toBigInt(10) ** 18n;
+    const depositAmountUnit = toBigInt(10) ** decimals;
 
-    const usdg = depositAmount
-      .mul(underlyingVaultMinPriceD30)
-      .mul(MAX_BPS.sub(slippageThreshold))
-      .div(MAX_BPS)
-      .div(PRICE_PRECISION)
-      .mul(usdgUnit)
-      .div(depositAmountUnit);
+    const usdg =
+      (((depositAmount *
+        underlyingVaultMinPriceD30 *
+        (MAX_BPS - slippageThreshold)) /
+        MAX_BPS /
+        PRICE_PRECISION) *
+        usdgUnit) /
+      depositAmountUnit;
 
     const {
       result: { aumInUsdgD18, glpSupplyD18 },
       cacheTimestamp: timestamp2,
     } = await this.getGmxVaultInfo();
-    const sGLPAmount = usdg.mul(glpSupplyD18).div(aumInUsdgD18);
+    const sGLPAmount = (usdg * glpSupplyD18) / aumInUsdgD18;
     return {
       result: sGLPAmount,
       cacheTimestamp:
@@ -199,7 +201,7 @@ export abstract class BaseDataSource {
   }
 
   async getGlpMintBurnConversion(
-    dollarValueD18: BigNumber,
+    dollarValueD18: bigint,
     isUsdcToGlp: boolean
   ): Promise<ResultWithMetadata<number>> {
     const {
@@ -214,47 +216,48 @@ export abstract class BaseDataSource {
       ...other
     } = await this.getGlpMintBurnConversionIntermediate();
 
-    let nextAmount = initialAmount.add(dollarValueD18);
+    let nextAmount = initialAmount + dollarValueD18;
 
     if (!isUsdcToGlp) {
-      nextAmount = dollarValueD18.gt(initialAmount)
-        ? BigNumber.from(0)
-        : initialAmount.sub(dollarValueD18);
+      nextAmount =
+        dollarValueD18 > initialAmount
+          ? toBigInt(0)
+          : initialAmount - dollarValueD18;
     }
 
-    const targetAmount = usdgSupply.mul(usdcWeight).div(totalWeights);
+    const targetAmount = (usdgSupply * usdcWeight) / totalWeights;
 
-    if (!targetAmount || targetAmount.eq(0)) {
-      return returnResult(feeBasisPoints.toNumber());
+    if (!targetAmount || targetAmount === 0n) {
+      return returnResult(toNumber(feeBasisPoints));
     }
 
-    const initialDiff = initialAmount.gt(targetAmount)
-      ? initialAmount.sub(targetAmount)
-      : targetAmount.sub(initialAmount);
+    const initialDiff =
+      initialAmount > targetAmount
+        ? initialAmount - targetAmount
+        : targetAmount - initialAmount;
 
-    const nextDiff = nextAmount.gt(targetAmount)
-      ? nextAmount.sub(targetAmount)
-      : targetAmount.sub(nextAmount);
+    const nextDiff =
+      nextAmount > targetAmount
+        ? nextAmount - targetAmount
+        : targetAmount - nextAmount;
 
-    if (nextDiff.lt(initialDiff)) {
-      const rebateBps = taxBasisPoints.mul(initialDiff).div(targetAmount);
+    if (nextDiff < initialDiff) {
+      const rebateBps = (taxBasisPoints * initialDiff) / targetAmount;
 
       return returnResult(
-        rebateBps.gt(feeBasisPoints)
-          ? 0
-          : feeBasisPoints.sub(rebateBps).toNumber()
+        rebateBps > feeBasisPoints ? 0 : toNumber(feeBasisPoints - rebateBps)
       );
     }
 
-    let averageDiff = initialDiff.add(nextDiff).div(2);
+    let averageDiff = (initialDiff + nextDiff) / 2n;
 
-    if (averageDiff.gt(targetAmount)) {
+    if (averageDiff > targetAmount) {
       averageDiff = targetAmount;
     }
 
-    const taxBps = taxBasisPoints.mul(averageDiff).div(targetAmount);
+    const taxBps = (taxBasisPoints * averageDiff) / targetAmount;
 
-    return returnResult(feeBasisPoints.add(taxBps).toNumber());
+    return returnResult(toNumber(feeBasisPoints + taxBps));
 
     function returnResult(result: number) {
       return { result, ...other };

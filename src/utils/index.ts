@@ -1,4 +1,5 @@
 export * from './amounts';
+export * from './bigint';
 export * from './casting';
 export * from './create-addresses';
 export * from './create2-addresses';
@@ -16,6 +17,6 @@ export * from './deployment-helpers';
 export * from './timelock';
 export * from './get-accounts';
 export * from './arbiscan-provider';
-export * from './general';
 export * from './stringify-bignumber';
 export * from './result';
+export * from './provider';

@@ -1,6 +1,7 @@
+import { ContractRunner } from 'ethers';
 import { BaseVault__factory } from '../typechain';
 import { newError } from '../utils/loggers';
-import { NetworkName, SignerOrProvider } from './common';
+import { NetworkName } from './common';
 import { deltaNeutralGmxVaults, gmxVault, tricryptoVault } from './protocols';
 
 export const supportedVaultNames = [
@@ -29,55 +30,48 @@ export function getVaultName(vaultName: string): VaultName {
   return vaultName as VaultName;
 }
 
-export async function getVault(
-  signerOrProvider: SignerOrProvider,
-  vaultName: VaultName
-) {
+export async function getVault(runner: ContractRunner, vaultName: VaultName) {
   vaultName = getVaultName(vaultName);
   const vaultSync = getVaultSync(vaultName);
   switch (vaultName) {
     case 'tricrypto':
-      const { curveYieldStrategy } = await tricryptoVault.getContracts(
-        signerOrProvider
-      );
+      const { curveYieldStrategy } = await tricryptoVault.getContracts(runner);
       return {
         ...vaultSync,
         vault: BaseVault__factory.connect(
-          curveYieldStrategy.address,
-          signerOrProvider
+          await curveYieldStrategy.getAddress(),
+          runner
         ),
       };
     case 'gmx':
-      const { gmxYieldStrategy } = await gmxVault.getContracts(
-        signerOrProvider
-      );
+      const { gmxYieldStrategy } = await gmxVault.getContracts(runner);
       return {
         ...vaultSync,
         vault: BaseVault__factory.connect(
-          gmxYieldStrategy.address,
-          signerOrProvider
+          await gmxYieldStrategy.getAddress(),
+          runner
         ),
       };
     case 'dn_gmx_senior':
       const { dnGmxSeniorVault } = await deltaNeutralGmxVaults.getContracts(
-        signerOrProvider
+        runner
       );
       return {
         ...vaultSync,
         vault: BaseVault__factory.connect(
-          dnGmxSeniorVault.address,
-          signerOrProvider
+          await dnGmxSeniorVault.getAddress(),
+          runner
         ),
       };
     case 'dn_gmx_junior':
       const { dnGmxJuniorVault } = await deltaNeutralGmxVaults.getContracts(
-        signerOrProvider
+        runner
       );
       return {
         ...vaultSync,
         vault: BaseVault__factory.connect(
-          dnGmxJuniorVault.address,
-          signerOrProvider
+          await dnGmxJuniorVault.getAddress(),
+          runner
         ),
       };
     default:

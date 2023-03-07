@@ -1,5 +1,11 @@
-import { BigNumber, BigNumberish, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import {
+  BigNumberish,
+  parseUnits,
+  Provider,
+  toBigInt,
+  toNumber,
+  ZeroAddress,
+} from 'ethers';
 import { core } from '../../contracts';
 import {
   IUniswapV3Pool__factory,
@@ -23,21 +29,21 @@ export interface PoolInfoResult {
   fundingRate: number;
 
   // fixed point
-  realSqrtPriceX96: BigNumber;
-  virtualSqrtPriceX96: BigNumber;
-  realPriceX128: BigNumber;
-  virtualPriceX128: BigNumber;
-  realTwapPriceX128: BigNumber;
-  virtualTwapPriceX128: BigNumber;
-  fundingRateX128: BigNumber;
-  sumAX128: BigNumber;
+  realSqrtPriceX96: bigint;
+  virtualSqrtPriceX96: bigint;
+  realPriceX128: bigint;
+  virtualPriceX128: bigint;
+  realTwapPriceX128: bigint;
+  virtualTwapPriceX128: bigint;
+  fundingRateX128: bigint;
+  sumAX128: bigint;
 
   // decimal
-  realPriceD18: BigNumber;
-  virtualPriceD18: BigNumber;
-  realTwapPriceD18: BigNumber;
-  virtualTwapPriceD18: BigNumber;
-  fundingRateD18: BigNumber;
+  realPriceD18: bigint;
+  virtualPriceD18: bigint;
+  realTwapPriceD18: bigint;
+  virtualTwapPriceD18: bigint;
+  fundingRateD18: bigint;
 
   info: {
     vToken: string;
@@ -56,10 +62,10 @@ export interface PoolInfoResult {
 }
 
 export async function getPoolInfo(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   poolId: BigNumberish
 ): Promise<PoolInfoResult> {
-  poolId = BigNumber.from(poolId);
+  poolId = toBigInt(poolId);
   const { clearingHouse, clearingHouseLens } = await core.getContracts(
     provider
   );
@@ -70,7 +76,7 @@ export async function getPoolInfo(
     clearingHouseLens.getPoolInfo(poolId),
   ]);
 
-  if (pool.vPool === ethers.constants.AddressZero) {
+  if (pool.vPool === ZeroAddress) {
     throw newError(`Pool with id ${poolId} not found`);
   }
 
@@ -125,11 +131,14 @@ export async function getPoolInfo(
       vPool: pool.vPool,
       vPoolWrapper: pool.vPoolWrapper,
       settings: {
-        initialMarginRatioBps: pool.settings.initialMarginRatioBps,
-        maintainanceMarginRatioBps: pool.settings.maintainanceMarginRatioBps,
-        maxVirtualPriceDeviationRatioBps:
-          pool.settings.maxVirtualPriceDeviationRatioBps,
-        twapDuration: pool.settings.twapDuration,
+        initialMarginRatioBps: toNumber(pool.settings.initialMarginRatioBps),
+        maintainanceMarginRatioBps: toNumber(
+          pool.settings.maintainanceMarginRatioBps
+        ),
+        maxVirtualPriceDeviationRatioBps: toNumber(
+          pool.settings.maxVirtualPriceDeviationRatioBps
+        ),
+        twapDuration: toNumber(pool.settings.twapDuration),
         isAllowedForTrade: pool.settings.isAllowedForTrade,
         isCrossMargined: pool.settings.isCrossMargined,
         oracle: pool.settings.oracle,

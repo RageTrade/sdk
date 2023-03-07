@@ -1,14 +1,13 @@
-import { BigNumber, ethers } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
+import { formatUnits, Provider } from 'ethers';
 import { gmxProtocol } from '../../contracts';
 
 export interface GmxVaultInfoByTokenAddressResult {
   underlyingVaultMinPrice: number;
-  underlyingVaultMinPriceD30: BigNumber;
+  underlyingVaultMinPriceD30: bigint;
 }
 
 export async function getGmxVaultInfoByTokenAddress(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   tokenAddress: string
 ): Promise<GmxVaultInfoByTokenAddressResult> {
   const { gmxUnderlyingVault } = await gmxProtocol.getContracts(provider);

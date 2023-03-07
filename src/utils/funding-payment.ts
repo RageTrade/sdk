@@ -1,8 +1,8 @@
-import { BigNumberish, BigNumber } from 'ethers';
+import { BigNumberish, toBigInt } from 'ethers';
 import { fromQ128, Q128 } from './fixed-point';
 
 export function formatFundingRate(fundingRateX128: BigNumberish) {
-  fundingRateX128 = BigNumber.from(fundingRateX128);
+  fundingRateX128 = toBigInt(fundingRateX128);
   return fromQ128(fundingRateX128) * 3600 * 100;
 }
 
@@ -10,12 +10,14 @@ export function getFundingRate(
   realPriceX128: BigNumberish,
   virtualPriceX128: BigNumberish
 ) {
-  realPriceX128 = BigNumber.from(realPriceX128);
-  virtualPriceX128 = BigNumber.from(virtualPriceX128);
+  realPriceX128 = toBigInt(realPriceX128);
+  virtualPriceX128 = toBigInt(virtualPriceX128);
 
-  return Q128.mul(realPriceX128.sub(virtualPriceX128))
-    .div(realPriceX128)
-    .div(1 * 24 * 60 * 60);
+  return (
+    (Q128 * (realPriceX128 - virtualPriceX128)) /
+    realPriceX128 /
+    toBigInt(1 * 24 * 60 * 60)
+  );
 }
 
 export function nextAX128(
@@ -24,13 +26,13 @@ export function nextAX128(
   fundingRateX128: BigNumberish,
   virtualPriceX128: BigNumberish
 ) {
-  fundingRateX128 = BigNumber.from(fundingRateX128);
-  virtualPriceX128 = BigNumber.from(virtualPriceX128);
+  fundingRateX128 = toBigInt(fundingRateX128);
+  virtualPriceX128 = toBigInt(virtualPriceX128);
 
-  return fundingRateX128
-    .mul(virtualPriceX128)
-    .div(Q128)
-    .mul(blockTimestamp - timestampLast);
+  return (
+    ((fundingRateX128 * virtualPriceX128) / Q128) *
+    toBigInt(blockTimestamp - timestampLast)
+  );
 }
 
 export function extrapolatedSumAX128(
@@ -40,10 +42,11 @@ export function extrapolatedSumAX128(
   fundingRateX128: BigNumberish,
   virtualPriceX128: BigNumberish
 ) {
-  sumAX128 = BigNumber.from(sumAX128);
-  fundingRateX128 = BigNumber.from(fundingRateX128);
-  virtualPriceX128 = BigNumber.from(virtualPriceX128);
-  return sumAX128.add(
+  sumAX128 = toBigInt(sumAX128);
+  fundingRateX128 = toBigInt(fundingRateX128);
+  virtualPriceX128 = toBigInt(virtualPriceX128);
+  return (
+    sumAX128 +
     nextAX128(timestampLast, blockTimestamp, fundingRateX128, virtualPriceX128)
   );
 }
@@ -54,12 +57,12 @@ export function extrapolatedSumFpX128(
   sumFpX128: BigNumberish,
   sumAGlobalX128: BigNumberish
 ) {
-  sumAX128 = BigNumber.from(sumAX128);
-  sumBX128 = BigNumber.from(sumBX128);
-  sumFpX128 = BigNumber.from(sumFpX128);
-  sumAGlobalX128 = BigNumber.from(sumAGlobalX128);
+  sumAX128 = toBigInt(sumAX128);
+  sumBX128 = toBigInt(sumBX128);
+  sumFpX128 = toBigInt(sumFpX128);
+  sumAGlobalX128 = toBigInt(sumAGlobalX128);
 
-  return sumFpX128.add(sumBX128.mul(sumAGlobalX128.sub(sumAX128)).div(Q128));
+  return sumFpX128 + (sumBX128 * (sumAGlobalX128 - sumAX128)) / Q128;
 }
 
 export function fpBillForLp(
@@ -70,24 +73,23 @@ export function fpBillForLp(
   sumFpInsideLastX128: BigNumberish,
   liquidity: BigNumberish
 ) {
-  sumAX128 = BigNumber.from(sumAX128);
-  sumFpInsideX128 = BigNumber.from(sumFpInsideX128);
-  sumALastX128 = BigNumber.from(sumALastX128);
-  sumBInsideLastX128 = BigNumber.from(sumBInsideLastX128);
-  sumFpInsideLastX128 = BigNumber.from(sumFpInsideLastX128);
-  liquidity = BigNumber.from(liquidity);
-  const intermediate = sumFpInsideX128
-    .sub(
+  sumAX128 = toBigInt(sumAX128);
+  sumFpInsideX128 = toBigInt(sumFpInsideX128);
+  sumALastX128 = toBigInt(sumALastX128);
+  sumBInsideLastX128 = toBigInt(sumBInsideLastX128);
+  sumFpInsideLastX128 = toBigInt(sumFpInsideLastX128);
+  liquidity = toBigInt(liquidity);
+  const intermediate =
+    (sumFpInsideX128 -
       extrapolatedSumFpX128(
         sumALastX128,
         sumBInsideLastX128,
         sumFpInsideLastX128,
         sumAX128
-      )
-    )
-    .mul(liquidity);
+      )) *
+    liquidity;
   // mulDivRoundingDown
-  return intermediate.div(Q128).sub(intermediate.mod(Q128).eq(0) ? 0 : 1);
+  return intermediate / Q128 - (intermediate % Q128 === 0n ? 0n : 1n);
 }
 
 export function fpBillForTrader(
@@ -95,8 +97,8 @@ export function fpBillForTrader(
   sumALastX128: BigNumberish,
   netTraderPosition: BigNumberish
 ) {
-  sumAX128 = BigNumber.from(sumAX128);
-  sumALastX128 = BigNumber.from(sumALastX128);
-  netTraderPosition = BigNumber.from(netTraderPosition);
-  return netTraderPosition.mul(sumAX128.sub(sumALastX128)).div(Q128);
+  sumAX128 = toBigInt(sumAX128);
+  sumALastX128 = toBigInt(sumALastX128);
+  netTraderPosition = toBigInt(netTraderPosition);
+  return (netTraderPosition * (sumAX128 - sumALastX128)) / Q128;
 }

@@ -1,16 +1,16 @@
 import { JITManager__factory, DnGmxRouter__factory } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  getChainIdFromProvider,
+  getChainIdFromRunner,
   getNetworkName,
   NetworkName,
-  SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
 
 import * as arbmain from './arbmain';
 import * as arbgoerli from './arbgoerli';
 import { DnGmxJITDeployments } from './interface';
+import { ContractRunner } from 'ethers';
 
 export function getDeployments(
   networkNameOrChainId: NetworkName | number
@@ -29,35 +29,35 @@ export function getDeployments(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const deployments = getDeployments(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     jitManager1: JITManager__factory.connect(
       deployments.JITManager1Deployment.address,
-      signerOrProvider
+      runner
     ),
     jitManager2: JITManager__factory.connect(
       deployments.JITManager2Deployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxRouter: DnGmxRouter__factory.connect(
       deployments.DnGmxRouterDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxRouterLogic: DnGmxRouter__factory.connect(
       deployments.DnGmxRouterLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
   };
 }

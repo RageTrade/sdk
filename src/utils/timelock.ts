@@ -1,4 +1,10 @@
-import { ethers, PopulatedTransaction } from 'ethers';
+import {
+  BigNumberish,
+  BytesLike,
+  ContractTransaction,
+  toNumber,
+  ZeroHash,
+} from 'ethers';
 import { TimelockControllerWithMinDelayOverride } from '../typechain';
 import { newError } from './loggers';
 
@@ -6,8 +12,8 @@ const MIN_DELAY_DEFAULT = 2 * 24 * 3600;
 
 export interface TimelockOptions {
   minDelay?: number;
-  predecessor?: ethers.utils.BytesLike;
-  salt?: ethers.utils.BytesLike;
+  predecessor?: BytesLike;
+  salt?: BytesLike;
 }
 
 // alias for generateTimelockSchedule
@@ -15,17 +21,17 @@ export const timelockSchedule = generateTimelockSchedule;
 
 export async function generateTimelockSchedule(
   timelock: TimelockControllerWithMinDelayOverride,
-  txArray: Array<PopulatedTransaction | Promise<PopulatedTransaction>>,
+  txArray: Array<ContractTransaction | Promise<ContractTransaction>>,
   { minDelay, predecessor, salt }: TimelockOptions = {}
 ) {
   if (minDelay === undefined) {
-    minDelay = (await timelock.getMinDelay()).toNumber();
+    minDelay = toNumber(await timelock.getMinDelay());
   }
   if (predecessor === undefined) {
-    predecessor = ethers.constants.HashZero;
+    predecessor = ZeroHash;
   }
   if (salt === undefined) {
-    salt = ethers.constants.HashZero;
+    salt = ZeroHash;
   }
 
   switch (txArray.length) {
@@ -52,26 +58,26 @@ export async function generateTimelockSchedule(
 
 type OperationSingle = [
   target: string,
-  value: ethers.BigNumberish,
-  data: ethers.utils.BytesLike,
-  predecessor: ethers.utils.BytesLike,
-  salt: ethers.utils.BytesLike
+  value: BigNumberish,
+  data: BytesLike,
+  predecessor: BytesLike,
+  salt: BytesLike
 ];
 
 type OperationBatch = [
   targets: string[],
-  values: ethers.BigNumberish[],
-  datas: ethers.utils.BytesLike[],
-  predecessor: ethers.utils.BytesLike,
-  salt: ethers.utils.BytesLike
+  values: BigNumberish[],
+  datas: BytesLike[],
+  predecessor: BytesLike,
+  salt: BytesLike
 ];
 
 async function generateTimelockScheduleSingle(
   timelock: TimelockControllerWithMinDelayOverride,
-  tx: PopulatedTransaction | Promise<PopulatedTransaction>,
+  tx: ContractTransaction | Promise<ContractTransaction>,
   minDelay: number,
-  predecessor: ethers.utils.BytesLike,
-  salt: ethers.utils.BytesLike
+  predecessor: BytesLike,
+  salt: BytesLike
 ) {
   tx = await tx;
   if (!tx.to) {
@@ -86,21 +92,21 @@ async function generateTimelockScheduleSingle(
     salt,
   ];
 
-  const schedule = await timelock.populateTransaction.schedule(
+  const schedule = await timelock.schedule.populateTransaction(
     ...operation,
     minDelay ?? MIN_DELAY_DEFAULT
   );
   const hash = await timelock.hashOperation(...operation);
-  const execute = await timelock.populateTransaction.execute(...operation);
+  const execute = await timelock.execute.populateTransaction(...operation);
   return { schedule, hash, execute };
 }
 
 async function generateTimelockScheduleBatch(
   timelock: TimelockControllerWithMinDelayOverride,
-  txArray: Array<PopulatedTransaction | Promise<PopulatedTransaction>>,
+  txArray: Array<ContractTransaction | Promise<ContractTransaction>>,
   minDelay: number,
-  predecessor: ethers.utils.BytesLike,
-  salt: ethers.utils.BytesLike
+  predecessor: BytesLike,
+  salt: BytesLike
 ) {
   const txArrayResolved = await Promise.all(txArray);
 
@@ -116,11 +122,11 @@ async function generateTimelockScheduleBatch(
 
   const operation: OperationBatch = [targets, values, datas, predecessor, salt];
 
-  const schedule = await timelock.populateTransaction.scheduleBatch(
+  const schedule = await timelock.scheduleBatch.populateTransaction(
     ...operation,
     minDelay ?? MIN_DELAY_DEFAULT
   );
   const hash = await timelock.hashOperationBatch(...operation);
-  const execute = await timelock.populateTransaction.executeBatch(...operation);
+  const execute = await timelock.executeBatch.populateTransaction(...operation);
   return { schedule, hash, execute };
 }

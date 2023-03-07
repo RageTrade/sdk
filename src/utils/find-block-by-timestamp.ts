@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import { fetchJson } from 'ethers/lib/utils';
+import { Provider } from 'ethers';
+import { fetchJson } from './fetch-json';
 import { newError } from './loggers';
 
 export interface FindBlockByTimestampOptions {
@@ -8,7 +8,7 @@ export interface FindBlockByTimestampOptions {
 }
 
 export async function getBlockByTimestamp(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   timestamp: number
 ): Promise<number> {
   return (
@@ -55,11 +55,15 @@ export async function getBlockByTimestampEtherscan(
 }
 
 export async function findBlockByTimestamp(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   timestampTarget: number,
   { avgBlockTime, allowFutureTimestamp }: FindBlockByTimestampOptions = {}
 ) {
   const latestBlock = await provider.getBlock('latest');
+
+  if (latestBlock === null) {
+    throw newError('latest block is null');
+  }
 
   if (latestBlock.timestamp < timestampTarget) {
     if (allowFutureTimestamp) {
@@ -72,6 +76,10 @@ export async function findBlockByTimestamp(
   if (avgBlockTime === undefined) {
     const delta = latestBlock.number > 10000 ? 10000 : latestBlock.number - 1;
     const oldBlock = await provider.getBlock(latestBlock.number - delta);
+    if (oldBlock === null) {
+      throw newError('oldBlock is null');
+    }
+
     avgBlockTime = (latestBlock.timestamp - oldBlock.timestamp) / delta;
   }
 

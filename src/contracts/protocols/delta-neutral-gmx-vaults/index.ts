@@ -11,16 +11,16 @@ import {
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  getChainIdFromProvider,
+  getChainIdFromRunner,
   getNetworkName,
   NetworkName,
-  SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbmain from './arbmain';
 import * as mainnetfork from './mainnetfork';
 import * as arbgoerli from './arbgoerli';
 import { DnGmxVaultDeployments } from './interface';
+import { ContractRunner } from 'ethers';
 
 export function getDeployments(
   networkNameOrChainId: NetworkName | number
@@ -40,67 +40,67 @@ export function getDeployments(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const deployments = getDeployments(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     dnGmxSeniorVault: DnGmxSeniorVault__factory.connect(
       deployments.DnGmxSeniorVaultDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxSeniorVaultLogic: DnGmxSeniorVault__factory.connect(
       deployments.DnGmxSeniorVaultLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxJuniorVault: DnGmxJuniorVault__factory.connect(
       deployments.DnGmxJuniorVaultDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxJuniorVaultLogic: DnGmxJuniorVault__factory.connect(
       deployments.DnGmxJuniorVaultLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxBatchingManager: DnGmxBatchingManager__factory.connect(
       deployments.DnGmxBatchingManagerDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxBatchingManagerGlp: DnGmxBatchingManagerGlp__factory.connect(
       deployments.DnGmxBatchingManagerGlpDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxBatchingManagerLogic: DnGmxBatchingManager__factory.connect(
       deployments.DnGmxBatchingManagerLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     dnGmxTraderHedgeStrategy: DnGmxTraderHedgeStrategy__factory.connect(
       deployments.DnGmxTraderHedgeStrategyDeployment.address,
-      signerOrProvider
+      runner
     ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(
       deployments.WithdrawPeripheryDeployment.address,
-      signerOrProvider
+      runner
     ),
     batchingManagerBypass: BatchingManagerBypass__factory.connect(
       deployments.BatchingManagerBypassDeployment.address,
-      signerOrProvider
+      runner
     ),
     depositPeriphery: DepositPeriphery__factory.connect(
       deployments.DepositPeripheryDeployment.address,
-      signerOrProvider
+      runner
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
       deployments.ProxyAdmin.address,
-      signerOrProvider
+      runner
     ),
   };
 }

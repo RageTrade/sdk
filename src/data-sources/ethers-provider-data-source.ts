@@ -1,6 +1,6 @@
-import { BigNumberish, ethers } from 'ethers';
+import { BigNumberish, Provider, toNumber } from 'ethers';
 
-import { core, getNetworkNameFromProvider, VaultName } from '../contracts';
+import { core, getNetworkNameFromRunner, VaultName } from '../contracts';
 import { getBlockByTimestamp, ResultWithMetadata } from '../utils';
 import { BaseDataSource } from './base-data-source';
 import {
@@ -14,9 +14,9 @@ import {
 } from './scripts';
 
 export class EthersProviderDataSource extends BaseDataSource {
-  _provider: ethers.providers.Provider;
+  _provider: Provider;
   _contracts: ReturnType<typeof core.getContracts>;
-  constructor(provider: ethers.providers.Provider) {
+  constructor(provider: Provider) {
     super();
     this._provider = provider;
     this._contracts = core.getContracts(provider);
@@ -24,7 +24,7 @@ export class EthersProviderDataSource extends BaseDataSource {
 
   async getNetworkName() {
     return getResultWithMetadata(
-      await getNetworkNameFromProvider(this._provider)
+      await getNetworkNameFromRunner(this._provider)
     );
   }
 
@@ -40,7 +40,7 @@ export class EthersProviderDataSource extends BaseDataSource {
       clearingHouse.filters.AccountCreated(address)
     );
     return getResultWithMetadata(
-      logs.map((log) => log.args.accountId.toNumber())
+      logs.map((log) => toNumber(log.args.accountId))
     );
   }
 

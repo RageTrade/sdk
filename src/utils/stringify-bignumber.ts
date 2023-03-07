@@ -1,5 +1,3 @@
-import { BigNumber } from 'ethers';
-
 type Replacement<M extends [any, any], T> = M extends any
   ? [T] extends [M[0]]
     ? M[1]
@@ -14,15 +12,15 @@ export type DeepReplace<T, M extends [any, any]> = {
     : T[P];
 };
 
-export type BigNumberStringified<T> = DeepReplace<T, [BigNumber, string]>;
+export type BigNumberStringified<T> = DeepReplace<T, [bigint, string]>;
 
 export function stringifyBigNumber(val: string): string;
 export function stringifyBigNumber(val: number): number;
-export function stringifyBigNumber(val: BigNumber): string;
+export function stringifyBigNumber(val: bigint): string;
 export function stringifyBigNumber<T>(object: T): BigNumberStringified<T>;
 
 export function stringifyBigNumber(val: any): any {
-  if (BigNumber.isBigNumber(val)) {
+  if (typeof val === 'bigint') {
     return val.toString();
   } else if (Array.isArray(val)) {
     return val.map((v: any) => stringifyBigNumber(v));

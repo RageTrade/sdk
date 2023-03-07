@@ -1,14 +1,10 @@
+import { ContractRunner } from 'ethers';
 import {
   IAToken__factory,
   IPoolAddressesProvider__factory,
 } from '../../typechain/delta-neutral-gmx-vaults';
 import { newError } from '../../utils/loggers';
-import {
-  getChainIdFromProvider,
-  getNetworkName,
-  NetworkName,
-  SignerOrProvider,
-} from '../common';
+import { getChainIdFromRunner, getNetworkName, NetworkName } from '../common';
 import { getProvider } from '../providers';
 
 export interface AaveAddresses {
@@ -80,39 +76,27 @@ export function getAddresses(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const addresses = getAddresses(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     poolAddressProvider: IPoolAddressesProvider__factory.connect(
       addresses.poolAddressProviderAddress,
-      signerOrProvider
+      runner
     ),
-    aUsdc: IAToken__factory.connect(
-      addresses.usdcATokenAddress,
-      signerOrProvider
-    ),
-    aUsdt: IAToken__factory.connect(
-      addresses.usdtATokenAddress,
-      signerOrProvider
-    ),
-    aWbtc: IAToken__factory.connect(
-      addresses.wbtcATokenAddress,
-      signerOrProvider
-    ),
-    aWeth: IAToken__factory.connect(
-      addresses.wethATokenAddress,
-      signerOrProvider
-    ),
+    aUsdc: IAToken__factory.connect(addresses.usdcATokenAddress, runner),
+    aUsdt: IAToken__factory.connect(addresses.usdtATokenAddress, runner),
+    aWbtc: IAToken__factory.connect(addresses.wbtcATokenAddress, runner),
+    aWeth: IAToken__factory.connect(addresses.wethATokenAddress, runner),
   };
 }

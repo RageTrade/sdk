@@ -1,12 +1,8 @@
+import { ContractRunner } from 'ethers';
 import { ERC20PresetMinterPauser__factory } from '../../typechain';
 import { IWETH9__factory } from '../../typechain';
 import { newError } from '../../utils/loggers';
-import {
-  getChainIdFromProvider,
-  getNetworkName,
-  NetworkName,
-  SignerOrProvider,
-} from '../common';
+import { getChainIdFromRunner, getNetworkName, NetworkName } from '../common';
 import { getProvider } from '../providers';
 
 export interface TokenAddresses {
@@ -68,60 +64,51 @@ export function getAddresses(
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const addresses = getAddresses(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
-    weth: IWETH9__factory.connect(addresses.wethAddress, signerOrProvider),
+    weth: IWETH9__factory.connect(addresses.wethAddress, runner),
     wbtc: ERC20PresetMinterPauser__factory.connect(
       addresses.wbtcAddress,
-      signerOrProvider
+      runner
     ),
     usdc: ERC20PresetMinterPauser__factory.connect(
       addresses.usdcAddress,
-      signerOrProvider
+      runner
     ),
     usdt: ERC20PresetMinterPauser__factory.connect(
       addresses.usdtAddress,
-      signerOrProvider
+      runner
     ),
-    crv: ERC20PresetMinterPauser__factory.connect(
-      addresses.crvAddress,
-      signerOrProvider
-    ),
+    crv: ERC20PresetMinterPauser__factory.connect(addresses.crvAddress, runner),
     crv3: ERC20PresetMinterPauser__factory.connect(
       addresses.tricryptoAddress,
-      signerOrProvider
+      runner
     ),
     tricrypto: ERC20PresetMinterPauser__factory.connect(
       addresses.tricryptoAddress,
-      signerOrProvider
+      runner
     ),
-    gmx: ERC20PresetMinterPauser__factory.connect(
-      addresses.gmxAddress,
-      signerOrProvider
-    ),
-    glp: ERC20PresetMinterPauser__factory.connect(
-      addresses.glpAddress,
-      signerOrProvider
-    ),
+    gmx: ERC20PresetMinterPauser__factory.connect(addresses.gmxAddress, runner),
+    glp: ERC20PresetMinterPauser__factory.connect(addresses.glpAddress, runner),
     sGLP: ERC20PresetMinterPauser__factory.connect(
       addresses.sGLPAddress,
-      signerOrProvider
+      runner
     ),
     fsGLP: ERC20PresetMinterPauser__factory.connect(
       addresses.fsGLPAddress,
-      signerOrProvider
+      runner
     ),
   };
 }

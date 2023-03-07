@@ -1,3 +1,4 @@
+import { ContractRunner } from 'ethers';
 import {
   GlpStakingManager__factory,
   GMXBatchingManager__factory,
@@ -5,10 +6,9 @@ import {
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  getChainIdFromProvider,
+  getChainIdFromRunner,
   getNetworkName,
   NetworkName,
-  SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
 
@@ -26,43 +26,43 @@ export function getDeployments(networkNameOrChainId: NetworkName | number) {
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const deployments = getDeployments(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     glpStakingManager: GlpStakingManager__factory.connect(
       deployments.GlpStakingManagerDeployment.address,
-      signerOrProvider
+      runner
     ),
     glpStakingManagerLogic: GlpStakingManager__factory.connect(
       deployments.GlpStakingManagerLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     gmxBatchingManager: GMXBatchingManager__factory.connect(
       deployments.GMXBatchingManagerDeployment.address,
-      signerOrProvider
+      runner
     ),
     gmxBatchingManagerLogic: GMXBatchingManager__factory.connect(
       deployments.GMXBatchingManagerLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
     gmxYieldStrategy: GMXYieldStrategy__factory.connect(
       deployments.GMXYieldStrategyDeployment.address,
-      signerOrProvider
+      runner
     ),
     gmxYieldStrategyLogic: GMXYieldStrategy__factory.connect(
       deployments.GMXYieldStrategyLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
   };
 }

@@ -1,9 +1,8 @@
-import { BigNumber, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits, Provider, toBigInt } from 'ethers';
 import {
   VaultName,
   getVault,
-  getNetworkNameFromProvider,
+  getNetworkNameFromRunner,
   getVaultDeployBlockNumber,
   tokens,
   deltaNeutralGmxVaults,
@@ -44,7 +43,7 @@ export interface VaultInfoResult {
 const USD_DECIMALS = 6;
 
 export async function getVaultInfo(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   vaultName: VaultName,
   dataSource: BaseDataSource
 ): Promise<VaultInfoResult> {
@@ -72,7 +71,7 @@ export async function getVaultInfo(
 
   // asset price
   let assetPrice: Amount;
-  let assetPriceX128: BigNumber;
+  let assetPriceX128: bigint;
   try {
     assetPriceX128 = await vault.getPriceX128(); // dollars per asset
     assetPrice = stringToAmount(
@@ -83,11 +82,11 @@ export async function getVaultInfo(
     );
   } catch {
     const priceD18 = await DnGmxJuniorVault__factory.connect(
-      vault.address,
+      await vault.getAddress(),
       provider
     ).getPrice(false);
     assetPrice = bigNumberToAmount(priceD18, 18);
-    assetPriceX128 = priceD18.mul(Q128).div(BigNumber.from(10).pow(18 + 12));
+    assetPriceX128 = (priceD18 * Q128) / toBigInt(10) ** (18n + 12n);
   }
 
   // share price
@@ -98,9 +97,7 @@ export async function getVaultInfo(
   const sharePrice = stringToAmount(
     (
       await priceX128ToPrice(
-        assetPriceX128
-          .mul(assetsPerShareDX)
-          .div(parseUnits('1', assetDecimals)),
+        (assetPriceX128 * assetsPerShareDX) / parseUnits('1', assetDecimals),
         6,
         shareDecimals
       )
@@ -117,7 +114,7 @@ export async function getVaultInfo(
   const vaultMarketValue = bigNumberToAmount(vaultMarketValueUSD, USD_DECIMALS);
 
   // avg vault market value
-  const networkName = await getNetworkNameFromProvider(vault.provider);
+  const networkName = await getNetworkNameFromRunner(vault.runner);
   const vaultDeployBlockNumber = getVaultDeployBlockNumber(
     networkName,
     vaultName
@@ -136,20 +133,15 @@ export async function getVaultInfo(
       provider
     );
 
-    const usdcBalance = await usdc.balanceOf(dnGmxBatchingManager.address);
-    const sglpBalance = await fsGLP.balanceOf(dnGmxBatchingManager.address);
+    const usdcBalance = await usdc.balanceOf(dnGmxBatchingManager);
+    const sglpBalance = await fsGLP.balanceOf(dnGmxBatchingManager);
     const sglpBalanceOfJuniorVault =
       await dnGmxBatchingManager.dnGmxJuniorVaultGlpBalance();
 
-    const sglpInDollars = sglpBalance
-      .sub(sglpBalanceOfJuniorVault)
-      .mul(assetPriceX128)
-      .div(Q128);
+    const sglpInDollars =
+      ((sglpBalance - sglpBalanceOfJuniorVault) * assetPriceX128) / Q128;
 
-    vaultMarketValuePending = bigNumberToAmount(
-      usdcBalance.add(sglpInDollars),
-      6
-    );
+    vaultMarketValuePending = bigNumberToAmount(usdcBalance + sglpInDollars, 6);
   }
 
   const poolComposition = await getPoolComposition(provider, vaultName);

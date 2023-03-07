@@ -1,4 +1,4 @@
-import { Signer, providers } from 'ethers';
+import { BigNumberish, toNumber, ContractRunner } from 'ethers';
 import { newError } from '../utils/loggers';
 
 export const supportedNetworkNames = [
@@ -18,7 +18,6 @@ export const chainIds: ChainIds = {
 
 export type NetworkName = keyof typeof chainIds;
 
-export type SignerOrProvider = Signer | providers.Provider;
 export interface ContractDeployment {
   address: string;
   receipt?: {
@@ -27,7 +26,8 @@ export interface ContractDeployment {
   };
 }
 
-export function getNetworkNameFromChainId(chainId: number): NetworkName {
+export function getNetworkNameFromChainId(chainId: BigNumberish): NetworkName {
+  chainId = toNumber(chainId);
   for (const networkName of supportedNetworkNames) {
     if (chainIds[networkName] === chainId) {
       return networkName;
@@ -56,24 +56,20 @@ export function getNetworkName(
   return sanitizeNetworkName(networkName);
 }
 
-export async function getChainIdFromProvider(
-  signerOrProvider: SignerOrProvider
-) {
-  const provider = providers.Provider.isProvider(signerOrProvider)
-    ? signerOrProvider
-    : signerOrProvider.provider;
-  if (provider === undefined) {
-    throw newError('provider is not present in signerOrProvider');
+export async function getChainIdFromRunner(runner?: ContractRunner | null) {
+  if (!runner) {
+    throw newError('runner is nullish');
+  }
+  if (!runner.provider) {
+    throw newError('provider is not present in runner');
   }
 
-  const network = await provider.getNetwork();
-  return network.chainId;
+  const network = await runner.provider.getNetwork();
+  return toNumber(network.chainId);
 }
 
-export async function getNetworkNameFromProvider(
-  signerOrProvider: SignerOrProvider
-) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
+export async function getNetworkNameFromRunner(runner?: ContractRunner | null) {
+  const chainId = await getChainIdFromRunner(runner);
   return getNetworkNameFromChainId(chainId);
 }
 

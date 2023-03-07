@@ -1,4 +1,4 @@
-import { Provider } from '@ethersproject/providers';
+import { Provider } from 'ethers';
 
 export function waitForContract(
   provider: Provider,

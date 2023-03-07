@@ -1,5 +1,4 @@
-import { BigNumber } from 'ethers';
-import { formatEther, formatUnits } from 'ethers/lib/utils';
+import { formatEther, formatUnits, toBigInt, toNumber } from 'ethers';
 import { core, getNetworkName, NetworkName } from '../contracts';
 import pools from '../pools.json';
 import {
@@ -35,7 +34,7 @@ export async function getAccountIdsByAddress(
   const logs = await clearingHouse.queryFilter(
     clearingHouse.filters.AccountCreated(addr)
   );
-  return logs.map((log) => log.args.accountId.toNumber());
+  return logs.map((log) => toNumber(log.args.accountId));
 }
 
 export async function getAccountInfo(
@@ -56,7 +55,7 @@ export async function getAccountInfo(
       const collateralAddress = collateralInfo.collateral;
       const token = IERC20Metadata__factory.connect(
         collateralAddress,
-        clearingHouseLens.provider
+        clearingHouseLens.runner
       );
       const tokenDecimals = await token.decimals();
       return {
@@ -74,9 +73,8 @@ export async function getAccountInfo(
         await clearingHouseLens.getAccountPositionInfo(accountId, poolId);
 
       let { vPoolAddress, vPoolWrapperAddress } =
-        pools[networkName].find((pool) =>
-          BigNumber.from(pool.poolId).eq(poolId)
-        )! || {};
+        pools[networkName].find((pool) => toBigInt(pool.poolId) === poolId)! ||
+        {};
 
       if (vPoolAddress === undefined) {
         const poolInfo = await clearingHouseLens.getPoolInfo(poolId);
@@ -85,11 +83,11 @@ export async function getAccountInfo(
 
       const vPool = typechain.uniswapCore.UniswapV3Pool__factory.connect(
         vPoolAddress,
-        clearingHouseLens.provider
+        clearingHouseLens.runner
       );
       const vPoolWrapper = typechain.core.VPoolWrapper__factory.connect(
         vPoolWrapperAddress,
-        clearingHouseLens.provider
+        clearingHouseLens.runner
       );
 
       const sumAX128 = await vPoolWrapper.getExtrapolatedSumAX128();

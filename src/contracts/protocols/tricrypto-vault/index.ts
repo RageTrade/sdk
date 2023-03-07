@@ -1,3 +1,4 @@
+import { ContractRunner } from 'ethers';
 import {
   CurveYieldStrategy__factory,
   ERC20PresetMinterPauser__factory,
@@ -7,10 +8,9 @@ import {
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
-  getChainIdFromProvider,
+  getChainIdFromRunner,
   getNetworkName,
   NetworkName,
-  SignerOrProvider,
 } from '../../common';
 import { getProvider } from '../../providers';
 import * as arbgoerli from './arbgoerli';
@@ -31,43 +31,43 @@ export function getDeployments(networkNameOrChainId: NetworkName | number) {
   }
 }
 
-export async function getContracts(signerOrProvider: SignerOrProvider) {
-  const chainId = await getChainIdFromProvider(signerOrProvider);
-  return getContractsSync(chainId, signerOrProvider);
+export async function getContracts(runner: ContractRunner) {
+  const chainId = await getChainIdFromRunner(runner);
+  return getContractsSync(chainId, runner);
 }
 
 export function getContractsSync(
   networkNameOrChainId: NetworkName | number,
-  signerOrProvider?: SignerOrProvider
+  runner?: ContractRunner
 ) {
   const deployments = getDeployments(getNetworkName(networkNameOrChainId));
-  if (signerOrProvider === undefined) {
-    signerOrProvider = getProvider(networkNameOrChainId);
+  if (runner === undefined) {
+    runner = getProvider(networkNameOrChainId);
   }
   return {
     collateralToken: ERC20PresetMinterPauser__factory.connect(
       deployments.CollateralTokenDeployment.address,
-      signerOrProvider
+      runner
     ),
     logicLibrary: Logic__factory.connect(
       deployments.LogicLibraryDeployment.address,
-      signerOrProvider
+      runner
     ),
     swapManagerLibrary: SwapManager__factory.connect(
       deployments.SwapManagerLibraryDeployment.address,
-      signerOrProvider
+      runner
     ),
     vaultPeriphery: VaultPeriphery__factory.connect(
       deployments.VaultPeripheryDeployment.address,
-      signerOrProvider
+      runner
     ),
     curveYieldStrategy: CurveYieldStrategy__factory.connect(
       deployments.CurveYieldStrategyDeployment.address,
-      signerOrProvider
+      runner
     ),
     curveYieldStrategyLogic: CurveYieldStrategy__factory.connect(
       deployments.CurveYieldStrategyLogicDeployment.address,
-      signerOrProvider
+      runner
     ),
   };
 }

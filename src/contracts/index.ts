@@ -1,3 +1,4 @@
+import { ContractRunner } from 'ethers';
 import {
   Account__factory,
   ClearingHouse__factory,
@@ -19,7 +20,6 @@ import {
 } from '../typechain';
 
 import { warn } from '../utils/loggers';
-import { SignerOrProvider } from './common';
 
 export * from './common';
 export * from './vaults';
@@ -51,31 +51,29 @@ export function getEthersInterfaces() {
 
 import { core, tricryptoVault, gmxVault, tokens, uniswap } from './protocols';
 
-export async function getCoreContracts(signerOrProvider: SignerOrProvider) {
+export async function getCoreContracts(runner: ContractRunner) {
   warn('getCoreContracts is deprecated, please use core.getContracts');
-  return core.getContracts(signerOrProvider);
+  return core.getContracts(runner);
 }
 
-export async function getTricryptoVaultContracts(
-  signerOrProvider: SignerOrProvider
-) {
+export async function getTricryptoVaultContracts(runner: ContractRunner) {
   warn(
     'getTricryptoVaultContracts is deprecated, please use tricryptoVault.getContracts'
   );
-  return tricryptoVault.getContracts(signerOrProvider);
+  return tricryptoVault.getContracts(runner);
 }
 
-export async function getGmxVaultContracts(signerOrProvider: SignerOrProvider) {
+export async function getGmxVaultContracts(runner: ContractRunner) {
   warn('getGmxVaultContracts is deprecated, please use gmxVault.getContracts');
-  return gmxVault.getContracts(signerOrProvider);
+  return gmxVault.getContracts(runner);
 }
 
-export async function getTokenContracts(signerOrProvider: SignerOrProvider) {
+export async function getTokenContracts(runner: ContractRunner) {
   warn('getTokenContracts is deprecated, please use tokens.getContracts');
-  return tokens.getContracts(signerOrProvider);
+  return tokens.getContracts(runner);
 }
 
-export async function getUniswapContracts(signerOrProvider: SignerOrProvider) {
+export async function getUniswapContracts(runner: ContractRunner) {
   warn('getUniswapContracts is deprecated, please use uniswap.getContracts');
-  return uniswap.getContracts(signerOrProvider);
+  return uniswap.getContracts(runner);
 }

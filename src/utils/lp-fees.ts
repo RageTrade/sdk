@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumberish, toBigInt } from 'ethers';
 import { Q128 } from './fixed-point';
 
 export function unrealizedLpFees(
@@ -6,9 +6,9 @@ export function unrealizedLpFees(
   sumFeeInsideLastX128: BigNumberish,
   liquidity: BigNumberish
 ) {
-  sumFeeInsideX128 = BigNumber.from(sumFeeInsideX128);
-  sumFeeInsideLastX128 = BigNumber.from(sumFeeInsideLastX128);
-  liquidity = BigNumber.from(liquidity);
+  sumFeeInsideX128 = toBigInt(sumFeeInsideX128);
+  sumFeeInsideLastX128 = toBigInt(sumFeeInsideLastX128);
+  liquidity = toBigInt(liquidity);
 
-  return sumFeeInsideX128.sub(sumFeeInsideLastX128).mul(liquidity).div(Q128);
+  return ((sumFeeInsideX128 - sumFeeInsideLastX128) * liquidity) / Q128;
 }

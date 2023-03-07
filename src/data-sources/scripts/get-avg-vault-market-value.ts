@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { toBigInt } from 'ethers';
 import { BaseVault } from '../../typechain';
 import { Amount, bigNumberToAmount } from '../../utils';
 import { BaseDataSource } from '../base-data-source';
@@ -13,7 +13,7 @@ export async function getAvgVaultMarketValue(
   vaultDeployBlockNumber?: number
 ): Promise<AvgVaultMarketValueResult> {
   let timestamp = Math.floor(Date.now() / 1000);
-  let vmvSum = BigNumber.from(0);
+  let vmvSum = 0n;
 
   const hourDelay = 2;
   let i = 0;
@@ -25,7 +25,7 @@ export async function getAvgVaultMarketValue(
       const vmv = await vault.getVaultMarketValue({
         blockTag: Math.max(blockNumber, vaultDeployBlockNumber || 0),
       });
-      vmvSum = vmvSum.add(vmv);
+      vmvSum = vmvSum + vmv;
       timestamp -= 3600 * hourDelay;
     } catch {
       // this might fail if node does not support archive queries older than this or
@@ -35,7 +35,7 @@ export async function getAvgVaultMarketValue(
     }
   }
 
-  const avgVaultMarketValueD6 = vmvSum.div(i);
+  const avgVaultMarketValueD6 = vmvSum / toBigInt(i);
   return {
     avgVaultMarketValue: bigNumberToAmount(avgVaultMarketValueD6, 6),
   };

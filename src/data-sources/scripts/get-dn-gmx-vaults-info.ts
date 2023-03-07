@@ -1,5 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
-import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
+import { formatEther, formatUnits, parseEther, Provider } from 'ethers';
 import { aave, deltaNeutralGmxVaults } from '../../contracts';
 import { Amount, bigNumberToAmount, safeDiv } from '../../utils';
 import { DnGmxVaultsInfoFastResult } from './get-dn-gmx-vaults-info-fast';
@@ -7,22 +6,22 @@ import { DnGmxVaultsInfoFastResult } from './get-dn-gmx-vaults-info-fast';
 export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
   juniorVault: {
     currentExposureInGlp: {
-      btcD8: BigNumber;
-      ethD18: BigNumber;
+      btcD8: bigint;
+      ethD18: bigint;
     };
     currentShortPositionInAave: {
-      btcD8: BigNumber;
-      ethD18: BigNumber;
+      btcD8: bigint;
+      ethD18: bigint;
     };
-    currentBorrowValueD6: BigNumber;
+    currentBorrowValueD6: bigint;
     ethRewardsSplitRate: number;
     assetPriceMinimized: Amount;
     assetPriceMaximized: Amount;
   };
   seniorVault: {
-    usdcLentToAaveD6: BigNumber;
-    positionD6: BigNumber;
-    withdrawableAmountD6: BigNumber;
+    usdcLentToAaveD6: bigint;
+    positionD6: bigint;
+    withdrawableAmountD6: bigint;
     earnedInterestRate: number;
     utilizationRatio: number;
     ethRewardsSplitRate: number;
@@ -35,7 +34,7 @@ export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
 }
 
 export async function getDnGmxVaultsInfo(
-  provider: ethers.providers.Provider
+  provider: Provider
 ): Promise<DnGmxVaultsInfoResult> {
   const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
     await deltaNeutralGmxVaults.getContracts(provider);
@@ -63,7 +62,10 @@ export async function getDnGmxVaultsInfo(
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
     // junior vault
-    dnGmxJuniorVault.getOptimalBorrows(dnGmxJuniorVault.totalAssets(), false),
+    dnGmxJuniorVault.getOptimalBorrows(
+      await dnGmxJuniorVault.totalAssets(),
+      false
+    ),
     dnGmxJuniorVault.getCurrentBorrows(),
     dnGmxJuniorVault.dnUsdcDeposited(), // TODO remove; this call is failing
     dnGmxJuniorVault.getUsdcBorrowed(),
@@ -79,28 +81,27 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager.depositCap(),
     dnGmxBatchingManager.roundUsdcBalance(),
     // other
-    aUsdc.balanceOf(dnGmxSeniorVault.address),
+    aUsdc.balanceOf(dnGmxSeniorVault),
   ] as const);
 
   const D18 = parseEther('1');
 
   const utilizationRatioD18 = safeDiv(
-    D18.mul(dnGmxSeniorVault_totalUsdcBorrowed),
+    D18 * dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets
   );
 
   const earnedInterestRateD18 = safeDiv(
-    D18.mul(dnGmxJuniorVault_dnUsdcDeposited.add(dnGmxSeniorVault_totalAssets)),
+    D18 * (dnGmxJuniorVault_dnUsdcDeposited + dnGmxSeniorVault_totalAssets),
     dnGmxSeniorVault_totalAssets
   );
 
-  const withdrawableAmountD6_A = dnGmxSeniorVault_totalAssets.sub(
-    dnGmxJuniorVault_getUsdcBorrowed
-  );
-  const withdrawableAmountD6_B = dnGmxSeniorVault_totalAssets
-    .sub(dnGmxSeniorVault_totalUsdcBorrowed)
-    .mul(dnGmxSeniorVault_maxUtilizationBps)
-    .div(10_000);
+  const withdrawableAmountD6_A =
+    dnGmxSeniorVault_totalAssets - dnGmxJuniorVault_getUsdcBorrowed;
+  const withdrawableAmountD6_B =
+    ((dnGmxSeniorVault_totalAssets - dnGmxSeniorVault_totalUsdcBorrowed) *
+      dnGmxSeniorVault_maxUtilizationBps) /
+    10_000n;
 
   const seniorVault_ethRewardsSplitRate = Number(
     formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
@@ -134,9 +135,10 @@ export async function getDnGmxVaultsInfo(
       positionD6: dnGmxSeniorVault_totalUsdcBorrowed,
       earnedInterestRate: Number(formatEther(earnedInterestRateD18)),
       utilizationRatio: Number(formatEther(utilizationRatioD18)),
-      withdrawableAmountD6: withdrawableAmountD6_A.lt(withdrawableAmountD6_B)
-        ? withdrawableAmountD6_A
-        : withdrawableAmountD6_B,
+      withdrawableAmountD6:
+        withdrawableAmountD6_A < withdrawableAmountD6_B
+          ? withdrawableAmountD6_A
+          : withdrawableAmountD6_B,
       ethRewardsSplitRate: seniorVault_ethRewardsSplitRate,
     },
     dnGmxBatchingManager: {

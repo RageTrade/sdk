@@ -11,7 +11,7 @@ import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-
 import ProxyAdmin from '../../../deployments/delta-neutral-gmx-vaults/arbgoerli/ProxyAdmin.json';
 
 import { DnGmxVaultDeployments } from './interface';
-import { ethers } from 'ethers';
+import { ZeroAddress } from 'ethers';
 
 export function getDeployments(): DnGmxVaultDeployments {
   return {
@@ -20,10 +20,10 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxBatchingManagerDeployment,
     DnGmxBatchingManagerLogicDeployment,
     DnGmxBatchingManagerGlpDeployment: {
-      address: ethers.constants.AddressZero,
+      address: ZeroAddress,
     },
     DnGmxBatchingManagerGlpLogicDeployment: {
-      address: ethers.constants.AddressZero,
+      address: ZeroAddress,
     },
     DnGmxJuniorVaultDeployment,
     DnGmxJuniorVaultLogicDeployment,
@@ -31,7 +31,7 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
     DnGmxTraderHedgeStrategyDeployment: {
-      address: ethers.constants.AddressZero,
+      address: ZeroAddress,
     },
     WithdrawPeripheryDeployment,
     ProxyAdmin,

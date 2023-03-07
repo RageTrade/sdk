@@ -1,5 +1,10 @@
-import { BigNumber, BigNumberish, ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import {
+  BigNumberish,
+  Provider,
+  parseUnits,
+  toBigInt,
+  ZeroAddress,
+} from 'ethers';
 import { core } from '../../contracts';
 import { IOracle__factory, IUniswapV3Pool__factory } from '../../typechain';
 import { priceX128ToPrice, sqrtPriceX96ToPrice } from '../../utils';
@@ -11,17 +16,17 @@ export interface PricesResult {
   realTwapPrice: number;
   virtualTwapPrice: number;
 
-  realPriceD18: BigNumber;
-  virtualPriceD18: BigNumber;
-  realTwapPriceD18: BigNumber;
-  virtualTwapPriceD18: BigNumber;
+  realPriceD18: bigint;
+  virtualPriceD18: bigint;
+  realTwapPriceD18: bigint;
+  virtualTwapPriceD18: bigint;
 }
 
 export async function getPrices(
-  provider: ethers.providers.Provider,
+  provider: Provider,
   poolId: BigNumberish
 ): Promise<PricesResult> {
-  poolId = BigNumber.from(poolId);
+  poolId = toBigInt(poolId);
   const { clearingHouse, clearingHouseLens } = await core.getContracts(
     provider
   );
@@ -32,7 +37,7 @@ export async function getPrices(
     clearingHouseLens.getPoolInfo(poolId),
   ]);
 
-  if (pool.vPool === ethers.constants.AddressZero) {
+  if (pool.vPool === ZeroAddress) {
     throw newError(`Pool with id ${poolId} not found`);
   }
 
