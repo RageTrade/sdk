@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IBatchingManagerBypass,
   IBatchingManagerBypassInterface,
@@ -34,21 +33,21 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IBatchingManagerBypass__factory {
   static readonly abi = _abi;
   static createInterface(): IBatchingManagerBypassInterface {
-    return new utils.Interface(_abi) as IBatchingManagerBypassInterface;
+    return new Interface(_abi) as IBatchingManagerBypassInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IBatchingManagerBypass {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IBatchingManagerBypass;
+      runner
+    ) as unknown as IBatchingManagerBypass;
   }
 }

@@ -3,37 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
-export interface FlagsInterfaceInterface extends utils.Interface {
-  functions: {
-    'getFlag(address)': FunctionFragment;
-    'getFlags(address[])': FunctionFragment;
-    'lowerFlags(address[])': FunctionFragment;
-    'raiseFlag(address)': FunctionFragment;
-    'raiseFlags(address[])': FunctionFragment;
-    'setRaisingAccessController(address)': FunctionFragment;
-  };
-
+export interface FlagsInterfaceInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'getFlag'
       | 'getFlags'
       | 'lowerFlags'
@@ -44,27 +33,27 @@ export interface FlagsInterfaceInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'getFlag',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getFlags',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'lowerFlags',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'raiseFlag',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'raiseFlags',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'setRaisingAccessController',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: 'getFlag', data: BytesLike): Result;
@@ -76,193 +65,90 @@ export interface FlagsInterfaceInterface extends utils.Interface {
     functionFragment: 'setRaisingAccessController',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface FlagsInterface extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: FlagsInterfaceInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<[boolean[]]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    lowerFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getFlag: TypedContractMethod<[arg0: AddressLike], [boolean], 'view'>;
 
-    raiseFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getFlags: TypedContractMethod<[arg0: AddressLike[]], [boolean[]], 'view'>;
 
-    raiseFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  lowerFlags: TypedContractMethod<[arg0: AddressLike[]], [void], 'nonpayable'>;
 
-    setRaisingAccessController(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  raiseFlag: TypedContractMethod<[arg0: AddressLike], [void], 'nonpayable'>;
 
-  getFlag(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  raiseFlags: TypedContractMethod<[arg0: AddressLike[]], [void], 'nonpayable'>;
 
-  getFlags(
-    arg0: PromiseOrValue<string>[],
-    overrides?: CallOverrides
-  ): Promise<boolean[]>;
+  setRaisingAccessController: TypedContractMethod<
+    [arg0: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  lowerFlags(
-    arg0: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  raiseFlag(
-    arg0: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  raiseFlags(
-    arg0: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setRaisingAccessController(
-    arg0: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    getFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    getFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<boolean[]>;
-
-    lowerFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    raiseFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    raiseFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setRaisingAccessController(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'getFlag'
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'getFlags'
+  ): TypedContractMethod<[arg0: AddressLike[]], [boolean[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'lowerFlags'
+  ): TypedContractMethod<[arg0: AddressLike[]], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'raiseFlag'
+  ): TypedContractMethod<[arg0: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'raiseFlags'
+  ): TypedContractMethod<[arg0: AddressLike[]], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setRaisingAccessController'
+  ): TypedContractMethod<[arg0: AddressLike], [void], 'nonpayable'>;
 
   filters: {};
-
-  estimateGas: {
-    getFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    lowerFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    raiseFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    raiseFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setRaisingAccessController(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    lowerFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    raiseFlag(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    raiseFlags(
-      arg0: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRaisingAccessController(
-      arg0: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

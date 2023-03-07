@@ -3,100 +3,100 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace IClearingHouseStructures {
   export type TickRangeStruct = {
-    tickLower: PromiseOrValue<BigNumberish>;
-    tickUpper: PromiseOrValue<BigNumberish>;
+    tickLower: BigNumberish;
+    tickUpper: BigNumberish;
   };
 
-  export type TickRangeStructOutput = [number, number] & {
-    tickLower: number;
-    tickUpper: number;
+  export type TickRangeStructOutput = [tickLower: bigint, tickUpper: bigint] & {
+    tickLower: bigint;
+    tickUpper: bigint;
   };
 
   export type CollateralSettingsStruct = {
-    oracle: PromiseOrValue<string>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForDeposit: PromiseOrValue<boolean>;
-  };
-
-  export type CollateralSettingsStructOutput = [string, number, boolean] & {
-    oracle: string;
-    twapDuration: number;
+    oracle: AddressLike;
+    twapDuration: BigNumberish;
     isAllowedForDeposit: boolean;
   };
 
+  export type CollateralSettingsStructOutput = [
+    oracle: string,
+    twapDuration: bigint,
+    isAllowedForDeposit: boolean
+  ] & { oracle: string; twapDuration: bigint; isAllowedForDeposit: boolean };
+
   export type CollateralStruct = {
-    token: PromiseOrValue<string>;
+    token: AddressLike;
     settings: IClearingHouseStructures.CollateralSettingsStruct;
   };
 
   export type CollateralStructOutput = [
-    string,
-    IClearingHouseStructures.CollateralSettingsStructOutput
+    token: string,
+    settings: IClearingHouseStructures.CollateralSettingsStructOutput
   ] & {
     token: string;
     settings: IClearingHouseStructures.CollateralSettingsStructOutput;
   };
 
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
 
   export type PoolStruct = {
-    vToken: PromiseOrValue<string>;
-    vPool: PromiseOrValue<string>;
-    vPoolWrapper: PromiseOrValue<string>;
+    vToken: AddressLike;
+    vPool: AddressLike;
+    vPoolWrapper: AddressLike;
     settings: IClearingHouseStructures.PoolSettingsStruct;
   };
 
   export type PoolStructOutput = [
-    string,
-    string,
-    string,
-    IClearingHouseStructures.PoolSettingsStructOutput
+    vToken: string,
+    vPool: string,
+    vPoolWrapper: string,
+    settings: IClearingHouseStructures.PoolSettingsStructOutput
   ] & {
     vToken: string;
     vPool: string;
@@ -105,59 +105,40 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
-    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
-    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
-    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
-    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
-    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
+    insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
+    maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber
+    rangeLiquidationFeeFraction: bigint,
+    tokenLiquidationFeeFraction: bigint,
+    closeFactorMMThresholdBps: bigint,
+    partialLiquidationCloseFactorBps: bigint,
+    insuranceFundFeeShareBps: bigint,
+    liquidationSlippageSqrtToleranceBps: bigint,
+    maxRangeLiquidationFees: bigint,
+    minNotionalLiquidatable: bigint
   ] & {
-    rangeLiquidationFeeFraction: number;
-    tokenLiquidationFeeFraction: number;
-    closeFactorMMThresholdBps: number;
-    partialLiquidationCloseFactorBps: number;
-    insuranceFundFeeShareBps: number;
-    liquidationSlippageSqrtToleranceBps: number;
-    maxRangeLiquidationFees: BigNumber;
-    minNotionalLiquidatable: BigNumber;
+    rangeLiquidationFeeFraction: bigint;
+    tokenLiquidationFeeFraction: bigint;
+    closeFactorMMThresholdBps: bigint;
+    partialLiquidationCloseFactorBps: bigint;
+    insuranceFundFeeShareBps: bigint;
+    liquidationSlippageSqrtToleranceBps: bigint;
+    maxRangeLiquidationFees: bigint;
+    minNotionalLiquidatable: bigint;
   };
 }
 
-export interface ClearingHouseLensInterface extends utils.Interface {
-  functions: {
-    'clearingHouse()': FunctionFragment;
-    'getAccountCollateralBalance(uint256,uint32)': FunctionFragment;
-    'getAccountCollateralInfo(uint256,uint32)': FunctionFragment;
-    'getAccountInfo(uint256)': FunctionFragment;
-    'getAccountLiquidityPositionInfo(uint256,uint32,int24,int24)': FunctionFragment;
-    'getAccountLiquidityPositionList(uint256,uint32)': FunctionFragment;
-    'getAccountPositionInfo(uint256,uint32)': FunctionFragment;
-    'getAccountTokenPositionInfo(uint256,uint32)': FunctionFragment;
-    'getCollateralInfo(uint32)': FunctionFragment;
-    'getPoolInfo(uint32)': FunctionFragment;
-    'getPoolSettings(uint32)': FunctionFragment;
-    'getProtocolInfo()': FunctionFragment;
-    'getTwapDuration(uint32)': FunctionFragment;
-    'getVPool(uint32)': FunctionFragment;
-    'getVPoolAndTwapDuration(uint32)': FunctionFragment;
-    'isPoolIdAvailable(uint32)': FunctionFragment;
-  };
-
+export interface ClearingHouseLensInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'clearingHouse'
       | 'getAccountCollateralBalance'
       | 'getAccountCollateralInfo'
@@ -182,48 +163,43 @@ export interface ClearingHouseLensInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountCollateralBalance',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountCollateralInfo',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountInfo',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountLiquidityPositionInfo',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountLiquidityPositionList',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountPositionInfo',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountTokenPositionInfo',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getCollateralInfo',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolInfo',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPoolSettings',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getProtocolInfo',
@@ -231,19 +207,19 @@ export interface ClearingHouseLensInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapDuration',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVPool',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVPoolAndTwapDuration',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'isPoolIdAvailable',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -307,646 +283,346 @@ export interface ClearingHouseLensInterface extends utils.Interface {
     functionFragment: 'isPoolIdAvailable',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ClearingHouseLens extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ClearingHouseLensInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    clearingHouse(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getAccountCollateralBalance(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { balance: BigNumber }>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getAccountCollateralInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { collateral: string; balance: BigNumber }
-    >;
+  clearingHouse: TypedContractMethod<[], [string], 'view'>;
 
-    getAccountInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber, number[], number[]] & {
+  getAccountCollateralBalance: TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  getAccountCollateralInfo: TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish],
+    [[string, bigint] & { collateral: string; balance: bigint }],
+    'view'
+  >;
+
+  getAccountInfo: TypedContractMethod<
+    [accountId: BigNumberish],
+    [
+      [string, bigint, bigint[], bigint[]] & {
         owner: string;
-        vQuoteBalance: BigNumber;
-        activeCollateralIds: number[];
-        activePoolIds: number[];
+        vQuoteBalance: bigint;
+        activeCollateralIds: bigint[];
+        activePoolIds: bigint[];
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getAccountLiquidityPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
+  getAccountLiquidityPositionInfo: TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish
+    ],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint, bigint] & {
+        limitOrderType: bigint;
+        liquidity: bigint;
+        vTokenAmountIn: bigint;
+        sumALastX128: bigint;
+        sumBInsideLastX128: bigint;
+        sumFpInsideLastX128: bigint;
+        sumFeeInsideLastX128: bigint;
+      }
+    ],
+    'view'
+  >;
+
+  getAccountLiquidityPositionList: TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [IClearingHouseStructures.TickRangeStructOutput[]],
+    'view'
+  >;
+
+  getAccountPositionInfo: TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [
       [
-        number,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        limitOrderType: number;
-        liquidity: BigNumber;
-        vTokenAmountIn: BigNumber;
-        sumALastX128: BigNumber;
-        sumBInsideLastX128: BigNumber;
-        sumFpInsideLastX128: BigNumber;
-        sumFeeInsideLastX128: BigNumber;
-      }
-    >;
-
-    getAccountLiquidityPositionList(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IClearingHouseStructures.TickRangeStructOutput[]] & {
-        activeTickRanges: IClearingHouseStructures.TickRangeStructOutput[];
-      }
-    >;
-
-    getAccountPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        BigNumber,
+        bigint,
+        bigint,
+        bigint,
         IClearingHouseStructures.TickRangeStructOutput[]
       ] & {
-        balance: BigNumber;
-        netTraderPosition: BigNumber;
-        sumALastX128: BigNumber;
+        balance: bigint;
+        netTraderPosition: bigint;
+        sumALastX128: bigint;
         activeTickRanges: IClearingHouseStructures.TickRangeStructOutput[];
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getAccountTokenPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        balance: BigNumber;
-        netTraderPosition: BigNumber;
-        sumALastX128: BigNumber;
+  getAccountTokenPositionInfo: TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [
+      [bigint, bigint, bigint] & {
+        balance: bigint;
+        netTraderPosition: bigint;
+        sumALastX128: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getCollateralInfo(
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[IClearingHouseStructures.CollateralStructOutput]>;
+  getCollateralInfo: TypedContractMethod<
+    [collateralId: BigNumberish],
+    [IClearingHouseStructures.CollateralStructOutput],
+    'view'
+  >;
 
-    getPoolInfo(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IClearingHouseStructures.PoolStructOutput] & {
-        pool: IClearingHouseStructures.PoolStructOutput;
-      }
-    >;
+  getPoolInfo: TypedContractMethod<
+    [poolId: BigNumberish],
+    [IClearingHouseStructures.PoolStructOutput],
+    'view'
+  >;
 
-    getPoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IClearingHouseStructures.PoolSettingsStructOutput] & {
-        settings: IClearingHouseStructures.PoolSettingsStructOutput;
-      }
-    >;
+  getPoolSettings: TypedContractMethod<
+    [poolId: BigNumberish],
+    [IClearingHouseStructures.PoolSettingsStructOutput],
+    'view'
+  >;
 
-    getProtocolInfo(overrides?: CallOverrides): Promise<
+  getProtocolInfo: TypedContractMethod<
+    [],
+    [
       [
         string,
         string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
-        BigNumber,
-        BigNumber,
-        BigNumber
+        bigint,
+        bigint,
+        bigint
       ] & {
         settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-        minRequiredMargin: BigNumber;
-        removeLimitOrderFee: BigNumber;
-        minimumOrderNotional: BigNumber;
+        minRequiredMargin: bigint;
+        removeLimitOrderFee: bigint;
+        minimumOrderNotional: bigint;
       }
-    >;
-
-    getTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[number] & { twapDuration: number }>;
-
-    getVPool(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { vPool: string }>;
-
-    getVPoolAndTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
-
-    isPoolIdAvailable(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-  };
-
-  clearingHouse(overrides?: CallOverrides): Promise<string>;
-
-  getAccountCollateralBalance(
-    accountId: PromiseOrValue<BigNumberish>,
-    collateralId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAccountCollateralInfo(
-    accountId: PromiseOrValue<BigNumberish>,
-    collateralId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[string, BigNumber] & { collateral: string; balance: BigNumber }>;
-
-  getAccountInfo(
-    accountId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [string, BigNumber, number[], number[]] & {
-      owner: string;
-      vQuoteBalance: BigNumber;
-      activeCollateralIds: number[];
-      activePoolIds: number[];
-    }
+    ],
+    'view'
   >;
 
-  getAccountLiquidityPositionInfo(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
+  getTwapDuration: TypedContractMethod<
+    [poolId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  getVPool: TypedContractMethod<[poolId: BigNumberish], [string], 'view'>;
+
+  getVPoolAndTwapDuration: TypedContractMethod<
+    [poolId: BigNumberish],
+    [[string, bigint] & { vPool: string; twapDuration: bigint }],
+    'view'
+  >;
+
+  isPoolIdAvailable: TypedContractMethod<
+    [poolId: BigNumberish],
+    [boolean],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'clearingHouse'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAccountCollateralBalance'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAccountCollateralInfo'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish],
+    [[string, bigint] & { collateral: string; balance: bigint }],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'getAccountInfo'): TypedContractMethod<
+    [accountId: BigNumberish],
     [
-      number,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber
-    ] & {
-      limitOrderType: number;
-      liquidity: BigNumber;
-      vTokenAmountIn: BigNumber;
-      sumALastX128: BigNumber;
-      sumBInsideLastX128: BigNumber;
-      sumFpInsideLastX128: BigNumber;
-      sumFeeInsideLastX128: BigNumber;
-    }
-  >;
-
-  getAccountLiquidityPositionList(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.TickRangeStructOutput[]>;
-
-  getAccountPositionInfo(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      IClearingHouseStructures.TickRangeStructOutput[]
-    ] & {
-      balance: BigNumber;
-      netTraderPosition: BigNumber;
-      sumALastX128: BigNumber;
-      activeTickRanges: IClearingHouseStructures.TickRangeStructOutput[];
-    }
-  >;
-
-  getAccountTokenPositionInfo(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      balance: BigNumber;
-      netTraderPosition: BigNumber;
-      sumALastX128: BigNumber;
-    }
-  >;
-
-  getCollateralInfo(
-    collateralId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-  getPoolInfo(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.PoolStructOutput>;
-
-  getPoolSettings(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IClearingHouseStructures.PoolSettingsStructOutput>;
-
-  getProtocolInfo(overrides?: CallOverrides): Promise<
-    [
-      string,
-      string,
-      IClearingHouseStructures.LiquidationParamsStructOutput,
-      BigNumber,
-      BigNumber,
-      BigNumber
-    ] & {
-      settlementToken: string;
-      vQuote: string;
-      liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-      minRequiredMargin: BigNumber;
-      removeLimitOrderFee: BigNumber;
-      minimumOrderNotional: BigNumber;
-    }
-  >;
-
-  getTwapDuration(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  getVPool(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getVPoolAndTwapDuration(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
-
-  isPoolIdAvailable(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  callStatic: {
-    clearingHouse(overrides?: CallOverrides): Promise<string>;
-
-    getAccountCollateralBalance(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountCollateralInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber] & { collateral: string; balance: BigNumber }
-    >;
-
-    getAccountInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string, BigNumber, number[], number[]] & {
+      [string, bigint, bigint[], bigint[]] & {
         owner: string;
-        vQuoteBalance: BigNumber;
-        activeCollateralIds: number[];
-        activePoolIds: number[];
+        vQuoteBalance: bigint;
+        activeCollateralIds: bigint[];
+        activePoolIds: bigint[];
       }
-    >;
-
-    getAccountLiquidityPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        number,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        limitOrderType: number;
-        liquidity: BigNumber;
-        vTokenAmountIn: BigNumber;
-        sumALastX128: BigNumber;
-        sumBInsideLastX128: BigNumber;
-        sumFpInsideLastX128: BigNumber;
-        sumFeeInsideLastX128: BigNumber;
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAccountLiquidityPositionInfo'
+  ): TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish
+    ],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint, bigint] & {
+        limitOrderType: bigint;
+        liquidity: bigint;
+        vTokenAmountIn: bigint;
+        sumALastX128: bigint;
+        sumBInsideLastX128: bigint;
+        sumFpInsideLastX128: bigint;
+        sumFeeInsideLastX128: bigint;
       }
-    >;
-
-    getAccountLiquidityPositionList(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.TickRangeStructOutput[]>;
-
-    getAccountPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAccountLiquidityPositionList'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [IClearingHouseStructures.TickRangeStructOutput[]],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'getAccountPositionInfo'): TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [
       [
-        BigNumber,
-        BigNumber,
-        BigNumber,
+        bigint,
+        bigint,
+        bigint,
         IClearingHouseStructures.TickRangeStructOutput[]
       ] & {
-        balance: BigNumber;
-        netTraderPosition: BigNumber;
-        sumALastX128: BigNumber;
+        balance: bigint;
+        netTraderPosition: bigint;
+        sumALastX128: bigint;
         activeTickRanges: IClearingHouseStructures.TickRangeStructOutput[];
       }
-    >;
-
-    getAccountTokenPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        balance: BigNumber;
-        netTraderPosition: BigNumber;
-        sumALastX128: BigNumber;
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAccountTokenPositionInfo'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [
+      [bigint, bigint, bigint] & {
+        balance: bigint;
+        netTraderPosition: bigint;
+        sumALastX128: bigint;
       }
-    >;
-
-    getCollateralInfo(
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.CollateralStructOutput>;
-
-    getPoolInfo(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.PoolStructOutput>;
-
-    getPoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IClearingHouseStructures.PoolSettingsStructOutput>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getCollateralInfo'
+  ): TypedContractMethod<
+    [collateralId: BigNumberish],
+    [IClearingHouseStructures.CollateralStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getPoolInfo'
+  ): TypedContractMethod<
+    [poolId: BigNumberish],
+    [IClearingHouseStructures.PoolStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getPoolSettings'
+  ): TypedContractMethod<
+    [poolId: BigNumberish],
+    [IClearingHouseStructures.PoolSettingsStructOutput],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'getProtocolInfo'): TypedContractMethod<
+    [],
+    [
       [
         string,
         string,
         IClearingHouseStructures.LiquidationParamsStructOutput,
-        BigNumber,
-        BigNumber,
-        BigNumber
+        bigint,
+        bigint,
+        bigint
       ] & {
         settlementToken: string;
         vQuote: string;
         liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-        minRequiredMargin: BigNumber;
-        removeLimitOrderFee: BigNumber;
-        minimumOrderNotional: BigNumber;
+        minRequiredMargin: bigint;
+        removeLimitOrderFee: bigint;
+        minimumOrderNotional: bigint;
       }
-    >;
-
-    getTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    getVPool(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getVPoolAndTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string, number] & { vPool: string; twapDuration: number }>;
-
-    isPoolIdAvailable(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-  };
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getTwapDuration'
+  ): TypedContractMethod<[poolId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVPool'
+  ): TypedContractMethod<[poolId: BigNumberish], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVPoolAndTwapDuration'
+  ): TypedContractMethod<
+    [poolId: BigNumberish],
+    [[string, bigint] & { vPool: string; twapDuration: bigint }],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'isPoolIdAvailable'
+  ): TypedContractMethod<[poolId: BigNumberish], [boolean], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAccountCollateralBalance(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountCollateralInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountLiquidityPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountLiquidityPositionList(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountTokenPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getCollateralInfo(
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPoolInfo(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVPool(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVPoolAndTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isPoolIdAvailable(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getAccountCollateralBalance(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountCollateralInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountLiquidityPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountLiquidityPositionList(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountTokenPositionInfo(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getCollateralInfo(
-      collateralId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPoolInfo(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getProtocolInfo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVPool(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVPoolAndTwapDuration(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isPoolIdAvailable(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

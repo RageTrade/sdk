@@ -3,44 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface WithdrawPeripheryInterface extends utils.Interface {
-  functions: {
-    'owner()': FunctionFragment;
-    'redeemToken(address,address,uint256)': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setAddresses(address,address)': FunctionFragment;
-    'setSlippageThreshold(uint256)': FunctionFragment;
-    'slippageThreshold()': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'withdrawToken(address,address,uint256)': FunctionFragment;
-  };
-
+export interface WithdrawPeripheryInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'owner'
       | 'redeemToken'
       | 'renounceOwnership'
@@ -51,14 +36,19 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
       | 'withdrawToken'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'AddressesUpdated'
+      | 'OwnershipTransferred'
+      | 'SlippageThresholdUpdated'
+      | 'TokenRedeemed'
+      | 'TokenWithdrawn'
+  ): EventFragment;
+
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'redeemToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
@@ -66,11 +56,11 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setAddresses',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setSlippageThreshold',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'slippageThreshold',
@@ -78,15 +68,11 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
@@ -118,367 +104,326 @@ export interface WithdrawPeripheryInterface extends utils.Interface {
     functionFragment: 'withdrawToken',
     data: BytesLike
   ): Result;
-
-  events: {
-    'AddressesUpdated(address,address)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'SlippageThresholdUpdated(uint256)': EventFragment;
-    'TokenRedeemed(address,address,address,uint256,uint256,uint256)': EventFragment;
-    'TokenWithdrawn(address,address,address,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'AddressesUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SlippageThresholdUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenRedeemed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenWithdrawn'): EventFragment;
 }
 
-export interface AddressesUpdatedEventObject {
-  juniorVault: string;
-  rewardRouter: string;
+export namespace AddressesUpdatedEvent {
+  export type InputTuple = [
+    juniorVault: AddressLike,
+    rewardRouter: AddressLike
+  ];
+  export type OutputTuple = [juniorVault: string, rewardRouter: string];
+  export interface OutputObject {
+    juniorVault: string;
+    rewardRouter: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AddressesUpdatedEvent = TypedEvent<
-  [string, string],
-  AddressesUpdatedEventObject
->;
 
-export type AddressesUpdatedEventFilter =
-  TypedEventFilter<AddressesUpdatedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface SlippageThresholdUpdatedEventObject {
-  newSlippageThreshold: BigNumber;
+export namespace SlippageThresholdUpdatedEvent {
+  export type InputTuple = [newSlippageThreshold: BigNumberish];
+  export type OutputTuple = [newSlippageThreshold: bigint];
+  export interface OutputObject {
+    newSlippageThreshold: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SlippageThresholdUpdatedEvent = TypedEvent<
-  [BigNumber],
-  SlippageThresholdUpdatedEventObject
->;
 
-export type SlippageThresholdUpdatedEventFilter =
-  TypedEventFilter<SlippageThresholdUpdatedEvent>;
-
-export interface TokenRedeemedEventObject {
-  from: string;
-  receiver: string;
-  token: string;
-  assets: BigNumber;
-  shares: BigNumber;
-  tokensReceived: BigNumber;
+export namespace TokenRedeemedEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    receiver: AddressLike,
+    token: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish,
+    tokensReceived: BigNumberish
+  ];
+  export type OutputTuple = [
+    from: string,
+    receiver: string,
+    token: string,
+    assets: bigint,
+    shares: bigint,
+    tokensReceived: bigint
+  ];
+  export interface OutputObject {
+    from: string;
+    receiver: string;
+    token: string;
+    assets: bigint;
+    shares: bigint;
+    tokensReceived: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenRedeemedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber],
-  TokenRedeemedEventObject
->;
 
-export type TokenRedeemedEventFilter = TypedEventFilter<TokenRedeemedEvent>;
-
-export interface TokenWithdrawnEventObject {
-  from: string;
-  receiver: string;
-  token: string;
-  assets: BigNumber;
-  shares: BigNumber;
-  tokensReceived: BigNumber;
+export namespace TokenWithdrawnEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    receiver: AddressLike,
+    token: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish,
+    tokensReceived: BigNumberish
+  ];
+  export type OutputTuple = [
+    from: string,
+    receiver: string,
+    token: string,
+    assets: bigint,
+    shares: bigint,
+    tokensReceived: bigint
+  ];
+  export interface OutputObject {
+    from: string;
+    receiver: string;
+    token: string;
+    assets: bigint;
+    shares: bigint;
+    tokensReceived: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenWithdrawnEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber],
-  TokenWithdrawnEventObject
->;
-
-export type TokenWithdrawnEventFilter = TypedEventFilter<TokenWithdrawnEvent>;
 
 export interface WithdrawPeriphery extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: WithdrawPeripheryInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    owner(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    redeemToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sharesAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    setAddresses(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  redeemToken: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, sharesAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    setSlippageThreshold(
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    slippageThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
+  setAddresses: TypedContractMethod<
+    [_dnGmxJuniorVault: AddressLike, _rewardRouter: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setSlippageThreshold: TypedContractMethod<
+    [_slippageThreshold: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    withdrawToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sGlpAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  slippageThreshold: TypedContractMethod<[], [bigint], 'view'>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  redeemToken(
-    token: PromiseOrValue<string>,
-    receiver: PromiseOrValue<string>,
-    sharesAmount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  withdrawToken: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, sGlpAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  setAddresses(
-    _dnGmxJuniorVault: PromiseOrValue<string>,
-    _rewardRouter: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'redeemToken'
+  ): TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, sharesAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setAddresses'
+  ): TypedContractMethod<
+    [_dnGmxJuniorVault: AddressLike, _rewardRouter: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setSlippageThreshold'
+  ): TypedContractMethod<
+    [_slippageThreshold: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'slippageThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'withdrawToken'
+  ): TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, sGlpAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-  setSlippageThreshold(
-    _slippageThreshold: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawToken(
-    token: PromiseOrValue<string>,
-    receiver: PromiseOrValue<string>,
-    sGlpAmount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    redeemToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sharesAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    setAddresses(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setSlippageThreshold(
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdrawToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sGlpAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+  getEvent(
+    key: 'AddressesUpdated'
+  ): TypedContractEvent<
+    AddressesUpdatedEvent.InputTuple,
+    AddressesUpdatedEvent.OutputTuple,
+    AddressesUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'SlippageThresholdUpdated'
+  ): TypedContractEvent<
+    SlippageThresholdUpdatedEvent.InputTuple,
+    SlippageThresholdUpdatedEvent.OutputTuple,
+    SlippageThresholdUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenRedeemed'
+  ): TypedContractEvent<
+    TokenRedeemedEvent.InputTuple,
+    TokenRedeemedEvent.OutputTuple,
+    TokenRedeemedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenWithdrawn'
+  ): TypedContractEvent<
+    TokenWithdrawnEvent.InputTuple,
+    TokenWithdrawnEvent.OutputTuple,
+    TokenWithdrawnEvent.OutputObject
+  >;
 
   filters: {
-    'AddressesUpdated(address,address)'(
-      juniorVault?: null,
-      rewardRouter?: null
-    ): AddressesUpdatedEventFilter;
-    AddressesUpdated(
-      juniorVault?: null,
-      rewardRouter?: null
-    ): AddressesUpdatedEventFilter;
+    'AddressesUpdated(address,address)': TypedContractEvent<
+      AddressesUpdatedEvent.InputTuple,
+      AddressesUpdatedEvent.OutputTuple,
+      AddressesUpdatedEvent.OutputObject
+    >;
+    AddressesUpdated: TypedContractEvent<
+      AddressesUpdatedEvent.InputTuple,
+      AddressesUpdatedEvent.OutputTuple,
+      AddressesUpdatedEvent.OutputObject
+    >;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
 
-    'SlippageThresholdUpdated(uint256)'(
-      newSlippageThreshold?: null
-    ): SlippageThresholdUpdatedEventFilter;
-    SlippageThresholdUpdated(
-      newSlippageThreshold?: null
-    ): SlippageThresholdUpdatedEventFilter;
+    'SlippageThresholdUpdated(uint256)': TypedContractEvent<
+      SlippageThresholdUpdatedEvent.InputTuple,
+      SlippageThresholdUpdatedEvent.OutputTuple,
+      SlippageThresholdUpdatedEvent.OutputObject
+    >;
+    SlippageThresholdUpdated: TypedContractEvent<
+      SlippageThresholdUpdatedEvent.InputTuple,
+      SlippageThresholdUpdatedEvent.OutputTuple,
+      SlippageThresholdUpdatedEvent.OutputObject
+    >;
 
-    'TokenRedeemed(address,address,address,uint256,uint256,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      token?: null,
-      assets?: null,
-      shares?: null,
-      tokensReceived?: null
-    ): TokenRedeemedEventFilter;
-    TokenRedeemed(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      token?: null,
-      assets?: null,
-      shares?: null,
-      tokensReceived?: null
-    ): TokenRedeemedEventFilter;
+    'TokenRedeemed(address,address,address,uint256,uint256,uint256)': TypedContractEvent<
+      TokenRedeemedEvent.InputTuple,
+      TokenRedeemedEvent.OutputTuple,
+      TokenRedeemedEvent.OutputObject
+    >;
+    TokenRedeemed: TypedContractEvent<
+      TokenRedeemedEvent.InputTuple,
+      TokenRedeemedEvent.OutputTuple,
+      TokenRedeemedEvent.OutputObject
+    >;
 
-    'TokenWithdrawn(address,address,address,uint256,uint256,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      token?: null,
-      assets?: null,
-      shares?: null,
-      tokensReceived?: null
-    ): TokenWithdrawnEventFilter;
-    TokenWithdrawn(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      token?: null,
-      assets?: null,
-      shares?: null,
-      tokensReceived?: null
-    ): TokenWithdrawnEventFilter;
-  };
-
-  estimateGas: {
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeemToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sharesAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setAddresses(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setSlippageThreshold(
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sGlpAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    redeemToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sharesAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAddresses(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setSlippageThreshold(
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      sGlpAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'TokenWithdrawn(address,address,address,uint256,uint256,uint256)': TypedContractEvent<
+      TokenWithdrawnEvent.InputTuple,
+      TokenWithdrawnEvent.OutputTuple,
+      TokenWithdrawnEvent.OutputObject
+    >;
+    TokenWithdrawn: TypedContractEvent<
+      TokenWithdrawnEvent.InputTuple,
+      TokenWithdrawnEvent.OutputTuple,
+      TokenWithdrawnEvent.OutputObject
+    >;
   };
 }

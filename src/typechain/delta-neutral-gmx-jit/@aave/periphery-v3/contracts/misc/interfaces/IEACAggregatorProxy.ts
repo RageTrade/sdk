@@ -3,40 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
-export interface IEACAggregatorProxyInterface extends utils.Interface {
-  functions: {
-    'decimals()': FunctionFragment;
-    'getAnswer(uint256)': FunctionFragment;
-    'getTimestamp(uint256)': FunctionFragment;
-    'latestAnswer()': FunctionFragment;
-    'latestRound()': FunctionFragment;
-    'latestTimestamp()': FunctionFragment;
-  };
-
+export interface IEACAggregatorProxyInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'decimals'
       | 'getAnswer'
       | 'getTimestamp'
@@ -45,14 +34,16 @@ export interface IEACAggregatorProxyInterface extends utils.Interface {
       | 'latestTimestamp'
   ): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: 'AnswerUpdated' | 'NewRound'): EventFragment;
+
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'getAnswer',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getTimestamp',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'latestAnswer',
@@ -85,182 +76,158 @@ export interface IEACAggregatorProxyInterface extends utils.Interface {
     functionFragment: 'latestTimestamp',
     data: BytesLike
   ): Result;
-
-  events: {
-    'AnswerUpdated(int256,uint256,uint256)': EventFragment;
-    'NewRound(uint256,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'AnswerUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'NewRound'): EventFragment;
 }
 
-export interface AnswerUpdatedEventObject {
-  current: BigNumber;
-  roundId: BigNumber;
-  timestamp: BigNumber;
+export namespace AnswerUpdatedEvent {
+  export type InputTuple = [
+    current: BigNumberish,
+    roundId: BigNumberish,
+    timestamp: BigNumberish
+  ];
+  export type OutputTuple = [
+    current: bigint,
+    roundId: bigint,
+    timestamp: bigint
+  ];
+  export interface OutputObject {
+    current: bigint;
+    roundId: bigint;
+    timestamp: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AnswerUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber],
-  AnswerUpdatedEventObject
->;
 
-export type AnswerUpdatedEventFilter = TypedEventFilter<AnswerUpdatedEvent>;
-
-export interface NewRoundEventObject {
-  roundId: BigNumber;
-  startedBy: string;
+export namespace NewRoundEvent {
+  export type InputTuple = [roundId: BigNumberish, startedBy: AddressLike];
+  export type OutputTuple = [roundId: bigint, startedBy: string];
+  export interface OutputObject {
+    roundId: bigint;
+    startedBy: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type NewRoundEvent = TypedEvent<
-  [BigNumber, string],
-  NewRoundEventObject
->;
-
-export type NewRoundEventFilter = TypedEventFilter<NewRoundEvent>;
 
 export interface IEACAggregatorProxy extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IEACAggregatorProxyInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    decimals(overrides?: CallOverrides): Promise<[number]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getAnswer(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getTimestamp(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  decimals: TypedContractMethod<[], [bigint], 'view'>;
 
-    latestAnswer(overrides?: CallOverrides): Promise<[BigNumber]>;
+  getAnswer: TypedContractMethod<[roundId: BigNumberish], [bigint], 'view'>;
 
-    latestRound(overrides?: CallOverrides): Promise<[BigNumber]>;
+  getTimestamp: TypedContractMethod<[roundId: BigNumberish], [bigint], 'view'>;
 
-    latestTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
-  };
+  latestAnswer: TypedContractMethod<[], [bigint], 'view'>;
 
-  decimals(overrides?: CallOverrides): Promise<number>;
+  latestRound: TypedContractMethod<[], [bigint], 'view'>;
 
-  getAnswer(
-    roundId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  latestTimestamp: TypedContractMethod<[], [bigint], 'view'>;
 
-  getTimestamp(
-    roundId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  latestAnswer(overrides?: CallOverrides): Promise<BigNumber>;
+  getFunction(
+    nameOrSignature: 'decimals'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAnswer'
+  ): TypedContractMethod<[roundId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTimestamp'
+  ): TypedContractMethod<[roundId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'latestAnswer'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'latestRound'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'latestTimestamp'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
-  latestRound(overrides?: CallOverrides): Promise<BigNumber>;
-
-  latestTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-
-  callStatic: {
-    decimals(overrides?: CallOverrides): Promise<number>;
-
-    getAnswer(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTimestamp(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    latestAnswer(overrides?: CallOverrides): Promise<BigNumber>;
-
-    latestRound(overrides?: CallOverrides): Promise<BigNumber>;
-
-    latestTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-  };
+  getEvent(
+    key: 'AnswerUpdated'
+  ): TypedContractEvent<
+    AnswerUpdatedEvent.InputTuple,
+    AnswerUpdatedEvent.OutputTuple,
+    AnswerUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'NewRound'
+  ): TypedContractEvent<
+    NewRoundEvent.InputTuple,
+    NewRoundEvent.OutputTuple,
+    NewRoundEvent.OutputObject
+  >;
 
   filters: {
-    'AnswerUpdated(int256,uint256,uint256)'(
-      current?: PromiseOrValue<BigNumberish> | null,
-      roundId?: PromiseOrValue<BigNumberish> | null,
-      timestamp?: null
-    ): AnswerUpdatedEventFilter;
-    AnswerUpdated(
-      current?: PromiseOrValue<BigNumberish> | null,
-      roundId?: PromiseOrValue<BigNumberish> | null,
-      timestamp?: null
-    ): AnswerUpdatedEventFilter;
+    'AnswerUpdated(int256,uint256,uint256)': TypedContractEvent<
+      AnswerUpdatedEvent.InputTuple,
+      AnswerUpdatedEvent.OutputTuple,
+      AnswerUpdatedEvent.OutputObject
+    >;
+    AnswerUpdated: TypedContractEvent<
+      AnswerUpdatedEvent.InputTuple,
+      AnswerUpdatedEvent.OutputTuple,
+      AnswerUpdatedEvent.OutputObject
+    >;
 
-    'NewRound(uint256,address)'(
-      roundId?: PromiseOrValue<BigNumberish> | null,
-      startedBy?: PromiseOrValue<string> | null
-    ): NewRoundEventFilter;
-    NewRound(
-      roundId?: PromiseOrValue<BigNumberish> | null,
-      startedBy?: PromiseOrValue<string> | null
-    ): NewRoundEventFilter;
-  };
-
-  estimateGas: {
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAnswer(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTimestamp(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    latestAnswer(overrides?: CallOverrides): Promise<BigNumber>;
-
-    latestRound(overrides?: CallOverrides): Promise<BigNumber>;
-
-    latestTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getAnswer(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTimestamp(
-      roundId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    latestAnswer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    latestRound(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    latestTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'NewRound(uint256,address)': TypedContractEvent<
+      NewRoundEvent.InputTuple,
+      NewRoundEvent.OutputTuple,
+      NewRoundEvent.OutputObject
+    >;
+    NewRound: TypedContractEvent<
+      NewRoundEvent.InputTuple,
+      NewRoundEvent.OutputTuple,
+      NewRoundEvent.OutputObject
+    >;
   };
 }

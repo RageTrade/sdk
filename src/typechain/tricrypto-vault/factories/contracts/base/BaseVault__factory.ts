@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   BaseVault,
   BaseVaultInterface,
@@ -1058,17 +1057,14 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class BaseVault__factory {
   static readonly abi = _abi;
   static createInterface(): BaseVaultInterface {
-    return new utils.Interface(_abi) as BaseVaultInterface;
+    return new Interface(_abi) as BaseVaultInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): BaseVault {
-    return new Contract(address, _abi, signerOrProvider) as BaseVault;
+  static connect(address: string, runner?: ContractRunner | null): BaseVault {
+    return new Contract(address, _abi, runner) as unknown as BaseVault;
   }
 }

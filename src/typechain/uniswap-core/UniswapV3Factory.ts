@@ -3,43 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from './common';
 
-export interface UniswapV3FactoryInterface extends utils.Interface {
-  functions: {
-    'createPool(address,address,uint24)': FunctionFragment;
-    'enableFeeAmount(uint24,int24)': FunctionFragment;
-    'feeAmountTickSpacing(uint24)': FunctionFragment;
-    'getPool(address,address,uint24)': FunctionFragment;
-    'owner()': FunctionFragment;
-    'parameters()': FunctionFragment;
-    'setOwner(address)': FunctionFragment;
-  };
-
+export interface UniswapV3FactoryInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'createPool'
       | 'enableFeeAmount'
       | 'feeAmountTickSpacing'
@@ -49,29 +35,25 @@ export interface UniswapV3FactoryInterface extends utils.Interface {
       | 'setOwner'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic: 'FeeAmountEnabled' | 'OwnerChanged' | 'PoolCreated'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'createPool',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'enableFeeAmount',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'feeAmountTickSpacing',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPool',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
@@ -80,7 +62,7 @@ export interface UniswapV3FactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setOwner',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: 'createPool', data: BytesLike): Result;
@@ -96,315 +78,250 @@ export interface UniswapV3FactoryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'parameters', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setOwner', data: BytesLike): Result;
-
-  events: {
-    'FeeAmountEnabled(uint24,int24)': EventFragment;
-    'OwnerChanged(address,address)': EventFragment;
-    'PoolCreated(address,address,uint24,int24,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'FeeAmountEnabled'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnerChanged'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolCreated'): EventFragment;
 }
 
-export interface FeeAmountEnabledEventObject {
-  fee: number;
-  tickSpacing: number;
+export namespace FeeAmountEnabledEvent {
+  export type InputTuple = [fee: BigNumberish, tickSpacing: BigNumberish];
+  export type OutputTuple = [fee: bigint, tickSpacing: bigint];
+  export interface OutputObject {
+    fee: bigint;
+    tickSpacing: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeeAmountEnabledEvent = TypedEvent<
-  [number, number],
-  FeeAmountEnabledEventObject
->;
 
-export type FeeAmountEnabledEventFilter =
-  TypedEventFilter<FeeAmountEnabledEvent>;
-
-export interface OwnerChangedEventObject {
-  oldOwner: string;
-  newOwner: string;
+export namespace OwnerChangedEvent {
+  export type InputTuple = [oldOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [oldOwner: string, newOwner: string];
+  export interface OutputObject {
+    oldOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnerChangedEvent = TypedEvent<
-  [string, string],
-  OwnerChangedEventObject
->;
 
-export type OwnerChangedEventFilter = TypedEventFilter<OwnerChangedEvent>;
-
-export interface PoolCreatedEventObject {
-  token0: string;
-  token1: string;
-  fee: number;
-  tickSpacing: number;
-  pool: string;
+export namespace PoolCreatedEvent {
+  export type InputTuple = [
+    token0: AddressLike,
+    token1: AddressLike,
+    fee: BigNumberish,
+    tickSpacing: BigNumberish,
+    pool: AddressLike
+  ];
+  export type OutputTuple = [
+    token0: string,
+    token1: string,
+    fee: bigint,
+    tickSpacing: bigint,
+    pool: string
+  ];
+  export interface OutputObject {
+    token0: string;
+    token1: string;
+    fee: bigint;
+    tickSpacing: bigint;
+    pool: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolCreatedEvent = TypedEvent<
-  [string, string, number, number, string],
-  PoolCreatedEventObject
->;
-
-export type PoolCreatedEventFilter = TypedEventFilter<PoolCreatedEvent>;
 
 export interface UniswapV3Factory extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: UniswapV3FactoryInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    createPool(
-      tokenA: PromiseOrValue<string>,
-      tokenB: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    enableFeeAmount(
-      fee: PromiseOrValue<BigNumberish>,
-      tickSpacing: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    feeAmountTickSpacing(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    getPool(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    parameters(overrides?: CallOverrides): Promise<
-      [string, string, string, number, number] & {
-        factory: string;
-        token0: string;
-        token1: string;
-        fee: number;
-        tickSpacing: number;
-      }
-    >;
-
-    setOwner(
-      _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  createPool(
-    tokenA: PromiseOrValue<string>,
-    tokenB: PromiseOrValue<string>,
-    fee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  enableFeeAmount(
-    fee: PromiseOrValue<BigNumberish>,
-    tickSpacing: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  feeAmountTickSpacing(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  getPool(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  parameters(overrides?: CallOverrides): Promise<
-    [string, string, string, number, number] & {
-      factory: string;
-      token0: string;
-      token1: string;
-      fee: number;
-      tickSpacing: number;
-    }
+  createPool: TypedContractMethod<
+    [tokenA: AddressLike, tokenB: AddressLike, fee: BigNumberish],
+    [string],
+    'nonpayable'
   >;
 
-  setOwner(
-    _owner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  enableFeeAmount: TypedContractMethod<
+    [fee: BigNumberish, tickSpacing: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  callStatic: {
-    createPool(
-      tokenA: PromiseOrValue<string>,
-      tokenB: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+  feeAmountTickSpacing: TypedContractMethod<
+    [arg0: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-    enableFeeAmount(
-      fee: PromiseOrValue<BigNumberish>,
-      tickSpacing: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  getPool: TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish],
+    [string],
+    'view'
+  >;
 
-    feeAmountTickSpacing(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<number>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    getPool(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    parameters(overrides?: CallOverrides): Promise<
-      [string, string, string, number, number] & {
+  parameters: TypedContractMethod<
+    [],
+    [
+      [string, string, string, bigint, bigint] & {
         factory: string;
         token0: string;
         token1: string;
-        fee: number;
-        tickSpacing: number;
+        fee: bigint;
+        tickSpacing: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    setOwner(
-      _owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  setOwner: TypedContractMethod<[_owner: AddressLike], [void], 'nonpayable'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'createPool'
+  ): TypedContractMethod<
+    [tokenA: AddressLike, tokenB: AddressLike, fee: BigNumberish],
+    [string],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'enableFeeAmount'
+  ): TypedContractMethod<
+    [fee: BigNumberish, tickSpacing: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'feeAmountTickSpacing'
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPool'
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish],
+    [string],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(nameOrSignature: 'parameters'): TypedContractMethod<
+    [],
+    [
+      [string, string, string, bigint, bigint] & {
+        factory: string;
+        token0: string;
+        token1: string;
+        fee: bigint;
+        tickSpacing: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'setOwner'
+  ): TypedContractMethod<[_owner: AddressLike], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'FeeAmountEnabled'
+  ): TypedContractEvent<
+    FeeAmountEnabledEvent.InputTuple,
+    FeeAmountEnabledEvent.OutputTuple,
+    FeeAmountEnabledEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnerChanged'
+  ): TypedContractEvent<
+    OwnerChangedEvent.InputTuple,
+    OwnerChangedEvent.OutputTuple,
+    OwnerChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolCreated'
+  ): TypedContractEvent<
+    PoolCreatedEvent.InputTuple,
+    PoolCreatedEvent.OutputTuple,
+    PoolCreatedEvent.OutputObject
+  >;
 
   filters: {
-    'FeeAmountEnabled(uint24,int24)'(
-      fee?: PromiseOrValue<BigNumberish> | null,
-      tickSpacing?: PromiseOrValue<BigNumberish> | null
-    ): FeeAmountEnabledEventFilter;
-    FeeAmountEnabled(
-      fee?: PromiseOrValue<BigNumberish> | null,
-      tickSpacing?: PromiseOrValue<BigNumberish> | null
-    ): FeeAmountEnabledEventFilter;
+    'FeeAmountEnabled(uint24,int24)': TypedContractEvent<
+      FeeAmountEnabledEvent.InputTuple,
+      FeeAmountEnabledEvent.OutputTuple,
+      FeeAmountEnabledEvent.OutputObject
+    >;
+    FeeAmountEnabled: TypedContractEvent<
+      FeeAmountEnabledEvent.InputTuple,
+      FeeAmountEnabledEvent.OutputTuple,
+      FeeAmountEnabledEvent.OutputObject
+    >;
 
-    'OwnerChanged(address,address)'(
-      oldOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnerChangedEventFilter;
-    OwnerChanged(
-      oldOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnerChangedEventFilter;
+    'OwnerChanged(address,address)': TypedContractEvent<
+      OwnerChangedEvent.InputTuple,
+      OwnerChangedEvent.OutputTuple,
+      OwnerChangedEvent.OutputObject
+    >;
+    OwnerChanged: TypedContractEvent<
+      OwnerChangedEvent.InputTuple,
+      OwnerChangedEvent.OutputTuple,
+      OwnerChangedEvent.OutputObject
+    >;
 
-    'PoolCreated(address,address,uint24,int24,address)'(
-      token0?: PromiseOrValue<string> | null,
-      token1?: PromiseOrValue<string> | null,
-      fee?: PromiseOrValue<BigNumberish> | null,
-      tickSpacing?: null,
-      pool?: null
-    ): PoolCreatedEventFilter;
-    PoolCreated(
-      token0?: PromiseOrValue<string> | null,
-      token1?: PromiseOrValue<string> | null,
-      fee?: PromiseOrValue<BigNumberish> | null,
-      tickSpacing?: null,
-      pool?: null
-    ): PoolCreatedEventFilter;
-  };
-
-  estimateGas: {
-    createPool(
-      tokenA: PromiseOrValue<string>,
-      tokenB: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    enableFeeAmount(
-      fee: PromiseOrValue<BigNumberish>,
-      tickSpacing: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    feeAmountTickSpacing(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPool(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    parameters(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setOwner(
-      _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    createPool(
-      tokenA: PromiseOrValue<string>,
-      tokenB: PromiseOrValue<string>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    enableFeeAmount(
-      fee: PromiseOrValue<BigNumberish>,
-      tickSpacing: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    feeAmountTickSpacing(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPool(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    parameters(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setOwner(
-      _owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'PoolCreated(address,address,uint24,int24,address)': TypedContractEvent<
+      PoolCreatedEvent.InputTuple,
+      PoolCreatedEvent.OutputTuple,
+      PoolCreatedEvent.OutputObject
+    >;
+    PoolCreated: TypedContractEvent<
+      PoolCreatedEvent.InputTuple,
+      PoolCreatedEvent.OutputTuple,
+      PoolCreatedEvent.OutputObject
+    >;
   };
 }

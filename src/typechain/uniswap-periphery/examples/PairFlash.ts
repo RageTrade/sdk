@@ -3,71 +3,57 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PayableOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../common';
 
 export declare namespace PairFlash {
   export type FlashParamsStruct = {
-    token0: PromiseOrValue<string>;
-    token1: PromiseOrValue<string>;
-    fee1: PromiseOrValue<BigNumberish>;
-    amount0: PromiseOrValue<BigNumberish>;
-    amount1: PromiseOrValue<BigNumberish>;
-    fee2: PromiseOrValue<BigNumberish>;
-    fee3: PromiseOrValue<BigNumberish>;
+    token0: AddressLike;
+    token1: AddressLike;
+    fee1: BigNumberish;
+    amount0: BigNumberish;
+    amount1: BigNumberish;
+    fee2: BigNumberish;
+    fee3: BigNumberish;
   };
 
   export type FlashParamsStructOutput = [
-    string,
-    string,
-    number,
-    BigNumber,
-    BigNumber,
-    number,
-    number
+    token0: string,
+    token1: string,
+    fee1: bigint,
+    amount0: bigint,
+    amount1: bigint,
+    fee2: bigint,
+    fee3: bigint
   ] & {
     token0: string;
     token1: string;
-    fee1: number;
-    amount0: BigNumber;
-    amount1: BigNumber;
-    fee2: number;
-    fee3: number;
+    fee1: bigint;
+    amount0: bigint;
+    amount1: bigint;
+    fee2: bigint;
+    fee3: bigint;
   };
 }
 
-export interface PairFlashInterface extends utils.Interface {
-  functions: {
-    'WETH9()': FunctionFragment;
-    'factory()': FunctionFragment;
-    'initFlash((address,address,uint24,uint256,uint256,uint24,uint24))': FunctionFragment;
-    'refundETH()': FunctionFragment;
-    'swapRouter()': FunctionFragment;
-    'sweepToken(address,uint256,address)': FunctionFragment;
-    'uniswapV3FlashCallback(uint256,uint256,bytes)': FunctionFragment;
-    'unwrapWETH9(uint256,address)': FunctionFragment;
-  };
-
+export interface PairFlashInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'WETH9'
       | 'factory'
       | 'initFlash'
@@ -91,23 +77,15 @@ export interface PairFlashInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'sweepToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'uniswapV3FlashCallback',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unwrapWETH9',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: 'WETH9', data: BytesLike): Result;
@@ -124,216 +102,128 @@ export interface PairFlashInterface extends utils.Interface {
     functionFragment: 'unwrapWETH9',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface PairFlash extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: PairFlashInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    WETH9(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    factory(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    initFlash(
-      params: PairFlash.FlashParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  WETH9: TypedContractMethod<[], [string], 'view'>;
 
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  factory: TypedContractMethod<[], [string], 'view'>;
 
-    swapRouter(overrides?: CallOverrides): Promise<[string]>;
+  initFlash: TypedContractMethod<
+    [params: PairFlash.FlashParamsStruct],
+    [void],
+    'nonpayable'
+  >;
 
-    sweepToken(
-      token: PromiseOrValue<string>,
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  refundETH: TypedContractMethod<[], [void], 'payable'>;
 
-    uniswapV3FlashCallback(
-      fee0: PromiseOrValue<BigNumberish>,
-      fee1: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  swapRouter: TypedContractMethod<[], [string], 'view'>;
 
-    unwrapWETH9(
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  sweepToken: TypedContractMethod<
+    [token: AddressLike, amountMinimum: BigNumberish, recipient: AddressLike],
+    [void],
+    'payable'
+  >;
 
-  WETH9(overrides?: CallOverrides): Promise<string>;
+  uniswapV3FlashCallback: TypedContractMethod<
+    [fee0: BigNumberish, fee1: BigNumberish, data: BytesLike],
+    [void],
+    'nonpayable'
+  >;
 
-  factory(overrides?: CallOverrides): Promise<string>;
+  unwrapWETH9: TypedContractMethod<
+    [amountMinimum: BigNumberish, recipient: AddressLike],
+    [void],
+    'payable'
+  >;
 
-  initFlash(
-    params: PairFlash.FlashParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  refundETH(
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  swapRouter(overrides?: CallOverrides): Promise<string>;
-
-  sweepToken(
-    token: PromiseOrValue<string>,
-    amountMinimum: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  uniswapV3FlashCallback(
-    fee0: PromiseOrValue<BigNumberish>,
-    fee1: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unwrapWETH9(
-    amountMinimum: PromiseOrValue<BigNumberish>,
-    recipient: PromiseOrValue<string>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    WETH9(overrides?: CallOverrides): Promise<string>;
-
-    factory(overrides?: CallOverrides): Promise<string>;
-
-    initFlash(
-      params: PairFlash.FlashParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    refundETH(overrides?: CallOverrides): Promise<void>;
-
-    swapRouter(overrides?: CallOverrides): Promise<string>;
-
-    sweepToken(
-      token: PromiseOrValue<string>,
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    uniswapV3FlashCallback(
-      fee0: PromiseOrValue<BigNumberish>,
-      fee1: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    unwrapWETH9(
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'WETH9'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'factory'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initFlash'
+  ): TypedContractMethod<
+    [params: PairFlash.FlashParamsStruct],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'refundETH'
+  ): TypedContractMethod<[], [void], 'payable'>;
+  getFunction(
+    nameOrSignature: 'swapRouter'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'sweepToken'
+  ): TypedContractMethod<
+    [token: AddressLike, amountMinimum: BigNumberish, recipient: AddressLike],
+    [void],
+    'payable'
+  >;
+  getFunction(
+    nameOrSignature: 'uniswapV3FlashCallback'
+  ): TypedContractMethod<
+    [fee0: BigNumberish, fee1: BigNumberish, data: BytesLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'unwrapWETH9'
+  ): TypedContractMethod<
+    [amountMinimum: BigNumberish, recipient: AddressLike],
+    [void],
+    'payable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    WETH9(overrides?: CallOverrides): Promise<BigNumber>;
-
-    factory(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initFlash(
-      params: PairFlash.FlashParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapRouter(overrides?: CallOverrides): Promise<BigNumber>;
-
-    sweepToken(
-      token: PromiseOrValue<string>,
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    uniswapV3FlashCallback(
-      fee0: PromiseOrValue<BigNumberish>,
-      fee1: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unwrapWETH9(
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initFlash(
-      params: PairFlash.FlashParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    refundETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    sweepToken(
-      token: PromiseOrValue<string>,
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    uniswapV3FlashCallback(
-      fee0: PromiseOrValue<BigNumberish>,
-      fee1: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unwrapWETH9(
-      amountMinimum: PromiseOrValue<BigNumberish>,
-      recipient: PromiseOrValue<string>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

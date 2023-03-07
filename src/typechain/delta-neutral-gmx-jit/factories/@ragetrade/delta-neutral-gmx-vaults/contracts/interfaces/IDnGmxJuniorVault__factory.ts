@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IDnGmxJuniorVault,
   IDnGmxJuniorVaultInterface,
@@ -1026,17 +1025,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IDnGmxJuniorVault__factory {
   static readonly abi = _abi;
   static createInterface(): IDnGmxJuniorVaultInterface {
-    return new utils.Interface(_abi) as IDnGmxJuniorVaultInterface;
+    return new Interface(_abi) as IDnGmxJuniorVaultInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IDnGmxJuniorVault {
-    return new Contract(address, _abi, signerOrProvider) as IDnGmxJuniorVault;
+    return new Contract(address, _abi, runner) as unknown as IDnGmxJuniorVault;
   }
 }

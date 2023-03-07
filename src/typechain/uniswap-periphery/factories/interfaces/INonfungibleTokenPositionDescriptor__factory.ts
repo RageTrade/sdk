@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   INonfungibleTokenPositionDescriptor,
   INonfungibleTokenPositionDescriptorInterface,
@@ -34,23 +33,21 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class INonfungibleTokenPositionDescriptor__factory {
   static readonly abi = _abi;
   static createInterface(): INonfungibleTokenPositionDescriptorInterface {
-    return new utils.Interface(
-      _abi
-    ) as INonfungibleTokenPositionDescriptorInterface;
+    return new Interface(_abi) as INonfungibleTokenPositionDescriptorInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): INonfungibleTokenPositionDescriptor {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as INonfungibleTokenPositionDescriptor;
+      runner
+    ) as unknown as INonfungibleTokenPositionDescriptor;
   }
 }

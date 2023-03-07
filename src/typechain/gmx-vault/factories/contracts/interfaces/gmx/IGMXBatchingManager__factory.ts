@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IGMXBatchingManager,
   IGMXBatchingManagerInterface,
@@ -383,17 +382,21 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IGMXBatchingManager__factory {
   static readonly abi = _abi;
   static createInterface(): IGMXBatchingManagerInterface {
-    return new utils.Interface(_abi) as IGMXBatchingManagerInterface;
+    return new Interface(_abi) as IGMXBatchingManagerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IGMXBatchingManager {
-    return new Contract(address, _abi, signerOrProvider) as IGMXBatchingManager;
+    return new Contract(
+      address,
+      _abi,
+      runner
+    ) as unknown as IGMXBatchingManager;
   }
 }

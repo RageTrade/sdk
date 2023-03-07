@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IClearingHouseView,
   IClearingHouseViewInterface,
@@ -158,17 +157,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IClearingHouseView__factory {
   static readonly abi = _abi;
   static createInterface(): IClearingHouseViewInterface {
-    return new utils.Interface(_abi) as IClearingHouseViewInterface;
+    return new Interface(_abi) as IClearingHouseViewInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IClearingHouseView {
-    return new Contract(address, _abi, signerOrProvider) as IClearingHouseView;
+    return new Contract(address, _abi, runner) as unknown as IClearingHouseView;
   }
 }

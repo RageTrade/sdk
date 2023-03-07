@@ -3,128 +3,171 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../../../common';
 
-export interface VTokenPositionSetInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': EventFragment;
-    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionChanged'): EventFragment;
+export interface VTokenPositionSetInterface extends Interface {
   getEvent(
-    nameOrSignatureOrTopic: 'TokenPositionFundingPaymentRealized'
+    nameOrSignatureOrTopic:
+      | 'TokenPositionChanged'
+      | 'TokenPositionFundingPaymentRealized'
   ): EventFragment;
 }
 
-export interface TokenPositionChangedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  vTokenAmountOut: BigNumber;
-  vQuoteAmountOut: BigNumber;
-  sqrtPriceX96Start: BigNumber;
-  sqrtPriceX96End: BigNumber;
+export namespace TokenPositionChangedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    vTokenAmountOut: BigNumberish,
+    vQuoteAmountOut: BigNumberish,
+    sqrtPriceX96Start: BigNumberish,
+    sqrtPriceX96End: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    vTokenAmountOut: bigint,
+    vQuoteAmountOut: bigint,
+    sqrtPriceX96Start: bigint,
+    sqrtPriceX96End: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    vTokenAmountOut: bigint;
+    vQuoteAmountOut: bigint;
+    sqrtPriceX96Start: bigint;
+    sqrtPriceX96End: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionChangedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber, BigNumber, BigNumber],
-  TokenPositionChangedEventObject
->;
 
-export type TokenPositionChangedEventFilter =
-  TypedEventFilter<TokenPositionChangedEvent>;
-
-export interface TokenPositionFundingPaymentRealizedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  amount: BigNumber;
-  sumALastX128: BigNumber;
+export namespace TokenPositionFundingPaymentRealizedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    amount: BigNumberish,
+    sumALastX128: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    amount: bigint,
+    sumALastX128: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    amount: bigint;
+    sumALastX128: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionFundingPaymentRealizedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber],
-  TokenPositionFundingPaymentRealizedEventObject
->;
-
-export type TokenPositionFundingPaymentRealizedEventFilter =
-  TypedEventFilter<TokenPositionFundingPaymentRealizedEvent>;
 
 export interface VTokenPositionSet extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: VTokenPositionSetInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'TokenPositionChanged'
+  ): TypedContractEvent<
+    TokenPositionChangedEvent.InputTuple,
+    TokenPositionChangedEvent.OutputTuple,
+    TokenPositionChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionFundingPaymentRealized'
+  ): TypedContractEvent<
+    TokenPositionFundingPaymentRealizedEvent.InputTuple,
+    TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+    TokenPositionFundingPaymentRealizedEvent.OutputObject
+  >;
 
   filters: {
-    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96Start?: null,
-      sqrtPriceX96End?: null
-    ): TokenPositionChangedEventFilter;
-    TokenPositionChanged(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96Start?: null,
-      sqrtPriceX96End?: null
-    ): TokenPositionChangedEventFilter;
+    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': TypedContractEvent<
+      TokenPositionChangedEvent.InputTuple,
+      TokenPositionChangedEvent.OutputTuple,
+      TokenPositionChangedEvent.OutputObject
+    >;
+    TokenPositionChanged: TypedContractEvent<
+      TokenPositionChangedEvent.InputTuple,
+      TokenPositionChangedEvent.OutputTuple,
+      TokenPositionChangedEvent.OutputObject
+    >;
 
-    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      sumALastX128?: null
-    ): TokenPositionFundingPaymentRealizedEventFilter;
-    TokenPositionFundingPaymentRealized(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      sumALastX128?: null
-    ): TokenPositionFundingPaymentRealizedEventFilter;
+    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)': TypedContractEvent<
+      TokenPositionFundingPaymentRealizedEvent.InputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputObject
+    >;
+    TokenPositionFundingPaymentRealized: TypedContractEvent<
+      TokenPositionFundingPaymentRealizedEvent.InputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

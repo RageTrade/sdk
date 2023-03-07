@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   Extsload,
   ExtsloadInterface,
@@ -48,17 +47,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class Extsload__factory {
   static readonly abi = _abi;
   static createInterface(): ExtsloadInterface {
-    return new utils.Interface(_abi) as ExtsloadInterface;
+    return new Interface(_abi) as ExtsloadInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): Extsload {
-    return new Contract(address, _abi, signerOrProvider) as Extsload;
+  static connect(address: string, runner?: ContractRunner | null): Extsload {
+    return new Contract(address, _abi, runner) as unknown as Extsload;
   }
 }

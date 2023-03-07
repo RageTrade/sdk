@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IRewardRouterV2,
   IRewardRouterV2Interface,
@@ -495,17 +494,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IRewardRouterV2__factory {
   static readonly abi = _abi;
   static createInterface(): IRewardRouterV2Interface {
-    return new utils.Interface(_abi) as IRewardRouterV2Interface;
+    return new Interface(_abi) as IRewardRouterV2Interface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IRewardRouterV2 {
-    return new Contract(address, _abi, signerOrProvider) as IRewardRouterV2;
+    return new Contract(address, _abi, runner) as unknown as IRewardRouterV2;
   }
 }

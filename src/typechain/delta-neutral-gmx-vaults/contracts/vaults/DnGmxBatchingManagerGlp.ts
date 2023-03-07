@@ -3,88 +3,53 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace IDnGmxBatchingManagerGlp {
   export type RoundDepositStruct = {
-    totalAssets: PromiseOrValue<BigNumberish>;
-    totalShares: PromiseOrValue<BigNumberish>;
+    totalAssets: BigNumberish;
+    totalShares: BigNumberish;
   };
 
-  export type RoundDepositStructOutput = [BigNumber, BigNumber] & {
-    totalAssets: BigNumber;
-    totalShares: BigNumber;
-  };
+  export type RoundDepositStructOutput = [
+    totalAssets: bigint,
+    totalShares: bigint
+  ] & { totalAssets: bigint; totalShares: bigint };
 
   export type UserDepositStruct = {
-    round: PromiseOrValue<BigNumberish>;
-    assetBalance: PromiseOrValue<BigNumberish>;
-    unclaimedShares: PromiseOrValue<BigNumberish>;
+    round: BigNumberish;
+    assetBalance: BigNumberish;
+    unclaimedShares: BigNumberish;
   };
 
-  export type UserDepositStructOutput = [BigNumber, BigNumber, BigNumber] & {
-    round: BigNumber;
-    assetBalance: BigNumber;
-    unclaimedShares: BigNumber;
-  };
+  export type UserDepositStructOutput = [
+    round: bigint,
+    assetBalance: bigint,
+    unclaimedShares: bigint
+  ] & { round: bigint; assetBalance: bigint; unclaimedShares: bigint };
 }
 
-export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
-  functions: {
-    'assetBalance(address)': FunctionFragment;
-    'claim(address,uint256)': FunctionFragment;
-    'claimAndRedeem(address)': FunctionFragment;
-    'currentRound()': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'depositCap()': FunctionFragment;
-    'dnGmxJuniorVault()': FunctionFragment;
-    'executeBatch(uint128)': FunctionFragment;
-    'grantAllowances()': FunctionFragment;
-    'initialize(address,address,address,address,address)': FunctionFragment;
-    'keeper()': FunctionFragment;
-    'minGlpDepositThreshold()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'pauseDeposit()': FunctionFragment;
-    'paused()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'roundAssetBalance()': FunctionFragment;
-    'roundDeposits(uint256)': FunctionFragment;
-    'roundGlpDeposited()': FunctionFragment;
-    'roundSharesMinted()': FunctionFragment;
-    'setDepositCap(uint256)': FunctionFragment;
-    'setKeeper(address)': FunctionFragment;
-    'setThresholds(uint256)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'unclaimedShares(address)': FunctionFragment;
-    'unpauseDeposit()': FunctionFragment;
-    'userDeposits(address)': FunctionFragment;
-    'vaultBatchingState()': FunctionFragment;
-  };
-
+export interface DnGmxBatchingManagerGlpInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'assetBalance'
       | 'claim'
       | 'claimAndRedeem'
@@ -115,17 +80,33 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
       | 'vaultBatchingState'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'BatchDeposit'
+      | 'ClaimedAndRedeemed'
+      | 'DepositCapUpdated'
+      | 'DepositToken'
+      | 'Initialized'
+      | 'KeeperUpdated'
+      | 'OwnershipTransferred'
+      | 'PartialBatchDeposit'
+      | 'Paused'
+      | 'SharesClaimed'
+      | 'ThresholdsUpdated'
+      | 'Unpaused'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'assetBalance',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claim',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimAndRedeem',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'currentRound',
@@ -133,7 +114,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositCap',
@@ -145,7 +126,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatch',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'grantAllowances',
@@ -153,13 +134,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
   encodeFunctionData(
@@ -182,7 +157,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'roundDeposits',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'roundGlpDeposited',
@@ -194,23 +169,23 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setDepositCap',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setKeeper',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setThresholds',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unclaimedShares',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unpauseDeposit',
@@ -218,7 +193,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'userDeposits',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'vaultBatchingState',
@@ -313,855 +288,720 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
     functionFragment: 'vaultBatchingState',
     data: BytesLike
   ): Result;
-
-  events: {
-    'BatchDeposit(uint256,uint256,uint256,uint256)': EventFragment;
-    'ClaimedAndRedeemed(address,address,uint256,uint256)': EventFragment;
-    'DepositCapUpdated(uint256)': EventFragment;
-    'DepositToken(uint256,address,address,uint256,uint256)': EventFragment;
-    'Initialized(uint8)': EventFragment;
-    'KeeperUpdated(address)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
-    'Paused(address)': EventFragment;
-    'SharesClaimed(address,address,uint256)': EventFragment;
-    'ThresholdsUpdated(uint256)': EventFragment;
-    'Unpaused(address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'BatchDeposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ClaimedAndRedeemed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DepositToken'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
 }
 
-export interface BatchDepositEventObject {
-  round: BigNumber;
-  totalAssets: BigNumber;
-  userGlpAmount: BigNumber;
-  userShareAmount: BigNumber;
+export namespace BatchDepositEvent {
+  export type InputTuple = [
+    round: BigNumberish,
+    totalAssets: BigNumberish,
+    userGlpAmount: BigNumberish,
+    userShareAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    round: bigint,
+    totalAssets: bigint,
+    userGlpAmount: bigint,
+    userShareAmount: bigint
+  ];
+  export interface OutputObject {
+    round: bigint;
+    totalAssets: bigint;
+    userGlpAmount: bigint;
+    userShareAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BatchDepositEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber],
-  BatchDepositEventObject
->;
 
-export type BatchDepositEventFilter = TypedEventFilter<BatchDepositEvent>;
-
-export interface ClaimedAndRedeemedEventObject {
-  claimer: string;
-  receiver: string;
-  shares: BigNumber;
-  assetsReceived: BigNumber;
+export namespace ClaimedAndRedeemedEvent {
+  export type InputTuple = [
+    claimer: AddressLike,
+    receiver: AddressLike,
+    shares: BigNumberish,
+    assetsReceived: BigNumberish
+  ];
+  export type OutputTuple = [
+    claimer: string,
+    receiver: string,
+    shares: bigint,
+    assetsReceived: bigint
+  ];
+  export interface OutputObject {
+    claimer: string;
+    receiver: string;
+    shares: bigint;
+    assetsReceived: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ClaimedAndRedeemedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  ClaimedAndRedeemedEventObject
->;
 
-export type ClaimedAndRedeemedEventFilter =
-  TypedEventFilter<ClaimedAndRedeemedEvent>;
-
-export interface DepositCapUpdatedEventObject {
-  newDepositCap: BigNumber;
+export namespace DepositCapUpdatedEvent {
+  export type InputTuple = [newDepositCap: BigNumberish];
+  export type OutputTuple = [newDepositCap: bigint];
+  export interface OutputObject {
+    newDepositCap: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositCapUpdatedEvent = TypedEvent<
-  [BigNumber],
-  DepositCapUpdatedEventObject
->;
 
-export type DepositCapUpdatedEventFilter =
-  TypedEventFilter<DepositCapUpdatedEvent>;
-
-export interface DepositTokenEventObject {
-  round: BigNumber;
-  token: string;
-  receiver: string;
-  amount: BigNumber;
-  glpStaked: BigNumber;
+export namespace DepositTokenEvent {
+  export type InputTuple = [
+    round: BigNumberish,
+    token: AddressLike,
+    receiver: AddressLike,
+    amount: BigNumberish,
+    glpStaked: BigNumberish
+  ];
+  export type OutputTuple = [
+    round: bigint,
+    token: string,
+    receiver: string,
+    amount: bigint,
+    glpStaked: bigint
+  ];
+  export interface OutputObject {
+    round: bigint;
+    token: string;
+    receiver: string;
+    amount: bigint;
+    glpStaked: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositTokenEvent = TypedEvent<
-  [BigNumber, string, string, BigNumber, BigNumber],
-  DepositTokenEventObject
->;
 
-export type DepositTokenEventFilter = TypedEventFilter<DepositTokenEvent>;
-
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface KeeperUpdatedEventObject {
-  newKeeper: string;
+export namespace KeeperUpdatedEvent {
+  export type InputTuple = [newKeeper: AddressLike];
+  export type OutputTuple = [newKeeper: string];
+  export interface OutputObject {
+    newKeeper: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
-export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface PartialBatchDepositEventObject {
-  round: BigNumber;
-  partialGlpAmount: BigNumber;
-  partialShareAmount: BigNumber;
+export namespace PartialBatchDepositEvent {
+  export type InputTuple = [
+    round: BigNumberish,
+    partialGlpAmount: BigNumberish,
+    partialShareAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    round: bigint,
+    partialGlpAmount: bigint,
+    partialShareAmount: bigint
+  ];
+  export interface OutputObject {
+    round: bigint;
+    partialGlpAmount: bigint;
+    partialShareAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PartialBatchDepositEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber],
-  PartialBatchDepositEventObject
->;
 
-export type PartialBatchDepositEventFilter =
-  TypedEventFilter<PartialBatchDepositEvent>;
-
-export interface PausedEventObject {
-  account: string;
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
-export type PausedEventFilter = TypedEventFilter<PausedEvent>;
-
-export interface SharesClaimedEventObject {
-  from: string;
-  receiver: string;
-  claimAmount: BigNumber;
+export namespace SharesClaimedEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    receiver: AddressLike,
+    claimAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    from: string,
+    receiver: string,
+    claimAmount: bigint
+  ];
+  export interface OutputObject {
+    from: string;
+    receiver: string;
+    claimAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SharesClaimedEvent = TypedEvent<
-  [string, string, BigNumber],
-  SharesClaimedEventObject
->;
 
-export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
-
-export interface ThresholdsUpdatedEventObject {
-  minGlpDepositThreshold: BigNumber;
+export namespace ThresholdsUpdatedEvent {
+  export type InputTuple = [minGlpDepositThreshold: BigNumberish];
+  export type OutputTuple = [minGlpDepositThreshold: bigint];
+  export interface OutputObject {
+    minGlpDepositThreshold: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ThresholdsUpdatedEvent = TypedEvent<
-  [BigNumber],
-  ThresholdsUpdatedEventObject
->;
 
-export type ThresholdsUpdatedEventFilter =
-  TypedEventFilter<ThresholdsUpdatedEvent>;
-
-export interface UnpausedEventObject {
-  account: string;
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
-
-export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
 export interface DnGmxBatchingManagerGlp extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: DnGmxBatchingManagerGlpInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    assetBalance(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { balance: BigNumber }>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    claim(
-      receiver: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    claimAndRedeem(
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  assetBalance: TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
 
-    currentRound(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<[string]>;
-
-    executeBatch(
-      sGlpToDeposit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initialize(
-      _sGlp: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<[string]>;
-
-    minGlpDepositThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    pauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<[boolean]>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    roundAssetBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    roundDeposits(
-      round: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[IDnGmxBatchingManagerGlp.RoundDepositStructOutput]>;
-
-    roundGlpDeposited(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    roundSharesMinted(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    setDepositCap(
-      _depositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setThresholds(
-      _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    unclaimedShares(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { shares: BigNumber }>;
-
-    unpauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    userDeposits(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[IDnGmxBatchingManagerGlp.UserDepositStructOutput]>;
-
-    vaultBatchingState(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        currentRound: BigNumber;
-        roundSharesMinted: BigNumber;
-        roundGlpDeposited: BigNumber;
-        roundAssetBalance: BigNumber;
-      }
-    >;
-  };
-
-  assetBalance(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  claim(
-    receiver: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimAndRedeem(
-    receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  currentRound(overrides?: CallOverrides): Promise<BigNumber>;
-
-  deposit(
-    amount: PromiseOrValue<BigNumberish>,
-    receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-  dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
-
-  executeBatch(
-    sGlpToDeposit: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  grantAllowances(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    _sGlp: PromiseOrValue<string>,
-    _rewardRouter: PromiseOrValue<string>,
-    _glpManager: PromiseOrValue<string>,
-    _dnGmxJuniorVault: PromiseOrValue<string>,
-    _keeper: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  keeper(overrides?: CallOverrides): Promise<string>;
-
-  minGlpDepositThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  pauseDeposit(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  paused(overrides?: CallOverrides): Promise<boolean>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  roundAssetBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-  roundDeposits(
-    round: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IDnGmxBatchingManagerGlp.RoundDepositStructOutput>;
-
-  roundGlpDeposited(overrides?: CallOverrides): Promise<BigNumber>;
-
-  roundSharesMinted(overrides?: CallOverrides): Promise<BigNumber>;
-
-  setDepositCap(
-    _depositCap: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setKeeper(
-    _keeper: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setThresholds(
-    _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unclaimedShares(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  unpauseDeposit(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  userDeposits(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<IDnGmxBatchingManagerGlp.UserDepositStructOutput>;
-
-  vaultBatchingState(overrides?: CallOverrides): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber] & {
-      currentRound: BigNumber;
-      roundSharesMinted: BigNumber;
-      roundGlpDeposited: BigNumber;
-      roundAssetBalance: BigNumber;
-    }
+  claim: TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
   >;
 
-  callStatic: {
-    assetBalance(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  claimAndRedeem: TypedContractMethod<
+    [receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    claim(
-      receiver: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  currentRound: TypedContractMethod<[], [bigint], 'view'>;
 
-    claimAndRedeem(
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  deposit: TypedContractMethod<
+    [amount: BigNumberish, receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    currentRound(overrides?: CallOverrides): Promise<BigNumber>;
+  depositCap: TypedContractMethod<[], [bigint], 'view'>;
 
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  dnGmxJuniorVault: TypedContractMethod<[], [string], 'view'>;
 
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+  executeBatch: TypedContractMethod<
+    [sGlpToDeposit: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
+  grantAllowances: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    executeBatch(
-      sGlpToDeposit: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  initialize: TypedContractMethod<
+    [
+      _sGlp: AddressLike,
+      _rewardRouter: AddressLike,
+      _glpManager: AddressLike,
+      _dnGmxJuniorVault: AddressLike,
+      _keeper: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    grantAllowances(overrides?: CallOverrides): Promise<void>;
+  keeper: TypedContractMethod<[], [string], 'view'>;
 
-    initialize(
-      _sGlp: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _keeper: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  minGlpDepositThreshold: TypedContractMethod<[], [bigint], 'view'>;
 
-    keeper(overrides?: CallOverrides): Promise<string>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    minGlpDepositThreshold(overrides?: CallOverrides): Promise<BigNumber>;
+  pauseDeposit: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+  paused: TypedContractMethod<[], [boolean], 'view'>;
 
-    pauseDeposit(overrides?: CallOverrides): Promise<void>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    paused(overrides?: CallOverrides): Promise<boolean>;
+  roundAssetBalance: TypedContractMethod<[], [bigint], 'view'>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+  roundDeposits: TypedContractMethod<
+    [round: BigNumberish],
+    [IDnGmxBatchingManagerGlp.RoundDepositStructOutput],
+    'view'
+  >;
 
-    roundAssetBalance(overrides?: CallOverrides): Promise<BigNumber>;
+  roundGlpDeposited: TypedContractMethod<[], [bigint], 'view'>;
 
-    roundDeposits(
-      round: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IDnGmxBatchingManagerGlp.RoundDepositStructOutput>;
+  roundSharesMinted: TypedContractMethod<[], [bigint], 'view'>;
 
-    roundGlpDeposited(overrides?: CallOverrides): Promise<BigNumber>;
+  setDepositCap: TypedContractMethod<
+    [_depositCap: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    roundSharesMinted(overrides?: CallOverrides): Promise<BigNumber>;
+  setKeeper: TypedContractMethod<[_keeper: AddressLike], [void], 'nonpayable'>;
 
-    setDepositCap(
-      _depositCap: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setThresholds: TypedContractMethod<
+    [_minGlpDepositThreshold: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setThresholds(
-      _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  unclaimedShares: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  unpauseDeposit: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    unclaimedShares(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  userDeposits: TypedContractMethod<
+    [account: AddressLike],
+    [IDnGmxBatchingManagerGlp.UserDepositStructOutput],
+    'view'
+  >;
 
-    unpauseDeposit(overrides?: CallOverrides): Promise<void>;
-
-    userDeposits(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<IDnGmxBatchingManagerGlp.UserDepositStructOutput>;
-
-    vaultBatchingState(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        currentRound: BigNumber;
-        roundSharesMinted: BigNumber;
-        roundGlpDeposited: BigNumber;
-        roundAssetBalance: BigNumber;
+  vaultBatchingState: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        currentRound: bigint;
+        roundSharesMinted: bigint;
+        roundGlpDeposited: bigint;
+        roundAssetBalance: bigint;
       }
-    >;
-  };
+    ],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'assetBalance'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claim'
+  ): TypedContractMethod<
+    [receiver: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimAndRedeem'
+  ): TypedContractMethod<[receiver: AddressLike], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'currentRound'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [amount: BigNumberish, receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'depositCap'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'dnGmxJuniorVault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'executeBatch'
+  ): TypedContractMethod<[sGlpToDeposit: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'grantAllowances'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      _sGlp: AddressLike,
+      _rewardRouter: AddressLike,
+      _glpManager: AddressLike,
+      _dnGmxJuniorVault: AddressLike,
+      _keeper: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'keeper'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'minGlpDepositThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'pauseDeposit'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'paused'
+  ): TypedContractMethod<[], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'roundAssetBalance'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'roundDeposits'
+  ): TypedContractMethod<
+    [round: BigNumberish],
+    [IDnGmxBatchingManagerGlp.RoundDepositStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'roundGlpDeposited'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'roundSharesMinted'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'setDepositCap'
+  ): TypedContractMethod<[_depositCap: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setKeeper'
+  ): TypedContractMethod<[_keeper: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setThresholds'
+  ): TypedContractMethod<
+    [_minGlpDepositThreshold: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'unclaimedShares'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'unpauseDeposit'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'userDeposits'
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [IDnGmxBatchingManagerGlp.UserDepositStructOutput],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'vaultBatchingState'): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        currentRound: bigint;
+        roundSharesMinted: bigint;
+        roundGlpDeposited: bigint;
+        roundAssetBalance: bigint;
+      }
+    ],
+    'view'
+  >;
+
+  getEvent(
+    key: 'BatchDeposit'
+  ): TypedContractEvent<
+    BatchDepositEvent.InputTuple,
+    BatchDepositEvent.OutputTuple,
+    BatchDepositEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ClaimedAndRedeemed'
+  ): TypedContractEvent<
+    ClaimedAndRedeemedEvent.InputTuple,
+    ClaimedAndRedeemedEvent.OutputTuple,
+    ClaimedAndRedeemedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'DepositCapUpdated'
+  ): TypedContractEvent<
+    DepositCapUpdatedEvent.InputTuple,
+    DepositCapUpdatedEvent.OutputTuple,
+    DepositCapUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'DepositToken'
+  ): TypedContractEvent<
+    DepositTokenEvent.InputTuple,
+    DepositTokenEvent.OutputTuple,
+    DepositTokenEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'KeeperUpdated'
+  ): TypedContractEvent<
+    KeeperUpdatedEvent.InputTuple,
+    KeeperUpdatedEvent.OutputTuple,
+    KeeperUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PartialBatchDeposit'
+  ): TypedContractEvent<
+    PartialBatchDepositEvent.InputTuple,
+    PartialBatchDepositEvent.OutputTuple,
+    PartialBatchDepositEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Paused'
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'SharesClaimed'
+  ): TypedContractEvent<
+    SharesClaimedEvent.InputTuple,
+    SharesClaimedEvent.OutputTuple,
+    SharesClaimedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ThresholdsUpdated'
+  ): TypedContractEvent<
+    ThresholdsUpdatedEvent.InputTuple,
+    ThresholdsUpdatedEvent.OutputTuple,
+    ThresholdsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Unpaused'
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
+  >;
 
   filters: {
-    'BatchDeposit(uint256,uint256,uint256,uint256)'(
-      round?: PromiseOrValue<BigNumberish> | null,
-      totalAssets?: null,
-      userGlpAmount?: null,
-      userShareAmount?: null
-    ): BatchDepositEventFilter;
-    BatchDeposit(
-      round?: PromiseOrValue<BigNumberish> | null,
-      totalAssets?: null,
-      userGlpAmount?: null,
-      userShareAmount?: null
-    ): BatchDepositEventFilter;
-
-    'ClaimedAndRedeemed(address,address,uint256,uint256)'(
-      claimer?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      shares?: null,
-      assetsReceived?: null
-    ): ClaimedAndRedeemedEventFilter;
-    ClaimedAndRedeemed(
-      claimer?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      shares?: null,
-      assetsReceived?: null
-    ): ClaimedAndRedeemedEventFilter;
-
-    'DepositCapUpdated(uint256)'(
-      newDepositCap?: null
-    ): DepositCapUpdatedEventFilter;
-    DepositCapUpdated(newDepositCap?: null): DepositCapUpdatedEventFilter;
-
-    'DepositToken(uint256,address,address,uint256,uint256)'(
-      round?: PromiseOrValue<BigNumberish> | null,
-      token?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      amount?: null,
-      glpStaked?: null
-    ): DepositTokenEventFilter;
-    DepositToken(
-      round?: PromiseOrValue<BigNumberish> | null,
-      token?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      amount?: null,
-      glpStaked?: null
-    ): DepositTokenEventFilter;
-
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
-
-    'KeeperUpdated(address)'(newKeeper?: null): KeeperUpdatedEventFilter;
-    KeeperUpdated(newKeeper?: null): KeeperUpdatedEventFilter;
-
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-
-    'PartialBatchDeposit(uint256,uint256,uint256)'(
-      round?: PromiseOrValue<BigNumberish> | null,
-      partialGlpAmount?: null,
-      partialShareAmount?: null
-    ): PartialBatchDepositEventFilter;
-    PartialBatchDeposit(
-      round?: PromiseOrValue<BigNumberish> | null,
-      partialGlpAmount?: null,
-      partialShareAmount?: null
-    ): PartialBatchDepositEventFilter;
-
-    'Paused(address)'(account?: null): PausedEventFilter;
-    Paused(account?: null): PausedEventFilter;
-
-    'SharesClaimed(address,address,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      claimAmount?: null
-    ): SharesClaimedEventFilter;
-    SharesClaimed(
-      from?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      claimAmount?: null
-    ): SharesClaimedEventFilter;
-
-    'ThresholdsUpdated(uint256)'(
-      minGlpDepositThreshold?: null
-    ): ThresholdsUpdatedEventFilter;
-    ThresholdsUpdated(
-      minGlpDepositThreshold?: null
-    ): ThresholdsUpdatedEventFilter;
-
-    'Unpaused(address)'(account?: null): UnpausedEventFilter;
-    Unpaused(account?: null): UnpausedEventFilter;
-  };
-
-  estimateGas: {
-    assetBalance(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claim(
-      receiver: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimAndRedeem(
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    currentRound(overrides?: CallOverrides): Promise<BigNumber>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    executeBatch(
-      sGlpToDeposit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      _sGlp: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    keeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    minGlpDepositThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    paused(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    roundAssetBalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    roundDeposits(
-      round: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    roundGlpDeposited(overrides?: CallOverrides): Promise<BigNumber>;
-
-    roundSharesMinted(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setDepositCap(
-      _depositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setThresholds(
-      _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unclaimedShares(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    unpauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    userDeposits(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    vaultBatchingState(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    assetBalance(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claim(
-      receiver: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimAndRedeem(
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    currentRound(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    executeBatch(
-      sGlpToDeposit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      _sGlp: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    minGlpDepositThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    roundAssetBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    roundDeposits(
-      round: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    roundGlpDeposited(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    roundSharesMinted(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setDepositCap(
-      _depositCap: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setThresholds(
-      _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unclaimedShares(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    unpauseDeposit(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    userDeposits(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    vaultBatchingState(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    'BatchDeposit(uint256,uint256,uint256,uint256)': TypedContractEvent<
+      BatchDepositEvent.InputTuple,
+      BatchDepositEvent.OutputTuple,
+      BatchDepositEvent.OutputObject
+    >;
+    BatchDeposit: TypedContractEvent<
+      BatchDepositEvent.InputTuple,
+      BatchDepositEvent.OutputTuple,
+      BatchDepositEvent.OutputObject
+    >;
+
+    'ClaimedAndRedeemed(address,address,uint256,uint256)': TypedContractEvent<
+      ClaimedAndRedeemedEvent.InputTuple,
+      ClaimedAndRedeemedEvent.OutputTuple,
+      ClaimedAndRedeemedEvent.OutputObject
+    >;
+    ClaimedAndRedeemed: TypedContractEvent<
+      ClaimedAndRedeemedEvent.InputTuple,
+      ClaimedAndRedeemedEvent.OutputTuple,
+      ClaimedAndRedeemedEvent.OutputObject
+    >;
+
+    'DepositCapUpdated(uint256)': TypedContractEvent<
+      DepositCapUpdatedEvent.InputTuple,
+      DepositCapUpdatedEvent.OutputTuple,
+      DepositCapUpdatedEvent.OutputObject
+    >;
+    DepositCapUpdated: TypedContractEvent<
+      DepositCapUpdatedEvent.InputTuple,
+      DepositCapUpdatedEvent.OutputTuple,
+      DepositCapUpdatedEvent.OutputObject
+    >;
+
+    'DepositToken(uint256,address,address,uint256,uint256)': TypedContractEvent<
+      DepositTokenEvent.InputTuple,
+      DepositTokenEvent.OutputTuple,
+      DepositTokenEvent.OutputObject
+    >;
+    DepositToken: TypedContractEvent<
+      DepositTokenEvent.InputTuple,
+      DepositTokenEvent.OutputTuple,
+      DepositTokenEvent.OutputObject
+    >;
+
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
+    'KeeperUpdated(address)': TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
+    KeeperUpdated: TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
+
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
+    'PartialBatchDeposit(uint256,uint256,uint256)': TypedContractEvent<
+      PartialBatchDepositEvent.InputTuple,
+      PartialBatchDepositEvent.OutputTuple,
+      PartialBatchDepositEvent.OutputObject
+    >;
+    PartialBatchDeposit: TypedContractEvent<
+      PartialBatchDepositEvent.InputTuple,
+      PartialBatchDepositEvent.OutputTuple,
+      PartialBatchDepositEvent.OutputObject
+    >;
+
+    'Paused(address)': TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    'SharesClaimed(address,address,uint256)': TypedContractEvent<
+      SharesClaimedEvent.InputTuple,
+      SharesClaimedEvent.OutputTuple,
+      SharesClaimedEvent.OutputObject
+    >;
+    SharesClaimed: TypedContractEvent<
+      SharesClaimedEvent.InputTuple,
+      SharesClaimedEvent.OutputTuple,
+      SharesClaimedEvent.OutputObject
+    >;
+
+    'ThresholdsUpdated(uint256)': TypedContractEvent<
+      ThresholdsUpdatedEvent.InputTuple,
+      ThresholdsUpdatedEvent.OutputTuple,
+      ThresholdsUpdatedEvent.OutputObject
+    >;
+    ThresholdsUpdated: TypedContractEvent<
+      ThresholdsUpdatedEvent.InputTuple,
+      ThresholdsUpdatedEvent.OutputTuple,
+      ThresholdsUpdatedEvent.OutputObject
+    >;
+
+    'Unpaused(address)': TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
   };
 }

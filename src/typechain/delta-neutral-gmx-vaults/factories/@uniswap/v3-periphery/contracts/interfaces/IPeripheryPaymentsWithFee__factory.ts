@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IPeripheryPaymentsWithFee,
   IPeripheryPaymentsWithFeeInterface,
@@ -119,21 +118,21 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class IPeripheryPaymentsWithFee__factory {
   static readonly abi = _abi;
   static createInterface(): IPeripheryPaymentsWithFeeInterface {
-    return new utils.Interface(_abi) as IPeripheryPaymentsWithFeeInterface;
+    return new Interface(_abi) as IPeripheryPaymentsWithFeeInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IPeripheryPaymentsWithFee {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IPeripheryPaymentsWithFee;
+      runner
+    ) as unknown as IPeripheryPaymentsWithFee;
   }
 }

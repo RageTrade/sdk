@@ -3,252 +3,333 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type CollateralSettingsStruct = {
-    oracle: PromiseOrValue<string>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForDeposit: PromiseOrValue<boolean>;
-  };
-
-  export type CollateralSettingsStructOutput = [string, number, boolean] & {
-    oracle: string;
-    twapDuration: number;
+    oracle: AddressLike;
+    twapDuration: BigNumberish;
     isAllowedForDeposit: boolean;
   };
 
+  export type CollateralSettingsStructOutput = [
+    oracle: string,
+    twapDuration: bigint,
+    isAllowedForDeposit: boolean
+  ] & { oracle: string; twapDuration: bigint; isAllowedForDeposit: boolean };
+
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
-    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
-    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
-    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
-    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
-    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
+    insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
+    maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber
+    rangeLiquidationFeeFraction: bigint,
+    tokenLiquidationFeeFraction: bigint,
+    closeFactorMMThresholdBps: bigint,
+    partialLiquidationCloseFactorBps: bigint,
+    insuranceFundFeeShareBps: bigint,
+    liquidationSlippageSqrtToleranceBps: bigint,
+    maxRangeLiquidationFees: bigint,
+    minNotionalLiquidatable: bigint
   ] & {
-    rangeLiquidationFeeFraction: number;
-    tokenLiquidationFeeFraction: number;
-    closeFactorMMThresholdBps: number;
-    partialLiquidationCloseFactorBps: number;
-    insuranceFundFeeShareBps: number;
-    liquidationSlippageSqrtToleranceBps: number;
-    maxRangeLiquidationFees: BigNumber;
-    minNotionalLiquidatable: BigNumber;
+    rangeLiquidationFeeFraction: bigint;
+    tokenLiquidationFeeFraction: bigint;
+    closeFactorMMThresholdBps: bigint;
+    partialLiquidationCloseFactorBps: bigint;
+    insuranceFundFeeShareBps: bigint;
+    liquidationSlippageSqrtToleranceBps: bigint;
+    maxRangeLiquidationFees: bigint;
+    minNotionalLiquidatable: bigint;
   };
 }
 
-export interface IClearingHouseEventsInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'AccountCreated(address,uint256)': EventFragment;
-    'CollateralSettingsUpdated(address,tuple)': EventFragment;
-    'PausedUpdated(bool)': EventFragment;
-    'PoolSettingsUpdated(uint32,tuple)': EventFragment;
-    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolSettingsUpdated'): EventFragment;
+export interface IClearingHouseEventsInterface extends Interface {
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'AccountCreated'
+      | 'CollateralSettingsUpdated'
+      | 'PausedUpdated'
+      | 'PoolSettingsUpdated'
+      | 'ProtocolSettingsUpdated'
+  ): EventFragment;
 }
 
-export interface AccountCreatedEventObject {
-  ownerAddress: string;
-  accountId: BigNumber;
+export namespace AccountCreatedEvent {
+  export type InputTuple = [ownerAddress: AddressLike, accountId: BigNumberish];
+  export type OutputTuple = [ownerAddress: string, accountId: bigint];
+  export interface OutputObject {
+    ownerAddress: string;
+    accountId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AccountCreatedEvent = TypedEvent<
-  [string, BigNumber],
-  AccountCreatedEventObject
->;
 
-export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
-
-export interface CollateralSettingsUpdatedEventObject {
-  cToken: string;
-  cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput;
+export namespace CollateralSettingsUpdatedEvent {
+  export type InputTuple = [
+    cToken: AddressLike,
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStruct
+  ];
+  export type OutputTuple = [
+    cToken: string,
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput
+  ];
+  export interface OutputObject {
+    cToken: string;
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CollateralSettingsUpdatedEvent = TypedEvent<
-  [string, IClearingHouseStructures.CollateralSettingsStructOutput],
-  CollateralSettingsUpdatedEventObject
->;
 
-export type CollateralSettingsUpdatedEventFilter =
-  TypedEventFilter<CollateralSettingsUpdatedEvent>;
-
-export interface PausedUpdatedEventObject {
-  paused: boolean;
+export namespace PausedUpdatedEvent {
+  export type InputTuple = [paused: boolean];
+  export type OutputTuple = [paused: boolean];
+  export interface OutputObject {
+    paused: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PausedUpdatedEvent = TypedEvent<
-  [boolean],
-  PausedUpdatedEventObject
->;
 
-export type PausedUpdatedEventFilter = TypedEventFilter<PausedUpdatedEvent>;
-
-export interface PoolSettingsUpdatedEventObject {
-  poolId: number;
-  settings: IClearingHouseStructures.PoolSettingsStructOutput;
+export namespace PoolSettingsUpdatedEvent {
+  export type InputTuple = [
+    poolId: BigNumberish,
+    settings: IClearingHouseStructures.PoolSettingsStruct
+  ];
+  export type OutputTuple = [
+    poolId: bigint,
+    settings: IClearingHouseStructures.PoolSettingsStructOutput
+  ];
+  export interface OutputObject {
+    poolId: bigint;
+    settings: IClearingHouseStructures.PoolSettingsStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolSettingsUpdatedEvent = TypedEvent<
-  [number, IClearingHouseStructures.PoolSettingsStructOutput],
-  PoolSettingsUpdatedEventObject
->;
 
-export type PoolSettingsUpdatedEventFilter =
-  TypedEventFilter<PoolSettingsUpdatedEvent>;
-
-export interface ProtocolSettingsUpdatedEventObject {
-  liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-  removeLimitOrderFee: BigNumber;
-  minimumOrderNotional: BigNumber;
-  minRequiredMargin: BigNumber;
+export namespace ProtocolSettingsUpdatedEvent {
+  export type InputTuple = [
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
+    removeLimitOrderFee: BigNumberish,
+    minimumOrderNotional: BigNumberish,
+    minRequiredMargin: BigNumberish
+  ];
+  export type OutputTuple = [
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput,
+    removeLimitOrderFee: bigint,
+    minimumOrderNotional: bigint,
+    minRequiredMargin: bigint
+  ];
+  export interface OutputObject {
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
+    removeLimitOrderFee: bigint;
+    minimumOrderNotional: bigint;
+    minRequiredMargin: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProtocolSettingsUpdatedEvent = TypedEvent<
-  [
-    IClearingHouseStructures.LiquidationParamsStructOutput,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  ProtocolSettingsUpdatedEventObject
->;
-
-export type ProtocolSettingsUpdatedEventFilter =
-  TypedEventFilter<ProtocolSettingsUpdatedEvent>;
 
 export interface IClearingHouseEvents extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IClearingHouseEventsInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'AccountCreated'
+  ): TypedContractEvent<
+    AccountCreatedEvent.InputTuple,
+    AccountCreatedEvent.OutputTuple,
+    AccountCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CollateralSettingsUpdated'
+  ): TypedContractEvent<
+    CollateralSettingsUpdatedEvent.InputTuple,
+    CollateralSettingsUpdatedEvent.OutputTuple,
+    CollateralSettingsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PausedUpdated'
+  ): TypedContractEvent<
+    PausedUpdatedEvent.InputTuple,
+    PausedUpdatedEvent.OutputTuple,
+    PausedUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolSettingsUpdated'
+  ): TypedContractEvent<
+    PoolSettingsUpdatedEvent.InputTuple,
+    PoolSettingsUpdatedEvent.OutputTuple,
+    PoolSettingsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProtocolSettingsUpdated'
+  ): TypedContractEvent<
+    ProtocolSettingsUpdatedEvent.InputTuple,
+    ProtocolSettingsUpdatedEvent.OutputTuple,
+    ProtocolSettingsUpdatedEvent.OutputObject
+  >;
 
   filters: {
-    'AccountCreated(address,uint256)'(
-      ownerAddress?: PromiseOrValue<string> | null,
-      accountId?: null
-    ): AccountCreatedEventFilter;
-    AccountCreated(
-      ownerAddress?: PromiseOrValue<string> | null,
-      accountId?: null
-    ): AccountCreatedEventFilter;
+    'AccountCreated(address,uint256)': TypedContractEvent<
+      AccountCreatedEvent.InputTuple,
+      AccountCreatedEvent.OutputTuple,
+      AccountCreatedEvent.OutputObject
+    >;
+    AccountCreated: TypedContractEvent<
+      AccountCreatedEvent.InputTuple,
+      AccountCreatedEvent.OutputTuple,
+      AccountCreatedEvent.OutputObject
+    >;
 
-    'CollateralSettingsUpdated(address,tuple)'(
-      cToken?: null,
-      cTokenInfo?: null
-    ): CollateralSettingsUpdatedEventFilter;
-    CollateralSettingsUpdated(
-      cToken?: null,
-      cTokenInfo?: null
-    ): CollateralSettingsUpdatedEventFilter;
+    'CollateralSettingsUpdated(address,tuple)': TypedContractEvent<
+      CollateralSettingsUpdatedEvent.InputTuple,
+      CollateralSettingsUpdatedEvent.OutputTuple,
+      CollateralSettingsUpdatedEvent.OutputObject
+    >;
+    CollateralSettingsUpdated: TypedContractEvent<
+      CollateralSettingsUpdatedEvent.InputTuple,
+      CollateralSettingsUpdatedEvent.OutputTuple,
+      CollateralSettingsUpdatedEvent.OutputObject
+    >;
 
-    'PausedUpdated(bool)'(paused?: null): PausedUpdatedEventFilter;
-    PausedUpdated(paused?: null): PausedUpdatedEventFilter;
+    'PausedUpdated(bool)': TypedContractEvent<
+      PausedUpdatedEvent.InputTuple,
+      PausedUpdatedEvent.OutputTuple,
+      PausedUpdatedEvent.OutputObject
+    >;
+    PausedUpdated: TypedContractEvent<
+      PausedUpdatedEvent.InputTuple,
+      PausedUpdatedEvent.OutputTuple,
+      PausedUpdatedEvent.OutputObject
+    >;
 
-    'PoolSettingsUpdated(uint32,tuple)'(
-      poolId?: null,
-      settings?: null
-    ): PoolSettingsUpdatedEventFilter;
-    PoolSettingsUpdated(
-      poolId?: null,
-      settings?: null
-    ): PoolSettingsUpdatedEventFilter;
+    'PoolSettingsUpdated(uint32,tuple)': TypedContractEvent<
+      PoolSettingsUpdatedEvent.InputTuple,
+      PoolSettingsUpdatedEvent.OutputTuple,
+      PoolSettingsUpdatedEvent.OutputObject
+    >;
+    PoolSettingsUpdated: TypedContractEvent<
+      PoolSettingsUpdatedEvent.InputTuple,
+      PoolSettingsUpdatedEvent.OutputTuple,
+      PoolSettingsUpdatedEvent.OutputObject
+    >;
 
-    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)'(
-      liquidationParams?: null,
-      removeLimitOrderFee?: null,
-      minimumOrderNotional?: null,
-      minRequiredMargin?: null
-    ): ProtocolSettingsUpdatedEventFilter;
-    ProtocolSettingsUpdated(
-      liquidationParams?: null,
-      removeLimitOrderFee?: null,
-      minimumOrderNotional?: null,
-      minRequiredMargin?: null
-    ): ProtocolSettingsUpdatedEventFilter;
+    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': TypedContractEvent<
+      ProtocolSettingsUpdatedEvent.InputTuple,
+      ProtocolSettingsUpdatedEvent.OutputTuple,
+      ProtocolSettingsUpdatedEvent.OutputObject
+    >;
+    ProtocolSettingsUpdated: TypedContractEvent<
+      ProtocolSettingsUpdatedEvent.InputTuple,
+      ProtocolSettingsUpdatedEvent.OutputTuple,
+      ProtocolSettingsUpdatedEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

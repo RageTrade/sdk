@@ -3,37 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from './common';
 
-export interface NonfungibleTokenPositionDescriptorInterface
-  extends utils.Interface {
-  functions: {
-    'WETH9()': FunctionFragment;
-    'flipRatio(address,address,uint256)': FunctionFragment;
-    'nativeCurrencyLabel()': FunctionFragment;
-    'nativeCurrencyLabelBytes()': FunctionFragment;
-    'tokenRatioPriority(address,uint256)': FunctionFragment;
-    'tokenURI(address,uint256)': FunctionFragment;
-  };
-
+export interface NonfungibleTokenPositionDescriptorInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'WETH9'
       | 'flipRatio'
       | 'nativeCurrencyLabel'
@@ -45,11 +35,7 @@ export interface NonfungibleTokenPositionDescriptorInterface
   encodeFunctionData(functionFragment: 'WETH9', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'flipRatio',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'nativeCurrencyLabel',
@@ -61,11 +47,11 @@ export interface NonfungibleTokenPositionDescriptorInterface
   ): string;
   encodeFunctionData(
     functionFragment: 'tokenRatioPriority',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'tokenURI',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: 'WETH9', data: BytesLike): Result;
@@ -83,172 +69,110 @@ export interface NonfungibleTokenPositionDescriptorInterface
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'tokenURI', data: BytesLike): Result;
-
-  events: {};
 }
 
 export interface NonfungibleTokenPositionDescriptor extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: NonfungibleTokenPositionDescriptorInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    WETH9(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    flipRatio(
-      token0: PromiseOrValue<string>,
-      token1: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    nativeCurrencyLabel(overrides?: CallOverrides): Promise<[string]>;
+  WETH9: TypedContractMethod<[], [string], 'view'>;
 
-    nativeCurrencyLabelBytes(overrides?: CallOverrides): Promise<[string]>;
+  flipRatio: TypedContractMethod<
+    [token0: AddressLike, token1: AddressLike, chainId: BigNumberish],
+    [boolean],
+    'view'
+  >;
 
-    tokenRatioPriority(
-      token: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  nativeCurrencyLabel: TypedContractMethod<[], [string], 'view'>;
 
-    tokenURI(
-      positionManager: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-  };
+  nativeCurrencyLabelBytes: TypedContractMethod<[], [string], 'view'>;
 
-  WETH9(overrides?: CallOverrides): Promise<string>;
+  tokenRatioPriority: TypedContractMethod<
+    [token: AddressLike, chainId: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  flipRatio(
-    token0: PromiseOrValue<string>,
-    token1: PromiseOrValue<string>,
-    chainId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  tokenURI: TypedContractMethod<
+    [positionManager: AddressLike, tokenId: BigNumberish],
+    [string],
+    'view'
+  >;
 
-  nativeCurrencyLabel(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  nativeCurrencyLabelBytes(overrides?: CallOverrides): Promise<string>;
-
-  tokenRatioPriority(
-    token: PromiseOrValue<string>,
-    chainId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokenURI(
-    positionManager: PromiseOrValue<string>,
-    tokenId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  callStatic: {
-    WETH9(overrides?: CallOverrides): Promise<string>;
-
-    flipRatio(
-      token0: PromiseOrValue<string>,
-      token1: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    nativeCurrencyLabel(overrides?: CallOverrides): Promise<string>;
-
-    nativeCurrencyLabelBytes(overrides?: CallOverrides): Promise<string>;
-
-    tokenRatioPriority(
-      token: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenURI(
-      positionManager: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'WETH9'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'flipRatio'
+  ): TypedContractMethod<
+    [token0: AddressLike, token1: AddressLike, chainId: BigNumberish],
+    [boolean],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'nativeCurrencyLabel'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'nativeCurrencyLabelBytes'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'tokenRatioPriority'
+  ): TypedContractMethod<
+    [token: AddressLike, chainId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'tokenURI'
+  ): TypedContractMethod<
+    [positionManager: AddressLike, tokenId: BigNumberish],
+    [string],
+    'view'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    WETH9(overrides?: CallOverrides): Promise<BigNumber>;
-
-    flipRatio(
-      token0: PromiseOrValue<string>,
-      token1: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    nativeCurrencyLabel(overrides?: CallOverrides): Promise<BigNumber>;
-
-    nativeCurrencyLabelBytes(overrides?: CallOverrides): Promise<BigNumber>;
-
-    tokenRatioPriority(
-      token: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokenURI(
-      positionManager: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    WETH9(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    flipRatio(
-      token0: PromiseOrValue<string>,
-      token1: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    nativeCurrencyLabel(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    nativeCurrencyLabelBytes(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenRatioPriority(
-      token: PromiseOrValue<string>,
-      chainId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokenURI(
-      positionManager: PromiseOrValue<string>,
-      tokenId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

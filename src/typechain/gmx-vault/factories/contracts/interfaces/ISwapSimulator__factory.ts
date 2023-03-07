@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ISwapSimulator,
   ISwapSimulatorInterface,
@@ -86,17 +85,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class ISwapSimulator__factory {
   static readonly abi = _abi;
   static createInterface(): ISwapSimulatorInterface {
-    return new utils.Interface(_abi) as ISwapSimulatorInterface;
+    return new Interface(_abi) as ISwapSimulatorInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ISwapSimulator {
-    return new Contract(address, _abi, signerOrProvider) as ISwapSimulator;
+    return new Contract(address, _abi, runner) as unknown as ISwapSimulator;
   }
 }

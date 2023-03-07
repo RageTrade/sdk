@@ -3,125 +3,120 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PayableOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type CollateralSettingsStruct = {
-    oracle: PromiseOrValue<string>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForDeposit: PromiseOrValue<boolean>;
-  };
-
-  export type CollateralSettingsStructOutput = [string, number, boolean] & {
-    oracle: string;
-    twapDuration: number;
+    oracle: AddressLike;
+    twapDuration: BigNumberish;
     isAllowedForDeposit: boolean;
   };
 
+  export type CollateralSettingsStructOutput = [
+    oracle: string,
+    twapDuration: bigint,
+    isAllowedForDeposit: boolean
+  ] & { oracle: string; twapDuration: bigint; isAllowedForDeposit: boolean };
+
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
-    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
-    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
-    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
-    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
-    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
+    insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
+    maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber
+    rangeLiquidationFeeFraction: bigint,
+    tokenLiquidationFeeFraction: bigint,
+    closeFactorMMThresholdBps: bigint,
+    partialLiquidationCloseFactorBps: bigint,
+    insuranceFundFeeShareBps: bigint,
+    liquidationSlippageSqrtToleranceBps: bigint,
+    maxRangeLiquidationFees: bigint,
+    minNotionalLiquidatable: bigint
   ] & {
-    rangeLiquidationFeeFraction: number;
-    tokenLiquidationFeeFraction: number;
-    closeFactorMMThresholdBps: number;
-    partialLiquidationCloseFactorBps: number;
-    insuranceFundFeeShareBps: number;
-    liquidationSlippageSqrtToleranceBps: number;
-    maxRangeLiquidationFees: BigNumber;
-    minNotionalLiquidatable: BigNumber;
+    rangeLiquidationFeeFraction: bigint;
+    tokenLiquidationFeeFraction: bigint;
+    closeFactorMMThresholdBps: bigint;
+    partialLiquidationCloseFactorBps: bigint;
+    insuranceFundFeeShareBps: bigint;
+    liquidationSlippageSqrtToleranceBps: bigint;
+    maxRangeLiquidationFees: bigint;
+    minNotionalLiquidatable: bigint;
   };
 
   export type MulticallOperationStruct = {
-    operationType: PromiseOrValue<BigNumberish>;
-    data: PromiseOrValue<BytesLike>;
+    operationType: BigNumberish;
+    data: BytesLike;
   };
 
-  export type MulticallOperationStructOutput = [number, string] & {
-    operationType: number;
-    data: string;
-  };
+  export type MulticallOperationStructOutput = [
+    operationType: bigint,
+    data: string
+  ] & { operationType: bigint; data: string };
 
   export type PoolStruct = {
-    vToken: PromiseOrValue<string>;
-    vPool: PromiseOrValue<string>;
-    vPoolWrapper: PromiseOrValue<string>;
+    vToken: AddressLike;
+    vPool: AddressLike;
+    vPoolWrapper: AddressLike;
     settings: IClearingHouseStructures.PoolSettingsStruct;
   };
 
   export type PoolStructOutput = [
-    string,
-    string,
-    string,
-    IClearingHouseStructures.PoolSettingsStructOutput
+    vToken: string,
+    vPool: string,
+    vPoolWrapper: string,
+    settings: IClearingHouseStructures.PoolSettingsStructOutput
   ] & {
     vToken: string;
     vPool: string;
@@ -130,104 +125,62 @@ export declare namespace IClearingHouseStructures {
   };
 
   export type SwapParamsStruct = {
-    amount: PromiseOrValue<BigNumberish>;
-    sqrtPriceLimit: PromiseOrValue<BigNumberish>;
-    isNotional: PromiseOrValue<boolean>;
-    isPartialAllowed: PromiseOrValue<boolean>;
-    settleProfit: PromiseOrValue<boolean>;
+    amount: BigNumberish;
+    sqrtPriceLimit: BigNumberish;
+    isNotional: boolean;
+    isPartialAllowed: boolean;
+    settleProfit: boolean;
   };
 
   export type SwapParamsStructOutput = [
-    BigNumber,
-    BigNumber,
-    boolean,
-    boolean,
-    boolean
+    amount: bigint,
+    sqrtPriceLimit: bigint,
+    isNotional: boolean,
+    isPartialAllowed: boolean,
+    settleProfit: boolean
   ] & {
-    amount: BigNumber;
-    sqrtPriceLimit: BigNumber;
+    amount: bigint;
+    sqrtPriceLimit: bigint;
     isNotional: boolean;
     isPartialAllowed: boolean;
     settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStruct = {
-    tickLower: PromiseOrValue<BigNumberish>;
-    tickUpper: PromiseOrValue<BigNumberish>;
-    liquidityDelta: PromiseOrValue<BigNumberish>;
-    sqrtPriceCurrent: PromiseOrValue<BigNumberish>;
-    slippageToleranceBps: PromiseOrValue<BigNumberish>;
-    closeTokenPosition: PromiseOrValue<boolean>;
-    limitOrderType: PromiseOrValue<BigNumberish>;
-    settleProfit: PromiseOrValue<boolean>;
+    tickLower: BigNumberish;
+    tickUpper: BigNumberish;
+    liquidityDelta: BigNumberish;
+    sqrtPriceCurrent: BigNumberish;
+    slippageToleranceBps: BigNumberish;
+    closeTokenPosition: boolean;
+    limitOrderType: BigNumberish;
+    settleProfit: boolean;
   };
 
   export type LiquidityChangeParamsStructOutput = [
-    number,
-    number,
-    BigNumber,
-    BigNumber,
-    number,
-    boolean,
-    number,
-    boolean
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidityDelta: bigint,
+    sqrtPriceCurrent: bigint,
+    slippageToleranceBps: bigint,
+    closeTokenPosition: boolean,
+    limitOrderType: bigint,
+    settleProfit: boolean
   ] & {
-    tickLower: number;
-    tickUpper: number;
-    liquidityDelta: BigNumber;
-    sqrtPriceCurrent: BigNumber;
-    slippageToleranceBps: number;
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidityDelta: bigint;
+    sqrtPriceCurrent: bigint;
+    slippageToleranceBps: bigint;
     closeTokenPosition: boolean;
-    limitOrderType: number;
+    limitOrderType: bigint;
     settleProfit: boolean;
   };
 }
 
-export interface ClearingHouseInterface extends utils.Interface {
-  functions: {
-    'acceptGovernanceTransfer()': FunctionFragment;
-    'acceptTeamMultisigTransfer()': FunctionFragment;
-    'createAccount()': FunctionFragment;
-    'createAccountAndAddMargin(uint32,uint256)': FunctionFragment;
-    'extsload(bytes32)': FunctionFragment;
-    'extsload(bytes32[])': FunctionFragment;
-    'getAccountMarketValueAndRequiredMargin(uint256,bool)': FunctionFragment;
-    'getAccountNetProfit(uint256)': FunctionFragment;
-    'getAccountNetTokenPosition(uint256,uint32)': FunctionFragment;
-    'getRealTwapPriceX128(uint32)': FunctionFragment;
-    'getVirtualTwapPriceX128(uint32)': FunctionFragment;
-    'governance()': FunctionFragment;
-    'governancePending()': FunctionFragment;
-    'initialize(address,address,address,address,address,address,address)': FunctionFragment;
-    'initiateGovernanceTransfer(address)': FunctionFragment;
-    'initiateTeamMultisigTransfer(address)': FunctionFragment;
-    'insuranceFund()': FunctionFragment;
-    'liquidateLiquidityPositions(uint256)': FunctionFragment;
-    'liquidateTokenPosition(uint256,uint32)': FunctionFragment;
-    'multicall(bytes[])': FunctionFragment;
-    'multicallWithSingleMarginCheck(uint256,(uint8,bytes)[])': FunctionFragment;
-    'numAccounts()': FunctionFragment;
-    'pause(uint256)': FunctionFragment;
-    'paused()': FunctionFragment;
-    'rageTradeFactoryAddress()': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-    'removeLimitOrder(uint256,uint32,int24,int24)': FunctionFragment;
-    'settleProfit(uint256)': FunctionFragment;
-    'swapToken(uint256,uint32,(int256,uint160,bool,bool,bool))': FunctionFragment;
-    'teamMultisig()': FunctionFragment;
-    'teamMultisigPending()': FunctionFragment;
-    'unpause(uint256)': FunctionFragment;
-    'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
-    'updateMargin(uint256,uint32,int256)': FunctionFragment;
-    'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
-    'updateProfit(uint256,int256)': FunctionFragment;
-    'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
-    'updateRangeOrder(uint256,uint32,(int24,int24,int128,uint160,uint16,bool,uint8,bool))': FunctionFragment;
-    'withdrawProtocolFee(uint256)': FunctionFragment;
-  };
-
+export interface ClearingHouseInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'acceptGovernanceTransfer'
       | 'acceptTeamMultisigTransfer'
       | 'createAccount'
@@ -269,6 +222,31 @@ export interface ClearingHouseInterface extends utils.Interface {
       | 'withdrawProtocolFee'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'AccountCreated'
+      | 'CollateralSettingsUpdated'
+      | 'GovernancePending'
+      | 'GovernanceTransferred'
+      | 'Paused'
+      | 'PausedUpdated'
+      | 'PoolSettingsUpdated'
+      | 'ProtocolSettingsUpdated'
+      | 'TeamMultisigPending'
+      | 'TeamMultisigTransferred'
+      | 'Unpaused'
+      | 'LiquidityPositionsLiquidated'
+      | 'MarginUpdated'
+      | 'ProfitUpdated'
+      | 'TokenPositionLiquidated'
+      | 'LiquidityChanged'
+      | 'LiquidityPositionEarningsRealized'
+      | 'LiquidityPositionFundingPaymentRealized'
+      | 'TokenPositionChangedDueToLiquidityChanged'
+      | 'TokenPositionChanged'
+      | 'TokenPositionFundingPaymentRealized'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'acceptGovernanceTransfer',
     values?: undefined
@@ -283,35 +261,35 @@ export interface ClearingHouseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'createAccountAndAddMargin',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32[])',
-    values: [PromiseOrValue<BytesLike>[]]
+    values: [BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountMarketValueAndRequiredMargin',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
+    values: [BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountNetProfit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAccountNetTokenPosition',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRealTwapPriceX128',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVirtualTwapPriceX128',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'governance',
@@ -324,22 +302,22 @@ export interface ClearingHouseInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'insuranceFund',
@@ -347,31 +325,25 @@ export interface ClearingHouseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateLiquidityPositions',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidateTokenPosition',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'multicall',
-    values: [PromiseOrValue<BytesLike>[]]
+    values: [BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'multicallWithSingleMarginCheck',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      IClearingHouseStructures.MulticallOperationStruct[]
-    ]
+    values: [BigNumberish, IClearingHouseStructures.MulticallOperationStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'numAccounts',
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: 'pause',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'pause', values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'rageTradeFactoryAddress',
@@ -383,22 +355,17 @@ export interface ClearingHouseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLimitOrder',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'settleProfit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapToken',
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
+      BigNumberish,
+      BigNumberish,
       IClearingHouseStructures.SwapParamsStruct
     ]
   ): string;
@@ -412,54 +379,44 @@ export interface ClearingHouseInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'unpause',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
-    values: [
-      PromiseOrValue<string>,
-      IClearingHouseStructures.CollateralSettingsStruct
-    ]
+    values: [AddressLike, IClearingHouseStructures.CollateralSettingsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateMargin',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updatePoolSettings',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      IClearingHouseStructures.PoolSettingsStruct
-    ]
+    values: [BigNumberish, IClearingHouseStructures.PoolSettingsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProfit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProtocolSettings',
     values: [
       IClearingHouseStructures.LiquidationParamsStruct,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateRangeOrder',
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
+      BigNumberish,
+      BigNumberish,
       IClearingHouseStructures.LiquidityChangeParamsStruct
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -597,1634 +554,1358 @@ export interface ClearingHouseInterface extends utils.Interface {
     functionFragment: 'withdrawProtocolFee',
     data: BytesLike
   ): Result;
-
-  events: {
-    'AccountCreated(address,uint256)': EventFragment;
-    'CollateralSettingsUpdated(address,tuple)': EventFragment;
-    'GovernancePending(address,address)': EventFragment;
-    'GovernanceTransferred(address,address)': EventFragment;
-    'Paused(address)': EventFragment;
-    'PausedUpdated(bool)': EventFragment;
-    'PoolSettingsUpdated(uint32,tuple)': EventFragment;
-    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': EventFragment;
-    'TeamMultisigPending(address,address)': EventFragment;
-    'TeamMultisigTransferred(address,address)': EventFragment;
-    'Unpaused(address)': EventFragment;
-    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': EventFragment;
-    'MarginUpdated(uint256,uint32,int256,bool)': EventFragment;
-    'ProfitUpdated(uint256,int256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)': EventFragment;
-    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)': EventFragment;
-    'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': EventFragment;
-    'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)': EventFragment;
-    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
-    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': EventFragment;
-    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'AccountCreated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CollateralSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GovernancePending'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PausedUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolSettingsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TeamMultisigPending'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'LiquidityPositionsLiquidated'
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProfitUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionLiquidated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidityChanged'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'LiquidityPositionEarningsRealized'
-  ): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'LiquidityPositionFundingPaymentRealized'
-  ): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'TokenPositionChangedDueToLiquidityChanged'
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionChanged'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'TokenPositionFundingPaymentRealized'
-  ): EventFragment;
 }
 
-export interface AccountCreatedEventObject {
-  ownerAddress: string;
-  accountId: BigNumber;
+export namespace AccountCreatedEvent {
+  export type InputTuple = [ownerAddress: AddressLike, accountId: BigNumberish];
+  export type OutputTuple = [ownerAddress: string, accountId: bigint];
+  export interface OutputObject {
+    ownerAddress: string;
+    accountId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AccountCreatedEvent = TypedEvent<
-  [string, BigNumber],
-  AccountCreatedEventObject
->;
 
-export type AccountCreatedEventFilter = TypedEventFilter<AccountCreatedEvent>;
-
-export interface CollateralSettingsUpdatedEventObject {
-  cToken: string;
-  cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput;
+export namespace CollateralSettingsUpdatedEvent {
+  export type InputTuple = [
+    cToken: AddressLike,
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStruct
+  ];
+  export type OutputTuple = [
+    cToken: string,
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput
+  ];
+  export interface OutputObject {
+    cToken: string;
+    cTokenInfo: IClearingHouseStructures.CollateralSettingsStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CollateralSettingsUpdatedEvent = TypedEvent<
-  [string, IClearingHouseStructures.CollateralSettingsStructOutput],
-  CollateralSettingsUpdatedEventObject
->;
 
-export type CollateralSettingsUpdatedEventFilter =
-  TypedEventFilter<CollateralSettingsUpdatedEvent>;
-
-export interface GovernancePendingEventObject {
-  previousGovernancePending: string;
-  newGovernancePending: string;
+export namespace GovernancePendingEvent {
+  export type InputTuple = [
+    previousGovernancePending: AddressLike,
+    newGovernancePending: AddressLike
+  ];
+  export type OutputTuple = [
+    previousGovernancePending: string,
+    newGovernancePending: string
+  ];
+  export interface OutputObject {
+    previousGovernancePending: string;
+    newGovernancePending: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GovernancePendingEvent = TypedEvent<
-  [string, string],
-  GovernancePendingEventObject
->;
 
-export type GovernancePendingEventFilter =
-  TypedEventFilter<GovernancePendingEvent>;
-
-export interface GovernanceTransferredEventObject {
-  previousGovernance: string;
-  newGovernance: string;
+export namespace GovernanceTransferredEvent {
+  export type InputTuple = [
+    previousGovernance: AddressLike,
+    newGovernance: AddressLike
+  ];
+  export type OutputTuple = [previousGovernance: string, newGovernance: string];
+  export interface OutputObject {
+    previousGovernance: string;
+    newGovernance: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GovernanceTransferredEvent = TypedEvent<
-  [string, string],
-  GovernanceTransferredEventObject
->;
 
-export type GovernanceTransferredEventFilter =
-  TypedEventFilter<GovernanceTransferredEvent>;
-
-export interface PausedEventObject {
-  account: string;
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
-export type PausedEventFilter = TypedEventFilter<PausedEvent>;
-
-export interface PausedUpdatedEventObject {
-  paused: boolean;
+export namespace PausedUpdatedEvent {
+  export type InputTuple = [paused: boolean];
+  export type OutputTuple = [paused: boolean];
+  export interface OutputObject {
+    paused: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PausedUpdatedEvent = TypedEvent<
-  [boolean],
-  PausedUpdatedEventObject
->;
 
-export type PausedUpdatedEventFilter = TypedEventFilter<PausedUpdatedEvent>;
-
-export interface PoolSettingsUpdatedEventObject {
-  poolId: number;
-  settings: IClearingHouseStructures.PoolSettingsStructOutput;
+export namespace PoolSettingsUpdatedEvent {
+  export type InputTuple = [
+    poolId: BigNumberish,
+    settings: IClearingHouseStructures.PoolSettingsStruct
+  ];
+  export type OutputTuple = [
+    poolId: bigint,
+    settings: IClearingHouseStructures.PoolSettingsStructOutput
+  ];
+  export interface OutputObject {
+    poolId: bigint;
+    settings: IClearingHouseStructures.PoolSettingsStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolSettingsUpdatedEvent = TypedEvent<
-  [number, IClearingHouseStructures.PoolSettingsStructOutput],
-  PoolSettingsUpdatedEventObject
->;
 
-export type PoolSettingsUpdatedEventFilter =
-  TypedEventFilter<PoolSettingsUpdatedEvent>;
-
-export interface ProtocolSettingsUpdatedEventObject {
-  liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
-  removeLimitOrderFee: BigNumber;
-  minimumOrderNotional: BigNumber;
-  minRequiredMargin: BigNumber;
+export namespace ProtocolSettingsUpdatedEvent {
+  export type InputTuple = [
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
+    removeLimitOrderFee: BigNumberish,
+    minimumOrderNotional: BigNumberish,
+    minRequiredMargin: BigNumberish
+  ];
+  export type OutputTuple = [
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput,
+    removeLimitOrderFee: bigint,
+    minimumOrderNotional: bigint,
+    minRequiredMargin: bigint
+  ];
+  export interface OutputObject {
+    liquidationParams: IClearingHouseStructures.LiquidationParamsStructOutput;
+    removeLimitOrderFee: bigint;
+    minimumOrderNotional: bigint;
+    minRequiredMargin: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProtocolSettingsUpdatedEvent = TypedEvent<
-  [
-    IClearingHouseStructures.LiquidationParamsStructOutput,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  ProtocolSettingsUpdatedEventObject
->;
 
-export type ProtocolSettingsUpdatedEventFilter =
-  TypedEventFilter<ProtocolSettingsUpdatedEvent>;
-
-export interface TeamMultisigPendingEventObject {
-  previousTeamMultisigPending: string;
-  newTeamMultisigPending: string;
+export namespace TeamMultisigPendingEvent {
+  export type InputTuple = [
+    previousTeamMultisigPending: AddressLike,
+    newTeamMultisigPending: AddressLike
+  ];
+  export type OutputTuple = [
+    previousTeamMultisigPending: string,
+    newTeamMultisigPending: string
+  ];
+  export interface OutputObject {
+    previousTeamMultisigPending: string;
+    newTeamMultisigPending: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TeamMultisigPendingEvent = TypedEvent<
-  [string, string],
-  TeamMultisigPendingEventObject
->;
 
-export type TeamMultisigPendingEventFilter =
-  TypedEventFilter<TeamMultisigPendingEvent>;
-
-export interface TeamMultisigTransferredEventObject {
-  previousTeamMultisig: string;
-  newTeamMultisig: string;
+export namespace TeamMultisigTransferredEvent {
+  export type InputTuple = [
+    previousTeamMultisig: AddressLike,
+    newTeamMultisig: AddressLike
+  ];
+  export type OutputTuple = [
+    previousTeamMultisig: string,
+    newTeamMultisig: string
+  ];
+  export interface OutputObject {
+    previousTeamMultisig: string;
+    newTeamMultisig: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TeamMultisigTransferredEvent = TypedEvent<
-  [string, string],
-  TeamMultisigTransferredEventObject
->;
 
-export type TeamMultisigTransferredEventFilter =
-  TypedEventFilter<TeamMultisigTransferredEvent>;
-
-export interface UnpausedEventObject {
-  account: string;
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
-export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface LiquidityPositionsLiquidatedEventObject {
-  accountId: BigNumber;
-  keeperAddress: string;
-  liquidationFee: BigNumber;
-  keeperFee: BigNumber;
-  insuranceFundFee: BigNumber;
-  accountMarketValueFinal: BigNumber;
+export namespace LiquidityPositionsLiquidatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    keeperAddress: AddressLike,
+    liquidationFee: BigNumberish,
+    keeperFee: BigNumberish,
+    insuranceFundFee: BigNumberish,
+    accountMarketValueFinal: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    keeperAddress: string,
+    liquidationFee: bigint,
+    keeperFee: bigint,
+    insuranceFundFee: bigint,
+    accountMarketValueFinal: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    keeperAddress: string;
+    liquidationFee: bigint;
+    keeperFee: bigint;
+    insuranceFundFee: bigint;
+    accountMarketValueFinal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityPositionsLiquidatedEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber, BigNumber, BigNumber],
-  LiquidityPositionsLiquidatedEventObject
->;
 
-export type LiquidityPositionsLiquidatedEventFilter =
-  TypedEventFilter<LiquidityPositionsLiquidatedEvent>;
-
-export interface MarginUpdatedEventObject {
-  accountId: BigNumber;
-  collateralId: number;
-  amount: BigNumber;
-  isSettleProfit: boolean;
+export namespace MarginUpdatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    collateralId: BigNumberish,
+    amount: BigNumberish,
+    isSettleProfit: boolean
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    collateralId: bigint,
+    amount: bigint,
+    isSettleProfit: boolean
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    collateralId: bigint;
+    amount: bigint;
+    isSettleProfit: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MarginUpdatedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, boolean],
-  MarginUpdatedEventObject
->;
 
-export type MarginUpdatedEventFilter = TypedEventFilter<MarginUpdatedEvent>;
-
-export interface ProfitUpdatedEventObject {
-  accountId: BigNumber;
-  amount: BigNumber;
+export namespace ProfitUpdatedEvent {
+  export type InputTuple = [accountId: BigNumberish, amount: BigNumberish];
+  export type OutputTuple = [accountId: bigint, amount: bigint];
+  export interface OutputObject {
+    accountId: bigint;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProfitUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  ProfitUpdatedEventObject
->;
 
-export type ProfitUpdatedEventFilter = TypedEventFilter<ProfitUpdatedEvent>;
-
-export interface TokenPositionLiquidatedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  keeperFee: BigNumber;
-  insuranceFundFee: BigNumber;
-  accountMarketValueFinal: BigNumber;
+export namespace TokenPositionLiquidatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    keeperFee: BigNumberish,
+    insuranceFundFee: BigNumberish,
+    accountMarketValueFinal: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    keeperFee: bigint,
+    insuranceFundFee: bigint,
+    accountMarketValueFinal: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    keeperFee: bigint;
+    insuranceFundFee: bigint;
+    accountMarketValueFinal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionLiquidatedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber, BigNumber],
-  TokenPositionLiquidatedEventObject
->;
 
-export type TokenPositionLiquidatedEventFilter =
-  TypedEventFilter<TokenPositionLiquidatedEvent>;
-
-export interface LiquidityChangedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  tickLower: number;
-  tickUpper: number;
-  liquidityDelta: BigNumber;
-  limitOrderType: number;
-  vTokenAmountOut: BigNumber;
-  vQuoteAmountOut: BigNumber;
-  sqrtPriceX96: BigNumber;
+export namespace LiquidityChangedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidityDelta: BigNumberish,
+    limitOrderType: BigNumberish,
+    vTokenAmountOut: BigNumberish,
+    vQuoteAmountOut: BigNumberish,
+    sqrtPriceX96: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidityDelta: bigint,
+    limitOrderType: bigint,
+    vTokenAmountOut: bigint,
+    vQuoteAmountOut: bigint,
+    sqrtPriceX96: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidityDelta: bigint;
+    limitOrderType: bigint;
+    vTokenAmountOut: bigint;
+    vQuoteAmountOut: bigint;
+    sqrtPriceX96: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityChangedEvent = TypedEvent<
-  [
-    BigNumber,
-    number,
-    number,
-    number,
-    BigNumber,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  LiquidityChangedEventObject
->;
 
-export type LiquidityChangedEventFilter =
-  TypedEventFilter<LiquidityChangedEvent>;
-
-export interface LiquidityPositionEarningsRealizedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  tickLower: number;
-  tickUpper: number;
-  amount: BigNumber;
+export namespace LiquidityPositionEarningsRealizedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    tickLower: bigint,
+    tickUpper: bigint,
+    amount: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    tickLower: bigint;
+    tickUpper: bigint;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityPositionEarningsRealizedEvent = TypedEvent<
-  [BigNumber, number, number, number, BigNumber],
-  LiquidityPositionEarningsRealizedEventObject
->;
 
-export type LiquidityPositionEarningsRealizedEventFilter =
-  TypedEventFilter<LiquidityPositionEarningsRealizedEvent>;
-
-export interface LiquidityPositionFundingPaymentRealizedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  tickLower: number;
-  tickUpper: number;
-  amount: BigNumber;
-  sumALastX128: BigNumber;
-  sumBInsideLastX128: BigNumber;
-  sumFpInsideLastX128: BigNumber;
-  sumFeeInsideLastX128: BigNumber;
+export namespace LiquidityPositionFundingPaymentRealizedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    amount: BigNumberish,
+    sumALastX128: BigNumberish,
+    sumBInsideLastX128: BigNumberish,
+    sumFpInsideLastX128: BigNumberish,
+    sumFeeInsideLastX128: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    tickLower: bigint,
+    tickUpper: bigint,
+    amount: bigint,
+    sumALastX128: bigint,
+    sumBInsideLastX128: bigint,
+    sumFpInsideLastX128: bigint,
+    sumFeeInsideLastX128: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    tickLower: bigint;
+    tickUpper: bigint;
+    amount: bigint;
+    sumALastX128: bigint;
+    sumBInsideLastX128: bigint;
+    sumFpInsideLastX128: bigint;
+    sumFeeInsideLastX128: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityPositionFundingPaymentRealizedEvent = TypedEvent<
-  [
-    BigNumber,
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  LiquidityPositionFundingPaymentRealizedEventObject
->;
 
-export type LiquidityPositionFundingPaymentRealizedEventFilter =
-  TypedEventFilter<LiquidityPositionFundingPaymentRealizedEvent>;
-
-export interface TokenPositionChangedDueToLiquidityChangedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  tickLower: number;
-  tickUpper: number;
-  vTokenAmountOut: BigNumber;
+export namespace TokenPositionChangedDueToLiquidityChangedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    vTokenAmountOut: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    tickLower: bigint,
+    tickUpper: bigint,
+    vTokenAmountOut: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    tickLower: bigint;
+    tickUpper: bigint;
+    vTokenAmountOut: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
-  [BigNumber, number, number, number, BigNumber],
-  TokenPositionChangedDueToLiquidityChangedEventObject
->;
 
-export type TokenPositionChangedDueToLiquidityChangedEventFilter =
-  TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
-
-export interface TokenPositionChangedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  vTokenAmountOut: BigNumber;
-  vQuoteAmountOut: BigNumber;
-  sqrtPriceX96Start: BigNumber;
-  sqrtPriceX96End: BigNumber;
+export namespace TokenPositionChangedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    vTokenAmountOut: BigNumberish,
+    vQuoteAmountOut: BigNumberish,
+    sqrtPriceX96Start: BigNumberish,
+    sqrtPriceX96End: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    vTokenAmountOut: bigint,
+    vQuoteAmountOut: bigint,
+    sqrtPriceX96Start: bigint,
+    sqrtPriceX96End: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    vTokenAmountOut: bigint;
+    vQuoteAmountOut: bigint;
+    sqrtPriceX96Start: bigint;
+    sqrtPriceX96End: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionChangedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber, BigNumber, BigNumber],
-  TokenPositionChangedEventObject
->;
 
-export type TokenPositionChangedEventFilter =
-  TypedEventFilter<TokenPositionChangedEvent>;
-
-export interface TokenPositionFundingPaymentRealizedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  amount: BigNumber;
-  sumALastX128: BigNumber;
+export namespace TokenPositionFundingPaymentRealizedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    amount: BigNumberish,
+    sumALastX128: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    amount: bigint,
+    sumALastX128: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    amount: bigint;
+    sumALastX128: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionFundingPaymentRealizedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber],
-  TokenPositionFundingPaymentRealizedEventObject
->;
-
-export type TokenPositionFundingPaymentRealizedEventFilter =
-  TypedEventFilter<TokenPositionFundingPaymentRealizedEvent>;
 
 export interface ClearingHouse extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ClearingHouseInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  acceptGovernanceTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    createAccountAndAddMargin(
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  acceptTeamMultisigTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { val: string }>;
+  createAccount: TypedContractMethod<[], [bigint], 'nonpayable'>;
 
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-
-    getAccountMarketValueAndRequiredMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      isInitialMargin: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        marketValue: BigNumber;
-        requiredMargin: BigNumber;
-      }
-    >;
-
-    getAccountNetProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { accountNetProfit: BigNumber }>;
-
-    getAccountNetTokenPosition(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { netPosition: BigNumber }>;
-
-    getRealTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { realPriceX128: BigNumber }>;
-
-    getVirtualTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { virtualPriceX128: BigNumber }>;
-
-    governance(overrides?: CallOverrides): Promise<[string]>;
-
-    governancePending(overrides?: CallOverrides): Promise<[string]>;
-
-    initialize(
-      _rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      _defaultCollateralToken: PromiseOrValue<string>,
-      _defaultCollateralTokenOracle: PromiseOrValue<string>,
-      _insuranceFund: PromiseOrValue<string>,
-      _vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    insuranceFund(overrides?: CallOverrides): Promise<[string]>;
-
-    liquidateLiquidityPositions(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    liquidateTokenPosition(
-      targetAccountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    multicallWithSingleMarginCheck(
-      accountId: PromiseOrValue<BigNumberish>,
-      operations: IClearingHouseStructures.MulticallOperationStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    pause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<[boolean]>;
-
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    removeLimitOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    settleProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    swapToken(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<[string]>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<[string]>;
-
-    unpause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateProtocolSettings(
-      _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      _removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      _minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      _minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateRangeOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  createAccount(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  createAccountAndAddMargin(
-    collateralId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  'extsload(bytes32)'(
-    slot: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  'extsload(bytes32[])'(
-    slots: PromiseOrValue<BytesLike>[],
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  getAccountMarketValueAndRequiredMargin(
-    accountId: PromiseOrValue<BigNumberish>,
-    isInitialMargin: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      marketValue: BigNumber;
-      requiredMargin: BigNumber;
-    }
+  createAccountAndAddMargin: TypedContractMethod<
+    [collateralId: BigNumberish, amount: BigNumberish],
+    [bigint],
+    'nonpayable'
   >;
 
-  getAccountNetProfit(
-    accountId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAccountNetTokenPosition(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getRealTwapPriceX128(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getVirtualTwapPriceX128(
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  governance(overrides?: CallOverrides): Promise<string>;
-
-  governancePending(overrides?: CallOverrides): Promise<string>;
-
-  initialize(
-    _rageTradeFactoryAddress: PromiseOrValue<string>,
-    initialGovernance: PromiseOrValue<string>,
-    initialTeamMultisig: PromiseOrValue<string>,
-    _defaultCollateralToken: PromiseOrValue<string>,
-    _defaultCollateralTokenOracle: PromiseOrValue<string>,
-    _insuranceFund: PromiseOrValue<string>,
-    _vQuote: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initiateGovernanceTransfer(
-    newGovernancePending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initiateTeamMultisigTransfer(
-    newTeamMultisigPending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-  liquidateLiquidityPositions(
-    accountId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  liquidateTokenPosition(
-    targetAccountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  multicall(
-    data: PromiseOrValue<BytesLike>[],
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  multicallWithSingleMarginCheck(
-    accountId: PromiseOrValue<BigNumberish>,
-    operations: IClearingHouseStructures.MulticallOperationStruct[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
-
-  pause(
-    numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  paused(overrides?: CallOverrides): Promise<boolean>;
-
-  rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-
-  registerPool(
-    poolInfo: IClearingHouseStructures.PoolStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  removeLimitOrder(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  settleProfit(
-    accountId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  swapToken(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    swapParams: IClearingHouseStructures.SwapParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-  teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-
-  unpause(
-    numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateCollateralSettings(
-    cToken: PromiseOrValue<string>,
-    collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateMargin(
-    accountId: PromiseOrValue<BigNumberish>,
-    collateralId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updatePoolSettings(
-    poolId: PromiseOrValue<BigNumberish>,
-    newSettings: IClearingHouseStructures.PoolSettingsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateProfit(
-    accountId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateProtocolSettings(
-    _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-    _removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-    _minimumOrderNotional: PromiseOrValue<BigNumberish>,
-    _minRequiredMargin: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateRangeOrder(
-    accountId: PromiseOrValue<BigNumberish>,
-    poolId: PromiseOrValue<BigNumberish>,
-    liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawProtocolFee(
-    numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    acceptGovernanceTransfer(overrides?: CallOverrides): Promise<void>;
-
-    acceptTeamMultisigTransfer(overrides?: CallOverrides): Promise<void>;
-
-    createAccount(overrides?: CallOverrides): Promise<BigNumber>;
-
-    createAccountAndAddMargin(
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    getAccountMarketValueAndRequiredMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      isInitialMargin: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        marketValue: BigNumber;
-        requiredMargin: BigNumber;
-      }
-    >;
-
-    getAccountNetProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountNetTokenPosition(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRealTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVirtualTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    governance(overrides?: CallOverrides): Promise<string>;
-
-    governancePending(overrides?: CallOverrides): Promise<string>;
-
-    initialize(
-      _rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      _defaultCollateralToken: PromiseOrValue<string>,
-      _defaultCollateralTokenOracle: PromiseOrValue<string>,
-      _insuranceFund: PromiseOrValue<string>,
-      _vQuote: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-    liquidateLiquidityPositions(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    liquidateTokenPosition(
-      targetAccountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    multicallWithSingleMarginCheck(
-      accountId: PromiseOrValue<BigNumberish>,
-      operations: IClearingHouseStructures.MulticallOperationStruct[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    paused(overrides?: CallOverrides): Promise<boolean>;
-
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    removeLimitOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    settleProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    swapToken(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        vTokenAmountOut: BigNumber;
-        vQuoteAmountOut: BigNumber;
-      }
-    >;
-
-    teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-
-    unpause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateProtocolSettings(
+  'extsload(bytes32)': TypedContractMethod<[slot: BytesLike], [string], 'view'>;
+
+  'extsload(bytes32[])': TypedContractMethod<
+    [slots: BytesLike[]],
+    [string[]],
+    'view'
+  >;
+
+  getAccountMarketValueAndRequiredMargin: TypedContractMethod<
+    [accountId: BigNumberish, isInitialMargin: boolean],
+    [[bigint, bigint] & { marketValue: bigint; requiredMargin: bigint }],
+    'view'
+  >;
+
+  getAccountNetProfit: TypedContractMethod<
+    [accountId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  getAccountNetTokenPosition: TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  getRealTwapPriceX128: TypedContractMethod<
+    [poolId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  getVirtualTwapPriceX128: TypedContractMethod<
+    [poolId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  governance: TypedContractMethod<[], [string], 'view'>;
+
+  governancePending: TypedContractMethod<[], [string], 'view'>;
+
+  initialize: TypedContractMethod<
+    [
+      _rageTradeFactoryAddress: AddressLike,
+      initialGovernance: AddressLike,
+      initialTeamMultisig: AddressLike,
+      _defaultCollateralToken: AddressLike,
+      _defaultCollateralTokenOracle: AddressLike,
+      _insuranceFund: AddressLike,
+      _vQuote: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  initiateGovernanceTransfer: TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  initiateTeamMultisigTransfer: TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  insuranceFund: TypedContractMethod<[], [string], 'view'>;
+
+  liquidateLiquidityPositions: TypedContractMethod<
+    [accountId: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  liquidateTokenPosition: TypedContractMethod<
+    [targetAccountId: BigNumberish, poolId: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+
+  multicall: TypedContractMethod<[data: BytesLike[]], [string[]], 'payable'>;
+
+  multicallWithSingleMarginCheck: TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      operations: IClearingHouseStructures.MulticallOperationStruct[]
+    ],
+    [string[]],
+    'nonpayable'
+  >;
+
+  numAccounts: TypedContractMethod<[], [bigint], 'view'>;
+
+  pause: TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  paused: TypedContractMethod<[], [boolean], 'view'>;
+
+  rageTradeFactoryAddress: TypedContractMethod<[], [string], 'view'>;
+
+  registerPool: TypedContractMethod<
+    [poolInfo: IClearingHouseStructures.PoolStruct],
+    [void],
+    'nonpayable'
+  >;
+
+  removeLimitOrder: TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  settleProfit: TypedContractMethod<
+    [accountId: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  swapToken: TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      swapParams: IClearingHouseStructures.SwapParamsStruct
+    ],
+    [[bigint, bigint] & { vTokenAmountOut: bigint; vQuoteAmountOut: bigint }],
+    'nonpayable'
+  >;
+
+  teamMultisig: TypedContractMethod<[], [string], 'view'>;
+
+  teamMultisigPending: TypedContractMethod<[], [string], 'view'>;
+
+  unpause: TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  updateCollateralSettings: TypedContractMethod<
+    [
+      cToken: AddressLike,
+      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  updateMargin: TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  updatePoolSettings: TypedContractMethod<
+    [
+      poolId: BigNumberish,
+      newSettings: IClearingHouseStructures.PoolSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  updateProfit: TypedContractMethod<
+    [accountId: BigNumberish, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  updateProtocolSettings: TypedContractMethod<
+    [
       _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      _removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      _minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      _minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    updateRangeOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        vTokenAmountOut: BigNumber;
-        vQuoteAmountOut: BigNumber;
-      }
-    >;
+  updateRangeOrder: TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct
+    ],
+    [[bigint, bigint] & { vTokenAmountOut: bigint; vQuoteAmountOut: bigint }],
+    'nonpayable'
+  >;
 
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  withdrawProtocolFee: TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'acceptGovernanceTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'acceptTeamMultisigTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'createAccount'
+  ): TypedContractMethod<[], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'createAccountAndAddMargin'
+  ): TypedContractMethod<
+    [collateralId: BigNumberish, amount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'extsload(bytes32)'
+  ): TypedContractMethod<[slot: BytesLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'extsload(bytes32[])'
+  ): TypedContractMethod<[slots: BytesLike[]], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAccountMarketValueAndRequiredMargin'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, isInitialMargin: boolean],
+    [[bigint, bigint] & { marketValue: bigint; requiredMargin: bigint }],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAccountNetProfit'
+  ): TypedContractMethod<[accountId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAccountNetTokenPosition'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, poolId: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getRealTwapPriceX128'
+  ): TypedContractMethod<[poolId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVirtualTwapPriceX128'
+  ): TypedContractMethod<[poolId: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'governance'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'governancePending'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      _rageTradeFactoryAddress: AddressLike,
+      initialGovernance: AddressLike,
+      initialTeamMultisig: AddressLike,
+      _defaultCollateralToken: AddressLike,
+      _defaultCollateralTokenOracle: AddressLike,
+      _insuranceFund: AddressLike,
+      _vQuote: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initiateGovernanceTransfer'
+  ): TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initiateTeamMultisigTransfer'
+  ): TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'insuranceFund'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'liquidateLiquidityPositions'
+  ): TypedContractMethod<[accountId: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'liquidateTokenPosition'
+  ): TypedContractMethod<
+    [targetAccountId: BigNumberish, poolId: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'multicall'
+  ): TypedContractMethod<[data: BytesLike[]], [string[]], 'payable'>;
+  getFunction(
+    nameOrSignature: 'multicallWithSingleMarginCheck'
+  ): TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      operations: IClearingHouseStructures.MulticallOperationStruct[]
+    ],
+    [string[]],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'numAccounts'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'pause'
+  ): TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'paused'
+  ): TypedContractMethod<[], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageTradeFactoryAddress'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'registerPool'
+  ): TypedContractMethod<
+    [poolInfo: IClearingHouseStructures.PoolStruct],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'removeLimitOrder'
+  ): TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      tickLower: BigNumberish,
+      tickUpper: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'settleProfit'
+  ): TypedContractMethod<[accountId: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'swapToken'
+  ): TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      swapParams: IClearingHouseStructures.SwapParamsStruct
+    ],
+    [[bigint, bigint] & { vTokenAmountOut: bigint; vQuoteAmountOut: bigint }],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'teamMultisig'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'teamMultisigPending'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'unpause'
+  ): TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateCollateralSettings'
+  ): TypedContractMethod<
+    [
+      cToken: AddressLike,
+      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateMargin'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, collateralId: BigNumberish, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updatePoolSettings'
+  ): TypedContractMethod<
+    [
+      poolId: BigNumberish,
+      newSettings: IClearingHouseStructures.PoolSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateProfit'
+  ): TypedContractMethod<
+    [accountId: BigNumberish, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateProtocolSettings'
+  ): TypedContractMethod<
+    [
+      _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
+      _removeLimitOrderFee: BigNumberish,
+      _minimumOrderNotional: BigNumberish,
+      _minRequiredMargin: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateRangeOrder'
+  ): TypedContractMethod<
+    [
+      accountId: BigNumberish,
+      poolId: BigNumberish,
+      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct
+    ],
+    [[bigint, bigint] & { vTokenAmountOut: bigint; vQuoteAmountOut: bigint }],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdrawProtocolFee'
+  ): TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  getEvent(
+    key: 'AccountCreated'
+  ): TypedContractEvent<
+    AccountCreatedEvent.InputTuple,
+    AccountCreatedEvent.OutputTuple,
+    AccountCreatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CollateralSettingsUpdated'
+  ): TypedContractEvent<
+    CollateralSettingsUpdatedEvent.InputTuple,
+    CollateralSettingsUpdatedEvent.OutputTuple,
+    CollateralSettingsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GovernancePending'
+  ): TypedContractEvent<
+    GovernancePendingEvent.InputTuple,
+    GovernancePendingEvent.OutputTuple,
+    GovernancePendingEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GovernanceTransferred'
+  ): TypedContractEvent<
+    GovernanceTransferredEvent.InputTuple,
+    GovernanceTransferredEvent.OutputTuple,
+    GovernanceTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Paused'
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PausedUpdated'
+  ): TypedContractEvent<
+    PausedUpdatedEvent.InputTuple,
+    PausedUpdatedEvent.OutputTuple,
+    PausedUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolSettingsUpdated'
+  ): TypedContractEvent<
+    PoolSettingsUpdatedEvent.InputTuple,
+    PoolSettingsUpdatedEvent.OutputTuple,
+    PoolSettingsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProtocolSettingsUpdated'
+  ): TypedContractEvent<
+    ProtocolSettingsUpdatedEvent.InputTuple,
+    ProtocolSettingsUpdatedEvent.OutputTuple,
+    ProtocolSettingsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TeamMultisigPending'
+  ): TypedContractEvent<
+    TeamMultisigPendingEvent.InputTuple,
+    TeamMultisigPendingEvent.OutputTuple,
+    TeamMultisigPendingEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TeamMultisigTransferred'
+  ): TypedContractEvent<
+    TeamMultisigTransferredEvent.InputTuple,
+    TeamMultisigTransferredEvent.OutputTuple,
+    TeamMultisigTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Unpaused'
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidityPositionsLiquidated'
+  ): TypedContractEvent<
+    LiquidityPositionsLiquidatedEvent.InputTuple,
+    LiquidityPositionsLiquidatedEvent.OutputTuple,
+    LiquidityPositionsLiquidatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MarginUpdated'
+  ): TypedContractEvent<
+    MarginUpdatedEvent.InputTuple,
+    MarginUpdatedEvent.OutputTuple,
+    MarginUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProfitUpdated'
+  ): TypedContractEvent<
+    ProfitUpdatedEvent.InputTuple,
+    ProfitUpdatedEvent.OutputTuple,
+    ProfitUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionLiquidated'
+  ): TypedContractEvent<
+    TokenPositionLiquidatedEvent.InputTuple,
+    TokenPositionLiquidatedEvent.OutputTuple,
+    TokenPositionLiquidatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidityChanged'
+  ): TypedContractEvent<
+    LiquidityChangedEvent.InputTuple,
+    LiquidityChangedEvent.OutputTuple,
+    LiquidityChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidityPositionEarningsRealized'
+  ): TypedContractEvent<
+    LiquidityPositionEarningsRealizedEvent.InputTuple,
+    LiquidityPositionEarningsRealizedEvent.OutputTuple,
+    LiquidityPositionEarningsRealizedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidityPositionFundingPaymentRealized'
+  ): TypedContractEvent<
+    LiquidityPositionFundingPaymentRealizedEvent.InputTuple,
+    LiquidityPositionFundingPaymentRealizedEvent.OutputTuple,
+    LiquidityPositionFundingPaymentRealizedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionChangedDueToLiquidityChanged'
+  ): TypedContractEvent<
+    TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+    TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+    TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionChanged'
+  ): TypedContractEvent<
+    TokenPositionChangedEvent.InputTuple,
+    TokenPositionChangedEvent.OutputTuple,
+    TokenPositionChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionFundingPaymentRealized'
+  ): TypedContractEvent<
+    TokenPositionFundingPaymentRealizedEvent.InputTuple,
+    TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+    TokenPositionFundingPaymentRealizedEvent.OutputObject
+  >;
 
   filters: {
-    'AccountCreated(address,uint256)'(
-      ownerAddress?: PromiseOrValue<string> | null,
-      accountId?: null
-    ): AccountCreatedEventFilter;
-    AccountCreated(
-      ownerAddress?: PromiseOrValue<string> | null,
-      accountId?: null
-    ): AccountCreatedEventFilter;
-
-    'CollateralSettingsUpdated(address,tuple)'(
-      cToken?: null,
-      cTokenInfo?: null
-    ): CollateralSettingsUpdatedEventFilter;
-    CollateralSettingsUpdated(
-      cToken?: null,
-      cTokenInfo?: null
-    ): CollateralSettingsUpdatedEventFilter;
-
-    'GovernancePending(address,address)'(
-      previousGovernancePending?: PromiseOrValue<string> | null,
-      newGovernancePending?: PromiseOrValue<string> | null
-    ): GovernancePendingEventFilter;
-    GovernancePending(
-      previousGovernancePending?: PromiseOrValue<string> | null,
-      newGovernancePending?: PromiseOrValue<string> | null
-    ): GovernancePendingEventFilter;
-
-    'GovernanceTransferred(address,address)'(
-      previousGovernance?: PromiseOrValue<string> | null,
-      newGovernance?: PromiseOrValue<string> | null
-    ): GovernanceTransferredEventFilter;
-    GovernanceTransferred(
-      previousGovernance?: PromiseOrValue<string> | null,
-      newGovernance?: PromiseOrValue<string> | null
-    ): GovernanceTransferredEventFilter;
-
-    'Paused(address)'(account?: null): PausedEventFilter;
-    Paused(account?: null): PausedEventFilter;
-
-    'PausedUpdated(bool)'(paused?: null): PausedUpdatedEventFilter;
-    PausedUpdated(paused?: null): PausedUpdatedEventFilter;
-
-    'PoolSettingsUpdated(uint32,tuple)'(
-      poolId?: null,
-      settings?: null
-    ): PoolSettingsUpdatedEventFilter;
-    PoolSettingsUpdated(
-      poolId?: null,
-      settings?: null
-    ): PoolSettingsUpdatedEventFilter;
-
-    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)'(
-      liquidationParams?: null,
-      removeLimitOrderFee?: null,
-      minimumOrderNotional?: null,
-      minRequiredMargin?: null
-    ): ProtocolSettingsUpdatedEventFilter;
-    ProtocolSettingsUpdated(
-      liquidationParams?: null,
-      removeLimitOrderFee?: null,
-      minimumOrderNotional?: null,
-      minRequiredMargin?: null
-    ): ProtocolSettingsUpdatedEventFilter;
-
-    'TeamMultisigPending(address,address)'(
-      previousTeamMultisigPending?: PromiseOrValue<string> | null,
-      newTeamMultisigPending?: PromiseOrValue<string> | null
-    ): TeamMultisigPendingEventFilter;
-    TeamMultisigPending(
-      previousTeamMultisigPending?: PromiseOrValue<string> | null,
-      newTeamMultisigPending?: PromiseOrValue<string> | null
-    ): TeamMultisigPendingEventFilter;
-
-    'TeamMultisigTransferred(address,address)'(
-      previousTeamMultisig?: PromiseOrValue<string> | null,
-      newTeamMultisig?: PromiseOrValue<string> | null
-    ): TeamMultisigTransferredEventFilter;
-    TeamMultisigTransferred(
-      previousTeamMultisig?: PromiseOrValue<string> | null,
-      newTeamMultisig?: PromiseOrValue<string> | null
-    ): TeamMultisigTransferredEventFilter;
-
-    'Unpaused(address)'(account?: null): UnpausedEventFilter;
-    Unpaused(account?: null): UnpausedEventFilter;
-
-    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      keeperAddress?: PromiseOrValue<string> | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): LiquidityPositionsLiquidatedEventFilter;
-    LiquidityPositionsLiquidated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      keeperAddress?: PromiseOrValue<string> | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): LiquidityPositionsLiquidatedEventFilter;
-
-    'MarginUpdated(uint256,uint32,int256,bool)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      collateralId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      isSettleProfit?: null
-    ): MarginUpdatedEventFilter;
-    MarginUpdated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      collateralId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      isSettleProfit?: null
-    ): MarginUpdatedEventFilter;
-
-    'ProfitUpdated(uint256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null
-    ): ProfitUpdatedEventFilter;
-    ProfitUpdated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null
-    ): ProfitUpdatedEventFilter;
-
-    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): TokenPositionLiquidatedEventFilter;
-    TokenPositionLiquidated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): TokenPositionLiquidatedEventFilter;
-
-    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      liquidityDelta?: null,
-      limitOrderType?: null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96?: null
-    ): LiquidityChangedEventFilter;
-    LiquidityChanged(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      liquidityDelta?: null,
-      limitOrderType?: null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96?: null
-    ): LiquidityChangedEventFilter;
-
-    'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      amount?: null
-    ): LiquidityPositionEarningsRealizedEventFilter;
-    LiquidityPositionEarningsRealized(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      amount?: null
-    ): LiquidityPositionEarningsRealizedEventFilter;
-
-    'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      amount?: null,
-      sumALastX128?: null,
-      sumBInsideLastX128?: null,
-      sumFpInsideLastX128?: null,
-      sumFeeInsideLastX128?: null
-    ): LiquidityPositionFundingPaymentRealizedEventFilter;
-    LiquidityPositionFundingPaymentRealized(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      amount?: null,
-      sumALastX128?: null,
-      sumBInsideLastX128?: null,
-      sumFpInsideLastX128?: null,
-      sumFeeInsideLastX128?: null
-    ): LiquidityPositionFundingPaymentRealizedEventFilter;
-
-    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      vTokenAmountOut?: null
-    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
-    TokenPositionChangedDueToLiquidityChanged(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      vTokenAmountOut?: null
-    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
-
-    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96Start?: null,
-      sqrtPriceX96End?: null
-    ): TokenPositionChangedEventFilter;
-    TokenPositionChanged(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      vTokenAmountOut?: null,
-      vQuoteAmountOut?: null,
-      sqrtPriceX96Start?: null,
-      sqrtPriceX96End?: null
-    ): TokenPositionChangedEventFilter;
-
-    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      sumALastX128?: null
-    ): TokenPositionFundingPaymentRealizedEventFilter;
-    TokenPositionFundingPaymentRealized(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      sumALastX128?: null
-    ): TokenPositionFundingPaymentRealizedEventFilter;
-  };
-
-  estimateGas: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    createAccountAndAddMargin(
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountMarketValueAndRequiredMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      isInitialMargin: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountNetProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAccountNetTokenPosition(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRealTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVirtualTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    governance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    governancePending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initialize(
-      _rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      _defaultCollateralToken: PromiseOrValue<string>,
-      _defaultCollateralTokenOracle: PromiseOrValue<string>,
-      _insuranceFund: PromiseOrValue<string>,
-      _vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
-
-    liquidateLiquidityPositions(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    liquidateTokenPosition(
-      targetAccountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    multicallWithSingleMarginCheck(
-      accountId: PromiseOrValue<BigNumberish>,
-      operations: IClearingHouseStructures.MulticallOperationStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    paused(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    removeLimitOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    settleProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapToken(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    unpause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateProtocolSettings(
-      _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      _removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      _minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      _minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateRangeOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    createAccount(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    createAccountAndAddMargin(
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountMarketValueAndRequiredMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      isInitialMargin: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountNetProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAccountNetTokenPosition(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRealTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVirtualTwapPriceX128(
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initialize(
-      _rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      _defaultCollateralToken: PromiseOrValue<string>,
-      _defaultCollateralTokenOracle: PromiseOrValue<string>,
-      _insuranceFund: PromiseOrValue<string>,
-      _vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    liquidateLiquidityPositions(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidateTokenPosition(
-      targetAccountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    multicall(
-      data: PromiseOrValue<BytesLike>[],
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    multicallWithSingleMarginCheck(
-      accountId: PromiseOrValue<BigNumberish>,
-      operations: IClearingHouseStructures.MulticallOperationStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageTradeFactoryAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeLimitOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    settleProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapToken(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      swapParams: IClearingHouseStructures.SwapParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    teamMultisigPending(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    unpause(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateMargin(
-      accountId: PromiseOrValue<BigNumberish>,
-      collateralId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateProfit(
-      accountId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateProtocolSettings(
-      _liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      _removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      _minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      _minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateRangeOrder(
-      accountId: PromiseOrValue<BigNumberish>,
-      poolId: PromiseOrValue<BigNumberish>,
-      liquidityChangeParams: IClearingHouseStructures.LiquidityChangeParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'AccountCreated(address,uint256)': TypedContractEvent<
+      AccountCreatedEvent.InputTuple,
+      AccountCreatedEvent.OutputTuple,
+      AccountCreatedEvent.OutputObject
+    >;
+    AccountCreated: TypedContractEvent<
+      AccountCreatedEvent.InputTuple,
+      AccountCreatedEvent.OutputTuple,
+      AccountCreatedEvent.OutputObject
+    >;
+
+    'CollateralSettingsUpdated(address,tuple)': TypedContractEvent<
+      CollateralSettingsUpdatedEvent.InputTuple,
+      CollateralSettingsUpdatedEvent.OutputTuple,
+      CollateralSettingsUpdatedEvent.OutputObject
+    >;
+    CollateralSettingsUpdated: TypedContractEvent<
+      CollateralSettingsUpdatedEvent.InputTuple,
+      CollateralSettingsUpdatedEvent.OutputTuple,
+      CollateralSettingsUpdatedEvent.OutputObject
+    >;
+
+    'GovernancePending(address,address)': TypedContractEvent<
+      GovernancePendingEvent.InputTuple,
+      GovernancePendingEvent.OutputTuple,
+      GovernancePendingEvent.OutputObject
+    >;
+    GovernancePending: TypedContractEvent<
+      GovernancePendingEvent.InputTuple,
+      GovernancePendingEvent.OutputTuple,
+      GovernancePendingEvent.OutputObject
+    >;
+
+    'GovernanceTransferred(address,address)': TypedContractEvent<
+      GovernanceTransferredEvent.InputTuple,
+      GovernanceTransferredEvent.OutputTuple,
+      GovernanceTransferredEvent.OutputObject
+    >;
+    GovernanceTransferred: TypedContractEvent<
+      GovernanceTransferredEvent.InputTuple,
+      GovernanceTransferredEvent.OutputTuple,
+      GovernanceTransferredEvent.OutputObject
+    >;
+
+    'Paused(address)': TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    'PausedUpdated(bool)': TypedContractEvent<
+      PausedUpdatedEvent.InputTuple,
+      PausedUpdatedEvent.OutputTuple,
+      PausedUpdatedEvent.OutputObject
+    >;
+    PausedUpdated: TypedContractEvent<
+      PausedUpdatedEvent.InputTuple,
+      PausedUpdatedEvent.OutputTuple,
+      PausedUpdatedEvent.OutputObject
+    >;
+
+    'PoolSettingsUpdated(uint32,tuple)': TypedContractEvent<
+      PoolSettingsUpdatedEvent.InputTuple,
+      PoolSettingsUpdatedEvent.OutputTuple,
+      PoolSettingsUpdatedEvent.OutputObject
+    >;
+    PoolSettingsUpdated: TypedContractEvent<
+      PoolSettingsUpdatedEvent.InputTuple,
+      PoolSettingsUpdatedEvent.OutputTuple,
+      PoolSettingsUpdatedEvent.OutputObject
+    >;
+
+    'ProtocolSettingsUpdated(tuple,uint256,uint256,uint256)': TypedContractEvent<
+      ProtocolSettingsUpdatedEvent.InputTuple,
+      ProtocolSettingsUpdatedEvent.OutputTuple,
+      ProtocolSettingsUpdatedEvent.OutputObject
+    >;
+    ProtocolSettingsUpdated: TypedContractEvent<
+      ProtocolSettingsUpdatedEvent.InputTuple,
+      ProtocolSettingsUpdatedEvent.OutputTuple,
+      ProtocolSettingsUpdatedEvent.OutputObject
+    >;
+
+    'TeamMultisigPending(address,address)': TypedContractEvent<
+      TeamMultisigPendingEvent.InputTuple,
+      TeamMultisigPendingEvent.OutputTuple,
+      TeamMultisigPendingEvent.OutputObject
+    >;
+    TeamMultisigPending: TypedContractEvent<
+      TeamMultisigPendingEvent.InputTuple,
+      TeamMultisigPendingEvent.OutputTuple,
+      TeamMultisigPendingEvent.OutputObject
+    >;
+
+    'TeamMultisigTransferred(address,address)': TypedContractEvent<
+      TeamMultisigTransferredEvent.InputTuple,
+      TeamMultisigTransferredEvent.OutputTuple,
+      TeamMultisigTransferredEvent.OutputObject
+    >;
+    TeamMultisigTransferred: TypedContractEvent<
+      TeamMultisigTransferredEvent.InputTuple,
+      TeamMultisigTransferredEvent.OutputTuple,
+      TeamMultisigTransferredEvent.OutputObject
+    >;
+
+    'Unpaused(address)': TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+
+    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': TypedContractEvent<
+      LiquidityPositionsLiquidatedEvent.InputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputObject
+    >;
+    LiquidityPositionsLiquidated: TypedContractEvent<
+      LiquidityPositionsLiquidatedEvent.InputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputObject
+    >;
+
+    'MarginUpdated(uint256,uint32,int256,bool)': TypedContractEvent<
+      MarginUpdatedEvent.InputTuple,
+      MarginUpdatedEvent.OutputTuple,
+      MarginUpdatedEvent.OutputObject
+    >;
+    MarginUpdated: TypedContractEvent<
+      MarginUpdatedEvent.InputTuple,
+      MarginUpdatedEvent.OutputTuple,
+      MarginUpdatedEvent.OutputObject
+    >;
+
+    'ProfitUpdated(uint256,int256)': TypedContractEvent<
+      ProfitUpdatedEvent.InputTuple,
+      ProfitUpdatedEvent.OutputTuple,
+      ProfitUpdatedEvent.OutputObject
+    >;
+    ProfitUpdated: TypedContractEvent<
+      ProfitUpdatedEvent.InputTuple,
+      ProfitUpdatedEvent.OutputTuple,
+      ProfitUpdatedEvent.OutputObject
+    >;
+
+    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)': TypedContractEvent<
+      TokenPositionLiquidatedEvent.InputTuple,
+      TokenPositionLiquidatedEvent.OutputTuple,
+      TokenPositionLiquidatedEvent.OutputObject
+    >;
+    TokenPositionLiquidated: TypedContractEvent<
+      TokenPositionLiquidatedEvent.InputTuple,
+      TokenPositionLiquidatedEvent.OutputTuple,
+      TokenPositionLiquidatedEvent.OutputObject
+    >;
+
+    'LiquidityChanged(uint256,uint32,int24,int24,int128,uint8,int256,int256,uint160)': TypedContractEvent<
+      LiquidityChangedEvent.InputTuple,
+      LiquidityChangedEvent.OutputTuple,
+      LiquidityChangedEvent.OutputObject
+    >;
+    LiquidityChanged: TypedContractEvent<
+      LiquidityChangedEvent.InputTuple,
+      LiquidityChangedEvent.OutputTuple,
+      LiquidityChangedEvent.OutputObject
+    >;
+
+    'LiquidityPositionEarningsRealized(uint256,uint32,int24,int24,int256)': TypedContractEvent<
+      LiquidityPositionEarningsRealizedEvent.InputTuple,
+      LiquidityPositionEarningsRealizedEvent.OutputTuple,
+      LiquidityPositionEarningsRealizedEvent.OutputObject
+    >;
+    LiquidityPositionEarningsRealized: TypedContractEvent<
+      LiquidityPositionEarningsRealizedEvent.InputTuple,
+      LiquidityPositionEarningsRealizedEvent.OutputTuple,
+      LiquidityPositionEarningsRealizedEvent.OutputObject
+    >;
+
+    'LiquidityPositionFundingPaymentRealized(uint256,uint32,int24,int24,int256,int256,int256,int256,uint256)': TypedContractEvent<
+      LiquidityPositionFundingPaymentRealizedEvent.InputTuple,
+      LiquidityPositionFundingPaymentRealizedEvent.OutputTuple,
+      LiquidityPositionFundingPaymentRealizedEvent.OutputObject
+    >;
+    LiquidityPositionFundingPaymentRealized: TypedContractEvent<
+      LiquidityPositionFundingPaymentRealizedEvent.InputTuple,
+      LiquidityPositionFundingPaymentRealizedEvent.OutputTuple,
+      LiquidityPositionFundingPaymentRealizedEvent.OutputObject
+    >;
+
+    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': TypedContractEvent<
+      TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+    >;
+    TokenPositionChangedDueToLiquidityChanged: TypedContractEvent<
+      TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+    >;
+
+    'TokenPositionChanged(uint256,uint32,int256,int256,uint160,uint160)': TypedContractEvent<
+      TokenPositionChangedEvent.InputTuple,
+      TokenPositionChangedEvent.OutputTuple,
+      TokenPositionChangedEvent.OutputObject
+    >;
+    TokenPositionChanged: TypedContractEvent<
+      TokenPositionChangedEvent.InputTuple,
+      TokenPositionChangedEvent.OutputTuple,
+      TokenPositionChangedEvent.OutputObject
+    >;
+
+    'TokenPositionFundingPaymentRealized(uint256,uint32,int256,int256)': TypedContractEvent<
+      TokenPositionFundingPaymentRealizedEvent.InputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputObject
+    >;
+    TokenPositionFundingPaymentRealized: TypedContractEvent<
+      TokenPositionFundingPaymentRealizedEvent.InputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputTuple,
+      TokenPositionFundingPaymentRealizedEvent.OutputObject
+    >;
   };
 }

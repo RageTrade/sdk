@@ -3,43 +3,36 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
+  BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IJITManagerInterface extends utils.Interface {
-  functions: {
-    'addLiquidity(bool)': FunctionFragment;
-    'removeLiquidity()': FunctionFragment;
-    'swapTokens(address,bytes,bool)': FunctionFragment;
-  };
-
+export interface IJITManagerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'addLiquidity' | 'removeLiquidity' | 'swapTokens'
+    nameOrSignature: 'addLiquidity' | 'removeLiquidity' | 'swapTokens'
   ): FunctionFragment;
+
+  getEvent(nameOrSignatureOrTopic: 'JITLiquidity'): EventFragment;
 
   encodeFunctionData(
     functionFragment: 'addLiquidity',
-    values: [PromiseOrValue<boolean>]
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLiquidity',
@@ -47,11 +40,7 @@ export interface IJITManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'swapTokens',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<boolean>
-    ]
+    values: [AddressLike, BytesLike, boolean]
   ): string;
 
   decodeFunctionResult(
@@ -63,148 +52,124 @@ export interface IJITManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'swapTokens', data: BytesLike): Result;
-
-  events: {
-    'JITLiquidity(int24,int24,uint128)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'JITLiquidity'): EventFragment;
 }
 
-export interface JITLiquidityEventObject {
-  tickLower: number;
-  tickUpper: number;
-  liquidity: BigNumber;
+export namespace JITLiquidityEvent {
+  export type InputTuple = [
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish
+  ];
+  export type OutputTuple = [
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidity: bigint
+  ];
+  export interface OutputObject {
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidity: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type JITLiquidityEvent = TypedEvent<
-  [number, number, BigNumber],
-  JITLiquidityEventObject
->;
-
-export type JITLiquidityEventFilter = TypedEventFilter<JITLiquidityEvent>;
 
 export interface IJITManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IJITManagerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  addLiquidity: TypedContractMethod<
+    [isToken0: boolean],
+    [bigint],
+    'nonpayable'
+  >;
 
-  addLiquidity(
-    isToken0: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  removeLiquidity: TypedContractMethod<[], [void], 'nonpayable'>;
 
-  removeLiquidity(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  swapTokens: TypedContractMethod<
+    [to: AddressLike, data: BytesLike, approveToken0: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-  swapTokens(
-    to: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    approveToken0: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  callStatic: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  getFunction(
+    nameOrSignature: 'addLiquidity'
+  ): TypedContractMethod<[isToken0: boolean], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'removeLiquidity'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'swapTokens'
+  ): TypedContractMethod<
+    [to: AddressLike, data: BytesLike, approveToken0: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-    removeLiquidity(overrides?: CallOverrides): Promise<void>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getEvent(
+    key: 'JITLiquidity'
+  ): TypedContractEvent<
+    JITLiquidityEvent.InputTuple,
+    JITLiquidityEvent.OutputTuple,
+    JITLiquidityEvent.OutputObject
+  >;
 
   filters: {
-    'JITLiquidity(int24,int24,uint128)'(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null
-    ): JITLiquidityEventFilter;
-    JITLiquidity(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null
-    ): JITLiquidityEventFilter;
-  };
-
-  estimateGas: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'JITLiquidity(int24,int24,uint128)': TypedContractEvent<
+      JITLiquidityEvent.InputTuple,
+      JITLiquidityEvent.OutputTuple,
+      JITLiquidityEvent.OutputObject
+    >;
+    JITLiquidity: TypedContractEvent<
+      JITLiquidityEvent.InputTuple,
+      JITLiquidityEvent.OutputTuple,
+      JITLiquidityEvent.OutputObject
+    >;
   };
 }

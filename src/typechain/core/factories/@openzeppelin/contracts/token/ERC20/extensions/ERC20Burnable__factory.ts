@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ERC20Burnable,
   ERC20BurnableInterface,
@@ -311,17 +310,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class ERC20Burnable__factory {
   static readonly abi = _abi;
   static createInterface(): ERC20BurnableInterface {
-    return new utils.Interface(_abi) as ERC20BurnableInterface;
+    return new Interface(_abi) as ERC20BurnableInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ERC20Burnable {
-    return new Contract(address, _abi, signerOrProvider) as ERC20Burnable;
+    return new Contract(address, _abi, runner) as unknown as ERC20Burnable;
   }
 }

@@ -3,31 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IBaseVaultGettersInterface extends utils.Interface {
-  functions: {
-    'closePositionSlippageSqrtToleranceBps()': FunctionFragment;
-    'minNotionalPositionToCloseThreshold()': FunctionFragment;
-  };
-
+export interface IBaseVaultGettersInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'closePositionSlippageSqrtToleranceBps'
       | 'minNotionalPositionToCloseThreshold'
   ): FunctionFragment;
@@ -49,83 +44,74 @@ export interface IBaseVaultGettersInterface extends utils.Interface {
     functionFragment: 'minNotionalPositionToCloseThreshold',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IBaseVaultGetters extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IBaseVaultGettersInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<[number]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  closePositionSlippageSqrtToleranceBps(
-    overrides?: CallOverrides
-  ): Promise<number>;
+  closePositionSlippageSqrtToleranceBps: TypedContractMethod<
+    [],
+    [bigint],
+    'view'
+  >;
 
-  minNotionalPositionToCloseThreshold(
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  minNotionalPositionToCloseThreshold: TypedContractMethod<
+    [],
+    [bigint],
+    'view'
+  >;
 
-  callStatic: {
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<number>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+  getFunction(
+    nameOrSignature: 'closePositionSlippageSqrtToleranceBps'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'minNotionalPositionToCloseThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

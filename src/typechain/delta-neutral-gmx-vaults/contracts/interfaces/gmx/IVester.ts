@@ -3,54 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IVesterInterface extends utils.Interface {
-  functions: {
-    'balances(address)': FunctionFragment;
-    'bonusRewards(address)': FunctionFragment;
-    'claim()': FunctionFragment;
-    'claimForAccount(address,address)': FunctionFragment;
-    'claimable(address)': FunctionFragment;
-    'claimedAmounts(address)': FunctionFragment;
-    'cumulativeClaimAmounts(address)': FunctionFragment;
-    'cumulativeRewardDeductions(address)': FunctionFragment;
-    'deposit(uint256)': FunctionFragment;
-    'getCombinedAverageStakedAmount(address)': FunctionFragment;
-    'getMaxVestableAmount(address)': FunctionFragment;
-    'getVestedAmount(address)': FunctionFragment;
-    'pairAmounts(address)': FunctionFragment;
-    'rewardTracker()': FunctionFragment;
-    'setBonusRewards(address,uint256)': FunctionFragment;
-    'setCumulativeRewardDeductions(address,uint256)': FunctionFragment;
-    'setTransferredAverageStakedAmounts(address,uint256)': FunctionFragment;
-    'setTransferredCumulativeRewards(address,uint256)': FunctionFragment;
-    'transferStakeValues(address,address)': FunctionFragment;
-    'transferredAverageStakedAmounts(address)': FunctionFragment;
-    'transferredCumulativeRewards(address)': FunctionFragment;
-    'withdraw()': FunctionFragment;
-  };
-
+export interface IVesterInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'balances'
       | 'bonusRewards'
       | 'claim'
@@ -77,52 +50,52 @@ export interface IVesterInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'balances',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'bonusRewards',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'claim', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'claimForAccount',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimable',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimedAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'cumulativeClaimAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'cumulativeRewardDeductions',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getCombinedAverageStakedAmount',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getMaxVestableAmount',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getVestedAmount',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'pairAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'rewardTracker',
@@ -130,31 +103,31 @@ export interface IVesterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setBonusRewards',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setCumulativeRewardDeductions',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTransferredAverageStakedAmounts',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTransferredCumulativeRewards',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferStakeValues',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferredAverageStakedAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferredCumulativeRewards',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'withdraw', values?: undefined): string;
 
@@ -231,594 +204,246 @@ export interface IVesterInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
-
-  events: {};
 }
 
 export interface IVester extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IVesterInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    balances(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    bonusRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    claimedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    cumulativeClaimAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    cumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    deposit(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getCombinedAverageStakedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getMaxVestableAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getVestedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    pairAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    rewardTracker(overrides?: CallOverrides): Promise<[string]>;
-
-    setBonusRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setCumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setTransferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setTransferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferStakeValues(
-      _sender: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    transferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    withdraw(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  balances(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  bonusRewards(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  claim(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimForAccount(
-    _account: PromiseOrValue<string>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimable(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  claimedAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  cumulativeClaimAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  cumulativeRewardDeductions(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  deposit(
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getCombinedAverageStakedAmount(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getMaxVestableAmount(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getVestedAmount(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  pairAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  rewardTracker(overrides?: CallOverrides): Promise<string>;
-
-  setBonusRewards(
-    _account: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setCumulativeRewardDeductions(
-    _account: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTransferredAverageStakedAmounts(
-    _account: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTransferredCumulativeRewards(
-    _account: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferStakeValues(
-    _sender: PromiseOrValue<string>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferredAverageStakedAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  transferredCumulativeRewards(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  withdraw(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    balances(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    bonusRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claim(overrides?: CallOverrides): Promise<BigNumber>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeClaimAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    deposit(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getCombinedAverageStakedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMaxVestableAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVestedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    pairAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    rewardTracker(overrides?: CallOverrides): Promise<string>;
-
-    setBonusRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setCumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTransferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTransferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferStakeValues(
-      _sender: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    transferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    transferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdraw(overrides?: CallOverrides): Promise<void>;
-  };
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  balances: TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+
+  bonusRewards: TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+
+  claim: TypedContractMethod<[], [bigint], 'nonpayable'>;
+
+  claimForAccount: TypedContractMethod<
+    [_account: AddressLike, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  claimable: TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+
+  claimedAmounts: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  cumulativeClaimAmounts: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  cumulativeRewardDeductions: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  deposit: TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
+
+  getCombinedAverageStakedAmount: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  getMaxVestableAmount: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  getVestedAmount: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  pairAmounts: TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+
+  rewardTracker: TypedContractMethod<[], [string], 'view'>;
+
+  setBonusRewards: TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  setCumulativeRewardDeductions: TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  setTransferredAverageStakedAmounts: TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  setTransferredCumulativeRewards: TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  transferStakeValues: TypedContractMethod<
+    [_sender: AddressLike, _receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  transferredAverageStakedAmounts: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  transferredCumulativeRewards: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  withdraw: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'balances'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'bonusRewards'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claim'
+  ): TypedContractMethod<[], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claimForAccount'
+  ): TypedContractMethod<
+    [_account: AddressLike, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimable'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claimedAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'cumulativeClaimAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'cumulativeRewardDeductions'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'getCombinedAverageStakedAmount'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getMaxVestableAmount'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVestedAmount'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'pairAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rewardTracker'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'setBonusRewards'
+  ): TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setCumulativeRewardDeductions'
+  ): TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTransferredAverageStakedAmounts'
+  ): TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTransferredCumulativeRewards'
+  ): TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferStakeValues'
+  ): TypedContractMethod<
+    [_sender: AddressLike, _receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferredAverageStakedAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transferredCumulativeRewards'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'withdraw'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
 
   filters: {};
-
-  estimateGas: {
-    balances(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    bonusRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeClaimAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    deposit(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getCombinedAverageStakedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMaxVestableAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getVestedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    pairAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    rewardTracker(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setBonusRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setCumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTransferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTransferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferStakeValues(
-      _sender: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    transferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdraw(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    balances(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    bonusRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cumulativeClaimAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getCombinedAverageStakedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMaxVestableAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getVestedAmount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    pairAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    rewardTracker(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setBonusRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCumulativeRewardDeductions(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTransferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTransferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferStakeValues(
-      _sender: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferredAverageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    transferredCumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

@@ -3,127 +3,113 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../common';
 
 export declare namespace ITickLens {
   export type PopulatedTickStruct = {
-    tick: PromiseOrValue<BigNumberish>;
-    liquidityNet: PromiseOrValue<BigNumberish>;
-    liquidityGross: PromiseOrValue<BigNumberish>;
+    tick: BigNumberish;
+    liquidityNet: BigNumberish;
+    liquidityGross: BigNumberish;
   };
 
-  export type PopulatedTickStructOutput = [number, BigNumber, BigNumber] & {
-    tick: number;
-    liquidityNet: BigNumber;
-    liquidityGross: BigNumber;
-  };
+  export type PopulatedTickStructOutput = [
+    tick: bigint,
+    liquidityNet: bigint,
+    liquidityGross: bigint
+  ] & { tick: bigint; liquidityNet: bigint; liquidityGross: bigint };
 }
 
-export interface TickLensInterface extends utils.Interface {
-  functions: {
-    'getPopulatedTicksInWord(address,int16)': FunctionFragment;
-  };
-
-  getFunction(
-    nameOrSignatureOrTopic: 'getPopulatedTicksInWord'
-  ): FunctionFragment;
+export interface TickLensInterface extends Interface {
+  getFunction(nameOrSignature: 'getPopulatedTicksInWord'): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'getPopulatedTicksInWord',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
 
   decodeFunctionResult(
     functionFragment: 'getPopulatedTicksInWord',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface TickLens extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: TickLensInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getPopulatedTicksInWord(
-      pool: PromiseOrValue<string>,
-      tickBitmapIndex: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [ITickLens.PopulatedTickStructOutput[]] & {
-        populatedTicks: ITickLens.PopulatedTickStructOutput[];
-      }
-    >;
-  };
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  getPopulatedTicksInWord(
-    pool: PromiseOrValue<string>,
-    tickBitmapIndex: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<ITickLens.PopulatedTickStructOutput[]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  callStatic: {
-    getPopulatedTicksInWord(
-      pool: PromiseOrValue<string>,
-      tickBitmapIndex: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<ITickLens.PopulatedTickStructOutput[]>;
-  };
+  getPopulatedTicksInWord: TypedContractMethod<
+    [pool: AddressLike, tickBitmapIndex: BigNumberish],
+    [ITickLens.PopulatedTickStructOutput[]],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'getPopulatedTicksInWord'
+  ): TypedContractMethod<
+    [pool: AddressLike, tickBitmapIndex: BigNumberish],
+    [ITickLens.PopulatedTickStructOutput[]],
+    'view'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    getPopulatedTicksInWord(
-      pool: PromiseOrValue<string>,
-      tickBitmapIndex: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getPopulatedTicksInWord(
-      pool: PromiseOrValue<string>,
-      tickBitmapIndex: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

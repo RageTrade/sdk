@@ -3,45 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IRewardTrackerInterface extends utils.Interface {
-  functions: {
-    'averageStakedAmounts(address)': FunctionFragment;
-    'claim(address)': FunctionFragment;
-    'claimForAccount(address,address)': FunctionFragment;
-    'claimable(address)': FunctionFragment;
-    'cumulativeRewards(address)': FunctionFragment;
-    'depositBalances(address,address)': FunctionFragment;
-    'stake(address,uint256)': FunctionFragment;
-    'stakeForAccount(address,address,address,uint256)': FunctionFragment;
-    'stakedAmounts(address)': FunctionFragment;
-    'tokensPerInterval()': FunctionFragment;
-    'unstake(address,uint256)': FunctionFragment;
-    'unstakeForAccount(address,address,uint256,address)': FunctionFragment;
-    'updateRewards()': FunctionFragment;
-  };
-
+export interface IRewardTrackerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'averageStakedAmounts'
       | 'claim'
       | 'claimForAccount'
@@ -59,44 +41,36 @@ export interface IRewardTrackerInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'averageStakedAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'claim',
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: 'claim', values: [AddressLike]): string;
   encodeFunctionData(
     functionFragment: 'claimForAccount',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimable',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'cumulativeRewards',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositBalances',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'stake',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'stakeForAccount',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'stakedAmounts',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'tokensPerInterval',
@@ -104,16 +78,11 @@ export interface IRewardTrackerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'unstake',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeForAccount',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateRewards',
@@ -160,396 +129,197 @@ export interface IRewardTrackerInterface extends utils.Interface {
     functionFragment: 'updateRewards',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IRewardTracker extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IRewardTrackerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    averageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    claim(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  averageStakedAmounts: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  claim: TypedContractMethod<[_receiver: AddressLike], [bigint], 'nonpayable'>;
 
-    cumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  claimForAccount: TypedContractMethod<
+    [_account: AddressLike, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    depositBalances(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  claimable: TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
 
-    stake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  cumulativeRewards: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    stakeForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  depositBalances: TypedContractMethod<
+    [_account: AddressLike, _depositToken: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    stakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  stake: TypedContractMethod<
+    [_depositToken: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    tokensPerInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
+  stakeForAccount: TypedContractMethod<
+    [
+      _fundingAccount: AddressLike,
+      _account: AddressLike,
+      _depositToken: AddressLike,
+      _amount: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    unstake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  stakedAmounts: TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
 
-    unstakeForAccount(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  tokensPerInterval: TypedContractMethod<[], [bigint], 'view'>;
 
-    updateRewards(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  unstake: TypedContractMethod<
+    [_depositToken: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  averageStakedAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  unstakeForAccount: TypedContractMethod<
+    [
+      _account: AddressLike,
+      _depositToken: AddressLike,
+      _amount: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  claim(
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  updateRewards: TypedContractMethod<[], [void], 'nonpayable'>;
 
-  claimForAccount(
-    _account: PromiseOrValue<string>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  claimable(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  cumulativeRewards(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  depositBalances(
-    _account: PromiseOrValue<string>,
-    _depositToken: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  stake(
-    _depositToken: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakeForAccount(
-    _fundingAccount: PromiseOrValue<string>,
-    _account: PromiseOrValue<string>,
-    _depositToken: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakedAmounts(
-    _account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  tokensPerInterval(overrides?: CallOverrides): Promise<BigNumber>;
-
-  unstake(
-    _depositToken: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeForAccount(
-    _account: PromiseOrValue<string>,
-    _depositToken: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateRewards(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    averageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claim(
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositBalances(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    stake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    stakeForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    stakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokensPerInterval(overrides?: CallOverrides): Promise<BigNumber>;
-
-    unstake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    unstakeForAccount(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateRewards(overrides?: CallOverrides): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'averageStakedAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claim'
+  ): TypedContractMethod<[_receiver: AddressLike], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claimForAccount'
+  ): TypedContractMethod<
+    [_account: AddressLike, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimable'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'cumulativeRewards'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'depositBalances'
+  ): TypedContractMethod<
+    [_account: AddressLike, _depositToken: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'stake'
+  ): TypedContractMethod<
+    [_depositToken: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'stakeForAccount'
+  ): TypedContractMethod<
+    [
+      _fundingAccount: AddressLike,
+      _account: AddressLike,
+      _depositToken: AddressLike,
+      _amount: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'stakedAmounts'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'tokensPerInterval'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'unstake'
+  ): TypedContractMethod<
+    [_depositToken: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'unstakeForAccount'
+  ): TypedContractMethod<
+    [
+      _account: AddressLike,
+      _depositToken: AddressLike,
+      _amount: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateRewards'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
 
   filters: {};
-
-  estimateGas: {
-    averageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claim(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositBalances(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    stake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakeForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    tokensPerInterval(overrides?: CallOverrides): Promise<BigNumber>;
-
-    unstake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeForAccount(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateRewards(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    averageStakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claim(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimForAccount(
-      _account: PromiseOrValue<string>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimable(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cumulativeRewards(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    depositBalances(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    stake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakeForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakedAmounts(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    tokensPerInterval(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    unstake(
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeForAccount(
-      _account: PromiseOrValue<string>,
-      _depositToken: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateRewards(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

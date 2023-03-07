@@ -3,81 +3,77 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../common';
 
 export declare namespace NFTDescriptor {
   export type ConstructTokenURIParamsStruct = {
-    tokenId: PromiseOrValue<BigNumberish>;
-    quoteTokenAddress: PromiseOrValue<string>;
-    baseTokenAddress: PromiseOrValue<string>;
-    quoteTokenSymbol: PromiseOrValue<string>;
-    baseTokenSymbol: PromiseOrValue<string>;
-    quoteTokenDecimals: PromiseOrValue<BigNumberish>;
-    baseTokenDecimals: PromiseOrValue<BigNumberish>;
-    flipRatio: PromiseOrValue<boolean>;
-    tickLower: PromiseOrValue<BigNumberish>;
-    tickUpper: PromiseOrValue<BigNumberish>;
-    tickCurrent: PromiseOrValue<BigNumberish>;
-    tickSpacing: PromiseOrValue<BigNumberish>;
-    fee: PromiseOrValue<BigNumberish>;
-    poolAddress: PromiseOrValue<string>;
+    tokenId: BigNumberish;
+    quoteTokenAddress: AddressLike;
+    baseTokenAddress: AddressLike;
+    quoteTokenSymbol: string;
+    baseTokenSymbol: string;
+    quoteTokenDecimals: BigNumberish;
+    baseTokenDecimals: BigNumberish;
+    flipRatio: boolean;
+    tickLower: BigNumberish;
+    tickUpper: BigNumberish;
+    tickCurrent: BigNumberish;
+    tickSpacing: BigNumberish;
+    fee: BigNumberish;
+    poolAddress: AddressLike;
   };
 
   export type ConstructTokenURIParamsStructOutput = [
-    BigNumber,
-    string,
-    string,
-    string,
-    string,
-    number,
-    number,
-    boolean,
-    number,
-    number,
-    number,
-    number,
-    number,
-    string
+    tokenId: bigint,
+    quoteTokenAddress: string,
+    baseTokenAddress: string,
+    quoteTokenSymbol: string,
+    baseTokenSymbol: string,
+    quoteTokenDecimals: bigint,
+    baseTokenDecimals: bigint,
+    flipRatio: boolean,
+    tickLower: bigint,
+    tickUpper: bigint,
+    tickCurrent: bigint,
+    tickSpacing: bigint,
+    fee: bigint,
+    poolAddress: string
   ] & {
-    tokenId: BigNumber;
+    tokenId: bigint;
     quoteTokenAddress: string;
     baseTokenAddress: string;
     quoteTokenSymbol: string;
     baseTokenSymbol: string;
-    quoteTokenDecimals: number;
-    baseTokenDecimals: number;
+    quoteTokenDecimals: bigint;
+    baseTokenDecimals: bigint;
     flipRatio: boolean;
-    tickLower: number;
-    tickUpper: number;
-    tickCurrent: number;
-    tickSpacing: number;
-    fee: number;
+    tickLower: bigint;
+    tickUpper: bigint;
+    tickCurrent: bigint;
+    tickSpacing: bigint;
+    fee: bigint;
     poolAddress: string;
   };
 }
 
-export interface NFTDescriptorInterface extends utils.Interface {
-  functions: {
-    'constructTokenURI((uint256,address,address,string,string,uint8,uint8,bool,int24,int24,int24,int24,uint24,address))': FunctionFragment;
-  };
-
-  getFunction(nameOrSignatureOrTopic: 'constructTokenURI'): FunctionFragment;
+export interface NFTDescriptorInterface extends Interface {
+  getFunction(nameOrSignature: 'constructTokenURI'): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'constructTokenURI',
@@ -88,68 +84,69 @@ export interface NFTDescriptorInterface extends utils.Interface {
     functionFragment: 'constructTokenURI',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface NFTDescriptor extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: NFTDescriptorInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    constructTokenURI(
-      params: NFTDescriptor.ConstructTokenURIParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-  };
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  constructTokenURI(
-    params: NFTDescriptor.ConstructTokenURIParamsStruct,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  callStatic: {
-    constructTokenURI(
-      params: NFTDescriptor.ConstructTokenURIParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<string>;
-  };
+  constructTokenURI: TypedContractMethod<
+    [params: NFTDescriptor.ConstructTokenURIParamsStruct],
+    [string],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'constructTokenURI'
+  ): TypedContractMethod<
+    [params: NFTDescriptor.ConstructTokenURIParamsStruct],
+    [string],
+    'view'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    constructTokenURI(
-      params: NFTDescriptor.ConstructTokenURIParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    constructTokenURI(
-      params: NFTDescriptor.ConstructTokenURIParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

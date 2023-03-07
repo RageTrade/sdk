@@ -3,44 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
-export interface IVariableDebtTokenInterface extends utils.Interface {
-  functions: {
-    'UNDERLYING_ASSET_ADDRESS()': FunctionFragment;
-    'burn(address,uint256,uint256)': FunctionFragment;
-    'getPreviousIndex(address)': FunctionFragment;
-    'getScaledUserBalanceAndSupply(address)': FunctionFragment;
-    'initialize(address,address,address,uint8,string,string,bytes)': FunctionFragment;
-    'mint(address,address,uint256,uint256)': FunctionFragment;
-    'scaledBalanceOf(address)': FunctionFragment;
-    'scaledTotalSupply()': FunctionFragment;
-  };
-
+export interface IVariableDebtTokenInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'UNDERLYING_ASSET_ADDRESS'
       | 'burn'
       | 'getPreviousIndex'
@@ -51,50 +36,45 @@ export interface IVariableDebtTokenInterface extends utils.Interface {
       | 'scaledTotalSupply'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic: 'Burn' | 'Initialized' | 'Mint'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'UNDERLYING_ASSET_ADDRESS',
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'burn',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPreviousIndex',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getScaledUserBalanceAndSupply',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      string,
+      string,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'scaledBalanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'scaledTotalSupply',
@@ -124,371 +104,295 @@ export interface IVariableDebtTokenInterface extends utils.Interface {
     functionFragment: 'scaledTotalSupply',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Burn(address,address,uint256,uint256,uint256)': EventFragment;
-    'Initialized(address,address,address,uint8,string,string,bytes)': EventFragment;
-    'Mint(address,address,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
 }
 
-export interface BurnEventObject {
-  from: string;
-  target: string;
-  value: BigNumber;
-  balanceIncrease: BigNumber;
-  index: BigNumber;
+export namespace BurnEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    target: AddressLike,
+    value: BigNumberish,
+    balanceIncrease: BigNumberish,
+    index: BigNumberish
+  ];
+  export type OutputTuple = [
+    from: string,
+    target: string,
+    value: bigint,
+    balanceIncrease: bigint,
+    index: bigint
+  ];
+  export interface OutputObject {
+    from: string;
+    target: string;
+    value: bigint;
+    balanceIncrease: bigint;
+    index: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BurnEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  BurnEventObject
->;
 
-export type BurnEventFilter = TypedEventFilter<BurnEvent>;
-
-export interface InitializedEventObject {
-  underlyingAsset: string;
-  pool: string;
-  incentivesController: string;
-  debtTokenDecimals: number;
-  debtTokenName: string;
-  debtTokenSymbol: string;
-  params: string;
+export namespace InitializedEvent {
+  export type InputTuple = [
+    underlyingAsset: AddressLike,
+    pool: AddressLike,
+    incentivesController: AddressLike,
+    debtTokenDecimals: BigNumberish,
+    debtTokenName: string,
+    debtTokenSymbol: string,
+    params: BytesLike
+  ];
+  export type OutputTuple = [
+    underlyingAsset: string,
+    pool: string,
+    incentivesController: string,
+    debtTokenDecimals: bigint,
+    debtTokenName: string,
+    debtTokenSymbol: string,
+    params: string
+  ];
+  export interface OutputObject {
+    underlyingAsset: string;
+    pool: string;
+    incentivesController: string;
+    debtTokenDecimals: bigint;
+    debtTokenName: string;
+    debtTokenSymbol: string;
+    params: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<
-  [string, string, string, number, string, string, string],
-  InitializedEventObject
->;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface MintEventObject {
-  caller: string;
-  onBehalfOf: string;
-  value: BigNumber;
-  balanceIncrease: BigNumber;
-  index: BigNumber;
+export namespace MintEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    onBehalfOf: AddressLike,
+    value: BigNumberish,
+    balanceIncrease: BigNumberish,
+    index: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    onBehalfOf: string,
+    value: bigint,
+    balanceIncrease: bigint,
+    index: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    onBehalfOf: string;
+    value: bigint;
+    balanceIncrease: bigint;
+    index: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MintEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  MintEventObject
->;
-
-export type MintEventFilter = TypedEventFilter<MintEvent>;
 
 export interface IVariableDebtToken extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IVariableDebtTokenInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    burn(
-      from: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  UNDERLYING_ASSET_ADDRESS: TypedContractMethod<[], [string], 'view'>;
 
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
+  burn: TypedContractMethod<
+    [from: AddressLike, amount: BigNumberish, index: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getPreviousIndex: TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
 
-    mint(
-      user: PromiseOrValue<string>,
-      onBehalfOf: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getScaledUserBalanceAndSupply: TypedContractMethod<
+    [user: AddressLike],
+    [[bigint, bigint]],
+    'view'
+  >;
 
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  initialize: TypedContractMethod<
+    [
+      pool: AddressLike,
+      underlyingAsset: AddressLike,
+      incentivesController: AddressLike,
+      debtTokenDecimals: BigNumberish,
+      debtTokenName: string,
+      debtTokenSymbol: string,
+      params: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    scaledTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-  };
+  mint: TypedContractMethod<
+    [
+      user: AddressLike,
+      onBehalfOf: AddressLike,
+      amount: BigNumberish,
+      index: BigNumberish
+    ],
+    [[boolean, bigint]],
+    'nonpayable'
+  >;
 
-  UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<string>;
+  scaledBalanceOf: TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
 
-  burn(
-    from: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    index: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  scaledTotalSupply: TypedContractMethod<[], [bigint], 'view'>;
 
-  getPreviousIndex(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getScaledUserBalanceAndSupply(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
+  getFunction(
+    nameOrSignature: 'UNDERLYING_ASSET_ADDRESS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'burn'
+  ): TypedContractMethod<
+    [from: AddressLike, amount: BigNumberish, index: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'getPreviousIndex'
+  ): TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getScaledUserBalanceAndSupply'
+  ): TypedContractMethod<[user: AddressLike], [[bigint, bigint]], 'view'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      pool: AddressLike,
+      underlyingAsset: AddressLike,
+      incentivesController: AddressLike,
+      debtTokenDecimals: BigNumberish,
+      debtTokenName: string,
+      debtTokenSymbol: string,
+      params: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'mint'
+  ): TypedContractMethod<
+    [
+      user: AddressLike,
+      onBehalfOf: AddressLike,
+      amount: BigNumberish,
+      index: BigNumberish
+    ],
+    [[boolean, bigint]],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'scaledBalanceOf'
+  ): TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'scaledTotalSupply'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
-  initialize(
-    pool: PromiseOrValue<string>,
-    underlyingAsset: PromiseOrValue<string>,
-    incentivesController: PromiseOrValue<string>,
-    debtTokenDecimals: PromiseOrValue<BigNumberish>,
-    debtTokenName: PromiseOrValue<string>,
-    debtTokenSymbol: PromiseOrValue<string>,
-    params: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  mint(
-    user: PromiseOrValue<string>,
-    onBehalfOf: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    index: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  scaledBalanceOf(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  callStatic: {
-    UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<string>;
-
-    burn(
-      from: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mint(
-      user: PromiseOrValue<string>,
-      onBehalfOf: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean, BigNumber]>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-  };
+  getEvent(
+    key: 'Burn'
+  ): TypedContractEvent<
+    BurnEvent.InputTuple,
+    BurnEvent.OutputTuple,
+    BurnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Mint'
+  ): TypedContractEvent<
+    MintEvent.InputTuple,
+    MintEvent.OutputTuple,
+    MintEvent.OutputObject
+  >;
 
   filters: {
-    'Burn(address,address,uint256,uint256,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      target?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): BurnEventFilter;
-    Burn(
-      from?: PromiseOrValue<string> | null,
-      target?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): BurnEventFilter;
+    'Burn(address,address,uint256,uint256,uint256)': TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
+    Burn: TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
 
-    'Initialized(address,address,address,uint8,string,string,bytes)'(
-      underlyingAsset?: PromiseOrValue<string> | null,
-      pool?: PromiseOrValue<string> | null,
-      incentivesController?: null,
-      debtTokenDecimals?: null,
-      debtTokenName?: null,
-      debtTokenSymbol?: null,
-      params?: null
-    ): InitializedEventFilter;
-    Initialized(
-      underlyingAsset?: PromiseOrValue<string> | null,
-      pool?: PromiseOrValue<string> | null,
-      incentivesController?: null,
-      debtTokenDecimals?: null,
-      debtTokenName?: null,
-      debtTokenSymbol?: null,
-      params?: null
-    ): InitializedEventFilter;
+    'Initialized(address,address,address,uint8,string,string,bytes)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
 
-    'Mint(address,address,uint256,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): MintEventFilter;
-    Mint(
-      caller?: PromiseOrValue<string> | null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): MintEventFilter;
-  };
-
-  estimateGas: {
-    UNDERLYING_ASSET_ADDRESS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    burn(
-      from: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    mint(
-      user: PromiseOrValue<string>,
-      onBehalfOf: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    UNDERLYING_ASSET_ADDRESS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    burn(
-      from: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mint(
-      user: PromiseOrValue<string>,
-      onBehalfOf: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'Mint(address,address,uint256,uint256,uint256)': TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
+    Mint: TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
   };
 }

@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IGaugeFactory,
   IGaugeFactoryInterface,
@@ -42,17 +41,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IGaugeFactory__factory {
   static readonly abi = _abi;
   static createInterface(): IGaugeFactoryInterface {
-    return new utils.Interface(_abi) as IGaugeFactoryInterface;
+    return new Interface(_abi) as IGaugeFactoryInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IGaugeFactory {
-    return new Contract(address, _abi, signerOrProvider) as IGaugeFactory;
+    return new Contract(address, _abi, runner) as unknown as IGaugeFactory;
   }
 }

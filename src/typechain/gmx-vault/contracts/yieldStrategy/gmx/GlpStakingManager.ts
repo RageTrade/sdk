@@ -3,59 +3,55 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
 export declare namespace RageERC4626 {
   export type RageERC4626InitParamsStruct = {
-    asset: PromiseOrValue<string>;
-    name: PromiseOrValue<string>;
-    symbol: PromiseOrValue<string>;
-  };
-
-  export type RageERC4626InitParamsStructOutput = [string, string, string] & {
-    asset: string;
+    asset: AddressLike;
     name: string;
     symbol: string;
   };
+
+  export type RageERC4626InitParamsStructOutput = [
+    asset: string,
+    name: string,
+    symbol: string
+  ] & { asset: string; name: string; symbol: string };
 }
 
 export declare namespace GlpStakingManager {
   export type GlpStakingManagerInitParamsStruct = {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStruct;
-    weth: PromiseOrValue<string>;
-    usdc: PromiseOrValue<string>;
-    feeRecipient: PromiseOrValue<string>;
-    rewardRouter: PromiseOrValue<string>;
+    weth: AddressLike;
+    usdc: AddressLike;
+    feeRecipient: AddressLike;
+    rewardRouter: AddressLike;
   };
 
   export type GlpStakingManagerInitParamsStructOutput = [
-    RageERC4626.RageERC4626InitParamsStructOutput,
-    string,
-    string,
-    string,
-    string
+    rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStructOutput,
+    weth: string,
+    usdc: string,
+    feeRecipient: string,
+    rewardRouter: string
   ] & {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStructOutput;
     weth: string;
@@ -65,60 +61,9 @@ export declare namespace GlpStakingManager {
   };
 }
 
-export interface GlpStakingManagerInterface extends utils.Interface {
-  functions: {
-    'FEE()': FunctionFragment;
-    'MAX_BPS()': FunctionFragment;
-    'PRICE_PRECISION()': FunctionFragment;
-    'USDG_DECIMALS()': FunctionFragment;
-    'WETH_DECIMALS()': FunctionFragment;
-    'allowance(address,address)': FunctionFragment;
-    'approve(address,uint256)': FunctionFragment;
-    'asset()': FunctionFragment;
-    'balanceOf(address)': FunctionFragment;
-    'convertToAssets(uint256)': FunctionFragment;
-    'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
-    'decreaseAllowance(address,uint256)': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'depositToken(address,uint256)': FunctionFragment;
-    'feeRecipient()': FunctionFragment;
-    'grantAllowances()': FunctionFragment;
-    'harvestFees()': FunctionFragment;
-    'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(((address,string,string),address,address,address,address))': FunctionFragment;
-    'isVault(address)': FunctionFragment;
-    'maxDeposit(address)': FunctionFragment;
-    'maxMint(address)': FunctionFragment;
-    'maxRedeem(address)': FunctionFragment;
-    'maxWithdraw(address)': FunctionFragment;
-    'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'previewDeposit(uint256)': FunctionFragment;
-    'previewMint(uint256)': FunctionFragment;
-    'previewRedeem(uint256)': FunctionFragment;
-    'previewWithdraw(uint256)': FunctionFragment;
-    'protocolFee()': FunctionFragment;
-    'redeem(uint256,address,address)': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setFeeRecipient(address)': FunctionFragment;
-    'setVault(address,bool)': FunctionFragment;
-    'slippageThreshold()': FunctionFragment;
-    'symbol()': FunctionFragment;
-    'totalAssets()': FunctionFragment;
-    'totalSupply()': FunctionFragment;
-    'transfer(address,uint256)': FunctionFragment;
-    'transferFrom(address,address,uint256)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'updateGMXParams(uint256,uint256,uint256,address)': FunctionFragment;
-    'wethThreshold()': FunctionFragment;
-    'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees()': FunctionFragment;
-  };
-
+export interface GlpStakingManagerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'FEE'
       | 'MAX_BPS'
       | 'PRICE_PRECISION'
@@ -169,6 +114,22 @@ export interface GlpStakingManagerInterface extends utils.Interface {
       | 'withdrawFees'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Approval'
+      | 'Deposit'
+      | 'FeeRecipientUpdated'
+      | 'FeesWithdrawn'
+      | 'GmxParamsUpdated'
+      | 'Initialized'
+      | 'OwnershipTransferred'
+      | 'TokenRedeemded'
+      | 'TokenWithdrawn'
+      | 'Transfer'
+      | 'VaultUpdated'
+      | 'Withdraw'
+  ): EventFragment;
+
   encodeFunctionData(functionFragment: 'FEE', values?: undefined): string;
   encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
   encodeFunctionData(
@@ -185,37 +146,37 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'allowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'approve',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'asset', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'balanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToAssets',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToShares',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'decreaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositToken',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'feeRecipient',
@@ -231,7 +192,7 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'increaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -239,45 +200,45 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'isVault',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxDeposit',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxMint',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxRedeem',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxWithdraw',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewMint',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewRedeem',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewWithdraw',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'protocolFee',
@@ -285,11 +246,7 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'redeem',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
@@ -297,11 +254,11 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeRecipient',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setVault',
-    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+    values: [AddressLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'slippageThreshold',
@@ -318,28 +275,19 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transfer',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferFrom',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGMXParams',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'wethThreshold',
@@ -347,11 +295,7 @@ export interface GlpStakingManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFees',
@@ -487,1342 +431,875 @@ export interface GlpStakingManagerInterface extends utils.Interface {
     functionFragment: 'withdrawFees',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Approval(address,address,uint256)': EventFragment;
-    'Deposit(address,address,uint256,uint256)': EventFragment;
-    'FeeRecipientUpdated(address)': EventFragment;
-    'FeesWithdrawn(uint256)': EventFragment;
-    'GmxParamsUpdated(uint256,uint256,uint256,address)': EventFragment;
-    'Initialized(uint8)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'TokenRedeemded(address,uint256,address)': EventFragment;
-    'TokenWithdrawn(address,uint256,address)': EventFragment;
-    'Transfer(address,address,uint256)': EventFragment;
-    'VaultUpdated(address,bool)': EventFragment;
-    'Withdraw(address,address,address,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeeRecipientUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GmxParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenRedeemded'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenWithdrawn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
 
-export interface ApprovalEventObject {
-  owner: string;
-  spender: string;
-  value: BigNumber;
+export namespace ApprovalEvent {
+  export type InputTuple = [
+    owner: AddressLike,
+    spender: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [owner: string, spender: string, value: bigint];
+  export interface OutputObject {
+    owner: string;
+    spender: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ApprovalEvent = TypedEvent<
-  [string, string, BigNumber],
-  ApprovalEventObject
->;
 
-export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export interface DepositEventObject {
-  caller: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace DepositEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  DepositEventObject
->;
 
-export type DepositEventFilter = TypedEventFilter<DepositEvent>;
-
-export interface FeeRecipientUpdatedEventObject {
-  feeRecipient: string;
+export namespace FeeRecipientUpdatedEvent {
+  export type InputTuple = [feeRecipient: AddressLike];
+  export type OutputTuple = [feeRecipient: string];
+  export interface OutputObject {
+    feeRecipient: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeeRecipientUpdatedEvent = TypedEvent<
-  [string],
-  FeeRecipientUpdatedEventObject
->;
 
-export type FeeRecipientUpdatedEventFilter =
-  TypedEventFilter<FeeRecipientUpdatedEvent>;
-
-export interface FeesWithdrawnEventObject {
-  vaule: BigNumber;
+export namespace FeesWithdrawnEvent {
+  export type InputTuple = [vaule: BigNumberish];
+  export type OutputTuple = [vaule: bigint];
+  export interface OutputObject {
+    vaule: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesWithdrawnEvent = TypedEvent<
-  [BigNumber],
-  FeesWithdrawnEventObject
->;
 
-export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
-
-export interface GmxParamsUpdatedEventObject {
-  newFee: BigNumber;
-  wethThreshold: BigNumber;
-  slippageThreshold: BigNumber;
-  batchingManager: string;
+export namespace GmxParamsUpdatedEvent {
+  export type InputTuple = [
+    newFee: BigNumberish,
+    wethThreshold: BigNumberish,
+    slippageThreshold: BigNumberish,
+    batchingManager: AddressLike
+  ];
+  export type OutputTuple = [
+    newFee: bigint,
+    wethThreshold: bigint,
+    slippageThreshold: bigint,
+    batchingManager: string
+  ];
+  export interface OutputObject {
+    newFee: bigint;
+    wethThreshold: bigint;
+    slippageThreshold: bigint;
+    batchingManager: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GmxParamsUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, string],
-  GmxParamsUpdatedEventObject
->;
 
-export type GmxParamsUpdatedEventFilter =
-  TypedEventFilter<GmxParamsUpdatedEvent>;
-
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface TokenRedeemdedEventObject {
-  token: string;
-  _sGLPQuantity: BigNumber;
-  receiver: string;
+export namespace TokenRedeemdedEvent {
+  export type InputTuple = [
+    token: AddressLike,
+    _sGLPQuantity: BigNumberish,
+    receiver: AddressLike
+  ];
+  export type OutputTuple = [
+    token: string,
+    _sGLPQuantity: bigint,
+    receiver: string
+  ];
+  export interface OutputObject {
+    token: string;
+    _sGLPQuantity: bigint;
+    receiver: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenRedeemdedEvent = TypedEvent<
-  [string, BigNumber, string],
-  TokenRedeemdedEventObject
->;
 
-export type TokenRedeemdedEventFilter = TypedEventFilter<TokenRedeemdedEvent>;
-
-export interface TokenWithdrawnEventObject {
-  token: string;
-  shares: BigNumber;
-  receiver: string;
+export namespace TokenWithdrawnEvent {
+  export type InputTuple = [
+    token: AddressLike,
+    shares: BigNumberish,
+    receiver: AddressLike
+  ];
+  export type OutputTuple = [token: string, shares: bigint, receiver: string];
+  export interface OutputObject {
+    token: string;
+    shares: bigint;
+    receiver: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenWithdrawnEvent = TypedEvent<
-  [string, BigNumber, string],
-  TokenWithdrawnEventObject
->;
 
-export type TokenWithdrawnEventFilter = TypedEventFilter<TokenWithdrawnEvent>;
-
-export interface TransferEventObject {
-  from: string;
-  to: string;
-  value: BigNumber;
+export namespace TransferEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [from: string, to: string, value: bigint];
+  export interface OutputObject {
+    from: string;
+    to: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber],
-  TransferEventObject
->;
 
-export type TransferEventFilter = TypedEventFilter<TransferEvent>;
-
-export interface VaultUpdatedEventObject {
-  vaultAddress: string;
-  isVault: boolean;
+export namespace VaultUpdatedEvent {
+  export type InputTuple = [vaultAddress: AddressLike, isVault: boolean];
+  export type OutputTuple = [vaultAddress: string, isVault: boolean];
+  export interface OutputObject {
+    vaultAddress: string;
+    isVault: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type VaultUpdatedEvent = TypedEvent<
-  [string, boolean],
-  VaultUpdatedEventObject
->;
 
-export type VaultUpdatedEventFilter = TypedEventFilter<VaultUpdatedEvent>;
-
-export interface WithdrawEventObject {
-  caller: string;
-  receiver: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace WithdrawEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    receiver: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    receiver: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    receiver: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type WithdrawEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
-  WithdrawEventObject
->;
-
-export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 
 export interface GlpStakingManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: GlpStakingManagerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<[string]>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    decimals(overrides?: CallOverrides): Promise<[number]>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    feeRecipient(overrides?: CallOverrides): Promise<[string]>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initialize(
-      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    isVault(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    name(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    protocolFee(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setFeeRecipient(
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setVault(
-      vaultAddress: PromiseOrValue<string>,
-      _isVault: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    totalAssets(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateGMXParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _wethThreshold: PromiseOrValue<BigNumberish>,
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-  USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  allowance(
-    owner: PromiseOrValue<string>,
-    spender: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  approve(
-    spender: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  asset(overrides?: CallOverrides): Promise<string>;
-
-  balanceOf(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  convertToAssets(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  convertToShares(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  decimals(overrides?: CallOverrides): Promise<number>;
-
-  decreaseAllowance(
-    spender: PromiseOrValue<string>,
-    subtractedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  deposit(
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  depositToken(
-    token: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  feeRecipient(overrides?: CallOverrides): Promise<string>;
-
-  grantAllowances(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  harvestFees(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  increaseAllowance(
-    spender: PromiseOrValue<string>,
-    addedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  isVault(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  maxDeposit(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxMint(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxRedeem(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxWithdraw(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  mint(
-    shares: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  name(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  previewDeposit(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewMint(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewRedeem(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewWithdraw(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-  redeem(
-    shares: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setFeeRecipient(
-    _feeRecipient: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setVault(
-    vaultAddress: PromiseOrValue<string>,
-    _isVault: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  transfer(
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateGMXParams(
-    _feeBps: PromiseOrValue<BigNumberish>,
-    _wethThreshold: PromiseOrValue<BigNumberish>,
-    _slippageThreshold: PromiseOrValue<BigNumberish>,
-    _batchingManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-  withdraw(
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawFees(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    asset(overrides?: CallOverrides): Promise<string>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<number>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    feeRecipient(overrides?: CallOverrides): Promise<string>;
-
-    grantAllowances(overrides?: CallOverrides): Promise<void>;
-
-    harvestFees(overrides?: CallOverrides): Promise<void>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    initialize(
-      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    isVault(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    setFeeRecipient(
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setVault(
-      vaultAddress: PromiseOrValue<string>,
-      _isVault: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateGMXParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _wethThreshold: PromiseOrValue<BigNumberish>,
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdrawFees(overrides?: CallOverrides): Promise<void>;
-  };
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  FEE: TypedContractMethod<[], [bigint], 'view'>;
+
+  MAX_BPS: TypedContractMethod<[], [bigint], 'view'>;
+
+  PRICE_PRECISION: TypedContractMethod<[], [bigint], 'view'>;
+
+  USDG_DECIMALS: TypedContractMethod<[], [bigint], 'view'>;
+
+  WETH_DECIMALS: TypedContractMethod<[], [bigint], 'view'>;
+
+  allowance: TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  approve: TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  asset: TypedContractMethod<[], [string], 'view'>;
+
+  balanceOf: TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+
+  convertToAssets: TypedContractMethod<
+    [shares: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  convertToShares: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  decimals: TypedContractMethod<[], [bigint], 'view'>;
+
+  decreaseAllowance: TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  deposit: TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  depositToken: TypedContractMethod<
+    [token: AddressLike, amount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+
+  feeRecipient: TypedContractMethod<[], [string], 'view'>;
+
+  grantAllowances: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  harvestFees: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  increaseAllowance: TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  initialize: TypedContractMethod<
+    [
+      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  isVault: TypedContractMethod<[arg0: AddressLike], [boolean], 'view'>;
+
+  maxDeposit: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+
+  maxMint: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+
+  maxRedeem: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+
+  maxWithdraw: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+
+  mint: TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  name: TypedContractMethod<[], [string], 'view'>;
+
+  owner: TypedContractMethod<[], [string], 'view'>;
+
+  previewDeposit: TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+
+  previewMint: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+
+  previewRedeem: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+
+  previewWithdraw: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  protocolFee: TypedContractMethod<[], [bigint], 'view'>;
+
+  redeem: TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  setFeeRecipient: TypedContractMethod<
+    [_feeRecipient: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  setVault: TypedContractMethod<
+    [vaultAddress: AddressLike, _isVault: boolean],
+    [void],
+    'nonpayable'
+  >;
+
+  slippageThreshold: TypedContractMethod<[], [bigint], 'view'>;
+
+  symbol: TypedContractMethod<[], [string], 'view'>;
+
+  totalAssets: TypedContractMethod<[], [bigint], 'view'>;
+
+  totalSupply: TypedContractMethod<[], [bigint], 'view'>;
+
+  transfer: TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  transferFrom: TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  updateGMXParams: TypedContractMethod<
+    [
+      _feeBps: BigNumberish,
+      _wethThreshold: BigNumberish,
+      _slippageThreshold: BigNumberish,
+      _batchingManager: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  wethThreshold: TypedContractMethod<[], [bigint], 'view'>;
+
+  withdraw: TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  withdrawFees: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'FEE'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_BPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'PRICE_PRECISION'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'USDG_DECIMALS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'WETH_DECIMALS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'allowance'
+  ): TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'approve'
+  ): TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'asset'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'balanceOf'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'convertToAssets'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'convertToShares'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decimals'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decreaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'depositToken'
+  ): TypedContractMethod<
+    [token: AddressLike, amount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'feeRecipient'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'grantAllowances'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'harvestFees'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'increaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'isVault'
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxDeposit'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxMint'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxRedeem'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxWithdraw'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'mint'
+  ): TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'name'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewDeposit'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewMint'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewRedeem'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewWithdraw'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'protocolFee'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'redeem'
+  ): TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setFeeRecipient'
+  ): TypedContractMethod<[_feeRecipient: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setVault'
+  ): TypedContractMethod<
+    [vaultAddress: AddressLike, _isVault: boolean],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'slippageThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'symbol'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalAssets'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalSupply'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transfer'
+  ): TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferFrom'
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'updateGMXParams'
+  ): TypedContractMethod<
+    [
+      _feeBps: BigNumberish,
+      _wethThreshold: BigNumberish,
+      _slippageThreshold: BigNumberish,
+      _batchingManager: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'wethThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'withdraw'
+  ): TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdrawFees'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'Approval'
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Deposit'
+  ): TypedContractEvent<
+    DepositEvent.InputTuple,
+    DepositEvent.OutputTuple,
+    DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeeRecipientUpdated'
+  ): TypedContractEvent<
+    FeeRecipientUpdatedEvent.InputTuple,
+    FeeRecipientUpdatedEvent.OutputTuple,
+    FeeRecipientUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesWithdrawn'
+  ): TypedContractEvent<
+    FeesWithdrawnEvent.InputTuple,
+    FeesWithdrawnEvent.OutputTuple,
+    FeesWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GmxParamsUpdated'
+  ): TypedContractEvent<
+    GmxParamsUpdatedEvent.InputTuple,
+    GmxParamsUpdatedEvent.OutputTuple,
+    GmxParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenRedeemded'
+  ): TypedContractEvent<
+    TokenRedeemdedEvent.InputTuple,
+    TokenRedeemdedEvent.OutputTuple,
+    TokenRedeemdedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenWithdrawn'
+  ): TypedContractEvent<
+    TokenWithdrawnEvent.InputTuple,
+    TokenWithdrawnEvent.OutputTuple,
+    TokenWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Transfer'
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
+  getEvent(
+    key: 'VaultUpdated'
+  ): TypedContractEvent<
+    VaultUpdatedEvent.InputTuple,
+    VaultUpdatedEvent.OutputTuple,
+    VaultUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Withdraw'
+  ): TypedContractEvent<
+    WithdrawEvent.InputTuple,
+    WithdrawEvent.OutputTuple,
+    WithdrawEvent.OutputObject
+  >;
 
   filters: {
-    'Approval(address,address,uint256)'(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-    Approval(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-
-    'Deposit(address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-    Deposit(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-
-    'FeeRecipientUpdated(address)'(
-      feeRecipient?: null
-    ): FeeRecipientUpdatedEventFilter;
-    FeeRecipientUpdated(feeRecipient?: null): FeeRecipientUpdatedEventFilter;
-
-    'FeesWithdrawn(uint256)'(vaule?: null): FeesWithdrawnEventFilter;
-    FeesWithdrawn(vaule?: null): FeesWithdrawnEventFilter;
-
-    'GmxParamsUpdated(uint256,uint256,uint256,address)'(
-      newFee?: null,
-      wethThreshold?: null,
-      slippageThreshold?: null,
-      batchingManager?: null
-    ): GmxParamsUpdatedEventFilter;
-    GmxParamsUpdated(
-      newFee?: null,
-      wethThreshold?: null,
-      slippageThreshold?: null,
-      batchingManager?: null
-    ): GmxParamsUpdatedEventFilter;
-
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
-
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-
-    'TokenRedeemded(address,uint256,address)'(
-      token?: PromiseOrValue<string> | null,
-      _sGLPQuantity?: null,
-      receiver?: PromiseOrValue<string> | null
-    ): TokenRedeemdedEventFilter;
-    TokenRedeemded(
-      token?: PromiseOrValue<string> | null,
-      _sGLPQuantity?: null,
-      receiver?: PromiseOrValue<string> | null
-    ): TokenRedeemdedEventFilter;
-
-    'TokenWithdrawn(address,uint256,address)'(
-      token?: PromiseOrValue<string> | null,
-      shares?: null,
-      receiver?: PromiseOrValue<string> | null
-    ): TokenWithdrawnEventFilter;
-    TokenWithdrawn(
-      token?: PromiseOrValue<string> | null,
-      shares?: null,
-      receiver?: PromiseOrValue<string> | null
-    ): TokenWithdrawnEventFilter;
-
-    'Transfer(address,address,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-    Transfer(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-
-    'VaultUpdated(address,bool)'(
-      vaultAddress?: null,
-      isVault?: null
-    ): VaultUpdatedEventFilter;
-    VaultUpdated(vaultAddress?: null, isVault?: null): VaultUpdatedEventFilter;
-
-    'Withdraw(address,address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-    Withdraw(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-  };
-
-  estimateGas: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    asset(overrides?: CallOverrides): Promise<BigNumber>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    feeRecipient(overrides?: CallOverrides): Promise<BigNumber>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    isVault(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    protocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setFeeRecipient(
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setVault(
-      vaultAddress: PromiseOrValue<string>,
-      _isVault: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateGMXParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _wethThreshold: PromiseOrValue<BigNumberish>,
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    PRICE_PRECISION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    USDG_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    WETH_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    feeRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      glpStakingManagerInitParams: GlpStakingManager.GlpStakingManagerInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isVault(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    protocolFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setFeeRecipient(
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setVault(
-      vaultAddress: PromiseOrValue<string>,
-      _isVault: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    slippageThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateGMXParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _wethThreshold: PromiseOrValue<BigNumberish>,
-      _slippageThreshold: PromiseOrValue<BigNumberish>,
-      _batchingManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    wethThreshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'Approval(address,address,uint256)': TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+
+    'Deposit(address,address,uint256,uint256)': TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+    Deposit: TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+
+    'FeeRecipientUpdated(address)': TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+    FeeRecipientUpdated: TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+
+    'FeesWithdrawn(uint256)': TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+    FeesWithdrawn: TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+
+    'GmxParamsUpdated(uint256,uint256,uint256,address)': TypedContractEvent<
+      GmxParamsUpdatedEvent.InputTuple,
+      GmxParamsUpdatedEvent.OutputTuple,
+      GmxParamsUpdatedEvent.OutputObject
+    >;
+    GmxParamsUpdated: TypedContractEvent<
+      GmxParamsUpdatedEvent.InputTuple,
+      GmxParamsUpdatedEvent.OutputTuple,
+      GmxParamsUpdatedEvent.OutputObject
+    >;
+
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
+    'TokenRedeemded(address,uint256,address)': TypedContractEvent<
+      TokenRedeemdedEvent.InputTuple,
+      TokenRedeemdedEvent.OutputTuple,
+      TokenRedeemdedEvent.OutputObject
+    >;
+    TokenRedeemded: TypedContractEvent<
+      TokenRedeemdedEvent.InputTuple,
+      TokenRedeemdedEvent.OutputTuple,
+      TokenRedeemdedEvent.OutputObject
+    >;
+
+    'TokenWithdrawn(address,uint256,address)': TypedContractEvent<
+      TokenWithdrawnEvent.InputTuple,
+      TokenWithdrawnEvent.OutputTuple,
+      TokenWithdrawnEvent.OutputObject
+    >;
+    TokenWithdrawn: TypedContractEvent<
+      TokenWithdrawnEvent.InputTuple,
+      TokenWithdrawnEvent.OutputTuple,
+      TokenWithdrawnEvent.OutputObject
+    >;
+
+    'Transfer(address,address,uint256)': TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+
+    'VaultUpdated(address,bool)': TypedContractEvent<
+      VaultUpdatedEvent.InputTuple,
+      VaultUpdatedEvent.OutputTuple,
+      VaultUpdatedEvent.OutputObject
+    >;
+    VaultUpdated: TypedContractEvent<
+      VaultUpdatedEvent.InputTuple,
+      VaultUpdatedEvent.OutputTuple,
+      VaultUpdatedEvent.OutputObject
+    >;
+
+    'Withdraw(address,address,address,uint256,uint256)': TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+    Withdraw: TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
   };
 }

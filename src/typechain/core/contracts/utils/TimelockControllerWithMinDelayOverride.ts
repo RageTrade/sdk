@@ -3,69 +3,30 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PayableOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export interface TimelockControllerWithMinDelayOverrideInterface
-  extends utils.Interface {
-  functions: {
-    'CANCELLER_ROLE()': FunctionFragment;
-    'DEFAULT_ADMIN_ROLE()': FunctionFragment;
-    'EXECUTOR_ROLE()': FunctionFragment;
-    'PROPOSER_ROLE()': FunctionFragment;
-    'TIMELOCK_ADMIN_ROLE()': FunctionFragment;
-    'cancel(bytes32)': FunctionFragment;
-    'execute(address,uint256,bytes,bytes32,bytes32)': FunctionFragment;
-    'executeBatch(address[],uint256[],bytes[],bytes32,bytes32)': FunctionFragment;
-    'getMinDelay()': FunctionFragment;
-    'getMinDelayOverride(address,bytes4)': FunctionFragment;
-    'getRoleAdmin(bytes32)': FunctionFragment;
-    'getTimestamp(bytes32)': FunctionFragment;
-    'grantRole(bytes32,address)': FunctionFragment;
-    'hasRole(bytes32,address)': FunctionFragment;
-    'hashOperation(address,uint256,bytes,bytes32,bytes32)': FunctionFragment;
-    'hashOperationBatch(address[],uint256[],bytes[],bytes32,bytes32)': FunctionFragment;
-    'isOperation(bytes32)': FunctionFragment;
-    'isOperationDone(bytes32)': FunctionFragment;
-    'isOperationPending(bytes32)': FunctionFragment;
-    'isOperationReady(bytes32)': FunctionFragment;
-    'onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)': FunctionFragment;
-    'onERC1155Received(address,address,uint256,uint256,bytes)': FunctionFragment;
-    'onERC721Received(address,address,uint256,bytes)': FunctionFragment;
-    'renounceRole(bytes32,address)': FunctionFragment;
-    'revokeRole(bytes32,address)': FunctionFragment;
-    'schedule(address,uint256,bytes,bytes32,bytes32,uint256)': FunctionFragment;
-    'scheduleBatch(address[],uint256[],bytes[],bytes32,bytes32,uint256)': FunctionFragment;
-    'setMinDelayOverride(address,bytes4,uint256)': FunctionFragment;
-    'supportsInterface(bytes4)': FunctionFragment;
-    'unsetMinDelayOverride(address,bytes4)': FunctionFragment;
-    'updateDelay(uint256)': FunctionFragment;
-  };
-
+  extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'CANCELLER_ROLE'
       | 'DEFAULT_ADMIN_ROLE'
       | 'EXECUTOR_ROLE'
@@ -99,6 +60,19 @@ export interface TimelockControllerWithMinDelayOverrideInterface
       | 'updateDelay'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'CallExecuted'
+      | 'CallScheduled'
+      | 'Cancelled'
+      | 'MinDelayChange'
+      | 'MinDelayOverrideSet'
+      | 'MinDelayOverrideUnset'
+      | 'RoleAdminChanged'
+      | 'RoleGranted'
+      | 'RoleRevoked'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'CANCELLER_ROLE',
     values?: undefined
@@ -119,29 +93,14 @@ export interface TimelockControllerWithMinDelayOverrideInterface
     functionFragment: 'TIMELOCK_ADMIN_ROLE',
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: 'cancel',
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: 'cancel', values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: 'execute',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike, BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatch',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>[],
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike[], BigNumberish[], BytesLike[], BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getMinDelay',
@@ -149,138 +108,111 @@ export interface TimelockControllerWithMinDelayOverrideInterface
   ): string;
   encodeFunctionData(
     functionFragment: 'getMinDelayOverride',
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRoleAdmin',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getTimestamp',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'grantRole',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'hasRole',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'hashOperation',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike, BigNumberish, BytesLike, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'hashOperationBatch',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>[],
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike[], BigNumberish[], BytesLike[], BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'isOperation',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'isOperationDone',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'isOperationPending',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'isOperationReady',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'onERC1155BatchReceived',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
+      AddressLike,
+      AddressLike,
+      BigNumberish[],
+      BigNumberish[],
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'onERC1155Received',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'onERC721Received',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceRole',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'revokeRole',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'schedule',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      BigNumberish,
+      BytesLike,
+      BytesLike,
+      BytesLike,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'scheduleBatch',
     values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>[],
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
+      AddressLike[],
+      BigNumberish[],
+      BytesLike[],
+      BytesLike,
+      BytesLike,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'setMinDelayOverride',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'supportsInterface',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unsetMinDelayOverride',
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateDelay',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -389,1190 +321,793 @@ export interface TimelockControllerWithMinDelayOverrideInterface
     functionFragment: 'updateDelay',
     data: BytesLike
   ): Result;
-
-  events: {
-    'CallExecuted(bytes32,uint256,address,uint256,bytes)': EventFragment;
-    'CallScheduled(bytes32,uint256,address,uint256,bytes,bytes32,uint256)': EventFragment;
-    'Cancelled(bytes32)': EventFragment;
-    'MinDelayChange(uint256,uint256)': EventFragment;
-    'MinDelayOverrideSet(address,bytes4,uint256)': EventFragment;
-    'MinDelayOverrideUnset(address,bytes4)': EventFragment;
-    'RoleAdminChanged(bytes32,bytes32,bytes32)': EventFragment;
-    'RoleGranted(bytes32,address,address)': EventFragment;
-    'RoleRevoked(bytes32,address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'CallExecuted'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CallScheduled'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Cancelled'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MinDelayChange'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MinDelayOverrideSet'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MinDelayOverrideUnset'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RoleAdminChanged'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RoleGranted'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RoleRevoked'): EventFragment;
 }
 
-export interface CallExecutedEventObject {
-  id: string;
-  index: BigNumber;
-  target: string;
-  value: BigNumber;
-  data: string;
+export namespace CallExecutedEvent {
+  export type InputTuple = [
+    id: BytesLike,
+    index: BigNumberish,
+    target: AddressLike,
+    value: BigNumberish,
+    data: BytesLike
+  ];
+  export type OutputTuple = [
+    id: string,
+    index: bigint,
+    target: string,
+    value: bigint,
+    data: string
+  ];
+  export interface OutputObject {
+    id: string;
+    index: bigint;
+    target: string;
+    value: bigint;
+    data: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CallExecutedEvent = TypedEvent<
-  [string, BigNumber, string, BigNumber, string],
-  CallExecutedEventObject
->;
 
-export type CallExecutedEventFilter = TypedEventFilter<CallExecutedEvent>;
-
-export interface CallScheduledEventObject {
-  id: string;
-  index: BigNumber;
-  target: string;
-  value: BigNumber;
-  data: string;
-  predecessor: string;
-  delay: BigNumber;
+export namespace CallScheduledEvent {
+  export type InputTuple = [
+    id: BytesLike,
+    index: BigNumberish,
+    target: AddressLike,
+    value: BigNumberish,
+    data: BytesLike,
+    predecessor: BytesLike,
+    delay: BigNumberish
+  ];
+  export type OutputTuple = [
+    id: string,
+    index: bigint,
+    target: string,
+    value: bigint,
+    data: string,
+    predecessor: string,
+    delay: bigint
+  ];
+  export interface OutputObject {
+    id: string;
+    index: bigint;
+    target: string;
+    value: bigint;
+    data: string;
+    predecessor: string;
+    delay: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CallScheduledEvent = TypedEvent<
-  [string, BigNumber, string, BigNumber, string, string, BigNumber],
-  CallScheduledEventObject
->;
 
-export type CallScheduledEventFilter = TypedEventFilter<CallScheduledEvent>;
-
-export interface CancelledEventObject {
-  id: string;
+export namespace CancelledEvent {
+  export type InputTuple = [id: BytesLike];
+  export type OutputTuple = [id: string];
+  export interface OutputObject {
+    id: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CancelledEvent = TypedEvent<[string], CancelledEventObject>;
 
-export type CancelledEventFilter = TypedEventFilter<CancelledEvent>;
-
-export interface MinDelayChangeEventObject {
-  oldDuration: BigNumber;
-  newDuration: BigNumber;
+export namespace MinDelayChangeEvent {
+  export type InputTuple = [
+    oldDuration: BigNumberish,
+    newDuration: BigNumberish
+  ];
+  export type OutputTuple = [oldDuration: bigint, newDuration: bigint];
+  export interface OutputObject {
+    oldDuration: bigint;
+    newDuration: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MinDelayChangeEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  MinDelayChangeEventObject
->;
 
-export type MinDelayChangeEventFilter = TypedEventFilter<MinDelayChangeEvent>;
-
-export interface MinDelayOverrideSetEventObject {
-  target: string;
-  selector: string;
-  newMinDelay: BigNumber;
+export namespace MinDelayOverrideSetEvent {
+  export type InputTuple = [
+    target: AddressLike,
+    selector: BytesLike,
+    newMinDelay: BigNumberish
+  ];
+  export type OutputTuple = [
+    target: string,
+    selector: string,
+    newMinDelay: bigint
+  ];
+  export interface OutputObject {
+    target: string;
+    selector: string;
+    newMinDelay: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MinDelayOverrideSetEvent = TypedEvent<
-  [string, string, BigNumber],
-  MinDelayOverrideSetEventObject
->;
 
-export type MinDelayOverrideSetEventFilter =
-  TypedEventFilter<MinDelayOverrideSetEvent>;
-
-export interface MinDelayOverrideUnsetEventObject {
-  target: string;
-  selector: string;
+export namespace MinDelayOverrideUnsetEvent {
+  export type InputTuple = [target: AddressLike, selector: BytesLike];
+  export type OutputTuple = [target: string, selector: string];
+  export interface OutputObject {
+    target: string;
+    selector: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MinDelayOverrideUnsetEvent = TypedEvent<
-  [string, string],
-  MinDelayOverrideUnsetEventObject
->;
 
-export type MinDelayOverrideUnsetEventFilter =
-  TypedEventFilter<MinDelayOverrideUnsetEvent>;
-
-export interface RoleAdminChangedEventObject {
-  role: string;
-  previousAdminRole: string;
-  newAdminRole: string;
+export namespace RoleAdminChangedEvent {
+  export type InputTuple = [
+    role: BytesLike,
+    previousAdminRole: BytesLike,
+    newAdminRole: BytesLike
+  ];
+  export type OutputTuple = [
+    role: string,
+    previousAdminRole: string,
+    newAdminRole: string
+  ];
+  export interface OutputObject {
+    role: string;
+    previousAdminRole: string;
+    newAdminRole: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RoleAdminChangedEvent = TypedEvent<
-  [string, string, string],
-  RoleAdminChangedEventObject
->;
 
-export type RoleAdminChangedEventFilter =
-  TypedEventFilter<RoleAdminChangedEvent>;
-
-export interface RoleGrantedEventObject {
-  role: string;
-  account: string;
-  sender: string;
+export namespace RoleGrantedEvent {
+  export type InputTuple = [
+    role: BytesLike,
+    account: AddressLike,
+    sender: AddressLike
+  ];
+  export type OutputTuple = [role: string, account: string, sender: string];
+  export interface OutputObject {
+    role: string;
+    account: string;
+    sender: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RoleGrantedEvent = TypedEvent<
-  [string, string, string],
-  RoleGrantedEventObject
->;
 
-export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
-
-export interface RoleRevokedEventObject {
-  role: string;
-  account: string;
-  sender: string;
+export namespace RoleRevokedEvent {
+  export type InputTuple = [
+    role: BytesLike,
+    account: AddressLike,
+    sender: AddressLike
+  ];
+  export type OutputTuple = [role: string, account: string, sender: string];
+  export interface OutputObject {
+    role: string;
+    account: string;
+    sender: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RoleRevokedEvent = TypedEvent<
-  [string, string, string],
-  RoleRevokedEventObject
->;
-
-export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export interface TimelockControllerWithMinDelayOverride extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: TimelockControllerWithMinDelayOverrideInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    CANCELLER_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    EXECUTOR_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    PROPOSER_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    TIMELOCK_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
-
-    cancel(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    execute(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      payload: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    executeBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getMinDelay(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { duration: BigNumber }>;
-
-    getMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { minDelayOverride: BigNumber }>;
-
-    getRoleAdmin(
-      role: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getTimestamp(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { timestamp: BigNumber }>;
-
-    grantRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    hashOperation(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { hash: string }>;
-
-    hashOperationBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { hash: string }>;
-
-    isOperation(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { registered: boolean }>;
-
-    isOperationDone(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { done: boolean }>;
-
-    isOperationPending(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { pending: boolean }>;
-
-    isOperationReady(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { ready: boolean }>;
-
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    revokeRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    schedule(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    scheduleBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      minDelayOverride: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    unsetMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateDelay(
-      newDelay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  CANCELLER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  EXECUTOR_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  PROPOSER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  TIMELOCK_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-  cancel(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  execute(
-    target: PromiseOrValue<string>,
-    value: PromiseOrValue<BigNumberish>,
-    payload: PromiseOrValue<BytesLike>,
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  executeBatch(
-    targets: PromiseOrValue<string>[],
-    values: PromiseOrValue<BigNumberish>[],
-    payloads: PromiseOrValue<BytesLike>[],
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getMinDelay(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getMinDelayOverride(
-    target: PromiseOrValue<string>,
-    selector: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getRoleAdmin(
-    role: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getTimestamp(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  grantRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  hasRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  hashOperation(
-    target: PromiseOrValue<string>,
-    value: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  hashOperationBatch(
-    targets: PromiseOrValue<string>[],
-    values: PromiseOrValue<BigNumberish>[],
-    payloads: PromiseOrValue<BytesLike>[],
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  isOperation(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isOperationDone(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isOperationPending(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  isOperationReady(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  onERC1155BatchReceived(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>[],
-    arg3: PromiseOrValue<BigNumberish>[],
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  onERC1155Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  onERC721Received(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  revokeRole(
-    role: PromiseOrValue<BytesLike>,
-    account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  schedule(
-    target: PromiseOrValue<string>,
-    value: PromiseOrValue<BigNumberish>,
-    data: PromiseOrValue<BytesLike>,
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    delay: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  scheduleBatch(
-    targets: PromiseOrValue<string>[],
-    values: PromiseOrValue<BigNumberish>[],
-    payloads: PromiseOrValue<BytesLike>[],
-    predecessor: PromiseOrValue<BytesLike>,
-    salt: PromiseOrValue<BytesLike>,
-    delay: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setMinDelayOverride(
-    target: PromiseOrValue<string>,
-    selector: PromiseOrValue<BytesLike>,
-    minDelayOverride: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  supportsInterface(
-    interfaceId: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  unsetMinDelayOverride(
-    target: PromiseOrValue<string>,
-    selector: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateDelay(
-    newDelay: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    CANCELLER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    EXECUTOR_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    PROPOSER_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    TIMELOCK_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
-
-    cancel(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    execute(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      payload: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    executeBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getMinDelay(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRoleAdmin(
-      role: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getTimestamp(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    grantRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    hashOperation(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    hashOperationBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    isOperation(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isOperationDone(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isOperationPending(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    isOperationReady(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    revokeRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    schedule(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    scheduleBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      minDelayOverride: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    unsetMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateDelay(
-      newDelay: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  CANCELLER_ROLE: TypedContractMethod<[], [string], 'view'>;
+
+  DEFAULT_ADMIN_ROLE: TypedContractMethod<[], [string], 'view'>;
+
+  EXECUTOR_ROLE: TypedContractMethod<[], [string], 'view'>;
+
+  PROPOSER_ROLE: TypedContractMethod<[], [string], 'view'>;
+
+  TIMELOCK_ADMIN_ROLE: TypedContractMethod<[], [string], 'view'>;
+
+  cancel: TypedContractMethod<[id: BytesLike], [void], 'nonpayable'>;
+
+  execute: TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      payload: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [void],
+    'payable'
+  >;
+
+  executeBatch: TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [void],
+    'payable'
+  >;
+
+  getMinDelay: TypedContractMethod<[], [bigint], 'view'>;
+
+  getMinDelayOverride: TypedContractMethod<
+    [target: AddressLike, selector: BytesLike],
+    [bigint],
+    'view'
+  >;
+
+  getRoleAdmin: TypedContractMethod<[role: BytesLike], [string], 'view'>;
+
+  getTimestamp: TypedContractMethod<[id: BytesLike], [bigint], 'view'>;
+
+  grantRole: TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  hasRole: TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [boolean],
+    'view'
+  >;
+
+  hashOperation: TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      data: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [string],
+    'view'
+  >;
+
+  hashOperationBatch: TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [string],
+    'view'
+  >;
+
+  isOperation: TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+
+  isOperationDone: TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+
+  isOperationPending: TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+
+  isOperationReady: TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+
+  onERC1155BatchReceived: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
+    'nonpayable'
+  >;
+
+  onERC1155Received: TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
+    'nonpayable'
+  >;
+
+  onERC721Received: TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
+    [string],
+    'nonpayable'
+  >;
+
+  renounceRole: TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  revokeRole: TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  schedule: TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      data: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike,
+      delay: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  scheduleBatch: TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike,
+      delay: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  setMinDelayOverride: TypedContractMethod<
+    [target: AddressLike, selector: BytesLike, minDelayOverride: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  supportsInterface: TypedContractMethod<
+    [interfaceId: BytesLike],
+    [boolean],
+    'view'
+  >;
+
+  unsetMinDelayOverride: TypedContractMethod<
+    [target: AddressLike, selector: BytesLike],
+    [void],
+    'nonpayable'
+  >;
+
+  updateDelay: TypedContractMethod<
+    [newDelay: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'CANCELLER_ROLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'DEFAULT_ADMIN_ROLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'EXECUTOR_ROLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'PROPOSER_ROLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'TIMELOCK_ADMIN_ROLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'cancel'
+  ): TypedContractMethod<[id: BytesLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'execute'
+  ): TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      payload: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [void],
+    'payable'
+  >;
+  getFunction(
+    nameOrSignature: 'executeBatch'
+  ): TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [void],
+    'payable'
+  >;
+  getFunction(
+    nameOrSignature: 'getMinDelay'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getMinDelayOverride'
+  ): TypedContractMethod<
+    [target: AddressLike, selector: BytesLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getRoleAdmin'
+  ): TypedContractMethod<[role: BytesLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTimestamp'
+  ): TypedContractMethod<[id: BytesLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'grantRole'
+  ): TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'hasRole'
+  ): TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [boolean],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'hashOperation'
+  ): TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      data: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [string],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'hashOperationBatch'
+  ): TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike
+    ],
+    [string],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'isOperation'
+  ): TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'isOperationDone'
+  ): TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'isOperationPending'
+  ): TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'isOperationReady'
+  ): TypedContractMethod<[id: BytesLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'onERC1155BatchReceived'
+  ): TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish[],
+      arg3: BigNumberish[],
+      arg4: BytesLike
+    ],
+    [string],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'onERC1155Received'
+  ): TypedContractMethod<
+    [
+      arg0: AddressLike,
+      arg1: AddressLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike
+    ],
+    [string],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'onERC721Received'
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: AddressLike, arg2: BigNumberish, arg3: BytesLike],
+    [string],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'renounceRole'
+  ): TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'revokeRole'
+  ): TypedContractMethod<
+    [role: BytesLike, account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'schedule'
+  ): TypedContractMethod<
+    [
+      target: AddressLike,
+      value: BigNumberish,
+      data: BytesLike,
+      predecessor: BytesLike,
+      salt: BytesLike,
+      delay: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'scheduleBatch'
+  ): TypedContractMethod<
+    [
+      targets: AddressLike[],
+      values: BigNumberish[],
+      payloads: BytesLike[],
+      predecessor: BytesLike,
+      salt: BytesLike,
+      delay: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setMinDelayOverride'
+  ): TypedContractMethod<
+    [target: AddressLike, selector: BytesLike, minDelayOverride: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'supportsInterface'
+  ): TypedContractMethod<[interfaceId: BytesLike], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'unsetMinDelayOverride'
+  ): TypedContractMethod<
+    [target: AddressLike, selector: BytesLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateDelay'
+  ): TypedContractMethod<[newDelay: BigNumberish], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'CallExecuted'
+  ): TypedContractEvent<
+    CallExecutedEvent.InputTuple,
+    CallExecutedEvent.OutputTuple,
+    CallExecutedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CallScheduled'
+  ): TypedContractEvent<
+    CallScheduledEvent.InputTuple,
+    CallScheduledEvent.OutputTuple,
+    CallScheduledEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Cancelled'
+  ): TypedContractEvent<
+    CancelledEvent.InputTuple,
+    CancelledEvent.OutputTuple,
+    CancelledEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MinDelayChange'
+  ): TypedContractEvent<
+    MinDelayChangeEvent.InputTuple,
+    MinDelayChangeEvent.OutputTuple,
+    MinDelayChangeEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MinDelayOverrideSet'
+  ): TypedContractEvent<
+    MinDelayOverrideSetEvent.InputTuple,
+    MinDelayOverrideSetEvent.OutputTuple,
+    MinDelayOverrideSetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MinDelayOverrideUnset'
+  ): TypedContractEvent<
+    MinDelayOverrideUnsetEvent.InputTuple,
+    MinDelayOverrideUnsetEvent.OutputTuple,
+    MinDelayOverrideUnsetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RoleAdminChanged'
+  ): TypedContractEvent<
+    RoleAdminChangedEvent.InputTuple,
+    RoleAdminChangedEvent.OutputTuple,
+    RoleAdminChangedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RoleGranted'
+  ): TypedContractEvent<
+    RoleGrantedEvent.InputTuple,
+    RoleGrantedEvent.OutputTuple,
+    RoleGrantedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RoleRevoked'
+  ): TypedContractEvent<
+    RoleRevokedEvent.InputTuple,
+    RoleRevokedEvent.OutputTuple,
+    RoleRevokedEvent.OutputObject
+  >;
 
   filters: {
-    'CallExecuted(bytes32,uint256,address,uint256,bytes)'(
-      id?: PromiseOrValue<BytesLike> | null,
-      index?: PromiseOrValue<BigNumberish> | null,
-      target?: null,
-      value?: null,
-      data?: null
-    ): CallExecutedEventFilter;
-    CallExecuted(
-      id?: PromiseOrValue<BytesLike> | null,
-      index?: PromiseOrValue<BigNumberish> | null,
-      target?: null,
-      value?: null,
-      data?: null
-    ): CallExecutedEventFilter;
-
-    'CallScheduled(bytes32,uint256,address,uint256,bytes,bytes32,uint256)'(
-      id?: PromiseOrValue<BytesLike> | null,
-      index?: PromiseOrValue<BigNumberish> | null,
-      target?: null,
-      value?: null,
-      data?: null,
-      predecessor?: null,
-      delay?: null
-    ): CallScheduledEventFilter;
-    CallScheduled(
-      id?: PromiseOrValue<BytesLike> | null,
-      index?: PromiseOrValue<BigNumberish> | null,
-      target?: null,
-      value?: null,
-      data?: null,
-      predecessor?: null,
-      delay?: null
-    ): CallScheduledEventFilter;
-
-    'Cancelled(bytes32)'(
-      id?: PromiseOrValue<BytesLike> | null
-    ): CancelledEventFilter;
-    Cancelled(id?: PromiseOrValue<BytesLike> | null): CancelledEventFilter;
-
-    'MinDelayChange(uint256,uint256)'(
-      oldDuration?: null,
-      newDuration?: null
-    ): MinDelayChangeEventFilter;
-    MinDelayChange(
-      oldDuration?: null,
-      newDuration?: null
-    ): MinDelayChangeEventFilter;
-
-    'MinDelayOverrideSet(address,bytes4,uint256)'(
-      target?: null,
-      selector?: null,
-      newMinDelay?: null
-    ): MinDelayOverrideSetEventFilter;
-    MinDelayOverrideSet(
-      target?: null,
-      selector?: null,
-      newMinDelay?: null
-    ): MinDelayOverrideSetEventFilter;
-
-    'MinDelayOverrideUnset(address,bytes4)'(
-      target?: null,
-      selector?: null
-    ): MinDelayOverrideUnsetEventFilter;
-    MinDelayOverrideUnset(
-      target?: null,
-      selector?: null
-    ): MinDelayOverrideUnsetEventFilter;
-
-    'RoleAdminChanged(bytes32,bytes32,bytes32)'(
-      role?: PromiseOrValue<BytesLike> | null,
-      previousAdminRole?: PromiseOrValue<BytesLike> | null,
-      newAdminRole?: PromiseOrValue<BytesLike> | null
-    ): RoleAdminChangedEventFilter;
-    RoleAdminChanged(
-      role?: PromiseOrValue<BytesLike> | null,
-      previousAdminRole?: PromiseOrValue<BytesLike> | null,
-      newAdminRole?: PromiseOrValue<BytesLike> | null
-    ): RoleAdminChangedEventFilter;
-
-    'RoleGranted(bytes32,address,address)'(
-      role?: PromiseOrValue<BytesLike> | null,
-      account?: PromiseOrValue<string> | null,
-      sender?: PromiseOrValue<string> | null
-    ): RoleGrantedEventFilter;
-    RoleGranted(
-      role?: PromiseOrValue<BytesLike> | null,
-      account?: PromiseOrValue<string> | null,
-      sender?: PromiseOrValue<string> | null
-    ): RoleGrantedEventFilter;
-
-    'RoleRevoked(bytes32,address,address)'(
-      role?: PromiseOrValue<BytesLike> | null,
-      account?: PromiseOrValue<string> | null,
-      sender?: PromiseOrValue<string> | null
-    ): RoleRevokedEventFilter;
-    RoleRevoked(
-      role?: PromiseOrValue<BytesLike> | null,
-      account?: PromiseOrValue<string> | null,
-      sender?: PromiseOrValue<string> | null
-    ): RoleRevokedEventFilter;
-  };
-
-  estimateGas: {
-    CANCELLER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    EXECUTOR_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    PROPOSER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    TIMELOCK_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    cancel(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    execute(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      payload: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    executeBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getMinDelay(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRoleAdmin(
-      role: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTimestamp(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    grantRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    hashOperation(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    hashOperationBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isOperation(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isOperationDone(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isOperationPending(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isOperationReady(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    revokeRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    schedule(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    scheduleBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      minDelayOverride: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    unsetMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateDelay(
-      newDelay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    CANCELLER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    DEFAULT_ADMIN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    EXECUTOR_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    PROPOSER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    TIMELOCK_ADMIN_ROLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    cancel(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    execute(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      payload: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    executeBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getMinDelay(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRoleAdmin(
-      role: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTimestamp(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    grantRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    hasRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    hashOperation(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    hashOperationBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isOperation(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isOperationDone(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isOperationPending(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isOperationReady(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    onERC1155BatchReceived(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>[],
-      arg3: PromiseOrValue<BigNumberish>[],
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    onERC1155Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    onERC721Received(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    revokeRole(
-      role: PromiseOrValue<BytesLike>,
-      account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    schedule(
-      target: PromiseOrValue<string>,
-      value: PromiseOrValue<BigNumberish>,
-      data: PromiseOrValue<BytesLike>,
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    scheduleBatch(
-      targets: PromiseOrValue<string>[],
-      values: PromiseOrValue<BigNumberish>[],
-      payloads: PromiseOrValue<BytesLike>[],
-      predecessor: PromiseOrValue<BytesLike>,
-      salt: PromiseOrValue<BytesLike>,
-      delay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      minDelayOverride: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    supportsInterface(
-      interfaceId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    unsetMinDelayOverride(
-      target: PromiseOrValue<string>,
-      selector: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateDelay(
-      newDelay: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'CallExecuted(bytes32,uint256,address,uint256,bytes)': TypedContractEvent<
+      CallExecutedEvent.InputTuple,
+      CallExecutedEvent.OutputTuple,
+      CallExecutedEvent.OutputObject
+    >;
+    CallExecuted: TypedContractEvent<
+      CallExecutedEvent.InputTuple,
+      CallExecutedEvent.OutputTuple,
+      CallExecutedEvent.OutputObject
+    >;
+
+    'CallScheduled(bytes32,uint256,address,uint256,bytes,bytes32,uint256)': TypedContractEvent<
+      CallScheduledEvent.InputTuple,
+      CallScheduledEvent.OutputTuple,
+      CallScheduledEvent.OutputObject
+    >;
+    CallScheduled: TypedContractEvent<
+      CallScheduledEvent.InputTuple,
+      CallScheduledEvent.OutputTuple,
+      CallScheduledEvent.OutputObject
+    >;
+
+    'Cancelled(bytes32)': TypedContractEvent<
+      CancelledEvent.InputTuple,
+      CancelledEvent.OutputTuple,
+      CancelledEvent.OutputObject
+    >;
+    Cancelled: TypedContractEvent<
+      CancelledEvent.InputTuple,
+      CancelledEvent.OutputTuple,
+      CancelledEvent.OutputObject
+    >;
+
+    'MinDelayChange(uint256,uint256)': TypedContractEvent<
+      MinDelayChangeEvent.InputTuple,
+      MinDelayChangeEvent.OutputTuple,
+      MinDelayChangeEvent.OutputObject
+    >;
+    MinDelayChange: TypedContractEvent<
+      MinDelayChangeEvent.InputTuple,
+      MinDelayChangeEvent.OutputTuple,
+      MinDelayChangeEvent.OutputObject
+    >;
+
+    'MinDelayOverrideSet(address,bytes4,uint256)': TypedContractEvent<
+      MinDelayOverrideSetEvent.InputTuple,
+      MinDelayOverrideSetEvent.OutputTuple,
+      MinDelayOverrideSetEvent.OutputObject
+    >;
+    MinDelayOverrideSet: TypedContractEvent<
+      MinDelayOverrideSetEvent.InputTuple,
+      MinDelayOverrideSetEvent.OutputTuple,
+      MinDelayOverrideSetEvent.OutputObject
+    >;
+
+    'MinDelayOverrideUnset(address,bytes4)': TypedContractEvent<
+      MinDelayOverrideUnsetEvent.InputTuple,
+      MinDelayOverrideUnsetEvent.OutputTuple,
+      MinDelayOverrideUnsetEvent.OutputObject
+    >;
+    MinDelayOverrideUnset: TypedContractEvent<
+      MinDelayOverrideUnsetEvent.InputTuple,
+      MinDelayOverrideUnsetEvent.OutputTuple,
+      MinDelayOverrideUnsetEvent.OutputObject
+    >;
+
+    'RoleAdminChanged(bytes32,bytes32,bytes32)': TypedContractEvent<
+      RoleAdminChangedEvent.InputTuple,
+      RoleAdminChangedEvent.OutputTuple,
+      RoleAdminChangedEvent.OutputObject
+    >;
+    RoleAdminChanged: TypedContractEvent<
+      RoleAdminChangedEvent.InputTuple,
+      RoleAdminChangedEvent.OutputTuple,
+      RoleAdminChangedEvent.OutputObject
+    >;
+
+    'RoleGranted(bytes32,address,address)': TypedContractEvent<
+      RoleGrantedEvent.InputTuple,
+      RoleGrantedEvent.OutputTuple,
+      RoleGrantedEvent.OutputObject
+    >;
+    RoleGranted: TypedContractEvent<
+      RoleGrantedEvent.InputTuple,
+      RoleGrantedEvent.OutputTuple,
+      RoleGrantedEvent.OutputObject
+    >;
+
+    'RoleRevoked(bytes32,address,address)': TypedContractEvent<
+      RoleRevokedEvent.InputTuple,
+      RoleRevokedEvent.OutputTuple,
+      RoleRevokedEvent.OutputObject
+    >;
+    RoleRevoked: TypedContractEvent<
+      RoleRevokedEvent.InputTuple,
+      RoleRevokedEvent.OutputTuple,
+      RoleRevokedEvent.OutputObject
+    >;
   };
 }

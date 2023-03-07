@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   InsuranceFundDeployer,
   InsuranceFundDeployerInterface,
@@ -23,21 +22,21 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class InsuranceFundDeployer__factory {
   static readonly abi = _abi;
   static createInterface(): InsuranceFundDeployerInterface {
-    return new utils.Interface(_abi) as InsuranceFundDeployerInterface;
+    return new Interface(_abi) as InsuranceFundDeployerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): InsuranceFundDeployer {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as InsuranceFundDeployer;
+      runner
+    ) as unknown as InsuranceFundDeployer;
   }
 }

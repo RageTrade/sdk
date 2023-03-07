@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   AggregatorV3Interface,
   AggregatorV3InterfaceInterface,
@@ -121,21 +120,21 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class AggregatorV3Interface__factory {
   static readonly abi = _abi;
   static createInterface(): AggregatorV3InterfaceInterface {
-    return new utils.Interface(_abi) as AggregatorV3InterfaceInterface;
+    return new Interface(_abi) as AggregatorV3InterfaceInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): AggregatorV3Interface {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as AggregatorV3Interface;
+      runner
+    ) as unknown as AggregatorV3Interface;
   }
 }

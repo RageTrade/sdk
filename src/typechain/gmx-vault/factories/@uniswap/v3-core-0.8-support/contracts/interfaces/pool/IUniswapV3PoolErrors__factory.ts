@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IUniswapV3PoolErrors,
   IUniswapV3PoolErrorsInterface,
@@ -70,21 +69,21 @@ const _abi = [
     name: 'TUM',
     type: 'error',
   },
-];
+] as const;
 
 export class IUniswapV3PoolErrors__factory {
   static readonly abi = _abi;
   static createInterface(): IUniswapV3PoolErrorsInterface {
-    return new utils.Interface(_abi) as IUniswapV3PoolErrorsInterface;
+    return new Interface(_abi) as IUniswapV3PoolErrorsInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IUniswapV3PoolErrors {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IUniswapV3PoolErrors;
+      runner
+    ) as unknown as IUniswapV3PoolErrors;
   }
 }

@@ -7,4 +7,4 @@ cp -rf node_modules/$PACKAGE/deployments/ src/deployments/$REPO
 fi
 
 rm -rf src/typechain/$REPO
-typechain --target ethers-v5 --out-dir src/typechain/$REPO './node_modules/'$PACKAGE'/artifacts/**/*.sol/!(*.dbg.json)'
+typechain --target ethers-v6 --out-dir src/typechain/$REPO './node_modules/'$PACKAGE'/artifacts/**/*.sol/!(*.dbg.json)'

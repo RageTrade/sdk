@@ -3,54 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
-  functions: {
-    'btcTraderOIHedge()': FunctionFragment;
-    'ethTraderOIHedge()': FunctionFragment;
-    'glp()': FunctionFragment;
-    'glpManager()': FunctionFragment;
-    'gmxVault()': FunctionFragment;
-    'initialize(address,address,address,address,address,address,address)': FunctionFragment;
-    'juniorVault()': FunctionFragment;
-    'keeper()': FunctionFragment;
-    'overrideTraderOIHedges(int128,int128)': FunctionFragment;
-    'owner()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setKeeper(address)': FunctionFragment;
-    'setTraderOIHedgeBps(uint16)': FunctionFragment;
-    'setTraderOIHedges()': FunctionFragment;
-    'traderOIHedgeBps()': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'wbtc()': FunctionFragment;
-    'weth()': FunctionFragment;
-  };
-
+export interface DnGmxTraderHedgeStrategyInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'btcTraderOIHedge'
       | 'ethTraderOIHedge'
       | 'glp'
@@ -71,6 +46,15 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
       | 'weth'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Initialized'
+      | 'KeeperUpdated'
+      | 'OwnershipTransferred'
+      | 'TraderOIHedgeBpsUpdated'
+      | 'TraderOIHedgesUpdated'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'btcTraderOIHedge',
     values?: undefined
@@ -88,13 +72,13 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
@@ -104,7 +88,7 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'overrideTraderOIHedges',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
@@ -113,11 +97,11 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setKeeper',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTraderOIHedgeBps',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTraderOIHedges',
@@ -129,7 +113,7 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'wbtc', values?: undefined): string;
   encodeFunctionData(functionFragment: 'weth', values?: undefined): string;
@@ -179,451 +163,350 @@ export interface DnGmxTraderHedgeStrategyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'wbtc', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
-
-  events: {
-    'Initialized(uint8)': EventFragment;
-    'KeeperUpdated(address,address)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'TraderOIHedgeBpsUpdated(uint256)': EventFragment;
-    'TraderOIHedgesUpdated(int256,int256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TraderOIHedgeBpsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TraderOIHedgesUpdated'): EventFragment;
 }
 
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface KeeperUpdatedEventObject {
-  oldKeeper: string;
-  newKeeper: string;
+export namespace KeeperUpdatedEvent {
+  export type InputTuple = [oldKeeper: AddressLike, newKeeper: AddressLike];
+  export type OutputTuple = [oldKeeper: string, newKeeper: string];
+  export interface OutputObject {
+    oldKeeper: string;
+    newKeeper: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type KeeperUpdatedEvent = TypedEvent<
-  [string, string],
-  KeeperUpdatedEventObject
->;
 
-export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface TraderOIHedgeBpsUpdatedEventObject {
-  traderOIHedgeBps: BigNumber;
+export namespace TraderOIHedgeBpsUpdatedEvent {
+  export type InputTuple = [traderOIHedgeBps: BigNumberish];
+  export type OutputTuple = [traderOIHedgeBps: bigint];
+  export interface OutputObject {
+    traderOIHedgeBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TraderOIHedgeBpsUpdatedEvent = TypedEvent<
-  [BigNumber],
-  TraderOIHedgeBpsUpdatedEventObject
->;
 
-export type TraderOIHedgeBpsUpdatedEventFilter =
-  TypedEventFilter<TraderOIHedgeBpsUpdatedEvent>;
-
-export interface TraderOIHedgesUpdatedEventObject {
-  btcTraderOIHedge: BigNumber;
-  ethTraderOIHedge: BigNumber;
+export namespace TraderOIHedgesUpdatedEvent {
+  export type InputTuple = [
+    btcTraderOIHedge: BigNumberish,
+    ethTraderOIHedge: BigNumberish
+  ];
+  export type OutputTuple = [
+    btcTraderOIHedge: bigint,
+    ethTraderOIHedge: bigint
+  ];
+  export interface OutputObject {
+    btcTraderOIHedge: bigint;
+    ethTraderOIHedge: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TraderOIHedgesUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  TraderOIHedgesUpdatedEventObject
->;
-
-export type TraderOIHedgesUpdatedEventFilter =
-  TypedEventFilter<TraderOIHedgesUpdatedEvent>;
 
 export interface DnGmxTraderHedgeStrategy extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: DnGmxTraderHedgeStrategyInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    glp(overrides?: CallOverrides): Promise<[string]>;
+  btcTraderOIHedge: TypedContractMethod<[], [bigint], 'view'>;
 
-    glpManager(overrides?: CallOverrides): Promise<[string]>;
+  ethTraderOIHedge: TypedContractMethod<[], [bigint], 'view'>;
 
-    gmxVault(overrides?: CallOverrides): Promise<[string]>;
+  glp: TypedContractMethod<[], [string], 'view'>;
 
-    initialize(
-      _keeper: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _juniorVault: PromiseOrValue<string>,
-      _glp: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  glpManager: TypedContractMethod<[], [string], 'view'>;
 
-    juniorVault(overrides?: CallOverrides): Promise<[string]>;
+  gmxVault: TypedContractMethod<[], [string], 'view'>;
 
-    keeper(overrides?: CallOverrides): Promise<[string]>;
+  initialize: TypedContractMethod<
+    [
+      _keeper: AddressLike,
+      _gmxVault: AddressLike,
+      _glpManager: AddressLike,
+      _juniorVault: AddressLike,
+      _glp: AddressLike,
+      _weth: AddressLike,
+      _wbtc: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    overrideTraderOIHedges(
-      _btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      _ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  juniorVault: TypedContractMethod<[], [string], 'view'>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+  keeper: TypedContractMethod<[], [string], 'view'>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  overrideTraderOIHedges: TypedContractMethod<
+    [_btcTraderOIHedge: BigNumberish, _ethTraderOIHedge: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setKeeper: TypedContractMethod<[_keeper: AddressLike], [void], 'nonpayable'>;
 
-    traderOIHedgeBps(overrides?: CallOverrides): Promise<[number]>;
+  setTraderOIHedgeBps: TypedContractMethod<
+    [_traderOIHedgeBps: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setTraderOIHedges: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    wbtc(overrides?: CallOverrides): Promise<[string]>;
+  traderOIHedgeBps: TypedContractMethod<[], [bigint], 'view'>;
 
-    weth(overrides?: CallOverrides): Promise<[string]>;
-  };
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
+  wbtc: TypedContractMethod<[], [string], 'view'>;
 
-  ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
+  weth: TypedContractMethod<[], [string], 'view'>;
 
-  glp(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  glpManager(overrides?: CallOverrides): Promise<string>;
+  getFunction(
+    nameOrSignature: 'btcTraderOIHedge'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'ethTraderOIHedge'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'glp'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'glpManager'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'gmxVault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      _keeper: AddressLike,
+      _gmxVault: AddressLike,
+      _glpManager: AddressLike,
+      _juniorVault: AddressLike,
+      _glp: AddressLike,
+      _weth: AddressLike,
+      _wbtc: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'juniorVault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'keeper'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'overrideTraderOIHedges'
+  ): TypedContractMethod<
+    [_btcTraderOIHedge: BigNumberish, _ethTraderOIHedge: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setKeeper'
+  ): TypedContractMethod<[_keeper: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setTraderOIHedgeBps'
+  ): TypedContractMethod<
+    [_traderOIHedgeBps: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTraderOIHedges'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'traderOIHedgeBps'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'wbtc'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'weth'
+  ): TypedContractMethod<[], [string], 'view'>;
 
-  gmxVault(overrides?: CallOverrides): Promise<string>;
-
-  initialize(
-    _keeper: PromiseOrValue<string>,
-    _gmxVault: PromiseOrValue<string>,
-    _glpManager: PromiseOrValue<string>,
-    _juniorVault: PromiseOrValue<string>,
-    _glp: PromiseOrValue<string>,
-    _weth: PromiseOrValue<string>,
-    _wbtc: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  juniorVault(overrides?: CallOverrides): Promise<string>;
-
-  keeper(overrides?: CallOverrides): Promise<string>;
-
-  overrideTraderOIHedges(
-    _btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-    _ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setKeeper(
-    _keeper: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTraderOIHedgeBps(
-    _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTraderOIHedges(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  traderOIHedgeBps(overrides?: CallOverrides): Promise<number>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  wbtc(overrides?: CallOverrides): Promise<string>;
-
-  weth(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    glp(overrides?: CallOverrides): Promise<string>;
-
-    glpManager(overrides?: CallOverrides): Promise<string>;
-
-    gmxVault(overrides?: CallOverrides): Promise<string>;
-
-    initialize(
-      _keeper: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _juniorVault: PromiseOrValue<string>,
-      _glp: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    juniorVault(overrides?: CallOverrides): Promise<string>;
-
-    keeper(overrides?: CallOverrides): Promise<string>;
-
-    overrideTraderOIHedges(
-      _btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      _ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTraderOIHedges(overrides?: CallOverrides): Promise<void>;
-
-    traderOIHedgeBps(overrides?: CallOverrides): Promise<number>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    wbtc(overrides?: CallOverrides): Promise<string>;
-
-    weth(overrides?: CallOverrides): Promise<string>;
-  };
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'KeeperUpdated'
+  ): TypedContractEvent<
+    KeeperUpdatedEvent.InputTuple,
+    KeeperUpdatedEvent.OutputTuple,
+    KeeperUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TraderOIHedgeBpsUpdated'
+  ): TypedContractEvent<
+    TraderOIHedgeBpsUpdatedEvent.InputTuple,
+    TraderOIHedgeBpsUpdatedEvent.OutputTuple,
+    TraderOIHedgeBpsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TraderOIHedgesUpdated'
+  ): TypedContractEvent<
+    TraderOIHedgesUpdatedEvent.InputTuple,
+    TraderOIHedgesUpdatedEvent.OutputTuple,
+    TraderOIHedgesUpdatedEvent.OutputObject
+  >;
 
   filters: {
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
 
-    'KeeperUpdated(address,address)'(
-      oldKeeper?: PromiseOrValue<string> | null,
-      newKeeper?: PromiseOrValue<string> | null
-    ): KeeperUpdatedEventFilter;
-    KeeperUpdated(
-      oldKeeper?: PromiseOrValue<string> | null,
-      newKeeper?: PromiseOrValue<string> | null
-    ): KeeperUpdatedEventFilter;
+    'KeeperUpdated(address,address)': TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
+    KeeperUpdated: TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
 
-    'TraderOIHedgeBpsUpdated(uint256)'(
-      traderOIHedgeBps?: null
-    ): TraderOIHedgeBpsUpdatedEventFilter;
-    TraderOIHedgeBpsUpdated(
-      traderOIHedgeBps?: null
-    ): TraderOIHedgeBpsUpdatedEventFilter;
+    'TraderOIHedgeBpsUpdated(uint256)': TypedContractEvent<
+      TraderOIHedgeBpsUpdatedEvent.InputTuple,
+      TraderOIHedgeBpsUpdatedEvent.OutputTuple,
+      TraderOIHedgeBpsUpdatedEvent.OutputObject
+    >;
+    TraderOIHedgeBpsUpdated: TypedContractEvent<
+      TraderOIHedgeBpsUpdatedEvent.InputTuple,
+      TraderOIHedgeBpsUpdatedEvent.OutputTuple,
+      TraderOIHedgeBpsUpdatedEvent.OutputObject
+    >;
 
-    'TraderOIHedgesUpdated(int256,int256)'(
-      btcTraderOIHedge?: null,
-      ethTraderOIHedge?: null
-    ): TraderOIHedgesUpdatedEventFilter;
-    TraderOIHedgesUpdated(
-      btcTraderOIHedge?: null,
-      ethTraderOIHedge?: null
-    ): TraderOIHedgesUpdatedEventFilter;
-  };
-
-  estimateGas: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    glp(overrides?: CallOverrides): Promise<BigNumber>;
-
-    glpManager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    gmxVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initialize(
-      _keeper: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _juniorVault: PromiseOrValue<string>,
-      _glp: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    juniorVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    keeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    overrideTraderOIHedges(
-      _btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      _ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    traderOIHedgeBps(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    wbtc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    weth(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    glp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    glpManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    gmxVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initialize(
-      _keeper: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _glpManager: PromiseOrValue<string>,
-      _juniorVault: PromiseOrValue<string>,
-      _glp: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    juniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    overrideTraderOIHedges(
-      _btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      _ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setKeeper(
-      _keeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    traderOIHedgeBps(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    wbtc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'TraderOIHedgesUpdated(int256,int256)': TypedContractEvent<
+      TraderOIHedgesUpdatedEvent.InputTuple,
+      TraderOIHedgesUpdatedEvent.OutputTuple,
+      TraderOIHedgesUpdatedEvent.OutputObject
+    >;
+    TraderOIHedgesUpdated: TypedContractEvent<
+      TraderOIHedgesUpdatedEvent.InputTuple,
+      TraderOIHedgesUpdatedEvent.OutputTuple,
+      TraderOIHedgesUpdatedEvent.OutputObject
+    >;
   };
 }

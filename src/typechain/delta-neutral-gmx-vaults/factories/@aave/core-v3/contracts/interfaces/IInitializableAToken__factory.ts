@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IInitializableAToken,
   IInitializableATokenInterface,
@@ -113,21 +112,21 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IInitializableAToken__factory {
   static readonly abi = _abi;
   static createInterface(): IInitializableATokenInterface {
-    return new utils.Interface(_abi) as IInitializableATokenInterface;
+    return new Interface(_abi) as IInitializableATokenInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IInitializableAToken {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IInitializableAToken;
+      runner
+    ) as unknown as IInitializableAToken;
   }
 }

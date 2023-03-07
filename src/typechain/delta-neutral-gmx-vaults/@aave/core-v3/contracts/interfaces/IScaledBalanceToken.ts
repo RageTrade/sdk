@@ -3,54 +3,48 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
+  BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
-export interface IScaledBalanceTokenInterface extends utils.Interface {
-  functions: {
-    'getPreviousIndex(address)': FunctionFragment;
-    'getScaledUserBalanceAndSupply(address)': FunctionFragment;
-    'scaledBalanceOf(address)': FunctionFragment;
-    'scaledTotalSupply()': FunctionFragment;
-  };
-
+export interface IScaledBalanceTokenInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'getPreviousIndex'
       | 'getScaledUserBalanceAndSupply'
       | 'scaledBalanceOf'
       | 'scaledTotalSupply'
   ): FunctionFragment;
 
+  getEvent(nameOrSignatureOrTopic: 'Burn' | 'Mint'): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'getPreviousIndex',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getScaledUserBalanceAndSupply',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'scaledBalanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'scaledTotalSupply',
@@ -73,192 +67,173 @@ export interface IScaledBalanceTokenInterface extends utils.Interface {
     functionFragment: 'scaledTotalSupply',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Burn(address,address,uint256,uint256,uint256)': EventFragment;
-    'Mint(address,address,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
 }
 
-export interface BurnEventObject {
-  from: string;
-  target: string;
-  value: BigNumber;
-  balanceIncrease: BigNumber;
-  index: BigNumber;
+export namespace BurnEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    target: AddressLike,
+    value: BigNumberish,
+    balanceIncrease: BigNumberish,
+    index: BigNumberish
+  ];
+  export type OutputTuple = [
+    from: string,
+    target: string,
+    value: bigint,
+    balanceIncrease: bigint,
+    index: bigint
+  ];
+  export interface OutputObject {
+    from: string;
+    target: string;
+    value: bigint;
+    balanceIncrease: bigint;
+    index: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BurnEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  BurnEventObject
->;
 
-export type BurnEventFilter = TypedEventFilter<BurnEvent>;
-
-export interface MintEventObject {
-  caller: string;
-  onBehalfOf: string;
-  value: BigNumber;
-  balanceIncrease: BigNumber;
-  index: BigNumber;
+export namespace MintEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    onBehalfOf: AddressLike,
+    value: BigNumberish,
+    balanceIncrease: BigNumberish,
+    index: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    onBehalfOf: string,
+    value: bigint,
+    balanceIncrease: bigint,
+    index: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    onBehalfOf: string;
+    value: bigint;
+    balanceIncrease: bigint;
+    index: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MintEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  MintEventObject
->;
-
-export type MintEventFilter = TypedEventFilter<MintEvent>;
 
 export interface IScaledBalanceToken extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IScaledBalanceTokenInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getPreviousIndex: TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
 
-    scaledTotalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-  };
+  getScaledUserBalanceAndSupply: TypedContractMethod<
+    [user: AddressLike],
+    [[bigint, bigint]],
+    'view'
+  >;
 
-  getPreviousIndex(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  scaledBalanceOf: TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
 
-  getScaledUserBalanceAndSupply(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
+  scaledTotalSupply: TypedContractMethod<[], [bigint], 'view'>;
 
-  scaledBalanceOf(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+  getFunction(
+    nameOrSignature: 'getPreviousIndex'
+  ): TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getScaledUserBalanceAndSupply'
+  ): TypedContractMethod<[user: AddressLike], [[bigint, bigint]], 'view'>;
+  getFunction(
+    nameOrSignature: 'scaledBalanceOf'
+  ): TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'scaledTotalSupply'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
-  callStatic: {
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-  };
+  getEvent(
+    key: 'Burn'
+  ): TypedContractEvent<
+    BurnEvent.InputTuple,
+    BurnEvent.OutputTuple,
+    BurnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Mint'
+  ): TypedContractEvent<
+    MintEvent.InputTuple,
+    MintEvent.OutputTuple,
+    MintEvent.OutputObject
+  >;
 
   filters: {
-    'Burn(address,address,uint256,uint256,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      target?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): BurnEventFilter;
-    Burn(
-      from?: PromiseOrValue<string> | null,
-      target?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): BurnEventFilter;
+    'Burn(address,address,uint256,uint256,uint256)': TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
+    Burn: TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
 
-    'Mint(address,address,uint256,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): MintEventFilter;
-    Mint(
-      caller?: PromiseOrValue<string> | null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      value?: null,
-      balanceIncrease?: null,
-      index?: null
-    ): MintEventFilter;
-  };
-
-  estimateGas: {
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getPreviousIndex(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getScaledUserBalanceAndSupply(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    scaledBalanceOf(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    scaledTotalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'Mint(address,address,uint256,uint256,uint256)': TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
+    Mint: TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
   };
 }

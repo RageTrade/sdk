@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IClearingHouseEvents,
   IClearingHouseEventsInterface,
@@ -207,21 +206,21 @@ const _abi = [
     name: 'ProtocolSettingsUpdated',
     type: 'event',
   },
-];
+] as const;
 
 export class IClearingHouseEvents__factory {
   static readonly abi = _abi;
   static createInterface(): IClearingHouseEventsInterface {
-    return new utils.Interface(_abi) as IClearingHouseEventsInterface;
+    return new Interface(_abi) as IClearingHouseEventsInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IClearingHouseEvents {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IClearingHouseEvents;
+      runner
+    ) as unknown as IClearingHouseEvents;
   }
 }

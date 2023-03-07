@@ -3,39 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IGovernableInterface extends utils.Interface {
-  functions: {
-    'acceptGovernanceTransfer()': FunctionFragment;
-    'acceptTeamMultisigTransfer()': FunctionFragment;
-    'governance()': FunctionFragment;
-    'governancePending()': FunctionFragment;
-    'initiateGovernanceTransfer(address)': FunctionFragment;
-    'initiateTeamMultisigTransfer(address)': FunctionFragment;
-    'teamMultisig()': FunctionFragment;
-    'teamMultisigPending()': FunctionFragment;
-  };
-
+export interface IGovernableInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'acceptGovernanceTransfer'
       | 'acceptTeamMultisigTransfer'
       | 'governance'
@@ -64,11 +51,11 @@ export interface IGovernableInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -108,171 +95,112 @@ export interface IGovernableInterface extends utils.Interface {
     functionFragment: 'teamMultisigPending',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IGovernable extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IGovernableInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    governance(overrides?: CallOverrides): Promise<[string]>;
+  acceptGovernanceTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    governancePending(overrides?: CallOverrides): Promise<[string]>;
+  acceptTeamMultisigTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  governance: TypedContractMethod<[], [string], 'view'>;
 
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  governancePending: TypedContractMethod<[], [string], 'view'>;
 
-    teamMultisig(overrides?: CallOverrides): Promise<[string]>;
+  initiateGovernanceTransfer: TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    teamMultisigPending(overrides?: CallOverrides): Promise<[string]>;
-  };
+  initiateTeamMultisigTransfer: TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  teamMultisig: TypedContractMethod<[], [string], 'view'>;
 
-  acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  teamMultisigPending: TypedContractMethod<[], [string], 'view'>;
 
-  governance(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  governancePending(overrides?: CallOverrides): Promise<string>;
-
-  initiateGovernanceTransfer(
-    newGovernancePending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initiateTeamMultisigTransfer(
-    newTeamMultisigPending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-  teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    acceptGovernanceTransfer(overrides?: CallOverrides): Promise<void>;
-
-    acceptTeamMultisigTransfer(overrides?: CallOverrides): Promise<void>;
-
-    governance(overrides?: CallOverrides): Promise<string>;
-
-    governancePending(overrides?: CallOverrides): Promise<string>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'acceptGovernanceTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'acceptTeamMultisigTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'governance'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'governancePending'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initiateGovernanceTransfer'
+  ): TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initiateTeamMultisigTransfer'
+  ): TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'teamMultisig'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'teamMultisigPending'
+  ): TypedContractMethod<[], [string], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    governance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    governancePending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    teamMultisigPending(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

@@ -3,223 +3,305 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../common';
 
-export interface DnGmxJuniorVaultManagerInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'GlpSwapped(uint256,uint256,bool)': EventFragment;
-    'ProtocolFeeAccrued(uint256)': EventFragment;
-    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'TokenSwapped(address,address,uint256,uint256)': EventFragment;
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'GlpSwapped'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeAccrued'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RewardsHarvested'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenSwapped'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultState'): EventFragment;
+export interface DnGmxJuniorVaultManagerInterface extends Interface {
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'GlpSwapped'
+      | 'ProtocolFeeAccrued'
+      | 'RewardsHarvested'
+      | 'TokenSwapped'
+      | 'VaultState'
+  ): EventFragment;
 }
 
-export interface GlpSwappedEventObject {
-  glpQuantity: BigNumber;
-  usdcQuantity: BigNumber;
-  fromGlpToUsdc: boolean;
+export namespace GlpSwappedEvent {
+  export type InputTuple = [
+    glpQuantity: BigNumberish,
+    usdcQuantity: BigNumberish,
+    fromGlpToUsdc: boolean
+  ];
+  export type OutputTuple = [
+    glpQuantity: bigint,
+    usdcQuantity: bigint,
+    fromGlpToUsdc: boolean
+  ];
+  export interface OutputObject {
+    glpQuantity: bigint;
+    usdcQuantity: bigint;
+    fromGlpToUsdc: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GlpSwappedEvent = TypedEvent<
-  [BigNumber, BigNumber, boolean],
-  GlpSwappedEventObject
->;
 
-export type GlpSwappedEventFilter = TypedEventFilter<GlpSwappedEvent>;
-
-export interface ProtocolFeeAccruedEventObject {
-  fees: BigNumber;
+export namespace ProtocolFeeAccruedEvent {
+  export type InputTuple = [fees: BigNumberish];
+  export type OutputTuple = [fees: bigint];
+  export interface OutputObject {
+    fees: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProtocolFeeAccruedEvent = TypedEvent<
-  [BigNumber],
-  ProtocolFeeAccruedEventObject
->;
 
-export type ProtocolFeeAccruedEventFilter =
-  TypedEventFilter<ProtocolFeeAccruedEvent>;
-
-export interface RewardsHarvestedEventObject {
-  wethHarvested: BigNumber;
-  esGmxStaked: BigNumber;
-  juniorVaultWeth: BigNumber;
-  seniorVaultWeth: BigNumber;
-  juniorVaultGlp: BigNumber;
-  seniorVaultAUsdc: BigNumber;
+export namespace RewardsHarvestedEvent {
+  export type InputTuple = [
+    wethHarvested: BigNumberish,
+    esGmxStaked: BigNumberish,
+    juniorVaultWeth: BigNumberish,
+    seniorVaultWeth: BigNumberish,
+    juniorVaultGlp: BigNumberish,
+    seniorVaultAUsdc: BigNumberish
+  ];
+  export type OutputTuple = [
+    wethHarvested: bigint,
+    esGmxStaked: bigint,
+    juniorVaultWeth: bigint,
+    seniorVaultWeth: bigint,
+    juniorVaultGlp: bigint,
+    seniorVaultAUsdc: bigint
+  ];
+  export interface OutputObject {
+    wethHarvested: bigint;
+    esGmxStaked: bigint;
+    juniorVaultWeth: bigint;
+    seniorVaultWeth: bigint;
+    juniorVaultGlp: bigint;
+    seniorVaultAUsdc: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RewardsHarvestedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  RewardsHarvestedEventObject
->;
 
-export type RewardsHarvestedEventFilter =
-  TypedEventFilter<RewardsHarvestedEvent>;
-
-export interface TokenSwappedEventObject {
-  fromToken: string;
-  toToken: string;
-  fromQuantity: BigNumber;
-  toQuantity: BigNumber;
+export namespace TokenSwappedEvent {
+  export type InputTuple = [
+    fromToken: AddressLike,
+    toToken: AddressLike,
+    fromQuantity: BigNumberish,
+    toQuantity: BigNumberish
+  ];
+  export type OutputTuple = [
+    fromToken: string,
+    toToken: string,
+    fromQuantity: bigint,
+    toQuantity: bigint
+  ];
+  export interface OutputObject {
+    fromToken: string;
+    toToken: string;
+    fromQuantity: bigint;
+    toQuantity: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenSwappedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  TokenSwappedEventObject
->;
 
-export type TokenSwappedEventFilter = TypedEventFilter<TokenSwappedEvent>;
-
-export interface VaultStateEventObject {
-  eventType: BigNumber;
-  btcBorrows: BigNumber;
-  ethBorrows: BigNumber;
-  glpPrice: BigNumber;
-  glpBalance: BigNumber;
-  totalAssets: BigNumber;
-  dnUsdcDeposited: BigNumber;
-  unhedgedGlpInUsdc: BigNumber;
-  juniorVaultAusdc: BigNumber;
-  seniorVaultAusdc: BigNumber;
+export namespace VaultStateEvent {
+  export type InputTuple = [
+    eventType: BigNumberish,
+    btcBorrows: BigNumberish,
+    ethBorrows: BigNumberish,
+    glpPrice: BigNumberish,
+    glpBalance: BigNumberish,
+    totalAssets: BigNumberish,
+    dnUsdcDeposited: BigNumberish,
+    unhedgedGlpInUsdc: BigNumberish,
+    juniorVaultAusdc: BigNumberish,
+    seniorVaultAusdc: BigNumberish
+  ];
+  export type OutputTuple = [
+    eventType: bigint,
+    btcBorrows: bigint,
+    ethBorrows: bigint,
+    glpPrice: bigint,
+    glpBalance: bigint,
+    totalAssets: bigint,
+    dnUsdcDeposited: bigint,
+    unhedgedGlpInUsdc: bigint,
+    juniorVaultAusdc: bigint,
+    seniorVaultAusdc: bigint
+  ];
+  export interface OutputObject {
+    eventType: bigint;
+    btcBorrows: bigint;
+    ethBorrows: bigint;
+    glpPrice: bigint;
+    glpBalance: bigint;
+    totalAssets: bigint;
+    dnUsdcDeposited: bigint;
+    unhedgedGlpInUsdc: bigint;
+    juniorVaultAusdc: bigint;
+    seniorVaultAusdc: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type VaultStateEvent = TypedEvent<
-  [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  VaultStateEventObject
->;
-
-export type VaultStateEventFilter = TypedEventFilter<VaultStateEvent>;
 
 export interface DnGmxJuniorVaultManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: DnGmxJuniorVaultManagerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'GlpSwapped'
+  ): TypedContractEvent<
+    GlpSwappedEvent.InputTuple,
+    GlpSwappedEvent.OutputTuple,
+    GlpSwappedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProtocolFeeAccrued'
+  ): TypedContractEvent<
+    ProtocolFeeAccruedEvent.InputTuple,
+    ProtocolFeeAccruedEvent.OutputTuple,
+    ProtocolFeeAccruedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RewardsHarvested'
+  ): TypedContractEvent<
+    RewardsHarvestedEvent.InputTuple,
+    RewardsHarvestedEvent.OutputTuple,
+    RewardsHarvestedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenSwapped'
+  ): TypedContractEvent<
+    TokenSwappedEvent.InputTuple,
+    TokenSwappedEvent.OutputTuple,
+    TokenSwappedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'VaultState'
+  ): TypedContractEvent<
+    VaultStateEvent.InputTuple,
+    VaultStateEvent.OutputTuple,
+    VaultStateEvent.OutputObject
+  >;
 
   filters: {
-    'GlpSwapped(uint256,uint256,bool)'(
-      glpQuantity?: null,
-      usdcQuantity?: null,
-      fromGlpToUsdc?: null
-    ): GlpSwappedEventFilter;
-    GlpSwapped(
-      glpQuantity?: null,
-      usdcQuantity?: null,
-      fromGlpToUsdc?: null
-    ): GlpSwappedEventFilter;
+    'GlpSwapped(uint256,uint256,bool)': TypedContractEvent<
+      GlpSwappedEvent.InputTuple,
+      GlpSwappedEvent.OutputTuple,
+      GlpSwappedEvent.OutputObject
+    >;
+    GlpSwapped: TypedContractEvent<
+      GlpSwappedEvent.InputTuple,
+      GlpSwappedEvent.OutputTuple,
+      GlpSwappedEvent.OutputObject
+    >;
 
-    'ProtocolFeeAccrued(uint256)'(fees?: null): ProtocolFeeAccruedEventFilter;
-    ProtocolFeeAccrued(fees?: null): ProtocolFeeAccruedEventFilter;
+    'ProtocolFeeAccrued(uint256)': TypedContractEvent<
+      ProtocolFeeAccruedEvent.InputTuple,
+      ProtocolFeeAccruedEvent.OutputTuple,
+      ProtocolFeeAccruedEvent.OutputObject
+    >;
+    ProtocolFeeAccrued: TypedContractEvent<
+      ProtocolFeeAccruedEvent.InputTuple,
+      ProtocolFeeAccruedEvent.OutputTuple,
+      ProtocolFeeAccruedEvent.OutputObject
+    >;
 
-    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)'(
-      wethHarvested?: null,
-      esGmxStaked?: null,
-      juniorVaultWeth?: null,
-      seniorVaultWeth?: null,
-      juniorVaultGlp?: null,
-      seniorVaultAUsdc?: null
-    ): RewardsHarvestedEventFilter;
-    RewardsHarvested(
-      wethHarvested?: null,
-      esGmxStaked?: null,
-      juniorVaultWeth?: null,
-      seniorVaultWeth?: null,
-      juniorVaultGlp?: null,
-      seniorVaultAUsdc?: null
-    ): RewardsHarvestedEventFilter;
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': TypedContractEvent<
+      RewardsHarvestedEvent.InputTuple,
+      RewardsHarvestedEvent.OutputTuple,
+      RewardsHarvestedEvent.OutputObject
+    >;
+    RewardsHarvested: TypedContractEvent<
+      RewardsHarvestedEvent.InputTuple,
+      RewardsHarvestedEvent.OutputTuple,
+      RewardsHarvestedEvent.OutputObject
+    >;
 
-    'TokenSwapped(address,address,uint256,uint256)'(
-      fromToken?: PromiseOrValue<string> | null,
-      toToken?: PromiseOrValue<string> | null,
-      fromQuantity?: null,
-      toQuantity?: null
-    ): TokenSwappedEventFilter;
-    TokenSwapped(
-      fromToken?: PromiseOrValue<string> | null,
-      toToken?: PromiseOrValue<string> | null,
-      fromQuantity?: null,
-      toQuantity?: null
-    ): TokenSwappedEventFilter;
+    'TokenSwapped(address,address,uint256,uint256)': TypedContractEvent<
+      TokenSwappedEvent.InputTuple,
+      TokenSwappedEvent.OutputTuple,
+      TokenSwappedEvent.OutputObject
+    >;
+    TokenSwapped: TypedContractEvent<
+      TokenSwappedEvent.InputTuple,
+      TokenSwappedEvent.OutputTuple,
+      TokenSwappedEvent.OutputObject
+    >;
 
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
-      eventType?: PromiseOrValue<BigNumberish> | null,
-      btcBorrows?: null,
-      ethBorrows?: null,
-      glpPrice?: null,
-      glpBalance?: null,
-      totalAssets?: null,
-      dnUsdcDeposited?: null,
-      unhedgedGlpInUsdc?: null,
-      juniorVaultAusdc?: null,
-      seniorVaultAusdc?: null
-    ): VaultStateEventFilter;
-    VaultState(
-      eventType?: PromiseOrValue<BigNumberish> | null,
-      btcBorrows?: null,
-      ethBorrows?: null,
-      glpPrice?: null,
-      glpBalance?: null,
-      totalAssets?: null,
-      dnUsdcDeposited?: null,
-      unhedgedGlpInUsdc?: null,
-      juniorVaultAusdc?: null,
-      seniorVaultAusdc?: null
-    ): VaultStateEventFilter;
+    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': TypedContractEvent<
+      VaultStateEvent.InputTuple,
+      VaultStateEvent.OutputTuple,
+      VaultStateEvent.OutputObject
+    >;
+    VaultState: TypedContractEvent<
+      VaultStateEvent.InputTuple,
+      VaultStateEvent.OutputTuple,
+      VaultStateEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

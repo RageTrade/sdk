@@ -3,42 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface ICurveStableSwapInterface extends utils.Interface {
-  functions: {
-    'add_liquidity(uint256[3],uint256)': FunctionFragment;
-    'balances(uint256)': FunctionFragment;
-    'calc_token_amount(uint256[3],bool)': FunctionFragment;
-    'exchange(uint256,uint256,uint256,uint256,bool)': FunctionFragment;
-    'exchange(int128,int128,uint256,uint256)': FunctionFragment;
-    'get_dy(uint256,uint256,uint256)': FunctionFragment;
-    'get_virtual_price()': FunctionFragment;
-    'remove_liquidity(uint256,uint256[2])': FunctionFragment;
-    'remove_liquidity_imbalance(uint256[2],uint256)': FunctionFragment;
-    'remove_liquidity_one_coin(uint256,uint256,uint256)': FunctionFragment;
-  };
-
+export interface ICurveStableSwapInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'add_liquidity'
       | 'balances'
       | 'calc_token_amount'
@@ -53,56 +38,27 @@ export interface ICurveStableSwapInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'add_liquidity',
-    values: [
-      [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [[BigNumberish, BigNumberish, BigNumberish], BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'balances',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'calc_token_amount',
-    values: [
-      [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      PromiseOrValue<boolean>
-    ]
+    values: [[BigNumberish, BigNumberish, BigNumberish], boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'exchange(uint256,uint256,uint256,uint256,bool)',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'exchange(int128,int128,uint256,uint256)',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'get_dy',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'get_virtual_price',
@@ -110,25 +66,15 @@ export interface ICurveStableSwapInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'remove_liquidity',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
-    ]
+    values: [BigNumberish, [BigNumberish, BigNumberish]]
   ): string;
   encodeFunctionData(
     functionFragment: 'remove_liquidity_imbalance',
-    values: [
-      [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [[BigNumberish, BigNumberish], BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'remove_liquidity_one_coin',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -165,393 +111,198 @@ export interface ICurveStableSwapInterface extends utils.Interface {
     functionFragment: 'remove_liquidity_one_coin',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ICurveStableSwap extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ICurveStableSwapInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    add_liquidity(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      min_mint_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    balances(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    calc_token_amount(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      deposit: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    'exchange(uint256,uint256,uint256,uint256,bool)'(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    'exchange(int128,int128,uint256,uint256)'(
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
-      _from_amount: PromiseOrValue<BigNumberish>,
-      _min_to_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    get_dy(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    get_virtual_price(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    remove_liquidity(
-      _amount: PromiseOrValue<BigNumberish>,
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    remove_liquidity_imbalance(
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      max_burn_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    remove_liquidity_one_coin(
-      token_amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      min_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  add_liquidity(
-    amounts: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+  add_liquidity: TypedContractMethod<
+    [
+      amounts: [BigNumberish, BigNumberish, BigNumberish],
+      min_mint_amount: BigNumberish
     ],
-    min_mint_amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    [void],
+    'nonpayable'
+  >;
 
-  balances(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  balances: TypedContractMethod<[arg0: BigNumberish], [bigint], 'view'>;
 
-  calc_token_amount(
-    amounts: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+  calc_token_amount: TypedContractMethod<
+    [amounts: [BigNumberish, BigNumberish, BigNumberish], deposit: boolean],
+    [bigint],
+    'view'
+  >;
+
+  'exchange(uint256,uint256,uint256,uint256,bool)': TypedContractMethod<
+    [
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean
     ],
-    deposit: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+    [void],
+    'nonpayable'
+  >;
 
-  'exchange(uint256,uint256,uint256,uint256,bool)'(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BigNumberish>,
-    arg2: PromiseOrValue<BigNumberish>,
-    arg3: PromiseOrValue<BigNumberish>,
-    arg4: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  'exchange(int128,int128,uint256,uint256)': TypedContractMethod<
+    [
+      from: BigNumberish,
+      to: BigNumberish,
+      _from_amount: BigNumberish,
+      _min_to_amount: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  'exchange(int128,int128,uint256,uint256)'(
-    from: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<BigNumberish>,
-    _from_amount: PromiseOrValue<BigNumberish>,
-    _min_to_amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  get_dy: TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish, arg2: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  get_dy(
-    arg0: PromiseOrValue<BigNumberish>,
-    arg1: PromiseOrValue<BigNumberish>,
-    arg2: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  get_virtual_price: TypedContractMethod<[], [bigint], 'view'>;
 
-  get_virtual_price(overrides?: CallOverrides): Promise<BigNumber>;
+  remove_liquidity: TypedContractMethod<
+    [_amount: BigNumberish, amounts: [BigNumberish, BigNumberish]],
+    [void],
+    'nonpayable'
+  >;
 
-  remove_liquidity(
-    _amount: PromiseOrValue<BigNumberish>,
-    amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  remove_liquidity_imbalance: TypedContractMethod<
+    [amounts: [BigNumberish, BigNumberish], max_burn_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  remove_liquidity_imbalance(
-    amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-    max_burn_amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  remove_liquidity_one_coin: TypedContractMethod<
+    [token_amount: BigNumberish, index: BigNumberish, min_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  remove_liquidity_one_coin(
-    token_amount: PromiseOrValue<BigNumberish>,
-    index: PromiseOrValue<BigNumberish>,
-    min_amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  callStatic: {
-    add_liquidity(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      min_mint_amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    balances(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    calc_token_amount(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      deposit: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'exchange(uint256,uint256,uint256,uint256,bool)'(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'exchange(int128,int128,uint256,uint256)'(
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
-      _from_amount: PromiseOrValue<BigNumberish>,
-      _min_to_amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    get_dy(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    get_virtual_price(overrides?: CallOverrides): Promise<BigNumber>;
-
-    remove_liquidity(
-      _amount: PromiseOrValue<BigNumberish>,
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    remove_liquidity_imbalance(
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      max_burn_amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    remove_liquidity_one_coin(
-      token_amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      min_amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'add_liquidity'
+  ): TypedContractMethod<
+    [
+      amounts: [BigNumberish, BigNumberish, BigNumberish],
+      min_mint_amount: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'balances'
+  ): TypedContractMethod<[arg0: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'calc_token_amount'
+  ): TypedContractMethod<
+    [amounts: [BigNumberish, BigNumberish, BigNumberish], deposit: boolean],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'exchange(uint256,uint256,uint256,uint256,bool)'
+  ): TypedContractMethod<
+    [
+      arg0: BigNumberish,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'exchange(int128,int128,uint256,uint256)'
+  ): TypedContractMethod<
+    [
+      from: BigNumberish,
+      to: BigNumberish,
+      _from_amount: BigNumberish,
+      _min_to_amount: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'get_dy'
+  ): TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish, arg2: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'get_virtual_price'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'remove_liquidity'
+  ): TypedContractMethod<
+    [_amount: BigNumberish, amounts: [BigNumberish, BigNumberish]],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'remove_liquidity_imbalance'
+  ): TypedContractMethod<
+    [amounts: [BigNumberish, BigNumberish], max_burn_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'remove_liquidity_one_coin'
+  ): TypedContractMethod<
+    [token_amount: BigNumberish, index: BigNumberish, min_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    add_liquidity(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      min_mint_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    balances(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    calc_token_amount(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      deposit: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'exchange(uint256,uint256,uint256,uint256,bool)'(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'exchange(int128,int128,uint256,uint256)'(
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
-      _from_amount: PromiseOrValue<BigNumberish>,
-      _min_to_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    get_dy(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    get_virtual_price(overrides?: CallOverrides): Promise<BigNumber>;
-
-    remove_liquidity(
-      _amount: PromiseOrValue<BigNumberish>,
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    remove_liquidity_imbalance(
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      max_burn_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    remove_liquidity_one_coin(
-      token_amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      min_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    add_liquidity(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      min_mint_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    balances(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    calc_token_amount(
-      amounts: [
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>,
-        PromiseOrValue<BigNumberish>
-      ],
-      deposit: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'exchange(uint256,uint256,uint256,uint256,bool)'(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      arg3: PromiseOrValue<BigNumberish>,
-      arg4: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'exchange(int128,int128,uint256,uint256)'(
-      from: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<BigNumberish>,
-      _from_amount: PromiseOrValue<BigNumberish>,
-      _min_to_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    get_dy(
-      arg0: PromiseOrValue<BigNumberish>,
-      arg1: PromiseOrValue<BigNumberish>,
-      arg2: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    get_virtual_price(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    remove_liquidity(
-      _amount: PromiseOrValue<BigNumberish>,
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    remove_liquidity_imbalance(
-      amounts: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>],
-      max_burn_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    remove_liquidity_one_coin(
-      token_amount: PromiseOrValue<BigNumberish>,
-      index: PromiseOrValue<BigNumberish>,
-      min_amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

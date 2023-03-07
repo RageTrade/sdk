@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IDebtToken,
   IDebtTokenInterface,
@@ -364,17 +363,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IDebtToken__factory {
   static readonly abi = _abi;
   static createInterface(): IDebtTokenInterface {
-    return new utils.Interface(_abi) as IDebtTokenInterface;
+    return new Interface(_abi) as IDebtTokenInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IDebtToken {
-    return new Contract(address, _abi, signerOrProvider) as IDebtToken;
+  static connect(address: string, runner?: ContractRunner | null): IDebtToken {
+    return new Contract(address, _abi, runner) as unknown as IDebtToken;
   }
 }

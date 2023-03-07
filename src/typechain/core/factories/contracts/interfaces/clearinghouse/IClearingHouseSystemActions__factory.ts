@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IClearingHouseSystemActions,
   IClearingHouseSystemActionsInterface,
@@ -125,21 +124,21 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IClearingHouseSystemActions__factory {
   static readonly abi = _abi;
   static createInterface(): IClearingHouseSystemActionsInterface {
-    return new utils.Interface(_abi) as IClearingHouseSystemActionsInterface;
+    return new Interface(_abi) as IClearingHouseSystemActionsInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IClearingHouseSystemActions {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IClearingHouseSystemActions;
+      runner
+    ) as unknown as IClearingHouseSystemActions;
   }
 }

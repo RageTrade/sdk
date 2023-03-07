@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ICurveStableSwap,
   ICurveStableSwapInterface,
@@ -233,17 +232,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class ICurveStableSwap__factory {
   static readonly abi = _abi;
   static createInterface(): ICurveStableSwapInterface {
-    return new utils.Interface(_abi) as ICurveStableSwapInterface;
+    return new Interface(_abi) as ICurveStableSwapInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ICurveStableSwap {
-    return new Contract(address, _abi, signerOrProvider) as ICurveStableSwap;
+    return new Contract(address, _abi, runner) as unknown as ICurveStableSwap;
   }
 }

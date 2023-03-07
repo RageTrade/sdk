@@ -3,40 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface QuoterV3MockInterface extends utils.Interface {
-  functions: {
-    'USDC_TO_WBTC()': FunctionFragment;
-    'USDC_TO_WETH()': FunctionFragment;
-    'USDC_TO_WETH_()': FunctionFragment;
-    'WBTC_TO_USDC()': FunctionFragment;
-    'WETH_TO_USDC()': FunctionFragment;
-    'quoteExactInput(bytes,uint256)': FunctionFragment;
-    'quoteExactOutput(bytes,uint256)': FunctionFragment;
-    'setSlippages(uint256,uint256)': FunctionFragment;
-  };
-
+export interface QuoterV3MockInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'USDC_TO_WBTC'
       | 'USDC_TO_WETH'
       | 'USDC_TO_WETH_'
@@ -69,15 +56,15 @@ export interface QuoterV3MockInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'quoteExactInput',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+    values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'quoteExactOutput',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+    values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setSlippages',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -112,183 +99,126 @@ export interface QuoterV3MockInterface extends utils.Interface {
     functionFragment: 'setSlippages',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface QuoterV3Mock extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: QuoterV3MockInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    USDC_TO_WBTC(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    USDC_TO_WETH(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    USDC_TO_WETH_(overrides?: CallOverrides): Promise<[string]>;
+  USDC_TO_WBTC: TypedContractMethod<[], [string], 'view'>;
 
-    WBTC_TO_USDC(overrides?: CallOverrides): Promise<[string]>;
+  USDC_TO_WETH: TypedContractMethod<[], [string], 'view'>;
 
-    WETH_TO_USDC(overrides?: CallOverrides): Promise<[string]>;
+  USDC_TO_WETH_: TypedContractMethod<[], [string], 'view'>;
 
-    quoteExactInput(
-      path: PromiseOrValue<BytesLike>,
-      amountIn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { amountOut: BigNumber }>;
+  WBTC_TO_USDC: TypedContractMethod<[], [string], 'view'>;
 
-    quoteExactOutput(
-      path: PromiseOrValue<BytesLike>,
-      amountOut: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { amountIn: BigNumber }>;
+  WETH_TO_USDC: TypedContractMethod<[], [string], 'view'>;
 
-    setSlippages(
-      _slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      _slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  quoteExactInput: TypedContractMethod<
+    [path: BytesLike, amountIn: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  USDC_TO_WBTC(overrides?: CallOverrides): Promise<string>;
+  quoteExactOutput: TypedContractMethod<
+    [path: BytesLike, amountOut: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  USDC_TO_WETH(overrides?: CallOverrides): Promise<string>;
+  setSlippages: TypedContractMethod<
+    [
+      _slippageThresholdSwapBtcBps: BigNumberish,
+      _slippageThresholdSwapEthBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  USDC_TO_WETH_(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  WBTC_TO_USDC(overrides?: CallOverrides): Promise<string>;
-
-  WETH_TO_USDC(overrides?: CallOverrides): Promise<string>;
-
-  quoteExactInput(
-    path: PromiseOrValue<BytesLike>,
-    amountIn: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  quoteExactOutput(
-    path: PromiseOrValue<BytesLike>,
-    amountOut: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  setSlippages(
-    _slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-    _slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    USDC_TO_WBTC(overrides?: CallOverrides): Promise<string>;
-
-    USDC_TO_WETH(overrides?: CallOverrides): Promise<string>;
-
-    USDC_TO_WETH_(overrides?: CallOverrides): Promise<string>;
-
-    WBTC_TO_USDC(overrides?: CallOverrides): Promise<string>;
-
-    WETH_TO_USDC(overrides?: CallOverrides): Promise<string>;
-
-    quoteExactInput(
-      path: PromiseOrValue<BytesLike>,
-      amountIn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    quoteExactOutput(
-      path: PromiseOrValue<BytesLike>,
-      amountOut: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setSlippages(
-      _slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      _slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'USDC_TO_WBTC'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'USDC_TO_WETH'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'USDC_TO_WETH_'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'WBTC_TO_USDC'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'WETH_TO_USDC'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'quoteExactInput'
+  ): TypedContractMethod<
+    [path: BytesLike, amountIn: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'quoteExactOutput'
+  ): TypedContractMethod<
+    [path: BytesLike, amountOut: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'setSlippages'
+  ): TypedContractMethod<
+    [
+      _slippageThresholdSwapBtcBps: BigNumberish,
+      _slippageThresholdSwapEthBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    USDC_TO_WBTC(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDC_TO_WETH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    USDC_TO_WETH_(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WBTC_TO_USDC(overrides?: CallOverrides): Promise<BigNumber>;
-
-    WETH_TO_USDC(overrides?: CallOverrides): Promise<BigNumber>;
-
-    quoteExactInput(
-      path: PromiseOrValue<BytesLike>,
-      amountIn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    quoteExactOutput(
-      path: PromiseOrValue<BytesLike>,
-      amountOut: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setSlippages(
-      _slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      _slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    USDC_TO_WBTC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    USDC_TO_WETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    USDC_TO_WETH_(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    WBTC_TO_USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    WETH_TO_USDC(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    quoteExactInput(
-      path: PromiseOrValue<BytesLike>,
-      amountIn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    quoteExactOutput(
-      path: PromiseOrValue<BytesLike>,
-      amountOut: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setSlippages(
-      _slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      _slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   INonfungiblePositionManager,
   INonfungiblePositionManagerInterface,
@@ -999,21 +998,21 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class INonfungiblePositionManager__factory {
   static readonly abi = _abi;
   static createInterface(): INonfungiblePositionManagerInterface {
-    return new utils.Interface(_abi) as INonfungiblePositionManagerInterface;
+    return new Interface(_abi) as INonfungiblePositionManagerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): INonfungiblePositionManager {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as INonfungiblePositionManager;
+      runner
+    ) as unknown as INonfungiblePositionManager;
   }
 }

@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IPool,
   IPoolInterface,
@@ -1692,14 +1691,14 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IPool__factory {
   static readonly abi = _abi;
   static createInterface(): IPoolInterface {
-    return new utils.Interface(_abi) as IPoolInterface;
+    return new Interface(_abi) as IPoolInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): IPool {
-    return new Contract(address, _abi, signerOrProvider) as IPool;
+  static connect(address: string, runner?: ContractRunner | null): IPool {
+    return new Contract(address, _abi, runner) as unknown as IPool;
   }
 }

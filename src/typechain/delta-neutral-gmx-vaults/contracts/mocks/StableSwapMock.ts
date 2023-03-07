@@ -3,191 +3,127 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface StableSwapMockInterface extends utils.Interface {
-  functions: {
-    'coins(uint256)': FunctionFragment;
-    'exchange(uint256,uint256,uint256,uint256,bool)': FunctionFragment;
-    'setPrice(uint256)': FunctionFragment;
-  };
-
+export interface StableSwapMockInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'coins' | 'exchange' | 'setPrice'
+    nameOrSignature: 'coins' | 'exchange' | 'setPrice'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: 'coins',
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
+  encodeFunctionData(functionFragment: 'coins', values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: 'exchange',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'setPrice',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: 'coins', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'exchange', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'setPrice', data: BytesLike): Result;
-
-  events: {};
 }
 
 export interface StableSwapMock extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: StableSwapMockInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    coins(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    exchange(
-      i: PromiseOrValue<BigNumberish>,
-      j: PromiseOrValue<BigNumberish>,
-      dx: PromiseOrValue<BigNumberish>,
-      min_dy: PromiseOrValue<BigNumberish>,
-      use_eth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    setPrice(
-      _price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  coins: TypedContractMethod<[index: BigNumberish], [string], 'view'>;
 
-  coins(
-    index: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  exchange: TypedContractMethod<
+    [
+      i: BigNumberish,
+      j: BigNumberish,
+      dx: BigNumberish,
+      min_dy: BigNumberish,
+      use_eth: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  exchange(
-    i: PromiseOrValue<BigNumberish>,
-    j: PromiseOrValue<BigNumberish>,
-    dx: PromiseOrValue<BigNumberish>,
-    min_dy: PromiseOrValue<BigNumberish>,
-    use_eth: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  setPrice: TypedContractMethod<[_price: BigNumberish], [void], 'nonpayable'>;
 
-  setPrice(
-    _price: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  callStatic: {
-    coins(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    exchange(
-      i: PromiseOrValue<BigNumberish>,
-      j: PromiseOrValue<BigNumberish>,
-      dx: PromiseOrValue<BigNumberish>,
-      min_dy: PromiseOrValue<BigNumberish>,
-      use_eth: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPrice(
-      _price: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'coins'
+  ): TypedContractMethod<[index: BigNumberish], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'exchange'
+  ): TypedContractMethod<
+    [
+      i: BigNumberish,
+      j: BigNumberish,
+      dx: BigNumberish,
+      min_dy: BigNumberish,
+      use_eth: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setPrice'
+  ): TypedContractMethod<[_price: BigNumberish], [void], 'nonpayable'>;
 
   filters: {};
-
-  estimateGas: {
-    coins(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    exchange(
-      i: PromiseOrValue<BigNumberish>,
-      j: PromiseOrValue<BigNumberish>,
-      dx: PromiseOrValue<BigNumberish>,
-      min_dy: PromiseOrValue<BigNumberish>,
-      use_eth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPrice(
-      _price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    coins(
-      index: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    exchange(
-      i: PromiseOrValue<BigNumberish>,
-      j: PromiseOrValue<BigNumberish>,
-      dx: PromiseOrValue<BigNumberish>,
-      min_dy: PromiseOrValue<BigNumberish>,
-      use_eth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPrice(
-      _price: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

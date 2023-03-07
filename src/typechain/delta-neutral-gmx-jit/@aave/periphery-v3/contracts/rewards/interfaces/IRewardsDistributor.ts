@@ -3,49 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
-export interface IRewardsDistributorInterface extends utils.Interface {
-  functions: {
-    'getAllUserRewards(address[],address)': FunctionFragment;
-    'getAssetDecimals(address)': FunctionFragment;
-    'getDistributionEnd(address,address)': FunctionFragment;
-    'getEmissionManager()': FunctionFragment;
-    'getRewardsByAsset(address)': FunctionFragment;
-    'getRewardsData(address,address)': FunctionFragment;
-    'getRewardsList()': FunctionFragment;
-    'getUserAccruedRewards(address,address)': FunctionFragment;
-    'getUserAssetIndex(address,address,address)': FunctionFragment;
-    'getUserRewards(address[],address,address)': FunctionFragment;
-    'setDistributionEnd(address,address,uint32)': FunctionFragment;
-    'setEmissionManager(address)': FunctionFragment;
-    'setEmissionPerSecond(address,address[],uint88[])': FunctionFragment;
-  };
-
+export interface IRewardsDistributorInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'getAllUserRewards'
       | 'getAssetDecimals'
       | 'getDistributionEnd'
@@ -61,17 +41,24 @@ export interface IRewardsDistributorInterface extends utils.Interface {
       | 'setEmissionPerSecond'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Accrued'
+      | 'AssetConfigUpdated'
+      | 'EmissionManagerUpdated'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'getAllUserRewards',
-    values: [PromiseOrValue<string>[], PromiseOrValue<string>]
+    values: [AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAssetDecimals',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getDistributionEnd',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getEmissionManager',
@@ -79,11 +66,11 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsByAsset',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsData',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsList',
@@ -91,43 +78,27 @@ export interface IRewardsDistributorInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserAccruedRewards',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserAssetIndex',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserRewards',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setDistributionEnd',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setEmissionManager',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setEmissionPerSecond',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
+    values: [AddressLike, AddressLike[], BigNumberish[]]
   ): string;
 
   decodeFunctionResult(
@@ -182,497 +153,340 @@ export interface IRewardsDistributorInterface extends utils.Interface {
     functionFragment: 'setEmissionPerSecond',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Accrued(address,address,address,uint256,uint256,uint256)': EventFragment;
-    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'EmissionManagerUpdated(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Accrued'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AssetConfigUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EmissionManagerUpdated'): EventFragment;
 }
 
-export interface AccruedEventObject {
-  asset: string;
-  reward: string;
-  user: string;
-  assetIndex: BigNumber;
-  userIndex: BigNumber;
-  rewardsAccrued: BigNumber;
+export namespace AccruedEvent {
+  export type InputTuple = [
+    asset: AddressLike,
+    reward: AddressLike,
+    user: AddressLike,
+    assetIndex: BigNumberish,
+    userIndex: BigNumberish,
+    rewardsAccrued: BigNumberish
+  ];
+  export type OutputTuple = [
+    asset: string,
+    reward: string,
+    user: string,
+    assetIndex: bigint,
+    userIndex: bigint,
+    rewardsAccrued: bigint
+  ];
+  export interface OutputObject {
+    asset: string;
+    reward: string;
+    user: string;
+    assetIndex: bigint;
+    userIndex: bigint;
+    rewardsAccrued: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AccruedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber],
-  AccruedEventObject
->;
 
-export type AccruedEventFilter = TypedEventFilter<AccruedEvent>;
-
-export interface AssetConfigUpdatedEventObject {
-  asset: string;
-  reward: string;
-  oldEmission: BigNumber;
-  newEmission: BigNumber;
-  oldDistributionEnd: BigNumber;
-  newDistributionEnd: BigNumber;
-  assetIndex: BigNumber;
+export namespace AssetConfigUpdatedEvent {
+  export type InputTuple = [
+    asset: AddressLike,
+    reward: AddressLike,
+    oldEmission: BigNumberish,
+    newEmission: BigNumberish,
+    oldDistributionEnd: BigNumberish,
+    newDistributionEnd: BigNumberish,
+    assetIndex: BigNumberish
+  ];
+  export type OutputTuple = [
+    asset: string,
+    reward: string,
+    oldEmission: bigint,
+    newEmission: bigint,
+    oldDistributionEnd: bigint,
+    newDistributionEnd: bigint,
+    assetIndex: bigint
+  ];
+  export interface OutputObject {
+    asset: string;
+    reward: string;
+    oldEmission: bigint;
+    newEmission: bigint;
+    oldDistributionEnd: bigint;
+    newDistributionEnd: bigint;
+    assetIndex: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AssetConfigUpdatedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  AssetConfigUpdatedEventObject
->;
 
-export type AssetConfigUpdatedEventFilter =
-  TypedEventFilter<AssetConfigUpdatedEvent>;
-
-export interface EmissionManagerUpdatedEventObject {
-  oldEmissionManager: string;
-  newEmissionManager: string;
+export namespace EmissionManagerUpdatedEvent {
+  export type InputTuple = [
+    oldEmissionManager: AddressLike,
+    newEmissionManager: AddressLike
+  ];
+  export type OutputTuple = [
+    oldEmissionManager: string,
+    newEmissionManager: string
+  ];
+  export interface OutputObject {
+    oldEmissionManager: string;
+    newEmissionManager: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EmissionManagerUpdatedEvent = TypedEvent<
-  [string, string],
-  EmissionManagerUpdatedEventObject
->;
-
-export type EmissionManagerUpdatedEventFilter =
-  TypedEventFilter<EmissionManagerUpdatedEvent>;
 
 export interface IRewardsDistributor extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IRewardsDistributorInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[], BigNumber[]]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getAllUserRewards: TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike],
+    [[string[], bigint[]]],
+    'view'
+  >;
 
-    getEmissionManager(overrides?: CallOverrides): Promise<[string]>;
+  getAssetDecimals: TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
 
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
+  getDistributionEnd: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
+  getEmissionManager: TypedContractMethod<[], [string], 'view'>;
 
-    getRewardsList(overrides?: CallOverrides): Promise<[string[]]>;
+  getRewardsByAsset: TypedContractMethod<
+    [asset: AddressLike],
+    [string[]],
+    'view'
+  >;
 
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getRewardsData: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [[bigint, bigint, bigint, bigint]],
+    'view'
+  >;
 
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getRewardsList: TypedContractMethod<[], [string[]], 'view'>;
 
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getUserAccruedRewards: TypedContractMethod<
+    [user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getUserAssetIndex: TypedContractMethod<
+    [user: AddressLike, asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getUserRewards: TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  setDistributionEnd: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike, newDistributionEnd: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  getAllUserRewards(
-    assets: PromiseOrValue<string>[],
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[string[], BigNumber[]]>;
+  setEmissionManager: TypedContractMethod<
+    [emissionManager: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  getAssetDecimals(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<number>;
+  setEmissionPerSecond: TypedContractMethod<
+    [
+      asset: AddressLike,
+      rewards: AddressLike[],
+      newEmissionsPerSecond: BigNumberish[]
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  getDistributionEnd(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getEmissionManager(overrides?: CallOverrides): Promise<string>;
+  getFunction(
+    nameOrSignature: 'getAllUserRewards'
+  ): TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike],
+    [[string[], bigint[]]],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAssetDecimals'
+  ): TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getDistributionEnd'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getEmissionManager'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardsByAsset'
+  ): TypedContractMethod<[asset: AddressLike], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardsData'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [[bigint, bigint, bigint, bigint]],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getRewardsList'
+  ): TypedContractMethod<[], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getUserAccruedRewards'
+  ): TypedContractMethod<
+    [user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserAssetIndex'
+  ): TypedContractMethod<
+    [user: AddressLike, asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserRewards'
+  ): TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'setDistributionEnd'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike, newDistributionEnd: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setEmissionManager'
+  ): TypedContractMethod<[emissionManager: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setEmissionPerSecond'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      rewards: AddressLike[],
+      newEmissionsPerSecond: BigNumberish[]
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  getRewardsByAsset(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  getRewardsData(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
-
-  getRewardsList(overrides?: CallOverrides): Promise<string[]>;
-
-  getUserAccruedRewards(
-    user: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUserAssetIndex(
-    user: PromiseOrValue<string>,
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUserRewards(
-    assets: PromiseOrValue<string>[],
-    user: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  setDistributionEnd(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    newDistributionEnd: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setEmissionManager(
-    emissionManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setEmissionPerSecond(
-    asset: PromiseOrValue<string>,
-    rewards: PromiseOrValue<string>[],
-    newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[], BigNumber[]]>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEmissionManager(overrides?: CallOverrides): Promise<string>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<string[]>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getEvent(
+    key: 'Accrued'
+  ): TypedContractEvent<
+    AccruedEvent.InputTuple,
+    AccruedEvent.OutputTuple,
+    AccruedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'AssetConfigUpdated'
+  ): TypedContractEvent<
+    AssetConfigUpdatedEvent.InputTuple,
+    AssetConfigUpdatedEvent.OutputTuple,
+    AssetConfigUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EmissionManagerUpdated'
+  ): TypedContractEvent<
+    EmissionManagerUpdatedEvent.InputTuple,
+    EmissionManagerUpdatedEvent.OutputTuple,
+    EmissionManagerUpdatedEvent.OutputObject
+  >;
 
   filters: {
-    'Accrued(address,address,address,uint256,uint256,uint256)'(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      assetIndex?: null,
-      userIndex?: null,
-      rewardsAccrued?: null
-    ): AccruedEventFilter;
-    Accrued(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      assetIndex?: null,
-      userIndex?: null,
-      rewardsAccrued?: null
-    ): AccruedEventFilter;
+    'Accrued(address,address,address,uint256,uint256,uint256)': TypedContractEvent<
+      AccruedEvent.InputTuple,
+      AccruedEvent.OutputTuple,
+      AccruedEvent.OutputObject
+    >;
+    Accrued: TypedContractEvent<
+      AccruedEvent.InputTuple,
+      AccruedEvent.OutputTuple,
+      AccruedEvent.OutputObject
+    >;
 
-    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)'(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      oldEmission?: null,
-      newEmission?: null,
-      oldDistributionEnd?: null,
-      newDistributionEnd?: null,
-      assetIndex?: null
-    ): AssetConfigUpdatedEventFilter;
-    AssetConfigUpdated(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      oldEmission?: null,
-      newEmission?: null,
-      oldDistributionEnd?: null,
-      newDistributionEnd?: null,
-      assetIndex?: null
-    ): AssetConfigUpdatedEventFilter;
+    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)': TypedContractEvent<
+      AssetConfigUpdatedEvent.InputTuple,
+      AssetConfigUpdatedEvent.OutputTuple,
+      AssetConfigUpdatedEvent.OutputObject
+    >;
+    AssetConfigUpdated: TypedContractEvent<
+      AssetConfigUpdatedEvent.InputTuple,
+      AssetConfigUpdatedEvent.OutputTuple,
+      AssetConfigUpdatedEvent.OutputObject
+    >;
 
-    'EmissionManagerUpdated(address,address)'(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
-    EmissionManagerUpdated(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
-  };
-
-  estimateGas: {
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEmissionManager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getEmissionManager(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'EmissionManagerUpdated(address,address)': TypedContractEvent<
+      EmissionManagerUpdatedEvent.InputTuple,
+      EmissionManagerUpdatedEvent.OutputTuple,
+      EmissionManagerUpdatedEvent.OutputObject
+    >;
+    EmissionManagerUpdated: TypedContractEvent<
+      EmissionManagerUpdatedEvent.InputTuple,
+      EmissionManagerUpdatedEvent.OutputTuple,
+      EmissionManagerUpdatedEvent.OutputObject
+    >;
   };
 }

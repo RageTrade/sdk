@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IAccessControlEnumerable,
   IAccessControlEnumerableInterface,
@@ -225,21 +224,21 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IAccessControlEnumerable__factory {
   static readonly abi = _abi;
   static createInterface(): IAccessControlEnumerableInterface {
-    return new utils.Interface(_abi) as IAccessControlEnumerableInterface;
+    return new Interface(_abi) as IAccessControlEnumerableInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IAccessControlEnumerable {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IAccessControlEnumerable;
+      runner
+    ) as unknown as IAccessControlEnumerable;
   }
 }

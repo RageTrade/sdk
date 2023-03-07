@@ -3,109 +3,100 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type CollateralSettingsStruct = {
-    oracle: PromiseOrValue<string>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForDeposit: PromiseOrValue<boolean>;
-  };
-
-  export type CollateralSettingsStructOutput = [string, number, boolean] & {
-    oracle: string;
-    twapDuration: number;
+    oracle: AddressLike;
+    twapDuration: BigNumberish;
     isAllowedForDeposit: boolean;
   };
 
+  export type CollateralSettingsStructOutput = [
+    oracle: string,
+    twapDuration: bigint,
+    isAllowedForDeposit: boolean
+  ] & { oracle: string; twapDuration: bigint; isAllowedForDeposit: boolean };
+
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
 
   export type LiquidationParamsStruct = {
-    rangeLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    tokenLiquidationFeeFraction: PromiseOrValue<BigNumberish>;
-    closeFactorMMThresholdBps: PromiseOrValue<BigNumberish>;
-    partialLiquidationCloseFactorBps: PromiseOrValue<BigNumberish>;
-    insuranceFundFeeShareBps: PromiseOrValue<BigNumberish>;
-    liquidationSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
-    maxRangeLiquidationFees: PromiseOrValue<BigNumberish>;
-    minNotionalLiquidatable: PromiseOrValue<BigNumberish>;
+    rangeLiquidationFeeFraction: BigNumberish;
+    tokenLiquidationFeeFraction: BigNumberish;
+    closeFactorMMThresholdBps: BigNumberish;
+    partialLiquidationCloseFactorBps: BigNumberish;
+    insuranceFundFeeShareBps: BigNumberish;
+    liquidationSlippageSqrtToleranceBps: BigNumberish;
+    maxRangeLiquidationFees: BigNumberish;
+    minNotionalLiquidatable: BigNumberish;
   };
 
   export type LiquidationParamsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber
+    rangeLiquidationFeeFraction: bigint,
+    tokenLiquidationFeeFraction: bigint,
+    closeFactorMMThresholdBps: bigint,
+    partialLiquidationCloseFactorBps: bigint,
+    insuranceFundFeeShareBps: bigint,
+    liquidationSlippageSqrtToleranceBps: bigint,
+    maxRangeLiquidationFees: bigint,
+    minNotionalLiquidatable: bigint
   ] & {
-    rangeLiquidationFeeFraction: number;
-    tokenLiquidationFeeFraction: number;
-    closeFactorMMThresholdBps: number;
-    partialLiquidationCloseFactorBps: number;
-    insuranceFundFeeShareBps: number;
-    liquidationSlippageSqrtToleranceBps: number;
-    maxRangeLiquidationFees: BigNumber;
-    minNotionalLiquidatable: BigNumber;
+    rangeLiquidationFeeFraction: bigint;
+    tokenLiquidationFeeFraction: bigint;
+    closeFactorMMThresholdBps: bigint;
+    partialLiquidationCloseFactorBps: bigint;
+    insuranceFundFeeShareBps: bigint;
+    liquidationSlippageSqrtToleranceBps: bigint;
+    maxRangeLiquidationFees: bigint;
+    minNotionalLiquidatable: bigint;
   };
 }
 
-export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
-  functions: {
-    'updateCollateralSettings(address,(address,uint32,bool))': FunctionFragment;
-    'updatePoolSettings(uint32,(uint16,uint16,uint16,uint32,bool,bool,address))': FunctionFragment;
-    'updateProtocolSettings((uint16,uint16,uint16,uint16,uint16,uint16,uint64,uint64),uint256,uint256,uint256)': FunctionFragment;
-    'withdrawProtocolFee(uint256)': FunctionFragment;
-  };
-
+export interface IClearingHouseOwnerActionsInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'updateCollateralSettings'
       | 'updatePoolSettings'
       | 'updateProtocolSettings'
@@ -114,30 +105,24 @@ export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'updateCollateralSettings',
-    values: [
-      PromiseOrValue<string>,
-      IClearingHouseStructures.CollateralSettingsStruct
-    ]
+    values: [AddressLike, IClearingHouseStructures.CollateralSettingsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'updatePoolSettings',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      IClearingHouseStructures.PoolSettingsStruct
-    ]
+    values: [BigNumberish, IClearingHouseStructures.PoolSettingsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateProtocolSettings',
     values: [
       IClearingHouseStructures.LiquidationParamsStruct,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawProtocolFee',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -156,168 +141,130 @@ export interface IClearingHouseOwnerActionsInterface extends utils.Interface {
     functionFragment: 'withdrawProtocolFee',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IClearingHouseOwnerActions extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IClearingHouseOwnerActionsInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    updateProtocolSettings(
+  updateCollateralSettings: TypedContractMethod<
+    [
+      cToken: AddressLike,
+      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  updatePoolSettings: TypedContractMethod<
+    [
+      poolId: BigNumberish,
+      newSettings: IClearingHouseStructures.PoolSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  updateProtocolSettings: TypedContractMethod<
+    [
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      minRequiredMargin: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  withdrawProtocolFee: TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  updateCollateralSettings(
-    cToken: PromiseOrValue<string>,
-    collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  updatePoolSettings(
-    poolId: PromiseOrValue<BigNumberish>,
-    newSettings: IClearingHouseStructures.PoolSettingsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateProtocolSettings(
-    liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-    removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-    minimumOrderNotional: PromiseOrValue<BigNumberish>,
-    minRequiredMargin: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawProtocolFee(
-    numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateProtocolSettings(
+  getFunction(
+    nameOrSignature: 'updateCollateralSettings'
+  ): TypedContractMethod<
+    [
+      cToken: AddressLike,
+      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updatePoolSettings'
+  ): TypedContractMethod<
+    [
+      poolId: BigNumberish,
+      newSettings: IClearingHouseStructures.PoolSettingsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateProtocolSettings'
+  ): TypedContractMethod<
+    [
       liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+      removeLimitOrderFee: BigNumberish,
+      minimumOrderNotional: BigNumberish,
+      minRequiredMargin: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdrawProtocolFee'
+  ): TypedContractMethod<
+    [numberOfPoolsToUpdateInThisTx: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateProtocolSettings(
-      liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    updateCollateralSettings(
-      cToken: PromiseOrValue<string>,
-      collateralSettings: IClearingHouseStructures.CollateralSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updatePoolSettings(
-      poolId: PromiseOrValue<BigNumberish>,
-      newSettings: IClearingHouseStructures.PoolSettingsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateProtocolSettings(
-      liquidationParams: IClearingHouseStructures.LiquidationParamsStruct,
-      removeLimitOrderFee: PromiseOrValue<BigNumberish>,
-      minimumOrderNotional: PromiseOrValue<BigNumberish>,
-      minRequiredMargin: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawProtocolFee(
-      numberOfPoolsToUpdateInThisTx: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

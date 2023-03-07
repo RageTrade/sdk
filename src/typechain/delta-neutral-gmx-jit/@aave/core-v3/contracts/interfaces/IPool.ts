@@ -3,172 +3,117 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
 export declare namespace DataTypes {
   export type EModeCategoryStruct = {
-    ltv: PromiseOrValue<BigNumberish>;
-    liquidationThreshold: PromiseOrValue<BigNumberish>;
-    liquidationBonus: PromiseOrValue<BigNumberish>;
-    priceSource: PromiseOrValue<string>;
-    label: PromiseOrValue<string>;
+    ltv: BigNumberish;
+    liquidationThreshold: BigNumberish;
+    liquidationBonus: BigNumberish;
+    priceSource: AddressLike;
+    label: string;
   };
 
   export type EModeCategoryStructOutput = [
-    number,
-    number,
-    number,
-    string,
-    string
+    ltv: bigint,
+    liquidationThreshold: bigint,
+    liquidationBonus: bigint,
+    priceSource: string,
+    label: string
   ] & {
-    ltv: number;
-    liquidationThreshold: number;
-    liquidationBonus: number;
+    ltv: bigint;
+    liquidationThreshold: bigint;
+    liquidationBonus: bigint;
     priceSource: string;
     label: string;
   };
 
-  export type ReserveConfigurationMapStruct = {
-    data: PromiseOrValue<BigNumberish>;
-  };
+  export type ReserveConfigurationMapStruct = { data: BigNumberish };
 
-  export type ReserveConfigurationMapStructOutput = [BigNumber] & {
-    data: BigNumber;
+  export type ReserveConfigurationMapStructOutput = [data: bigint] & {
+    data: bigint;
   };
 
   export type ReserveDataStruct = {
     configuration: DataTypes.ReserveConfigurationMapStruct;
-    liquidityIndex: PromiseOrValue<BigNumberish>;
-    currentLiquidityRate: PromiseOrValue<BigNumberish>;
-    variableBorrowIndex: PromiseOrValue<BigNumberish>;
-    currentVariableBorrowRate: PromiseOrValue<BigNumberish>;
-    currentStableBorrowRate: PromiseOrValue<BigNumberish>;
-    lastUpdateTimestamp: PromiseOrValue<BigNumberish>;
-    id: PromiseOrValue<BigNumberish>;
-    aTokenAddress: PromiseOrValue<string>;
-    stableDebtTokenAddress: PromiseOrValue<string>;
-    variableDebtTokenAddress: PromiseOrValue<string>;
-    interestRateStrategyAddress: PromiseOrValue<string>;
-    accruedToTreasury: PromiseOrValue<BigNumberish>;
-    unbacked: PromiseOrValue<BigNumberish>;
-    isolationModeTotalDebt: PromiseOrValue<BigNumberish>;
+    liquidityIndex: BigNumberish;
+    currentLiquidityRate: BigNumberish;
+    variableBorrowIndex: BigNumberish;
+    currentVariableBorrowRate: BigNumberish;
+    currentStableBorrowRate: BigNumberish;
+    lastUpdateTimestamp: BigNumberish;
+    id: BigNumberish;
+    aTokenAddress: AddressLike;
+    stableDebtTokenAddress: AddressLike;
+    variableDebtTokenAddress: AddressLike;
+    interestRateStrategyAddress: AddressLike;
+    accruedToTreasury: BigNumberish;
+    unbacked: BigNumberish;
+    isolationModeTotalDebt: BigNumberish;
   };
 
   export type ReserveDataStructOutput = [
-    DataTypes.ReserveConfigurationMapStructOutput,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number,
-    number,
-    string,
-    string,
-    string,
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    configuration: DataTypes.ReserveConfigurationMapStructOutput,
+    liquidityIndex: bigint,
+    currentLiquidityRate: bigint,
+    variableBorrowIndex: bigint,
+    currentVariableBorrowRate: bigint,
+    currentStableBorrowRate: bigint,
+    lastUpdateTimestamp: bigint,
+    id: bigint,
+    aTokenAddress: string,
+    stableDebtTokenAddress: string,
+    variableDebtTokenAddress: string,
+    interestRateStrategyAddress: string,
+    accruedToTreasury: bigint,
+    unbacked: bigint,
+    isolationModeTotalDebt: bigint
   ] & {
     configuration: DataTypes.ReserveConfigurationMapStructOutput;
-    liquidityIndex: BigNumber;
-    currentLiquidityRate: BigNumber;
-    variableBorrowIndex: BigNumber;
-    currentVariableBorrowRate: BigNumber;
-    currentStableBorrowRate: BigNumber;
-    lastUpdateTimestamp: number;
-    id: number;
+    liquidityIndex: bigint;
+    currentLiquidityRate: bigint;
+    variableBorrowIndex: bigint;
+    currentVariableBorrowRate: bigint;
+    currentStableBorrowRate: bigint;
+    lastUpdateTimestamp: bigint;
+    id: bigint;
     aTokenAddress: string;
     stableDebtTokenAddress: string;
     variableDebtTokenAddress: string;
     interestRateStrategyAddress: string;
-    accruedToTreasury: BigNumber;
-    unbacked: BigNumber;
-    isolationModeTotalDebt: BigNumber;
+    accruedToTreasury: bigint;
+    unbacked: bigint;
+    isolationModeTotalDebt: bigint;
   };
 
-  export type UserConfigurationMapStruct = {
-    data: PromiseOrValue<BigNumberish>;
-  };
+  export type UserConfigurationMapStruct = { data: BigNumberish };
 
-  export type UserConfigurationMapStructOutput = [BigNumber] & {
-    data: BigNumber;
+  export type UserConfigurationMapStructOutput = [data: bigint] & {
+    data: bigint;
   };
 }
 
-export interface IPoolInterface extends utils.Interface {
-  functions: {
-    'ADDRESSES_PROVIDER()': FunctionFragment;
-    'BRIDGE_PROTOCOL_FEE()': FunctionFragment;
-    'FLASHLOAN_PREMIUM_TOTAL()': FunctionFragment;
-    'FLASHLOAN_PREMIUM_TO_PROTOCOL()': FunctionFragment;
-    'MAX_NUMBER_RESERVES()': FunctionFragment;
-    'MAX_STABLE_RATE_BORROW_SIZE_PERCENT()': FunctionFragment;
-    'backUnbacked(address,uint256,uint256)': FunctionFragment;
-    'borrow(address,uint256,uint256,uint16,address)': FunctionFragment;
-    'configureEModeCategory(uint8,(uint16,uint16,uint16,address,string))': FunctionFragment;
-    'deposit(address,uint256,address,uint16)': FunctionFragment;
-    'dropReserve(address)': FunctionFragment;
-    'finalizeTransfer(address,address,address,uint256,uint256,uint256)': FunctionFragment;
-    'flashLoan(address,address[],uint256[],uint256[],address,bytes,uint16)': FunctionFragment;
-    'flashLoanSimple(address,address,uint256,bytes,uint16)': FunctionFragment;
-    'getConfiguration(address)': FunctionFragment;
-    'getEModeCategoryData(uint8)': FunctionFragment;
-    'getReserveAddressById(uint16)': FunctionFragment;
-    'getReserveData(address)': FunctionFragment;
-    'getReserveNormalizedIncome(address)': FunctionFragment;
-    'getReserveNormalizedVariableDebt(address)': FunctionFragment;
-    'getReservesList()': FunctionFragment;
-    'getUserAccountData(address)': FunctionFragment;
-    'getUserConfiguration(address)': FunctionFragment;
-    'getUserEMode(address)': FunctionFragment;
-    'initReserve(address,address,address,address,address)': FunctionFragment;
-    'liquidationCall(address,address,address,uint256,bool)': FunctionFragment;
-    'mintToTreasury(address[])': FunctionFragment;
-    'mintUnbacked(address,uint256,address,uint16)': FunctionFragment;
-    'rebalanceStableBorrowRate(address,address)': FunctionFragment;
-    'repay(address,uint256,uint256,address)': FunctionFragment;
-    'repayWithATokens(address,uint256,uint256)': FunctionFragment;
-    'repayWithPermit(address,uint256,uint256,address,uint256,uint8,bytes32,bytes32)': FunctionFragment;
-    'rescueTokens(address,address,uint256)': FunctionFragment;
-    'resetIsolationModeTotalDebt(address)': FunctionFragment;
-    'setConfiguration(address,(uint256))': FunctionFragment;
-    'setReserveInterestRateStrategyAddress(address,address)': FunctionFragment;
-    'setUserEMode(uint8)': FunctionFragment;
-    'setUserUseReserveAsCollateral(address,bool)': FunctionFragment;
-    'supply(address,uint256,address,uint16)': FunctionFragment;
-    'supplyWithPermit(address,uint256,address,uint16,uint256,uint8,bytes32,bytes32)': FunctionFragment;
-    'swapBorrowRateMode(address,uint256)': FunctionFragment;
-    'updateBridgeProtocolFee(uint256)': FunctionFragment;
-    'updateFlashloanPremiums(uint128,uint128)': FunctionFragment;
-    'withdraw(address,uint256,address)': FunctionFragment;
-  };
-
+export interface IPoolInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'ADDRESSES_PROVIDER'
       | 'BRIDGE_PROTOCOL_FEE'
       | 'FLASHLOAN_PREMIUM_TOTAL'
@@ -215,6 +160,26 @@ export interface IPoolInterface extends utils.Interface {
       | 'withdraw'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'BackUnbacked'
+      | 'Borrow'
+      | 'FlashLoan'
+      | 'IsolationModeTotalDebtUpdated'
+      | 'LiquidationCall'
+      | 'MintUnbacked'
+      | 'MintedToTreasury'
+      | 'RebalanceStableBorrowRate'
+      | 'Repay'
+      | 'ReserveDataUpdated'
+      | 'ReserveUsedAsCollateralDisabled'
+      | 'ReserveUsedAsCollateralEnabled'
+      | 'Supply'
+      | 'SwapBorrowRateMode'
+      | 'UserEModeSet'
+      | 'Withdraw'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'ADDRESSES_PROVIDER',
     values?: undefined
@@ -241,95 +206,74 @@ export interface IPoolInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'backUnbacked',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'borrow',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'configureEModeCategory',
-    values: [PromiseOrValue<BigNumberish>, DataTypes.EModeCategoryStruct]
+    values: [BigNumberish, DataTypes.EModeCategoryStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'dropReserve',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'finalizeTransfer',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'flashLoan',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      AddressLike[],
+      BigNumberish[],
+      BigNumberish[],
+      AddressLike,
+      BytesLike,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'flashLoanSimple',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getConfiguration',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getEModeCategoryData',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getReserveAddressById',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getReserveData',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getReserveNormalizedIncome',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getReserveNormalizedVariableDebt',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getReservesList',
@@ -337,152 +281,113 @@ export interface IPoolInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserAccountData',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserConfiguration',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserEMode',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'initReserve',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'liquidationCall',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>
-    ]
+    values: [AddressLike, AddressLike, AddressLike, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'mintToTreasury',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'mintUnbacked',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'rebalanceStableBorrowRate',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'repay',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'repayWithATokens',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'repayWithPermit',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'rescueTokens',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'resetIsolationModeTotalDebt',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setConfiguration',
-    values: [PromiseOrValue<string>, DataTypes.ReserveConfigurationMapStruct]
+    values: [AddressLike, DataTypes.ReserveConfigurationMapStruct]
   ): string;
   encodeFunctionData(
     functionFragment: 'setReserveInterestRateStrategyAddress',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setUserEMode',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setUserUseReserveAsCollateral',
-    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+    values: [AddressLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'supply',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'supplyWithPermit',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
+      AddressLike,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapBorrowRateMode',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateBridgeProtocolFee',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateFlashloanPremiums',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -643,1897 +548,1374 @@ export interface IPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'withdraw', data: BytesLike): Result;
-
-  events: {
-    'BackUnbacked(address,address,uint256,uint256)': EventFragment;
-    'Borrow(address,address,address,uint256,uint8,uint256,uint16)': EventFragment;
-    'FlashLoan(address,address,address,uint256,uint8,uint256,uint16)': EventFragment;
-    'IsolationModeTotalDebtUpdated(address,uint256)': EventFragment;
-    'LiquidationCall(address,address,address,uint256,uint256,address,bool)': EventFragment;
-    'MintUnbacked(address,address,address,uint256,uint16)': EventFragment;
-    'MintedToTreasury(address,uint256)': EventFragment;
-    'RebalanceStableBorrowRate(address,address)': EventFragment;
-    'Repay(address,address,address,uint256,bool)': EventFragment;
-    'ReserveDataUpdated(address,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'ReserveUsedAsCollateralDisabled(address,address)': EventFragment;
-    'ReserveUsedAsCollateralEnabled(address,address)': EventFragment;
-    'Supply(address,address,address,uint256,uint16)': EventFragment;
-    'SwapBorrowRateMode(address,address,uint8)': EventFragment;
-    'UserEModeSet(address,uint8)': EventFragment;
-    'Withdraw(address,address,address,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'BackUnbacked'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Borrow'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FlashLoan'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'IsolationModeTotalDebtUpdated'
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidationCall'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MintUnbacked'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MintedToTreasury'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RebalanceStableBorrowRate'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Repay'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ReserveDataUpdated'): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'ReserveUsedAsCollateralDisabled'
-  ): EventFragment;
-  getEvent(
-    nameOrSignatureOrTopic: 'ReserveUsedAsCollateralEnabled'
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Supply'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SwapBorrowRateMode'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'UserEModeSet'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
 }
 
-export interface BackUnbackedEventObject {
-  reserve: string;
-  backer: string;
-  amount: BigNumber;
-  fee: BigNumber;
+export namespace BackUnbackedEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    backer: AddressLike,
+    amount: BigNumberish,
+    fee: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    backer: string,
+    amount: bigint,
+    fee: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    backer: string;
+    amount: bigint;
+    fee: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BackUnbackedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  BackUnbackedEventObject
->;
 
-export type BackUnbackedEventFilter = TypedEventFilter<BackUnbackedEvent>;
-
-export interface BorrowEventObject {
-  reserve: string;
-  user: string;
-  onBehalfOf: string;
-  amount: BigNumber;
-  interestRateMode: number;
-  borrowRate: BigNumber;
-  referralCode: number;
+export namespace BorrowEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    onBehalfOf: AddressLike,
+    amount: BigNumberish,
+    interestRateMode: BigNumberish,
+    borrowRate: BigNumberish,
+    referralCode: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    onBehalfOf: string,
+    amount: bigint,
+    interestRateMode: bigint,
+    borrowRate: bigint,
+    referralCode: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    onBehalfOf: string;
+    amount: bigint;
+    interestRateMode: bigint;
+    borrowRate: bigint;
+    referralCode: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BorrowEvent = TypedEvent<
-  [string, string, string, BigNumber, number, BigNumber, number],
-  BorrowEventObject
->;
 
-export type BorrowEventFilter = TypedEventFilter<BorrowEvent>;
-
-export interface FlashLoanEventObject {
-  target: string;
-  initiator: string;
-  asset: string;
-  amount: BigNumber;
-  interestRateMode: number;
-  premium: BigNumber;
-  referralCode: number;
+export namespace FlashLoanEvent {
+  export type InputTuple = [
+    target: AddressLike,
+    initiator: AddressLike,
+    asset: AddressLike,
+    amount: BigNumberish,
+    interestRateMode: BigNumberish,
+    premium: BigNumberish,
+    referralCode: BigNumberish
+  ];
+  export type OutputTuple = [
+    target: string,
+    initiator: string,
+    asset: string,
+    amount: bigint,
+    interestRateMode: bigint,
+    premium: bigint,
+    referralCode: bigint
+  ];
+  export interface OutputObject {
+    target: string;
+    initiator: string;
+    asset: string;
+    amount: bigint;
+    interestRateMode: bigint;
+    premium: bigint;
+    referralCode: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FlashLoanEvent = TypedEvent<
-  [string, string, string, BigNumber, number, BigNumber, number],
-  FlashLoanEventObject
->;
 
-export type FlashLoanEventFilter = TypedEventFilter<FlashLoanEvent>;
-
-export interface IsolationModeTotalDebtUpdatedEventObject {
-  asset: string;
-  totalDebt: BigNumber;
+export namespace IsolationModeTotalDebtUpdatedEvent {
+  export type InputTuple = [asset: AddressLike, totalDebt: BigNumberish];
+  export type OutputTuple = [asset: string, totalDebt: bigint];
+  export interface OutputObject {
+    asset: string;
+    totalDebt: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type IsolationModeTotalDebtUpdatedEvent = TypedEvent<
-  [string, BigNumber],
-  IsolationModeTotalDebtUpdatedEventObject
->;
 
-export type IsolationModeTotalDebtUpdatedEventFilter =
-  TypedEventFilter<IsolationModeTotalDebtUpdatedEvent>;
-
-export interface LiquidationCallEventObject {
-  collateralAsset: string;
-  debtAsset: string;
-  user: string;
-  debtToCover: BigNumber;
-  liquidatedCollateralAmount: BigNumber;
-  liquidator: string;
-  receiveAToken: boolean;
+export namespace LiquidationCallEvent {
+  export type InputTuple = [
+    collateralAsset: AddressLike,
+    debtAsset: AddressLike,
+    user: AddressLike,
+    debtToCover: BigNumberish,
+    liquidatedCollateralAmount: BigNumberish,
+    liquidator: AddressLike,
+    receiveAToken: boolean
+  ];
+  export type OutputTuple = [
+    collateralAsset: string,
+    debtAsset: string,
+    user: string,
+    debtToCover: bigint,
+    liquidatedCollateralAmount: bigint,
+    liquidator: string,
+    receiveAToken: boolean
+  ];
+  export interface OutputObject {
+    collateralAsset: string;
+    debtAsset: string;
+    user: string;
+    debtToCover: bigint;
+    liquidatedCollateralAmount: bigint;
+    liquidator: string;
+    receiveAToken: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidationCallEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, string, boolean],
-  LiquidationCallEventObject
->;
 
-export type LiquidationCallEventFilter = TypedEventFilter<LiquidationCallEvent>;
-
-export interface MintUnbackedEventObject {
-  reserve: string;
-  user: string;
-  onBehalfOf: string;
-  amount: BigNumber;
-  referralCode: number;
+export namespace MintUnbackedEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    onBehalfOf: AddressLike,
+    amount: BigNumberish,
+    referralCode: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    onBehalfOf: string,
+    amount: bigint,
+    referralCode: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    onBehalfOf: string;
+    amount: bigint;
+    referralCode: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MintUnbackedEvent = TypedEvent<
-  [string, string, string, BigNumber, number],
-  MintUnbackedEventObject
->;
 
-export type MintUnbackedEventFilter = TypedEventFilter<MintUnbackedEvent>;
-
-export interface MintedToTreasuryEventObject {
-  reserve: string;
-  amountMinted: BigNumber;
+export namespace MintedToTreasuryEvent {
+  export type InputTuple = [reserve: AddressLike, amountMinted: BigNumberish];
+  export type OutputTuple = [reserve: string, amountMinted: bigint];
+  export interface OutputObject {
+    reserve: string;
+    amountMinted: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MintedToTreasuryEvent = TypedEvent<
-  [string, BigNumber],
-  MintedToTreasuryEventObject
->;
 
-export type MintedToTreasuryEventFilter =
-  TypedEventFilter<MintedToTreasuryEvent>;
-
-export interface RebalanceStableBorrowRateEventObject {
-  reserve: string;
-  user: string;
+export namespace RebalanceStableBorrowRateEvent {
+  export type InputTuple = [reserve: AddressLike, user: AddressLike];
+  export type OutputTuple = [reserve: string, user: string];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RebalanceStableBorrowRateEvent = TypedEvent<
-  [string, string],
-  RebalanceStableBorrowRateEventObject
->;
 
-export type RebalanceStableBorrowRateEventFilter =
-  TypedEventFilter<RebalanceStableBorrowRateEvent>;
-
-export interface RepayEventObject {
-  reserve: string;
-  user: string;
-  repayer: string;
-  amount: BigNumber;
-  useATokens: boolean;
+export namespace RepayEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    repayer: AddressLike,
+    amount: BigNumberish,
+    useATokens: boolean
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    repayer: string,
+    amount: bigint,
+    useATokens: boolean
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    repayer: string;
+    amount: bigint;
+    useATokens: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RepayEvent = TypedEvent<
-  [string, string, string, BigNumber, boolean],
-  RepayEventObject
->;
 
-export type RepayEventFilter = TypedEventFilter<RepayEvent>;
-
-export interface ReserveDataUpdatedEventObject {
-  reserve: string;
-  liquidityRate: BigNumber;
-  stableBorrowRate: BigNumber;
-  variableBorrowRate: BigNumber;
-  liquidityIndex: BigNumber;
-  variableBorrowIndex: BigNumber;
+export namespace ReserveDataUpdatedEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    liquidityRate: BigNumberish,
+    stableBorrowRate: BigNumberish,
+    variableBorrowRate: BigNumberish,
+    liquidityIndex: BigNumberish,
+    variableBorrowIndex: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    liquidityRate: bigint,
+    stableBorrowRate: bigint,
+    variableBorrowRate: bigint,
+    liquidityIndex: bigint,
+    variableBorrowIndex: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    liquidityRate: bigint;
+    stableBorrowRate: bigint;
+    variableBorrowRate: bigint;
+    liquidityIndex: bigint;
+    variableBorrowIndex: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ReserveDataUpdatedEvent = TypedEvent<
-  [string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  ReserveDataUpdatedEventObject
->;
 
-export type ReserveDataUpdatedEventFilter =
-  TypedEventFilter<ReserveDataUpdatedEvent>;
-
-export interface ReserveUsedAsCollateralDisabledEventObject {
-  reserve: string;
-  user: string;
+export namespace ReserveUsedAsCollateralDisabledEvent {
+  export type InputTuple = [reserve: AddressLike, user: AddressLike];
+  export type OutputTuple = [reserve: string, user: string];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ReserveUsedAsCollateralDisabledEvent = TypedEvent<
-  [string, string],
-  ReserveUsedAsCollateralDisabledEventObject
->;
 
-export type ReserveUsedAsCollateralDisabledEventFilter =
-  TypedEventFilter<ReserveUsedAsCollateralDisabledEvent>;
-
-export interface ReserveUsedAsCollateralEnabledEventObject {
-  reserve: string;
-  user: string;
+export namespace ReserveUsedAsCollateralEnabledEvent {
+  export type InputTuple = [reserve: AddressLike, user: AddressLike];
+  export type OutputTuple = [reserve: string, user: string];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ReserveUsedAsCollateralEnabledEvent = TypedEvent<
-  [string, string],
-  ReserveUsedAsCollateralEnabledEventObject
->;
 
-export type ReserveUsedAsCollateralEnabledEventFilter =
-  TypedEventFilter<ReserveUsedAsCollateralEnabledEvent>;
-
-export interface SupplyEventObject {
-  reserve: string;
-  user: string;
-  onBehalfOf: string;
-  amount: BigNumber;
-  referralCode: number;
+export namespace SupplyEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    onBehalfOf: AddressLike,
+    amount: BigNumberish,
+    referralCode: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    onBehalfOf: string,
+    amount: bigint,
+    referralCode: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    onBehalfOf: string;
+    amount: bigint;
+    referralCode: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SupplyEvent = TypedEvent<
-  [string, string, string, BigNumber, number],
-  SupplyEventObject
->;
 
-export type SupplyEventFilter = TypedEventFilter<SupplyEvent>;
-
-export interface SwapBorrowRateModeEventObject {
-  reserve: string;
-  user: string;
-  interestRateMode: number;
+export namespace SwapBorrowRateModeEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    interestRateMode: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    interestRateMode: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    interestRateMode: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SwapBorrowRateModeEvent = TypedEvent<
-  [string, string, number],
-  SwapBorrowRateModeEventObject
->;
 
-export type SwapBorrowRateModeEventFilter =
-  TypedEventFilter<SwapBorrowRateModeEvent>;
-
-export interface UserEModeSetEventObject {
-  user: string;
-  categoryId: number;
+export namespace UserEModeSetEvent {
+  export type InputTuple = [user: AddressLike, categoryId: BigNumberish];
+  export type OutputTuple = [user: string, categoryId: bigint];
+  export interface OutputObject {
+    user: string;
+    categoryId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UserEModeSetEvent = TypedEvent<
-  [string, number],
-  UserEModeSetEventObject
->;
 
-export type UserEModeSetEventFilter = TypedEventFilter<UserEModeSetEvent>;
-
-export interface WithdrawEventObject {
-  reserve: string;
-  user: string;
-  to: string;
-  amount: BigNumber;
+export namespace WithdrawEvent {
+  export type InputTuple = [
+    reserve: AddressLike,
+    user: AddressLike,
+    to: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [
+    reserve: string,
+    user: string,
+    to: string,
+    amount: bigint
+  ];
+  export interface OutputObject {
+    reserve: string;
+    user: string;
+    to: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type WithdrawEvent = TypedEvent<
-  [string, string, string, BigNumber],
-  WithdrawEventObject
->;
-
-export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
 
 export interface IPool extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IPoolInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<[string]>;
-
-    BRIDGE_PROTOCOL_FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    FLASHLOAN_PREMIUM_TOTAL(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    FLASHLOAN_PREMIUM_TO_PROTOCOL(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    MAX_NUMBER_RESERVES(overrides?: CallOverrides): Promise<[number]>;
-
-    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    backUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    borrow(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    configureEModeCategory(
-      id: PromiseOrValue<BigNumberish>,
-      config: DataTypes.EModeCategoryStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    deposit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    dropReserve(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    finalizeTransfer(
-      asset: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      balanceFromBefore: PromiseOrValue<BigNumberish>,
-      balanceToBefore: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    flashLoan(
-      receiverAddress: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      interestRateModes: PromiseOrValue<BigNumberish>[],
-      onBehalfOf: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    flashLoanSimple(
-      receiverAddress: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getConfiguration(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[DataTypes.ReserveConfigurationMapStructOutput]>;
-
-    getEModeCategoryData(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[DataTypes.EModeCategoryStructOutput]>;
-
-    getReserveAddressById(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getReserveData(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[DataTypes.ReserveDataStructOutput]>;
-
-    getReserveNormalizedIncome(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getReserveNormalizedVariableDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getReservesList(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getUserAccountData(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        totalCollateralBase: BigNumber;
-        totalDebtBase: BigNumber;
-        availableBorrowsBase: BigNumber;
-        currentLiquidationThreshold: BigNumber;
-        ltv: BigNumber;
-        healthFactor: BigNumber;
-      }
-    >;
-
-    getUserConfiguration(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[DataTypes.UserConfigurationMapStructOutput]>;
-
-    getUserEMode(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    initReserve(
-      asset: PromiseOrValue<string>,
-      aTokenAddress: PromiseOrValue<string>,
-      stableDebtAddress: PromiseOrValue<string>,
-      variableDebtAddress: PromiseOrValue<string>,
-      interestRateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    liquidationCall(
-      collateralAsset: PromiseOrValue<string>,
-      debtAsset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      debtToCover: PromiseOrValue<BigNumberish>,
-      receiveAToken: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    mintToTreasury(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    mintUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    rebalanceStableBorrowRate(
-      asset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    repay(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    repayWithATokens(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    repayWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    rescueTokens(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    resetIsolationModeTotalDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setConfiguration(
-      asset: PromiseOrValue<string>,
-      configuration: DataTypes.ReserveConfigurationMapStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setReserveInterestRateStrategyAddress(
-      asset: PromiseOrValue<string>,
-      rateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setUserEMode(
-      categoryId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setUserUseReserveAsCollateral(
-      asset: PromiseOrValue<string>,
-      useAsCollateral: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    supply(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    supplyWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    swapBorrowRateMode(
-      asset: PromiseOrValue<string>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateBridgeProtocolFee(
-      bridgeProtocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateFlashloanPremiums(
-      flashLoanPremiumTotal: PromiseOrValue<BigNumberish>,
-      flashLoanPremiumToProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdraw(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
-
-  BRIDGE_PROTOCOL_FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  FLASHLOAN_PREMIUM_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
-
-  FLASHLOAN_PREMIUM_TO_PROTOCOL(overrides?: CallOverrides): Promise<BigNumber>;
-
-  MAX_NUMBER_RESERVES(overrides?: CallOverrides): Promise<number>;
-
-  MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  backUnbacked(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    fee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  borrow(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    interestRateMode: PromiseOrValue<BigNumberish>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  configureEModeCategory(
-    id: PromiseOrValue<BigNumberish>,
-    config: DataTypes.EModeCategoryStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  deposit(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  dropReserve(
-    asset: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  finalizeTransfer(
-    asset: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    balanceFromBefore: PromiseOrValue<BigNumberish>,
-    balanceToBefore: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  flashLoan(
-    receiverAddress: PromiseOrValue<string>,
-    assets: PromiseOrValue<string>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    interestRateModes: PromiseOrValue<BigNumberish>[],
-    onBehalfOf: PromiseOrValue<string>,
-    params: PromiseOrValue<BytesLike>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  flashLoanSimple(
-    receiverAddress: PromiseOrValue<string>,
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    params: PromiseOrValue<BytesLike>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getConfiguration(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<DataTypes.ReserveConfigurationMapStructOutput>;
-
-  getEModeCategoryData(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<DataTypes.EModeCategoryStructOutput>;
-
-  getReserveAddressById(
-    id: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getReserveData(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<DataTypes.ReserveDataStructOutput>;
-
-  getReserveNormalizedIncome(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getReserveNormalizedVariableDebt(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getReservesList(overrides?: CallOverrides): Promise<string[]>;
-
-  getUserAccountData(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-      totalCollateralBase: BigNumber;
-      totalDebtBase: BigNumber;
-      availableBorrowsBase: BigNumber;
-      currentLiquidationThreshold: BigNumber;
-      ltv: BigNumber;
-      healthFactor: BigNumber;
-    }
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  ADDRESSES_PROVIDER: TypedContractMethod<[], [string], 'view'>;
+
+  BRIDGE_PROTOCOL_FEE: TypedContractMethod<[], [bigint], 'view'>;
+
+  FLASHLOAN_PREMIUM_TOTAL: TypedContractMethod<[], [bigint], 'view'>;
+
+  FLASHLOAN_PREMIUM_TO_PROTOCOL: TypedContractMethod<[], [bigint], 'view'>;
+
+  MAX_NUMBER_RESERVES: TypedContractMethod<[], [bigint], 'view'>;
+
+  MAX_STABLE_RATE_BORROW_SIZE_PERCENT: TypedContractMethod<
+    [],
+    [bigint],
+    'view'
   >;
 
-  getUserConfiguration(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<DataTypes.UserConfigurationMapStructOutput>;
+  backUnbacked: TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, fee: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  getUserEMode(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  borrow: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
+      onBehalfOf: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  initReserve(
-    asset: PromiseOrValue<string>,
-    aTokenAddress: PromiseOrValue<string>,
-    stableDebtAddress: PromiseOrValue<string>,
-    variableDebtAddress: PromiseOrValue<string>,
-    interestRateStrategyAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  configureEModeCategory: TypedContractMethod<
+    [id: BigNumberish, config: DataTypes.EModeCategoryStruct],
+    [void],
+    'nonpayable'
+  >;
 
-  liquidationCall(
-    collateralAsset: PromiseOrValue<string>,
-    debtAsset: PromiseOrValue<string>,
-    user: PromiseOrValue<string>,
-    debtToCover: PromiseOrValue<BigNumberish>,
-    receiveAToken: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  deposit: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  mintToTreasury(
-    assets: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  dropReserve: TypedContractMethod<[asset: AddressLike], [void], 'nonpayable'>;
 
-  mintUnbacked(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  finalizeTransfer: TypedContractMethod<
+    [
+      asset: AddressLike,
+      from: AddressLike,
+      to: AddressLike,
+      amount: BigNumberish,
+      balanceFromBefore: BigNumberish,
+      balanceToBefore: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  rebalanceStableBorrowRate(
-    asset: PromiseOrValue<string>,
-    user: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  flashLoan: TypedContractMethod<
+    [
+      receiverAddress: AddressLike,
+      assets: AddressLike[],
+      amounts: BigNumberish[],
+      interestRateModes: BigNumberish[],
+      onBehalfOf: AddressLike,
+      params: BytesLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  repay(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    interestRateMode: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  flashLoanSimple: TypedContractMethod<
+    [
+      receiverAddress: AddressLike,
+      asset: AddressLike,
+      amount: BigNumberish,
+      params: BytesLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  repayWithATokens(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    interestRateMode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getConfiguration: TypedContractMethod<
+    [asset: AddressLike],
+    [DataTypes.ReserveConfigurationMapStructOutput],
+    'view'
+  >;
 
-  repayWithPermit(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    interestRateMode: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    deadline: PromiseOrValue<BigNumberish>,
-    permitV: PromiseOrValue<BigNumberish>,
-    permitR: PromiseOrValue<BytesLike>,
-    permitS: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getEModeCategoryData: TypedContractMethod<
+    [id: BigNumberish],
+    [DataTypes.EModeCategoryStructOutput],
+    'view'
+  >;
 
-  rescueTokens(
-    token: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getReserveAddressById: TypedContractMethod<
+    [id: BigNumberish],
+    [string],
+    'view'
+  >;
 
-  resetIsolationModeTotalDebt(
-    asset: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getReserveData: TypedContractMethod<
+    [asset: AddressLike],
+    [DataTypes.ReserveDataStructOutput],
+    'view'
+  >;
 
-  setConfiguration(
-    asset: PromiseOrValue<string>,
-    configuration: DataTypes.ReserveConfigurationMapStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getReserveNormalizedIncome: TypedContractMethod<
+    [asset: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-  setReserveInterestRateStrategyAddress(
-    asset: PromiseOrValue<string>,
-    rateStrategyAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getReserveNormalizedVariableDebt: TypedContractMethod<
+    [asset: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-  setUserEMode(
-    categoryId: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getReservesList: TypedContractMethod<[], [string[]], 'view'>;
 
-  setUserUseReserveAsCollateral(
-    asset: PromiseOrValue<string>,
-    useAsCollateral: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  supply(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  supplyWithPermit(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    onBehalfOf: PromiseOrValue<string>,
-    referralCode: PromiseOrValue<BigNumberish>,
-    deadline: PromiseOrValue<BigNumberish>,
-    permitV: PromiseOrValue<BigNumberish>,
-    permitR: PromiseOrValue<BytesLike>,
-    permitS: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  swapBorrowRateMode(
-    asset: PromiseOrValue<string>,
-    interestRateMode: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateBridgeProtocolFee(
-    bridgeProtocolFee: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateFlashloanPremiums(
-    flashLoanPremiumTotal: PromiseOrValue<BigNumberish>,
-    flashLoanPremiumToProtocol: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdraw(
-    asset: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
-
-    BRIDGE_PROTOCOL_FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_PREMIUM_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_PREMIUM_TO_PROTOCOL(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    MAX_NUMBER_RESERVES(overrides?: CallOverrides): Promise<number>;
-
-    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    backUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    borrow(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    configureEModeCategory(
-      id: PromiseOrValue<BigNumberish>,
-      config: DataTypes.EModeCategoryStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    deposit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    dropReserve(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    finalizeTransfer(
-      asset: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      balanceFromBefore: PromiseOrValue<BigNumberish>,
-      balanceToBefore: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    flashLoan(
-      receiverAddress: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      interestRateModes: PromiseOrValue<BigNumberish>[],
-      onBehalfOf: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    flashLoanSimple(
-      receiverAddress: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getConfiguration(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<DataTypes.ReserveConfigurationMapStructOutput>;
-
-    getEModeCategoryData(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<DataTypes.EModeCategoryStructOutput>;
-
-    getReserveAddressById(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getReserveData(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<DataTypes.ReserveDataStructOutput>;
-
-    getReserveNormalizedIncome(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReserveNormalizedVariableDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReservesList(overrides?: CallOverrides): Promise<string[]>;
-
-    getUserAccountData(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber] & {
-        totalCollateralBase: BigNumber;
-        totalDebtBase: BigNumber;
-        availableBorrowsBase: BigNumber;
-        currentLiquidationThreshold: BigNumber;
-        ltv: BigNumber;
-        healthFactor: BigNumber;
+  getUserAccountData: TypedContractMethod<
+    [user: AddressLike],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint] & {
+        totalCollateralBase: bigint;
+        totalDebtBase: bigint;
+        availableBorrowsBase: bigint;
+        currentLiquidationThreshold: bigint;
+        ltv: bigint;
+        healthFactor: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getUserConfiguration(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<DataTypes.UserConfigurationMapStructOutput>;
+  getUserConfiguration: TypedContractMethod<
+    [user: AddressLike],
+    [DataTypes.UserConfigurationMapStructOutput],
+    'view'
+  >;
 
-    getUserEMode(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  getUserEMode: TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
 
-    initReserve(
-      asset: PromiseOrValue<string>,
-      aTokenAddress: PromiseOrValue<string>,
-      stableDebtAddress: PromiseOrValue<string>,
-      variableDebtAddress: PromiseOrValue<string>,
-      interestRateStrategyAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  initReserve: TypedContractMethod<
+    [
+      asset: AddressLike,
+      aTokenAddress: AddressLike,
+      stableDebtAddress: AddressLike,
+      variableDebtAddress: AddressLike,
+      interestRateStrategyAddress: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    liquidationCall(
-      collateralAsset: PromiseOrValue<string>,
-      debtAsset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      debtToCover: PromiseOrValue<BigNumberish>,
-      receiveAToken: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  liquidationCall: TypedContractMethod<
+    [
+      collateralAsset: AddressLike,
+      debtAsset: AddressLike,
+      user: AddressLike,
+      debtToCover: BigNumberish,
+      receiveAToken: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    mintToTreasury(
-      assets: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
+  mintToTreasury: TypedContractMethod<
+    [assets: AddressLike[]],
+    [void],
+    'nonpayable'
+  >;
 
-    mintUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  mintUnbacked: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    rebalanceStableBorrowRate(
-      asset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  rebalanceStableBorrowRate: TypedContractMethod<
+    [asset: AddressLike, user: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    repay(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  repay: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      onBehalfOf: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    repayWithATokens(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  repayWithATokens: TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, interestRateMode: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    repayWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  repayWithPermit: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      onBehalfOf: AddressLike,
+      deadline: BigNumberish,
+      permitV: BigNumberish,
+      permitR: BytesLike,
+      permitS: BytesLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    rescueTokens(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  rescueTokens: TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    resetIsolationModeTotalDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  resetIsolationModeTotalDebt: TypedContractMethod<
+    [asset: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setConfiguration(
-      asset: PromiseOrValue<string>,
-      configuration: DataTypes.ReserveConfigurationMapStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setConfiguration: TypedContractMethod<
+    [
+      asset: AddressLike,
+      configuration: DataTypes.ReserveConfigurationMapStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    setReserveInterestRateStrategyAddress(
-      asset: PromiseOrValue<string>,
-      rateStrategyAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setReserveInterestRateStrategyAddress: TypedContractMethod<
+    [asset: AddressLike, rateStrategyAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setUserEMode(
-      categoryId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setUserEMode: TypedContractMethod<
+    [categoryId: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    setUserUseReserveAsCollateral(
-      asset: PromiseOrValue<string>,
-      useAsCollateral: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setUserUseReserveAsCollateral: TypedContractMethod<
+    [asset: AddressLike, useAsCollateral: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-    supply(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  supply: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    supplyWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  supplyWithPermit: TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish,
+      deadline: BigNumberish,
+      permitV: BigNumberish,
+      permitR: BytesLike,
+      permitS: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    swapBorrowRateMode(
-      asset: PromiseOrValue<string>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  swapBorrowRateMode: TypedContractMethod<
+    [asset: AddressLike, interestRateMode: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    updateBridgeProtocolFee(
-      bridgeProtocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  updateBridgeProtocolFee: TypedContractMethod<
+    [bridgeProtocolFee: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    updateFlashloanPremiums(
-      flashLoanPremiumTotal: PromiseOrValue<BigNumberish>,
-      flashLoanPremiumToProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  updateFlashloanPremiums: TypedContractMethod<
+    [
+      flashLoanPremiumTotal: BigNumberish,
+      flashLoanPremiumToProtocol: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    withdraw(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+  withdraw: TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'ADDRESSES_PROVIDER'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'BRIDGE_PROTOCOL_FEE'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'FLASHLOAN_PREMIUM_TOTAL'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'FLASHLOAN_PREMIUM_TO_PROTOCOL'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_NUMBER_RESERVES'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_STABLE_RATE_BORROW_SIZE_PERCENT'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'backUnbacked'
+  ): TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, fee: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'borrow'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      referralCode: BigNumberish,
+      onBehalfOf: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'configureEModeCategory'
+  ): TypedContractMethod<
+    [id: BigNumberish, config: DataTypes.EModeCategoryStruct],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'dropReserve'
+  ): TypedContractMethod<[asset: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'finalizeTransfer'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      from: AddressLike,
+      to: AddressLike,
+      amount: BigNumberish,
+      balanceFromBefore: BigNumberish,
+      balanceToBefore: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'flashLoan'
+  ): TypedContractMethod<
+    [
+      receiverAddress: AddressLike,
+      assets: AddressLike[],
+      amounts: BigNumberish[],
+      interestRateModes: BigNumberish[],
+      onBehalfOf: AddressLike,
+      params: BytesLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'flashLoanSimple'
+  ): TypedContractMethod<
+    [
+      receiverAddress: AddressLike,
+      asset: AddressLike,
+      amount: BigNumberish,
+      params: BytesLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'getConfiguration'
+  ): TypedContractMethod<
+    [asset: AddressLike],
+    [DataTypes.ReserveConfigurationMapStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getEModeCategoryData'
+  ): TypedContractMethod<
+    [id: BigNumberish],
+    [DataTypes.EModeCategoryStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getReserveAddressById'
+  ): TypedContractMethod<[id: BigNumberish], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getReserveData'
+  ): TypedContractMethod<
+    [asset: AddressLike],
+    [DataTypes.ReserveDataStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getReserveNormalizedIncome'
+  ): TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getReserveNormalizedVariableDebt'
+  ): TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getReservesList'
+  ): TypedContractMethod<[], [string[]], 'view'>;
+  getFunction(nameOrSignature: 'getUserAccountData'): TypedContractMethod<
+    [user: AddressLike],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint] & {
+        totalCollateralBase: bigint;
+        totalDebtBase: bigint;
+        availableBorrowsBase: bigint;
+        currentLiquidationThreshold: bigint;
+        ltv: bigint;
+        healthFactor: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserConfiguration'
+  ): TypedContractMethod<
+    [user: AddressLike],
+    [DataTypes.UserConfigurationMapStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserEMode'
+  ): TypedContractMethod<[user: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'initReserve'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      aTokenAddress: AddressLike,
+      stableDebtAddress: AddressLike,
+      variableDebtAddress: AddressLike,
+      interestRateStrategyAddress: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'liquidationCall'
+  ): TypedContractMethod<
+    [
+      collateralAsset: AddressLike,
+      debtAsset: AddressLike,
+      user: AddressLike,
+      debtToCover: BigNumberish,
+      receiveAToken: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'mintToTreasury'
+  ): TypedContractMethod<[assets: AddressLike[]], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'mintUnbacked'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'rebalanceStableBorrowRate'
+  ): TypedContractMethod<
+    [asset: AddressLike, user: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'repay'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      onBehalfOf: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'repayWithATokens'
+  ): TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, interestRateMode: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'repayWithPermit'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      interestRateMode: BigNumberish,
+      onBehalfOf: AddressLike,
+      deadline: BigNumberish,
+      permitV: BigNumberish,
+      permitR: BytesLike,
+      permitS: BytesLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'rescueTokens'
+  ): TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'resetIsolationModeTotalDebt'
+  ): TypedContractMethod<[asset: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setConfiguration'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      configuration: DataTypes.ReserveConfigurationMapStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setReserveInterestRateStrategyAddress'
+  ): TypedContractMethod<
+    [asset: AddressLike, rateStrategyAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setUserEMode'
+  ): TypedContractMethod<[categoryId: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setUserUseReserveAsCollateral'
+  ): TypedContractMethod<
+    [asset: AddressLike, useAsCollateral: boolean],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'supply'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'supplyWithPermit'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      amount: BigNumberish,
+      onBehalfOf: AddressLike,
+      referralCode: BigNumberish,
+      deadline: BigNumberish,
+      permitV: BigNumberish,
+      permitR: BytesLike,
+      permitS: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'swapBorrowRateMode'
+  ): TypedContractMethod<
+    [asset: AddressLike, interestRateMode: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateBridgeProtocolFee'
+  ): TypedContractMethod<
+    [bridgeProtocolFee: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateFlashloanPremiums'
+  ): TypedContractMethod<
+    [
+      flashLoanPremiumTotal: BigNumberish,
+      flashLoanPremiumToProtocol: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdraw'
+  ): TypedContractMethod<
+    [asset: AddressLike, amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  getEvent(
+    key: 'BackUnbacked'
+  ): TypedContractEvent<
+    BackUnbackedEvent.InputTuple,
+    BackUnbackedEvent.OutputTuple,
+    BackUnbackedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Borrow'
+  ): TypedContractEvent<
+    BorrowEvent.InputTuple,
+    BorrowEvent.OutputTuple,
+    BorrowEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FlashLoan'
+  ): TypedContractEvent<
+    FlashLoanEvent.InputTuple,
+    FlashLoanEvent.OutputTuple,
+    FlashLoanEvent.OutputObject
+  >;
+  getEvent(
+    key: 'IsolationModeTotalDebtUpdated'
+  ): TypedContractEvent<
+    IsolationModeTotalDebtUpdatedEvent.InputTuple,
+    IsolationModeTotalDebtUpdatedEvent.OutputTuple,
+    IsolationModeTotalDebtUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidationCall'
+  ): TypedContractEvent<
+    LiquidationCallEvent.InputTuple,
+    LiquidationCallEvent.OutputTuple,
+    LiquidationCallEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MintUnbacked'
+  ): TypedContractEvent<
+    MintUnbackedEvent.InputTuple,
+    MintUnbackedEvent.OutputTuple,
+    MintUnbackedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MintedToTreasury'
+  ): TypedContractEvent<
+    MintedToTreasuryEvent.InputTuple,
+    MintedToTreasuryEvent.OutputTuple,
+    MintedToTreasuryEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RebalanceStableBorrowRate'
+  ): TypedContractEvent<
+    RebalanceStableBorrowRateEvent.InputTuple,
+    RebalanceStableBorrowRateEvent.OutputTuple,
+    RebalanceStableBorrowRateEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Repay'
+  ): TypedContractEvent<
+    RepayEvent.InputTuple,
+    RepayEvent.OutputTuple,
+    RepayEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ReserveDataUpdated'
+  ): TypedContractEvent<
+    ReserveDataUpdatedEvent.InputTuple,
+    ReserveDataUpdatedEvent.OutputTuple,
+    ReserveDataUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ReserveUsedAsCollateralDisabled'
+  ): TypedContractEvent<
+    ReserveUsedAsCollateralDisabledEvent.InputTuple,
+    ReserveUsedAsCollateralDisabledEvent.OutputTuple,
+    ReserveUsedAsCollateralDisabledEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ReserveUsedAsCollateralEnabled'
+  ): TypedContractEvent<
+    ReserveUsedAsCollateralEnabledEvent.InputTuple,
+    ReserveUsedAsCollateralEnabledEvent.OutputTuple,
+    ReserveUsedAsCollateralEnabledEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Supply'
+  ): TypedContractEvent<
+    SupplyEvent.InputTuple,
+    SupplyEvent.OutputTuple,
+    SupplyEvent.OutputObject
+  >;
+  getEvent(
+    key: 'SwapBorrowRateMode'
+  ): TypedContractEvent<
+    SwapBorrowRateModeEvent.InputTuple,
+    SwapBorrowRateModeEvent.OutputTuple,
+    SwapBorrowRateModeEvent.OutputObject
+  >;
+  getEvent(
+    key: 'UserEModeSet'
+  ): TypedContractEvent<
+    UserEModeSetEvent.InputTuple,
+    UserEModeSetEvent.OutputTuple,
+    UserEModeSetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Withdraw'
+  ): TypedContractEvent<
+    WithdrawEvent.InputTuple,
+    WithdrawEvent.OutputTuple,
+    WithdrawEvent.OutputObject
+  >;
 
   filters: {
-    'BackUnbacked(address,address,uint256,uint256)'(
-      reserve?: PromiseOrValue<string> | null,
-      backer?: PromiseOrValue<string> | null,
-      amount?: null,
-      fee?: null
-    ): BackUnbackedEventFilter;
-    BackUnbacked(
-      reserve?: PromiseOrValue<string> | null,
-      backer?: PromiseOrValue<string> | null,
-      amount?: null,
-      fee?: null
-    ): BackUnbackedEventFilter;
-
-    'Borrow(address,address,address,uint256,uint8,uint256,uint16)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      interestRateMode?: null,
-      borrowRate?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): BorrowEventFilter;
-    Borrow(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      interestRateMode?: null,
-      borrowRate?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): BorrowEventFilter;
-
-    'FlashLoan(address,address,address,uint256,uint8,uint256,uint16)'(
-      target?: PromiseOrValue<string> | null,
-      initiator?: null,
-      asset?: PromiseOrValue<string> | null,
-      amount?: null,
-      interestRateMode?: null,
-      premium?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): FlashLoanEventFilter;
-    FlashLoan(
-      target?: PromiseOrValue<string> | null,
-      initiator?: null,
-      asset?: PromiseOrValue<string> | null,
-      amount?: null,
-      interestRateMode?: null,
-      premium?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): FlashLoanEventFilter;
-
-    'IsolationModeTotalDebtUpdated(address,uint256)'(
-      asset?: PromiseOrValue<string> | null,
-      totalDebt?: null
-    ): IsolationModeTotalDebtUpdatedEventFilter;
-    IsolationModeTotalDebtUpdated(
-      asset?: PromiseOrValue<string> | null,
-      totalDebt?: null
-    ): IsolationModeTotalDebtUpdatedEventFilter;
-
-    'LiquidationCall(address,address,address,uint256,uint256,address,bool)'(
-      collateralAsset?: PromiseOrValue<string> | null,
-      debtAsset?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      debtToCover?: null,
-      liquidatedCollateralAmount?: null,
-      liquidator?: null,
-      receiveAToken?: null
-    ): LiquidationCallEventFilter;
-    LiquidationCall(
-      collateralAsset?: PromiseOrValue<string> | null,
-      debtAsset?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      debtToCover?: null,
-      liquidatedCollateralAmount?: null,
-      liquidator?: null,
-      receiveAToken?: null
-    ): LiquidationCallEventFilter;
-
-    'MintUnbacked(address,address,address,uint256,uint16)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): MintUnbackedEventFilter;
-    MintUnbacked(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): MintUnbackedEventFilter;
-
-    'MintedToTreasury(address,uint256)'(
-      reserve?: PromiseOrValue<string> | null,
-      amountMinted?: null
-    ): MintedToTreasuryEventFilter;
-    MintedToTreasury(
-      reserve?: PromiseOrValue<string> | null,
-      amountMinted?: null
-    ): MintedToTreasuryEventFilter;
-
-    'RebalanceStableBorrowRate(address,address)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): RebalanceStableBorrowRateEventFilter;
-    RebalanceStableBorrowRate(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): RebalanceStableBorrowRateEventFilter;
-
-    'Repay(address,address,address,uint256,bool)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      repayer?: PromiseOrValue<string> | null,
-      amount?: null,
-      useATokens?: null
-    ): RepayEventFilter;
-    Repay(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      repayer?: PromiseOrValue<string> | null,
-      amount?: null,
-      useATokens?: null
-    ): RepayEventFilter;
-
-    'ReserveDataUpdated(address,uint256,uint256,uint256,uint256,uint256)'(
-      reserve?: PromiseOrValue<string> | null,
-      liquidityRate?: null,
-      stableBorrowRate?: null,
-      variableBorrowRate?: null,
-      liquidityIndex?: null,
-      variableBorrowIndex?: null
-    ): ReserveDataUpdatedEventFilter;
-    ReserveDataUpdated(
-      reserve?: PromiseOrValue<string> | null,
-      liquidityRate?: null,
-      stableBorrowRate?: null,
-      variableBorrowRate?: null,
-      liquidityIndex?: null,
-      variableBorrowIndex?: null
-    ): ReserveDataUpdatedEventFilter;
-
-    'ReserveUsedAsCollateralDisabled(address,address)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): ReserveUsedAsCollateralDisabledEventFilter;
-    ReserveUsedAsCollateralDisabled(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): ReserveUsedAsCollateralDisabledEventFilter;
-
-    'ReserveUsedAsCollateralEnabled(address,address)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): ReserveUsedAsCollateralEnabledEventFilter;
-    ReserveUsedAsCollateralEnabled(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null
-    ): ReserveUsedAsCollateralEnabledEventFilter;
-
-    'Supply(address,address,address,uint256,uint16)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): SupplyEventFilter;
-    Supply(
-      reserve?: PromiseOrValue<string> | null,
-      user?: null,
-      onBehalfOf?: PromiseOrValue<string> | null,
-      amount?: null,
-      referralCode?: PromiseOrValue<BigNumberish> | null
-    ): SupplyEventFilter;
-
-    'SwapBorrowRateMode(address,address,uint8)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      interestRateMode?: null
-    ): SwapBorrowRateModeEventFilter;
-    SwapBorrowRateMode(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      interestRateMode?: null
-    ): SwapBorrowRateModeEventFilter;
-
-    'UserEModeSet(address,uint8)'(
-      user?: PromiseOrValue<string> | null,
-      categoryId?: null
-    ): UserEModeSetEventFilter;
-    UserEModeSet(
-      user?: PromiseOrValue<string> | null,
-      categoryId?: null
-    ): UserEModeSetEventFilter;
-
-    'Withdraw(address,address,address,uint256)'(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      amount?: null
-    ): WithdrawEventFilter;
-    Withdraw(
-      reserve?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      amount?: null
-    ): WithdrawEventFilter;
-  };
-
-  estimateGas: {
-    ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<BigNumber>;
-
-    BRIDGE_PROTOCOL_FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_PREMIUM_TOTAL(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_PREMIUM_TO_PROTOCOL(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    MAX_NUMBER_RESERVES(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    backUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    borrow(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    configureEModeCategory(
-      id: PromiseOrValue<BigNumberish>,
-      config: DataTypes.EModeCategoryStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    deposit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    dropReserve(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    finalizeTransfer(
-      asset: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      balanceFromBefore: PromiseOrValue<BigNumberish>,
-      balanceToBefore: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    flashLoan(
-      receiverAddress: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      interestRateModes: PromiseOrValue<BigNumberish>[],
-      onBehalfOf: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    flashLoanSimple(
-      receiverAddress: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getConfiguration(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEModeCategoryData(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReserveAddressById(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReserveData(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReserveNormalizedIncome(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReserveNormalizedVariableDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReservesList(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUserAccountData(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserConfiguration(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserEMode(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initReserve(
-      asset: PromiseOrValue<string>,
-      aTokenAddress: PromiseOrValue<string>,
-      stableDebtAddress: PromiseOrValue<string>,
-      variableDebtAddress: PromiseOrValue<string>,
-      interestRateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    liquidationCall(
-      collateralAsset: PromiseOrValue<string>,
-      debtAsset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      debtToCover: PromiseOrValue<BigNumberish>,
-      receiveAToken: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    mintToTreasury(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    mintUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    rebalanceStableBorrowRate(
-      asset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    repay(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    repayWithATokens(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    repayWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    rescueTokens(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    resetIsolationModeTotalDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setConfiguration(
-      asset: PromiseOrValue<string>,
-      configuration: DataTypes.ReserveConfigurationMapStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setReserveInterestRateStrategyAddress(
-      asset: PromiseOrValue<string>,
-      rateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setUserEMode(
-      categoryId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setUserUseReserveAsCollateral(
-      asset: PromiseOrValue<string>,
-      useAsCollateral: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    supply(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    supplyWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapBorrowRateMode(
-      asset: PromiseOrValue<string>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateBridgeProtocolFee(
-      bridgeProtocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateFlashloanPremiums(
-      flashLoanPremiumTotal: PromiseOrValue<BigNumberish>,
-      flashLoanPremiumToProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdraw(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    ADDRESSES_PROVIDER(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    BRIDGE_PROTOCOL_FEE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    FLASHLOAN_PREMIUM_TOTAL(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    FLASHLOAN_PREMIUM_TO_PROTOCOL(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    MAX_NUMBER_RESERVES(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    MAX_STABLE_RATE_BORROW_SIZE_PERCENT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    backUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      fee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    borrow(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    configureEModeCategory(
-      id: PromiseOrValue<BigNumberish>,
-      config: DataTypes.EModeCategoryStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    dropReserve(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    finalizeTransfer(
-      asset: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      balanceFromBefore: PromiseOrValue<BigNumberish>,
-      balanceToBefore: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    flashLoan(
-      receiverAddress: PromiseOrValue<string>,
-      assets: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      interestRateModes: PromiseOrValue<BigNumberish>[],
-      onBehalfOf: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    flashLoanSimple(
-      receiverAddress: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      params: PromiseOrValue<BytesLike>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getConfiguration(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getEModeCategoryData(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReserveAddressById(
-      id: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReserveData(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReserveNormalizedIncome(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReserveNormalizedVariableDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReservesList(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getUserAccountData(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserConfiguration(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserEMode(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    initReserve(
-      asset: PromiseOrValue<string>,
-      aTokenAddress: PromiseOrValue<string>,
-      stableDebtAddress: PromiseOrValue<string>,
-      variableDebtAddress: PromiseOrValue<string>,
-      interestRateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidationCall(
-      collateralAsset: PromiseOrValue<string>,
-      debtAsset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      debtToCover: PromiseOrValue<BigNumberish>,
-      receiveAToken: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintToTreasury(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintUnbacked(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rebalanceStableBorrowRate(
-      asset: PromiseOrValue<string>,
-      user: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    repay(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    repayWithATokens(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    repayWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rescueTokens(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    resetIsolationModeTotalDebt(
-      asset: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setConfiguration(
-      asset: PromiseOrValue<string>,
-      configuration: DataTypes.ReserveConfigurationMapStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setReserveInterestRateStrategyAddress(
-      asset: PromiseOrValue<string>,
-      rateStrategyAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setUserEMode(
-      categoryId: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setUserUseReserveAsCollateral(
-      asset: PromiseOrValue<string>,
-      useAsCollateral: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    supply(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    supplyWithPermit(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      onBehalfOf: PromiseOrValue<string>,
-      referralCode: PromiseOrValue<BigNumberish>,
-      deadline: PromiseOrValue<BigNumberish>,
-      permitV: PromiseOrValue<BigNumberish>,
-      permitR: PromiseOrValue<BytesLike>,
-      permitS: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapBorrowRateMode(
-      asset: PromiseOrValue<string>,
-      interestRateMode: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateBridgeProtocolFee(
-      bridgeProtocolFee: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateFlashloanPremiums(
-      flashLoanPremiumTotal: PromiseOrValue<BigNumberish>,
-      flashLoanPremiumToProtocol: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      asset: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'BackUnbacked(address,address,uint256,uint256)': TypedContractEvent<
+      BackUnbackedEvent.InputTuple,
+      BackUnbackedEvent.OutputTuple,
+      BackUnbackedEvent.OutputObject
+    >;
+    BackUnbacked: TypedContractEvent<
+      BackUnbackedEvent.InputTuple,
+      BackUnbackedEvent.OutputTuple,
+      BackUnbackedEvent.OutputObject
+    >;
+
+    'Borrow(address,address,address,uint256,uint8,uint256,uint16)': TypedContractEvent<
+      BorrowEvent.InputTuple,
+      BorrowEvent.OutputTuple,
+      BorrowEvent.OutputObject
+    >;
+    Borrow: TypedContractEvent<
+      BorrowEvent.InputTuple,
+      BorrowEvent.OutputTuple,
+      BorrowEvent.OutputObject
+    >;
+
+    'FlashLoan(address,address,address,uint256,uint8,uint256,uint16)': TypedContractEvent<
+      FlashLoanEvent.InputTuple,
+      FlashLoanEvent.OutputTuple,
+      FlashLoanEvent.OutputObject
+    >;
+    FlashLoan: TypedContractEvent<
+      FlashLoanEvent.InputTuple,
+      FlashLoanEvent.OutputTuple,
+      FlashLoanEvent.OutputObject
+    >;
+
+    'IsolationModeTotalDebtUpdated(address,uint256)': TypedContractEvent<
+      IsolationModeTotalDebtUpdatedEvent.InputTuple,
+      IsolationModeTotalDebtUpdatedEvent.OutputTuple,
+      IsolationModeTotalDebtUpdatedEvent.OutputObject
+    >;
+    IsolationModeTotalDebtUpdated: TypedContractEvent<
+      IsolationModeTotalDebtUpdatedEvent.InputTuple,
+      IsolationModeTotalDebtUpdatedEvent.OutputTuple,
+      IsolationModeTotalDebtUpdatedEvent.OutputObject
+    >;
+
+    'LiquidationCall(address,address,address,uint256,uint256,address,bool)': TypedContractEvent<
+      LiquidationCallEvent.InputTuple,
+      LiquidationCallEvent.OutputTuple,
+      LiquidationCallEvent.OutputObject
+    >;
+    LiquidationCall: TypedContractEvent<
+      LiquidationCallEvent.InputTuple,
+      LiquidationCallEvent.OutputTuple,
+      LiquidationCallEvent.OutputObject
+    >;
+
+    'MintUnbacked(address,address,address,uint256,uint16)': TypedContractEvent<
+      MintUnbackedEvent.InputTuple,
+      MintUnbackedEvent.OutputTuple,
+      MintUnbackedEvent.OutputObject
+    >;
+    MintUnbacked: TypedContractEvent<
+      MintUnbackedEvent.InputTuple,
+      MintUnbackedEvent.OutputTuple,
+      MintUnbackedEvent.OutputObject
+    >;
+
+    'MintedToTreasury(address,uint256)': TypedContractEvent<
+      MintedToTreasuryEvent.InputTuple,
+      MintedToTreasuryEvent.OutputTuple,
+      MintedToTreasuryEvent.OutputObject
+    >;
+    MintedToTreasury: TypedContractEvent<
+      MintedToTreasuryEvent.InputTuple,
+      MintedToTreasuryEvent.OutputTuple,
+      MintedToTreasuryEvent.OutputObject
+    >;
+
+    'RebalanceStableBorrowRate(address,address)': TypedContractEvent<
+      RebalanceStableBorrowRateEvent.InputTuple,
+      RebalanceStableBorrowRateEvent.OutputTuple,
+      RebalanceStableBorrowRateEvent.OutputObject
+    >;
+    RebalanceStableBorrowRate: TypedContractEvent<
+      RebalanceStableBorrowRateEvent.InputTuple,
+      RebalanceStableBorrowRateEvent.OutputTuple,
+      RebalanceStableBorrowRateEvent.OutputObject
+    >;
+
+    'Repay(address,address,address,uint256,bool)': TypedContractEvent<
+      RepayEvent.InputTuple,
+      RepayEvent.OutputTuple,
+      RepayEvent.OutputObject
+    >;
+    Repay: TypedContractEvent<
+      RepayEvent.InputTuple,
+      RepayEvent.OutputTuple,
+      RepayEvent.OutputObject
+    >;
+
+    'ReserveDataUpdated(address,uint256,uint256,uint256,uint256,uint256)': TypedContractEvent<
+      ReserveDataUpdatedEvent.InputTuple,
+      ReserveDataUpdatedEvent.OutputTuple,
+      ReserveDataUpdatedEvent.OutputObject
+    >;
+    ReserveDataUpdated: TypedContractEvent<
+      ReserveDataUpdatedEvent.InputTuple,
+      ReserveDataUpdatedEvent.OutputTuple,
+      ReserveDataUpdatedEvent.OutputObject
+    >;
+
+    'ReserveUsedAsCollateralDisabled(address,address)': TypedContractEvent<
+      ReserveUsedAsCollateralDisabledEvent.InputTuple,
+      ReserveUsedAsCollateralDisabledEvent.OutputTuple,
+      ReserveUsedAsCollateralDisabledEvent.OutputObject
+    >;
+    ReserveUsedAsCollateralDisabled: TypedContractEvent<
+      ReserveUsedAsCollateralDisabledEvent.InputTuple,
+      ReserveUsedAsCollateralDisabledEvent.OutputTuple,
+      ReserveUsedAsCollateralDisabledEvent.OutputObject
+    >;
+
+    'ReserveUsedAsCollateralEnabled(address,address)': TypedContractEvent<
+      ReserveUsedAsCollateralEnabledEvent.InputTuple,
+      ReserveUsedAsCollateralEnabledEvent.OutputTuple,
+      ReserveUsedAsCollateralEnabledEvent.OutputObject
+    >;
+    ReserveUsedAsCollateralEnabled: TypedContractEvent<
+      ReserveUsedAsCollateralEnabledEvent.InputTuple,
+      ReserveUsedAsCollateralEnabledEvent.OutputTuple,
+      ReserveUsedAsCollateralEnabledEvent.OutputObject
+    >;
+
+    'Supply(address,address,address,uint256,uint16)': TypedContractEvent<
+      SupplyEvent.InputTuple,
+      SupplyEvent.OutputTuple,
+      SupplyEvent.OutputObject
+    >;
+    Supply: TypedContractEvent<
+      SupplyEvent.InputTuple,
+      SupplyEvent.OutputTuple,
+      SupplyEvent.OutputObject
+    >;
+
+    'SwapBorrowRateMode(address,address,uint8)': TypedContractEvent<
+      SwapBorrowRateModeEvent.InputTuple,
+      SwapBorrowRateModeEvent.OutputTuple,
+      SwapBorrowRateModeEvent.OutputObject
+    >;
+    SwapBorrowRateMode: TypedContractEvent<
+      SwapBorrowRateModeEvent.InputTuple,
+      SwapBorrowRateModeEvent.OutputTuple,
+      SwapBorrowRateModeEvent.OutputObject
+    >;
+
+    'UserEModeSet(address,uint8)': TypedContractEvent<
+      UserEModeSetEvent.InputTuple,
+      UserEModeSetEvent.OutputTuple,
+      UserEModeSetEvent.OutputObject
+    >;
+    UserEModeSet: TypedContractEvent<
+      UserEModeSetEvent.InputTuple,
+      UserEModeSetEvent.OutputTuple,
+      UserEModeSetEvent.OutputObject
+    >;
+
+    'Withdraw(address,address,address,uint256)': TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+    Withdraw: TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
   };
 }

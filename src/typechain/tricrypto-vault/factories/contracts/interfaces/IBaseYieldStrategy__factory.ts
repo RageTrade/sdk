@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IBaseYieldStrategy,
   IBaseYieldStrategyInterface,
@@ -42,17 +41,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IBaseYieldStrategy__factory {
   static readonly abi = _abi;
   static createInterface(): IBaseYieldStrategyInterface {
-    return new utils.Interface(_abi) as IBaseYieldStrategyInterface;
+    return new Interface(_abi) as IBaseYieldStrategyInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IBaseYieldStrategy {
-    return new Contract(address, _abi, signerOrProvider) as IBaseYieldStrategy;
+    return new Contract(address, _abi, runner) as unknown as IBaseYieldStrategy;
   }
 }

@@ -3,54 +3,28 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
-export interface IPoolAddressesProviderInterface extends utils.Interface {
-  functions: {
-    'getACLAdmin()': FunctionFragment;
-    'getACLManager()': FunctionFragment;
-    'getAddress(bytes32)': FunctionFragment;
-    'getMarketId()': FunctionFragment;
-    'getPool()': FunctionFragment;
-    'getPoolConfigurator()': FunctionFragment;
-    'getPoolDataProvider()': FunctionFragment;
-    'getPriceOracle()': FunctionFragment;
-    'getPriceOracleSentinel()': FunctionFragment;
-    'setACLAdmin(address)': FunctionFragment;
-    'setACLManager(address)': FunctionFragment;
-    'setAddress(bytes32,address)': FunctionFragment;
-    'setAddressAsProxy(bytes32,address)': FunctionFragment;
-    'setMarketId(string)': FunctionFragment;
-    'setPoolConfiguratorImpl(address)': FunctionFragment;
-    'setPoolDataProvider(address)': FunctionFragment;
-    'setPoolImpl(address)': FunctionFragment;
-    'setPriceOracle(address)': FunctionFragment;
-    'setPriceOracleSentinel(address)': FunctionFragment;
-  };
-
+export interface IPoolAddressesProviderInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'getACLAdmin'
       | 'getACLManager'
       | 'getAddress'
@@ -72,6 +46,21 @@ export interface IPoolAddressesProviderInterface extends utils.Interface {
       | 'setPriceOracleSentinel'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'ACLAdminUpdated'
+      | 'ACLManagerUpdated'
+      | 'AddressSet'
+      | 'AddressSetAsProxy'
+      | 'MarketIdSet'
+      | 'PoolConfiguratorUpdated'
+      | 'PoolDataProviderUpdated'
+      | 'PoolUpdated'
+      | 'PriceOracleSentinelUpdated'
+      | 'PriceOracleUpdated'
+      | 'ProxyCreated'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'getACLAdmin',
     values?: undefined
@@ -82,7 +71,7 @@ export interface IPoolAddressesProviderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getAddress',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getMarketId',
@@ -107,43 +96,40 @@ export interface IPoolAddressesProviderInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setACLAdmin',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setACLManager',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAddress',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setAddressAsProxy',
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    values: [BytesLike, AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'setMarketId',
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: 'setMarketId', values: [string]): string;
   encodeFunctionData(
     functionFragment: 'setPoolConfiguratorImpl',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setPoolDataProvider',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setPoolImpl',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setPriceOracle',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setPriceOracleSentinel',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -213,676 +199,575 @@ export interface IPoolAddressesProviderInterface extends utils.Interface {
     functionFragment: 'setPriceOracleSentinel',
     data: BytesLike
   ): Result;
-
-  events: {
-    'ACLAdminUpdated(address,address)': EventFragment;
-    'ACLManagerUpdated(address,address)': EventFragment;
-    'AddressSet(bytes32,address,address)': EventFragment;
-    'AddressSetAsProxy(bytes32,address,address,address)': EventFragment;
-    'MarketIdSet(string,string)': EventFragment;
-    'PoolConfiguratorUpdated(address,address)': EventFragment;
-    'PoolDataProviderUpdated(address,address)': EventFragment;
-    'PoolUpdated(address,address)': EventFragment;
-    'PriceOracleSentinelUpdated(address,address)': EventFragment;
-    'PriceOracleUpdated(address,address)': EventFragment;
-    'ProxyCreated(bytes32,address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'ACLAdminUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ACLManagerUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AddressSet'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AddressSetAsProxy'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarketIdSet'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolConfiguratorUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolDataProviderUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PriceOracleSentinelUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PriceOracleUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProxyCreated'): EventFragment;
 }
 
-export interface ACLAdminUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace ACLAdminUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ACLAdminUpdatedEvent = TypedEvent<
-  [string, string],
-  ACLAdminUpdatedEventObject
->;
 
-export type ACLAdminUpdatedEventFilter = TypedEventFilter<ACLAdminUpdatedEvent>;
-
-export interface ACLManagerUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace ACLManagerUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ACLManagerUpdatedEvent = TypedEvent<
-  [string, string],
-  ACLManagerUpdatedEventObject
->;
 
-export type ACLManagerUpdatedEventFilter =
-  TypedEventFilter<ACLManagerUpdatedEvent>;
-
-export interface AddressSetEventObject {
-  id: string;
-  oldAddress: string;
-  newAddress: string;
+export namespace AddressSetEvent {
+  export type InputTuple = [
+    id: BytesLike,
+    oldAddress: AddressLike,
+    newAddress: AddressLike
+  ];
+  export type OutputTuple = [
+    id: string,
+    oldAddress: string,
+    newAddress: string
+  ];
+  export interface OutputObject {
+    id: string;
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AddressSetEvent = TypedEvent<
-  [string, string, string],
-  AddressSetEventObject
->;
 
-export type AddressSetEventFilter = TypedEventFilter<AddressSetEvent>;
-
-export interface AddressSetAsProxyEventObject {
-  id: string;
-  proxyAddress: string;
-  oldImplementationAddress: string;
-  newImplementationAddress: string;
+export namespace AddressSetAsProxyEvent {
+  export type InputTuple = [
+    id: BytesLike,
+    proxyAddress: AddressLike,
+    oldImplementationAddress: AddressLike,
+    newImplementationAddress: AddressLike
+  ];
+  export type OutputTuple = [
+    id: string,
+    proxyAddress: string,
+    oldImplementationAddress: string,
+    newImplementationAddress: string
+  ];
+  export interface OutputObject {
+    id: string;
+    proxyAddress: string;
+    oldImplementationAddress: string;
+    newImplementationAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AddressSetAsProxyEvent = TypedEvent<
-  [string, string, string, string],
-  AddressSetAsProxyEventObject
->;
 
-export type AddressSetAsProxyEventFilter =
-  TypedEventFilter<AddressSetAsProxyEvent>;
-
-export interface MarketIdSetEventObject {
-  oldMarketId: string;
-  newMarketId: string;
+export namespace MarketIdSetEvent {
+  export type InputTuple = [oldMarketId: string, newMarketId: string];
+  export type OutputTuple = [oldMarketId: string, newMarketId: string];
+  export interface OutputObject {
+    oldMarketId: string;
+    newMarketId: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MarketIdSetEvent = TypedEvent<
-  [string, string],
-  MarketIdSetEventObject
->;
 
-export type MarketIdSetEventFilter = TypedEventFilter<MarketIdSetEvent>;
-
-export interface PoolConfiguratorUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace PoolConfiguratorUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolConfiguratorUpdatedEvent = TypedEvent<
-  [string, string],
-  PoolConfiguratorUpdatedEventObject
->;
 
-export type PoolConfiguratorUpdatedEventFilter =
-  TypedEventFilter<PoolConfiguratorUpdatedEvent>;
-
-export interface PoolDataProviderUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace PoolDataProviderUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolDataProviderUpdatedEvent = TypedEvent<
-  [string, string],
-  PoolDataProviderUpdatedEventObject
->;
 
-export type PoolDataProviderUpdatedEventFilter =
-  TypedEventFilter<PoolDataProviderUpdatedEvent>;
-
-export interface PoolUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace PoolUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolUpdatedEvent = TypedEvent<
-  [string, string],
-  PoolUpdatedEventObject
->;
 
-export type PoolUpdatedEventFilter = TypedEventFilter<PoolUpdatedEvent>;
-
-export interface PriceOracleSentinelUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace PriceOracleSentinelUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PriceOracleSentinelUpdatedEvent = TypedEvent<
-  [string, string],
-  PriceOracleSentinelUpdatedEventObject
->;
 
-export type PriceOracleSentinelUpdatedEventFilter =
-  TypedEventFilter<PriceOracleSentinelUpdatedEvent>;
-
-export interface PriceOracleUpdatedEventObject {
-  oldAddress: string;
-  newAddress: string;
+export namespace PriceOracleUpdatedEvent {
+  export type InputTuple = [oldAddress: AddressLike, newAddress: AddressLike];
+  export type OutputTuple = [oldAddress: string, newAddress: string];
+  export interface OutputObject {
+    oldAddress: string;
+    newAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PriceOracleUpdatedEvent = TypedEvent<
-  [string, string],
-  PriceOracleUpdatedEventObject
->;
 
-export type PriceOracleUpdatedEventFilter =
-  TypedEventFilter<PriceOracleUpdatedEvent>;
-
-export interface ProxyCreatedEventObject {
-  id: string;
-  proxyAddress: string;
-  implementationAddress: string;
+export namespace ProxyCreatedEvent {
+  export type InputTuple = [
+    id: BytesLike,
+    proxyAddress: AddressLike,
+    implementationAddress: AddressLike
+  ];
+  export type OutputTuple = [
+    id: string,
+    proxyAddress: string,
+    implementationAddress: string
+  ];
+  export interface OutputObject {
+    id: string;
+    proxyAddress: string;
+    implementationAddress: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProxyCreatedEvent = TypedEvent<
-  [string, string, string],
-  ProxyCreatedEventObject
->;
-
-export type ProxyCreatedEventFilter = TypedEventFilter<ProxyCreatedEvent>;
 
 export interface IPoolAddressesProvider extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IPoolAddressesProviderInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getACLAdmin(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getACLManager(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getAddress(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  getACLAdmin: TypedContractMethod<[], [string], 'view'>;
 
-    getMarketId(overrides?: CallOverrides): Promise<[string]>;
+  getACLManager: TypedContractMethod<[], [string], 'view'>;
 
-    getPool(overrides?: CallOverrides): Promise<[string]>;
+  getAddress: TypedContractMethod<[id: BytesLike], [string], 'view'>;
 
-    getPoolConfigurator(overrides?: CallOverrides): Promise<[string]>;
+  getMarketId: TypedContractMethod<[], [string], 'view'>;
 
-    getPoolDataProvider(overrides?: CallOverrides): Promise<[string]>;
+  getPool: TypedContractMethod<[], [string], 'view'>;
 
-    getPriceOracle(overrides?: CallOverrides): Promise<[string]>;
+  getPoolConfigurator: TypedContractMethod<[], [string], 'view'>;
 
-    getPriceOracleSentinel(overrides?: CallOverrides): Promise<[string]>;
+  getPoolDataProvider: TypedContractMethod<[], [string], 'view'>;
 
-    setACLAdmin(
-      newAclAdmin: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getPriceOracle: TypedContractMethod<[], [string], 'view'>;
 
-    setACLManager(
-      newAclManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getPriceOracleSentinel: TypedContractMethod<[], [string], 'view'>;
 
-    setAddress(
-      id: PromiseOrValue<BytesLike>,
-      newAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setACLAdmin: TypedContractMethod<
+    [newAclAdmin: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setAddressAsProxy(
-      id: PromiseOrValue<BytesLike>,
-      newImplementationAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setACLManager: TypedContractMethod<
+    [newAclManager: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setMarketId(
-      newMarketId: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setAddress: TypedContractMethod<
+    [id: BytesLike, newAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setPoolConfiguratorImpl(
-      newPoolConfiguratorImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setAddressAsProxy: TypedContractMethod<
+    [id: BytesLike, newImplementationAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setPoolDataProvider(
-      newDataProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setMarketId: TypedContractMethod<[newMarketId: string], [void], 'nonpayable'>;
 
-    setPoolImpl(
-      newPoolImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setPoolConfiguratorImpl: TypedContractMethod<
+    [newPoolConfiguratorImpl: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setPriceOracle(
-      newPriceOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  setPoolDataProvider: TypedContractMethod<
+    [newDataProvider: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setPriceOracleSentinel(
-      newPriceOracleSentinel: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  setPoolImpl: TypedContractMethod<
+    [newPoolImpl: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  getACLAdmin(overrides?: CallOverrides): Promise<string>;
+  setPriceOracle: TypedContractMethod<
+    [newPriceOracle: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  getACLManager(overrides?: CallOverrides): Promise<string>;
+  setPriceOracleSentinel: TypedContractMethod<
+    [newPriceOracleSentinel: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  getAddress(
-    id: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getMarketId(overrides?: CallOverrides): Promise<string>;
+  getFunction(
+    nameOrSignature: 'getACLAdmin'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getACLManager'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAddress'
+  ): TypedContractMethod<[id: BytesLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getMarketId'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPool'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPoolConfigurator'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPoolDataProvider'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPriceOracle'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPriceOracleSentinel'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'setACLAdmin'
+  ): TypedContractMethod<[newAclAdmin: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setACLManager'
+  ): TypedContractMethod<[newAclManager: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setAddress'
+  ): TypedContractMethod<
+    [id: BytesLike, newAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setAddressAsProxy'
+  ): TypedContractMethod<
+    [id: BytesLike, newImplementationAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setMarketId'
+  ): TypedContractMethod<[newMarketId: string], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setPoolConfiguratorImpl'
+  ): TypedContractMethod<
+    [newPoolConfiguratorImpl: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setPoolDataProvider'
+  ): TypedContractMethod<[newDataProvider: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setPoolImpl'
+  ): TypedContractMethod<[newPoolImpl: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setPriceOracle'
+  ): TypedContractMethod<[newPriceOracle: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setPriceOracleSentinel'
+  ): TypedContractMethod<
+    [newPriceOracleSentinel: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-  getPool(overrides?: CallOverrides): Promise<string>;
-
-  getPoolConfigurator(overrides?: CallOverrides): Promise<string>;
-
-  getPoolDataProvider(overrides?: CallOverrides): Promise<string>;
-
-  getPriceOracle(overrides?: CallOverrides): Promise<string>;
-
-  getPriceOracleSentinel(overrides?: CallOverrides): Promise<string>;
-
-  setACLAdmin(
-    newAclAdmin: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setACLManager(
-    newAclManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setAddress(
-    id: PromiseOrValue<BytesLike>,
-    newAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setAddressAsProxy(
-    id: PromiseOrValue<BytesLike>,
-    newImplementationAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setMarketId(
-    newMarketId: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setPoolConfiguratorImpl(
-    newPoolConfiguratorImpl: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setPoolDataProvider(
-    newDataProvider: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setPoolImpl(
-    newPoolImpl: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setPriceOracle(
-    newPriceOracle: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setPriceOracleSentinel(
-    newPriceOracleSentinel: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    getACLAdmin(overrides?: CallOverrides): Promise<string>;
-
-    getACLManager(overrides?: CallOverrides): Promise<string>;
-
-    getAddress(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getMarketId(overrides?: CallOverrides): Promise<string>;
-
-    getPool(overrides?: CallOverrides): Promise<string>;
-
-    getPoolConfigurator(overrides?: CallOverrides): Promise<string>;
-
-    getPoolDataProvider(overrides?: CallOverrides): Promise<string>;
-
-    getPriceOracle(overrides?: CallOverrides): Promise<string>;
-
-    getPriceOracleSentinel(overrides?: CallOverrides): Promise<string>;
-
-    setACLAdmin(
-      newAclAdmin: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setACLManager(
-      newAclManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setAddress(
-      id: PromiseOrValue<BytesLike>,
-      newAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setAddressAsProxy(
-      id: PromiseOrValue<BytesLike>,
-      newImplementationAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setMarketId(
-      newMarketId: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPoolConfiguratorImpl(
-      newPoolConfiguratorImpl: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPoolDataProvider(
-      newDataProvider: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPoolImpl(
-      newPoolImpl: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPriceOracle(
-      newPriceOracle: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setPriceOracleSentinel(
-      newPriceOracleSentinel: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getEvent(
+    key: 'ACLAdminUpdated'
+  ): TypedContractEvent<
+    ACLAdminUpdatedEvent.InputTuple,
+    ACLAdminUpdatedEvent.OutputTuple,
+    ACLAdminUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ACLManagerUpdated'
+  ): TypedContractEvent<
+    ACLManagerUpdatedEvent.InputTuple,
+    ACLManagerUpdatedEvent.OutputTuple,
+    ACLManagerUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'AddressSet'
+  ): TypedContractEvent<
+    AddressSetEvent.InputTuple,
+    AddressSetEvent.OutputTuple,
+    AddressSetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'AddressSetAsProxy'
+  ): TypedContractEvent<
+    AddressSetAsProxyEvent.InputTuple,
+    AddressSetAsProxyEvent.OutputTuple,
+    AddressSetAsProxyEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MarketIdSet'
+  ): TypedContractEvent<
+    MarketIdSetEvent.InputTuple,
+    MarketIdSetEvent.OutputTuple,
+    MarketIdSetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolConfiguratorUpdated'
+  ): TypedContractEvent<
+    PoolConfiguratorUpdatedEvent.InputTuple,
+    PoolConfiguratorUpdatedEvent.OutputTuple,
+    PoolConfiguratorUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolDataProviderUpdated'
+  ): TypedContractEvent<
+    PoolDataProviderUpdatedEvent.InputTuple,
+    PoolDataProviderUpdatedEvent.OutputTuple,
+    PoolDataProviderUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolUpdated'
+  ): TypedContractEvent<
+    PoolUpdatedEvent.InputTuple,
+    PoolUpdatedEvent.OutputTuple,
+    PoolUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PriceOracleSentinelUpdated'
+  ): TypedContractEvent<
+    PriceOracleSentinelUpdatedEvent.InputTuple,
+    PriceOracleSentinelUpdatedEvent.OutputTuple,
+    PriceOracleSentinelUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PriceOracleUpdated'
+  ): TypedContractEvent<
+    PriceOracleUpdatedEvent.InputTuple,
+    PriceOracleUpdatedEvent.OutputTuple,
+    PriceOracleUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProxyCreated'
+  ): TypedContractEvent<
+    ProxyCreatedEvent.InputTuple,
+    ProxyCreatedEvent.OutputTuple,
+    ProxyCreatedEvent.OutputObject
+  >;
 
   filters: {
-    'ACLAdminUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): ACLAdminUpdatedEventFilter;
-    ACLAdminUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): ACLAdminUpdatedEventFilter;
+    'ACLAdminUpdated(address,address)': TypedContractEvent<
+      ACLAdminUpdatedEvent.InputTuple,
+      ACLAdminUpdatedEvent.OutputTuple,
+      ACLAdminUpdatedEvent.OutputObject
+    >;
+    ACLAdminUpdated: TypedContractEvent<
+      ACLAdminUpdatedEvent.InputTuple,
+      ACLAdminUpdatedEvent.OutputTuple,
+      ACLAdminUpdatedEvent.OutputObject
+    >;
 
-    'ACLManagerUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): ACLManagerUpdatedEventFilter;
-    ACLManagerUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): ACLManagerUpdatedEventFilter;
+    'ACLManagerUpdated(address,address)': TypedContractEvent<
+      ACLManagerUpdatedEvent.InputTuple,
+      ACLManagerUpdatedEvent.OutputTuple,
+      ACLManagerUpdatedEvent.OutputObject
+    >;
+    ACLManagerUpdated: TypedContractEvent<
+      ACLManagerUpdatedEvent.InputTuple,
+      ACLManagerUpdatedEvent.OutputTuple,
+      ACLManagerUpdatedEvent.OutputObject
+    >;
 
-    'AddressSet(bytes32,address,address)'(
-      id?: PromiseOrValue<BytesLike> | null,
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): AddressSetEventFilter;
-    AddressSet(
-      id?: PromiseOrValue<BytesLike> | null,
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): AddressSetEventFilter;
+    'AddressSet(bytes32,address,address)': TypedContractEvent<
+      AddressSetEvent.InputTuple,
+      AddressSetEvent.OutputTuple,
+      AddressSetEvent.OutputObject
+    >;
+    AddressSet: TypedContractEvent<
+      AddressSetEvent.InputTuple,
+      AddressSetEvent.OutputTuple,
+      AddressSetEvent.OutputObject
+    >;
 
-    'AddressSetAsProxy(bytes32,address,address,address)'(
-      id?: PromiseOrValue<BytesLike> | null,
-      proxyAddress?: PromiseOrValue<string> | null,
-      oldImplementationAddress?: null,
-      newImplementationAddress?: PromiseOrValue<string> | null
-    ): AddressSetAsProxyEventFilter;
-    AddressSetAsProxy(
-      id?: PromiseOrValue<BytesLike> | null,
-      proxyAddress?: PromiseOrValue<string> | null,
-      oldImplementationAddress?: null,
-      newImplementationAddress?: PromiseOrValue<string> | null
-    ): AddressSetAsProxyEventFilter;
+    'AddressSetAsProxy(bytes32,address,address,address)': TypedContractEvent<
+      AddressSetAsProxyEvent.InputTuple,
+      AddressSetAsProxyEvent.OutputTuple,
+      AddressSetAsProxyEvent.OutputObject
+    >;
+    AddressSetAsProxy: TypedContractEvent<
+      AddressSetAsProxyEvent.InputTuple,
+      AddressSetAsProxyEvent.OutputTuple,
+      AddressSetAsProxyEvent.OutputObject
+    >;
 
-    'MarketIdSet(string,string)'(
-      oldMarketId?: PromiseOrValue<string> | null,
-      newMarketId?: PromiseOrValue<string> | null
-    ): MarketIdSetEventFilter;
-    MarketIdSet(
-      oldMarketId?: PromiseOrValue<string> | null,
-      newMarketId?: PromiseOrValue<string> | null
-    ): MarketIdSetEventFilter;
+    'MarketIdSet(string,string)': TypedContractEvent<
+      MarketIdSetEvent.InputTuple,
+      MarketIdSetEvent.OutputTuple,
+      MarketIdSetEvent.OutputObject
+    >;
+    MarketIdSet: TypedContractEvent<
+      MarketIdSetEvent.InputTuple,
+      MarketIdSetEvent.OutputTuple,
+      MarketIdSetEvent.OutputObject
+    >;
 
-    'PoolConfiguratorUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolConfiguratorUpdatedEventFilter;
-    PoolConfiguratorUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolConfiguratorUpdatedEventFilter;
+    'PoolConfiguratorUpdated(address,address)': TypedContractEvent<
+      PoolConfiguratorUpdatedEvent.InputTuple,
+      PoolConfiguratorUpdatedEvent.OutputTuple,
+      PoolConfiguratorUpdatedEvent.OutputObject
+    >;
+    PoolConfiguratorUpdated: TypedContractEvent<
+      PoolConfiguratorUpdatedEvent.InputTuple,
+      PoolConfiguratorUpdatedEvent.OutputTuple,
+      PoolConfiguratorUpdatedEvent.OutputObject
+    >;
 
-    'PoolDataProviderUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolDataProviderUpdatedEventFilter;
-    PoolDataProviderUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolDataProviderUpdatedEventFilter;
+    'PoolDataProviderUpdated(address,address)': TypedContractEvent<
+      PoolDataProviderUpdatedEvent.InputTuple,
+      PoolDataProviderUpdatedEvent.OutputTuple,
+      PoolDataProviderUpdatedEvent.OutputObject
+    >;
+    PoolDataProviderUpdated: TypedContractEvent<
+      PoolDataProviderUpdatedEvent.InputTuple,
+      PoolDataProviderUpdatedEvent.OutputTuple,
+      PoolDataProviderUpdatedEvent.OutputObject
+    >;
 
-    'PoolUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolUpdatedEventFilter;
-    PoolUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PoolUpdatedEventFilter;
+    'PoolUpdated(address,address)': TypedContractEvent<
+      PoolUpdatedEvent.InputTuple,
+      PoolUpdatedEvent.OutputTuple,
+      PoolUpdatedEvent.OutputObject
+    >;
+    PoolUpdated: TypedContractEvent<
+      PoolUpdatedEvent.InputTuple,
+      PoolUpdatedEvent.OutputTuple,
+      PoolUpdatedEvent.OutputObject
+    >;
 
-    'PriceOracleSentinelUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PriceOracleSentinelUpdatedEventFilter;
-    PriceOracleSentinelUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PriceOracleSentinelUpdatedEventFilter;
+    'PriceOracleSentinelUpdated(address,address)': TypedContractEvent<
+      PriceOracleSentinelUpdatedEvent.InputTuple,
+      PriceOracleSentinelUpdatedEvent.OutputTuple,
+      PriceOracleSentinelUpdatedEvent.OutputObject
+    >;
+    PriceOracleSentinelUpdated: TypedContractEvent<
+      PriceOracleSentinelUpdatedEvent.InputTuple,
+      PriceOracleSentinelUpdatedEvent.OutputTuple,
+      PriceOracleSentinelUpdatedEvent.OutputObject
+    >;
 
-    'PriceOracleUpdated(address,address)'(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PriceOracleUpdatedEventFilter;
-    PriceOracleUpdated(
-      oldAddress?: PromiseOrValue<string> | null,
-      newAddress?: PromiseOrValue<string> | null
-    ): PriceOracleUpdatedEventFilter;
+    'PriceOracleUpdated(address,address)': TypedContractEvent<
+      PriceOracleUpdatedEvent.InputTuple,
+      PriceOracleUpdatedEvent.OutputTuple,
+      PriceOracleUpdatedEvent.OutputObject
+    >;
+    PriceOracleUpdated: TypedContractEvent<
+      PriceOracleUpdatedEvent.InputTuple,
+      PriceOracleUpdatedEvent.OutputTuple,
+      PriceOracleUpdatedEvent.OutputObject
+    >;
 
-    'ProxyCreated(bytes32,address,address)'(
-      id?: PromiseOrValue<BytesLike> | null,
-      proxyAddress?: PromiseOrValue<string> | null,
-      implementationAddress?: PromiseOrValue<string> | null
-    ): ProxyCreatedEventFilter;
-    ProxyCreated(
-      id?: PromiseOrValue<BytesLike> | null,
-      proxyAddress?: PromiseOrValue<string> | null,
-      implementationAddress?: PromiseOrValue<string> | null
-    ): ProxyCreatedEventFilter;
-  };
-
-  estimateGas: {
-    getACLAdmin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getACLManager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAddress(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMarketId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPool(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPoolConfigurator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPoolDataProvider(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPriceOracle(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPriceOracleSentinel(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setACLAdmin(
-      newAclAdmin: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setACLManager(
-      newAclManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setAddress(
-      id: PromiseOrValue<BytesLike>,
-      newAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setAddressAsProxy(
-      id: PromiseOrValue<BytesLike>,
-      newImplementationAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setMarketId(
-      newMarketId: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPoolConfiguratorImpl(
-      newPoolConfiguratorImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPoolDataProvider(
-      newDataProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPoolImpl(
-      newPoolImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPriceOracle(
-      newPriceOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setPriceOracleSentinel(
-      newPriceOracleSentinel: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getACLAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getACLManager(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getAddress(
-      id: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMarketId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getPoolConfigurator(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPoolDataProvider(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriceOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getPriceOracleSentinel(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setACLAdmin(
-      newAclAdmin: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setACLManager(
-      newAclManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAddress(
-      id: PromiseOrValue<BytesLike>,
-      newAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAddressAsProxy(
-      id: PromiseOrValue<BytesLike>,
-      newImplementationAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setMarketId(
-      newMarketId: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPoolConfiguratorImpl(
-      newPoolConfiguratorImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPoolDataProvider(
-      newDataProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPoolImpl(
-      newPoolImpl: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPriceOracle(
-      newPriceOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setPriceOracleSentinel(
-      newPriceOracleSentinel: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'ProxyCreated(bytes32,address,address)': TypedContractEvent<
+      ProxyCreatedEvent.InputTuple,
+      ProxyCreatedEvent.OutputTuple,
+      ProxyCreatedEvent.OutputObject
+    >;
+    ProxyCreated: TypedContractEvent<
+      ProxyCreatedEvent.InputTuple,
+      ProxyCreatedEvent.OutputTuple,
+      ProxyCreatedEvent.OutputObject
+    >;
   };
 }

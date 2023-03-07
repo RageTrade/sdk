@@ -3,96 +3,123 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../common';
 
-export interface LiquidityPositionSetInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': EventFragment;
-  };
-
+export interface LiquidityPositionSetInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic: 'TokenPositionChangedDueToLiquidityChanged'
   ): EventFragment;
 }
 
-export interface TokenPositionChangedDueToLiquidityChangedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  tickLower: number;
-  tickUpper: number;
-  vTokenAmountOut: BigNumber;
+export namespace TokenPositionChangedDueToLiquidityChangedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    vTokenAmountOut: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    tickLower: bigint,
+    tickUpper: bigint,
+    vTokenAmountOut: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    tickLower: bigint;
+    tickUpper: bigint;
+    vTokenAmountOut: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionChangedDueToLiquidityChangedEvent = TypedEvent<
-  [BigNumber, number, number, number, BigNumber],
-  TokenPositionChangedDueToLiquidityChangedEventObject
->;
-
-export type TokenPositionChangedDueToLiquidityChangedEventFilter =
-  TypedEventFilter<TokenPositionChangedDueToLiquidityChangedEvent>;
 
 export interface LiquidityPositionSet extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: LiquidityPositionSetInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'TokenPositionChangedDueToLiquidityChanged'
+  ): TypedContractEvent<
+    TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+    TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+    TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+  >;
 
   filters: {
-    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      vTokenAmountOut?: null
-    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
-    TokenPositionChangedDueToLiquidityChanged(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      tickLower?: null,
-      tickUpper?: null,
-      vTokenAmountOut?: null
-    ): TokenPositionChangedDueToLiquidityChangedEventFilter;
+    'TokenPositionChangedDueToLiquidityChanged(uint256,uint32,int24,int24,int256)': TypedContractEvent<
+      TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+    >;
+    TokenPositionChangedDueToLiquidityChanged: TypedContractEvent<
+      TokenPositionChangedDueToLiquidityChangedEvent.InputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputTuple,
+      TokenPositionChangedDueToLiquidityChangedEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

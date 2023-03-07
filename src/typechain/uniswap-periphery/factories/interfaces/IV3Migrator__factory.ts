@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IV3Migrator,
   IV3MigratorInterface,
@@ -295,17 +294,14 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class IV3Migrator__factory {
   static readonly abi = _abi;
   static createInterface(): IV3MigratorInterface {
-    return new utils.Interface(_abi) as IV3MigratorInterface;
+    return new Interface(_abi) as IV3MigratorInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IV3Migrator {
-    return new Contract(address, _abi, signerOrProvider) as IV3Migrator;
+  static connect(address: string, runner?: ContractRunner | null): IV3Migrator {
+    return new Contract(address, _abi, runner) as unknown as IV3Migrator;
   }
 }

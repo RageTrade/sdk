@@ -3,31 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../../common';
 
-export interface ReserveConfigurationInterface extends utils.Interface {
-  functions: {
-    'DEBT_CEILING_DECIMALS()': FunctionFragment;
-    'MAX_RESERVES_COUNT()': FunctionFragment;
-  };
-
+export interface ReserveConfigurationInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'DEBT_CEILING_DECIMALS' | 'MAX_RESERVES_COUNT'
+    nameOrSignature: 'DEBT_CEILING_DECIMALS' | 'MAX_RESERVES_COUNT'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -47,67 +42,66 @@ export interface ReserveConfigurationInterface extends utils.Interface {
     functionFragment: 'MAX_RESERVES_COUNT',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ReserveConfiguration extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ReserveConfigurationInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    DEBT_CEILING_DECIMALS(overrides?: CallOverrides): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    MAX_RESERVES_COUNT(overrides?: CallOverrides): Promise<[number]>;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  DEBT_CEILING_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+  DEBT_CEILING_DECIMALS: TypedContractMethod<[], [bigint], 'view'>;
 
-  MAX_RESERVES_COUNT(overrides?: CallOverrides): Promise<number>;
+  MAX_RESERVES_COUNT: TypedContractMethod<[], [bigint], 'view'>;
 
-  callStatic: {
-    DEBT_CEILING_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    MAX_RESERVES_COUNT(overrides?: CallOverrides): Promise<number>;
-  };
+  getFunction(
+    nameOrSignature: 'DEBT_CEILING_DECIMALS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_RESERVES_COUNT'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    DEBT_CEILING_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_RESERVES_COUNT(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    DEBT_CEILING_DECIMALS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    MAX_RESERVES_COUNT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

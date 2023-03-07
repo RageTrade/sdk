@@ -3,104 +3,136 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../../../common';
 
 export declare namespace FundingPayment {
   export type InfoStruct = {
-    sumAX128: PromiseOrValue<BigNumberish>;
-    sumBX128: PromiseOrValue<BigNumberish>;
-    sumFpX128: PromiseOrValue<BigNumberish>;
-    timestampLast: PromiseOrValue<BigNumberish>;
+    sumAX128: BigNumberish;
+    sumBX128: BigNumberish;
+    sumFpX128: BigNumberish;
+    timestampLast: BigNumberish;
   };
 
-  export type InfoStructOutput = [BigNumber, BigNumber, BigNumber, number] & {
-    sumAX128: BigNumber;
-    sumBX128: BigNumber;
-    sumFpX128: BigNumber;
-    timestampLast: number;
+  export type InfoStructOutput = [
+    sumAX128: bigint,
+    sumBX128: bigint,
+    sumFpX128: bigint,
+    timestampLast: bigint
+  ] & {
+    sumAX128: bigint;
+    sumBX128: bigint;
+    sumFpX128: bigint;
+    timestampLast: bigint;
   };
 }
 
-export interface FundingPaymentInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'FundingPaymentStateUpdated(tuple,int256,uint256)': EventFragment;
-  };
-
+export interface FundingPaymentInterface extends Interface {
   getEvent(nameOrSignatureOrTopic: 'FundingPaymentStateUpdated'): EventFragment;
 }
 
-export interface FundingPaymentStateUpdatedEventObject {
-  fundingPayment: FundingPayment.InfoStructOutput;
-  fundingRateX128: BigNumber;
-  virtualPriceX128: BigNumber;
+export namespace FundingPaymentStateUpdatedEvent {
+  export type InputTuple = [
+    fundingPayment: FundingPayment.InfoStruct,
+    fundingRateX128: BigNumberish,
+    virtualPriceX128: BigNumberish
+  ];
+  export type OutputTuple = [
+    fundingPayment: FundingPayment.InfoStructOutput,
+    fundingRateX128: bigint,
+    virtualPriceX128: bigint
+  ];
+  export interface OutputObject {
+    fundingPayment: FundingPayment.InfoStructOutput;
+    fundingRateX128: bigint;
+    virtualPriceX128: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FundingPaymentStateUpdatedEvent = TypedEvent<
-  [FundingPayment.InfoStructOutput, BigNumber, BigNumber],
-  FundingPaymentStateUpdatedEventObject
->;
-
-export type FundingPaymentStateUpdatedEventFilter =
-  TypedEventFilter<FundingPaymentStateUpdatedEvent>;
 
 export interface FundingPayment extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: FundingPaymentInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'FundingPaymentStateUpdated'
+  ): TypedContractEvent<
+    FundingPaymentStateUpdatedEvent.InputTuple,
+    FundingPaymentStateUpdatedEvent.OutputTuple,
+    FundingPaymentStateUpdatedEvent.OutputObject
+  >;
 
   filters: {
-    'FundingPaymentStateUpdated(tuple,int256,uint256)'(
-      fundingPayment?: null,
-      fundingRateX128?: null,
-      virtualPriceX128?: null
-    ): FundingPaymentStateUpdatedEventFilter;
-    FundingPaymentStateUpdated(
-      fundingPayment?: null,
-      fundingRateX128?: null,
-      virtualPriceX128?: null
-    ): FundingPaymentStateUpdatedEventFilter;
+    'FundingPaymentStateUpdated(tuple,int256,uint256)': TypedContractEvent<
+      FundingPaymentStateUpdatedEvent.InputTuple,
+      FundingPaymentStateUpdatedEvent.OutputTuple,
+      FundingPaymentStateUpdatedEvent.OutputObject
+    >;
+    FundingPaymentStateUpdated: TypedContractEvent<
+      FundingPaymentStateUpdatedEvent.InputTuple,
+      FundingPaymentStateUpdatedEvent.OutputTuple,
+      FundingPaymentStateUpdatedEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

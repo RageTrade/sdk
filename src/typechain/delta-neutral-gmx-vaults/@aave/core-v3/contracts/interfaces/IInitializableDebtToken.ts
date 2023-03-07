@@ -3,182 +3,177 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
-export interface IInitializableDebtTokenInterface extends utils.Interface {
-  functions: {
-    'initialize(address,address,address,uint8,string,string,bytes)': FunctionFragment;
-  };
+export interface IInitializableDebtTokenInterface extends Interface {
+  getFunction(nameOrSignature: 'initialize'): FunctionFragment;
 
-  getFunction(nameOrSignatureOrTopic: 'initialize'): FunctionFragment;
+  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
 
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      string,
+      string,
+      BytesLike
     ]
   ): string;
 
   decodeFunctionResult(functionFragment: 'initialize', data: BytesLike): Result;
-
-  events: {
-    'Initialized(address,address,address,uint8,string,string,bytes)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
 }
 
-export interface InitializedEventObject {
-  underlyingAsset: string;
-  pool: string;
-  incentivesController: string;
-  debtTokenDecimals: number;
-  debtTokenName: string;
-  debtTokenSymbol: string;
-  params: string;
+export namespace InitializedEvent {
+  export type InputTuple = [
+    underlyingAsset: AddressLike,
+    pool: AddressLike,
+    incentivesController: AddressLike,
+    debtTokenDecimals: BigNumberish,
+    debtTokenName: string,
+    debtTokenSymbol: string,
+    params: BytesLike
+  ];
+  export type OutputTuple = [
+    underlyingAsset: string,
+    pool: string,
+    incentivesController: string,
+    debtTokenDecimals: bigint,
+    debtTokenName: string,
+    debtTokenSymbol: string,
+    params: string
+  ];
+  export interface OutputObject {
+    underlyingAsset: string;
+    pool: string;
+    incentivesController: string;
+    debtTokenDecimals: bigint;
+    debtTokenName: string;
+    debtTokenSymbol: string;
+    params: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<
-  [string, string, string, number, string, string, string],
-  InitializedEventObject
->;
-
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface IInitializableDebtToken extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IInitializableDebtTokenInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  initialize(
-    pool: PromiseOrValue<string>,
-    underlyingAsset: PromiseOrValue<string>,
-    incentivesController: PromiseOrValue<string>,
-    debtTokenDecimals: PromiseOrValue<BigNumberish>,
-    debtTokenName: PromiseOrValue<string>,
-    debtTokenSymbol: PromiseOrValue<string>,
-    params: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  callStatic: {
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  initialize: TypedContractMethod<
+    [
+      pool: AddressLike,
+      underlyingAsset: AddressLike,
+      incentivesController: AddressLike,
+      debtTokenDecimals: BigNumberish,
+      debtTokenName: string,
+      debtTokenSymbol: string,
+      params: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      pool: AddressLike,
+      underlyingAsset: AddressLike,
+      incentivesController: AddressLike,
+      debtTokenDecimals: BigNumberish,
+      debtTokenName: string,
+      debtTokenSymbol: string,
+      params: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
 
   filters: {
-    'Initialized(address,address,address,uint8,string,string,bytes)'(
-      underlyingAsset?: PromiseOrValue<string> | null,
-      pool?: PromiseOrValue<string> | null,
-      incentivesController?: null,
-      debtTokenDecimals?: null,
-      debtTokenName?: null,
-      debtTokenSymbol?: null,
-      params?: null
-    ): InitializedEventFilter;
-    Initialized(
-      underlyingAsset?: PromiseOrValue<string> | null,
-      pool?: PromiseOrValue<string> | null,
-      incentivesController?: null,
-      debtTokenDecimals?: null,
-      debtTokenName?: null,
-      debtTokenSymbol?: null,
-      params?: null
-    ): InitializedEventFilter;
-  };
-
-  estimateGas: {
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    initialize(
-      pool: PromiseOrValue<string>,
-      underlyingAsset: PromiseOrValue<string>,
-      incentivesController: PromiseOrValue<string>,
-      debtTokenDecimals: PromiseOrValue<BigNumberish>,
-      debtTokenName: PromiseOrValue<string>,
-      debtTokenSymbol: PromiseOrValue<string>,
-      params: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'Initialized(address,address,address,uint8,string,string,bytes)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
   };
 }

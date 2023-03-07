@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ILPPriceGetter,
   ILPPriceGetterInterface,
@@ -23,17 +22,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class ILPPriceGetter__factory {
   static readonly abi = _abi;
   static createInterface(): ILPPriceGetterInterface {
-    return new utils.Interface(_abi) as ILPPriceGetterInterface;
+    return new Interface(_abi) as ILPPriceGetterInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ILPPriceGetter {
-    return new Contract(address, _abi, signerOrProvider) as ILPPriceGetter;
+    return new Contract(address, _abi, runner) as unknown as ILPPriceGetter;
   }
 }

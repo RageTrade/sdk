@@ -3,60 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../common';
 
-export interface DnGmxRouterInterface extends utils.Interface {
-  functions: {
-    'batchingManagerKeeper()': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'depositPeriphery()': FunctionFragment;
-    'depositToken(address,address,uint256)': FunctionFragment;
-    'dnGmxBatchingManager()': FunctionFragment;
-    'dnGmxJuniorVault()': FunctionFragment;
-    'executeBatchDeposit(uint256)': FunctionFragment;
-    'executeBatchStake()': FunctionFragment;
-    'getQuotes(uint256)': FunctionFragment;
-    'getQuotesJitRevert(uint256)': FunctionFragment;
-    'gmxVault()': FunctionFragment;
-    'initialize()': FunctionFragment;
-    'jitManager1()': FunctionFragment;
-    'jitManager2()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'quoterV1()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'sGLP()': FunctionFragment;
-    'setBatchingManagerKeeper(address)': FunctionFragment;
-    'setValues(address,address,address,address,address,address,address,address,address,address,address)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'usdc()': FunctionFragment;
-    'wbtc()': FunctionFragment;
-    'weth()': FunctionFragment;
-  };
-
+export interface DnGmxRouterInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'batchingManagerKeeper'
       | 'deposit'
       | 'depositPeriphery'
@@ -83,13 +52,17 @@ export interface DnGmxRouterInterface extends utils.Interface {
       | 'weth'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic: 'Initialized' | 'OwnershipTransferred'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'batchingManagerKeeper',
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositPeriphery',
@@ -97,11 +70,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'depositToken',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'dnGmxBatchingManager',
@@ -113,7 +82,7 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchDeposit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'executeBatchStake',
@@ -121,11 +90,11 @@ export interface DnGmxRouterInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getQuotes',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getQuotesJitRevert',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'gmxVault', values?: undefined): string;
   encodeFunctionData(
@@ -149,27 +118,27 @@ export interface DnGmxRouterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'sGLP', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'setBatchingManagerKeeper',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setValues',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'usdc', values?: undefined): string;
   encodeFunctionData(functionFragment: 'wbtc', values?: undefined): string;
@@ -238,540 +207,322 @@ export interface DnGmxRouterInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'usdc', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'wbtc', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
-
-  events: {
-    'Initialized(uint8)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
 }
 
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface DnGmxRouter extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: DnGmxRouterInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    batchingManagerKeeper(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    depositPeriphery(overrides?: CallOverrides): Promise<[string]>;
+  batchingManagerKeeper: TypedContractMethod<[], [string], 'view'>;
 
-    depositToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  deposit: TypedContractMethod<
+    [amount: BigNumberish, receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    dnGmxBatchingManager(overrides?: CallOverrides): Promise<[string]>;
+  depositPeriphery: TypedContractMethod<[], [string], 'view'>;
 
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<[string]>;
+  depositToken: TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, tokenAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    executeBatchDeposit(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  dnGmxBatchingManager: TypedContractMethod<[], [string], 'view'>;
 
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  dnGmxJuniorVault: TypedContractMethod<[], [string], 'view'>;
 
-    getQuotes(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  executeBatchDeposit: TypedContractMethod<
+    [amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    getQuotesJitRevert(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  executeBatchStake: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    gmxVault(overrides?: CallOverrides): Promise<[string]>;
-
-    initialize(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    jitManager1(overrides?: CallOverrides): Promise<[string]>;
-
-    jitManager2(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    quoterV1(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    sGLP(overrides?: CallOverrides): Promise<[string]>;
-
-    setBatchingManagerKeeper(
-      _bmKeeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setValues(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    usdc(overrides?: CallOverrides): Promise<[string]>;
-
-    wbtc(overrides?: CallOverrides): Promise<[string]>;
-
-    weth(overrides?: CallOverrides): Promise<[string]>;
-  };
-
-  batchingManagerKeeper(overrides?: CallOverrides): Promise<string>;
-
-  deposit(
-    amount: PromiseOrValue<BigNumberish>,
-    receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  depositPeriphery(overrides?: CallOverrides): Promise<string>;
-
-  depositToken(
-    token: PromiseOrValue<string>,
-    receiver: PromiseOrValue<string>,
-    tokenAmount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  dnGmxBatchingManager(overrides?: CallOverrides): Promise<string>;
-
-  dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
-
-  executeBatchDeposit(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  executeBatchStake(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getQuotes(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getQuotesJitRevert(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  gmxVault(overrides?: CallOverrides): Promise<string>;
-
-  initialize(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  jitManager1(overrides?: CallOverrides): Promise<string>;
-
-  jitManager2(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  quoterV1(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  sGLP(overrides?: CallOverrides): Promise<string>;
-
-  setBatchingManagerKeeper(
-    _bmKeeper: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setValues(
-    _dnGmxJuniorVault: PromiseOrValue<string>,
-    _dnGmxBatchingManager: PromiseOrValue<string>,
-    _depositPeriphery: PromiseOrValue<string>,
-    _gmxVault: PromiseOrValue<string>,
-    _jitManager1: PromiseOrValue<string>,
-    _jitManager2: PromiseOrValue<string>,
-    _quoterV1: PromiseOrValue<string>,
-    _sGLP: PromiseOrValue<string>,
-    _weth: PromiseOrValue<string>,
-    _wbtc: PromiseOrValue<string>,
-    _usdc: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  usdc(overrides?: CallOverrides): Promise<string>;
-
-  wbtc(overrides?: CallOverrides): Promise<string>;
-
-  weth(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    batchingManagerKeeper(overrides?: CallOverrides): Promise<string>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositPeriphery(overrides?: CallOverrides): Promise<string>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    dnGmxBatchingManager(overrides?: CallOverrides): Promise<string>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<string>;
-
-    executeBatchDeposit(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    executeBatchStake(overrides?: CallOverrides): Promise<void>;
-
-    getQuotes(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        ethQuoteWithoutJIT: BigNumber;
-        btcQuoteWithoutJIT: BigNumber;
-        ethQuoteWithJIT: BigNumber;
-        btcQuoteWithJIT: BigNumber;
+  getQuotes: TypedContractMethod<
+    [assets: BigNumberish],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        ethQuoteWithoutJIT: bigint;
+        btcQuoteWithoutJIT: bigint;
+        ethQuoteWithJIT: bigint;
+        btcQuoteWithJIT: bigint;
       }
-    >;
+    ],
+    'nonpayable'
+  >;
 
-    getQuotesJitRevert(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  getQuotesJitRevert: TypedContractMethod<
+    [assets: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    gmxVault(overrides?: CallOverrides): Promise<string>;
+  gmxVault: TypedContractMethod<[], [string], 'view'>;
 
-    initialize(overrides?: CallOverrides): Promise<void>;
+  initialize: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    jitManager1(overrides?: CallOverrides): Promise<string>;
+  jitManager1: TypedContractMethod<[], [string], 'view'>;
 
-    jitManager2(overrides?: CallOverrides): Promise<string>;
+  jitManager2: TypedContractMethod<[], [string], 'view'>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    quoterV1(overrides?: CallOverrides): Promise<string>;
+  quoterV1: TypedContractMethod<[], [string], 'view'>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    sGLP(overrides?: CallOverrides): Promise<string>;
+  sGLP: TypedContractMethod<[], [string], 'view'>;
 
-    setBatchingManagerKeeper(
-      _bmKeeper: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setBatchingManagerKeeper: TypedContractMethod<
+    [_bmKeeper: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setValues(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setValues: TypedContractMethod<
+    [
+      _dnGmxJuniorVault: AddressLike,
+      _dnGmxBatchingManager: AddressLike,
+      _depositPeriphery: AddressLike,
+      _gmxVault: AddressLike,
+      _jitManager1: AddressLike,
+      _jitManager2: AddressLike,
+      _quoterV1: AddressLike,
+      _sGLP: AddressLike,
+      _weth: AddressLike,
+      _wbtc: AddressLike,
+      _usdc: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    usdc(overrides?: CallOverrides): Promise<string>;
+  usdc: TypedContractMethod<[], [string], 'view'>;
 
-    wbtc(overrides?: CallOverrides): Promise<string>;
+  wbtc: TypedContractMethod<[], [string], 'view'>;
 
-    weth(overrides?: CallOverrides): Promise<string>;
-  };
+  weth: TypedContractMethod<[], [string], 'view'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'batchingManagerKeeper'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [amount: BigNumberish, receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'depositPeriphery'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'depositToken'
+  ): TypedContractMethod<
+    [token: AddressLike, receiver: AddressLike, tokenAmount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'dnGmxBatchingManager'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'dnGmxJuniorVault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'executeBatchDeposit'
+  ): TypedContractMethod<[amount: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'executeBatchStake'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(nameOrSignature: 'getQuotes'): TypedContractMethod<
+    [assets: BigNumberish],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        ethQuoteWithoutJIT: bigint;
+        btcQuoteWithoutJIT: bigint;
+        ethQuoteWithJIT: bigint;
+        btcQuoteWithJIT: bigint;
+      }
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'getQuotesJitRevert'
+  ): TypedContractMethod<[assets: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'gmxVault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'jitManager1'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'jitManager2'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'quoterV1'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'sGLP'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'setBatchingManagerKeeper'
+  ): TypedContractMethod<[_bmKeeper: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setValues'
+  ): TypedContractMethod<
+    [
+      _dnGmxJuniorVault: AddressLike,
+      _dnGmxBatchingManager: AddressLike,
+      _depositPeriphery: AddressLike,
+      _gmxVault: AddressLike,
+      _jitManager1: AddressLike,
+      _jitManager2: AddressLike,
+      _quoterV1: AddressLike,
+      _sGLP: AddressLike,
+      _weth: AddressLike,
+      _wbtc: AddressLike,
+      _usdc: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'usdc'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'wbtc'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'weth'
+  ): TypedContractMethod<[], [string], 'view'>;
+
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
 
   filters: {
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-  };
-
-  estimateGas: {
-    batchingManagerKeeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositPeriphery(overrides?: CallOverrides): Promise<BigNumber>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    dnGmxBatchingManager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    executeBatchDeposit(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getQuotes(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getQuotesJitRevert(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    gmxVault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initialize(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    jitManager1(overrides?: CallOverrides): Promise<BigNumber>;
-
-    jitManager2(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    quoterV1(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    sGLP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setBatchingManagerKeeper(
-      _bmKeeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setValues(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    usdc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    wbtc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    weth(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    batchingManagerKeeper(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositPeriphery(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    depositToken(
-      token: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      tokenAmount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    dnGmxBatchingManager(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    dnGmxJuniorVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    executeBatchDeposit(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    executeBatchStake(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getQuotes(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getQuotesJitRevert(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    gmxVault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initialize(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    jitManager1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    jitManager2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    quoterV1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    sGLP(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setBatchingManagerKeeper(
-      _bmKeeper: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setValues(
-      _dnGmxJuniorVault: PromiseOrValue<string>,
-      _dnGmxBatchingManager: PromiseOrValue<string>,
-      _depositPeriphery: PromiseOrValue<string>,
-      _gmxVault: PromiseOrValue<string>,
-      _jitManager1: PromiseOrValue<string>,
-      _jitManager2: PromiseOrValue<string>,
-      _quoterV1: PromiseOrValue<string>,
-      _sGLP: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _wbtc: PromiseOrValue<string>,
-      _usdc: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    usdc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    wbtc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
   };
 }

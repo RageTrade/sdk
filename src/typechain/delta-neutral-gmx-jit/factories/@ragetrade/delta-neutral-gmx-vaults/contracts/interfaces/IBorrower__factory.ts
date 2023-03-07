@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IBorrower,
   IBorrowerInterface,
@@ -30,17 +29,14 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IBorrower__factory {
   static readonly abi = _abi;
   static createInterface(): IBorrowerInterface {
-    return new utils.Interface(_abi) as IBorrowerInterface;
+    return new Interface(_abi) as IBorrowerInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IBorrower {
-    return new Contract(address, _abi, signerOrProvider) as IBorrower;
+  static connect(address: string, runner?: ContractRunner | null): IBorrower {
+    return new Contract(address, _abi, runner) as unknown as IBorrower;
   }
 }

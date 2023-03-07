@@ -3,181 +3,250 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
-  Signer,
-  utils,
+  FunctionFragment,
+  Interface,
+  EventFragment,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
 } from '../../common';
 
-export interface AccountInterface extends utils.Interface {
-  functions: {};
-
-  events: {
-    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': EventFragment;
-    'MarginUpdated(uint256,uint32,int256,bool)': EventFragment;
-    'ProfitUpdated(uint256,int256)': EventFragment;
-    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)': EventFragment;
-  };
-
+export interface AccountInterface extends Interface {
   getEvent(
-    nameOrSignatureOrTopic: 'LiquidityPositionsLiquidated'
+    nameOrSignatureOrTopic:
+      | 'LiquidityPositionsLiquidated'
+      | 'MarginUpdated'
+      | 'ProfitUpdated'
+      | 'TokenPositionLiquidated'
   ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'MarginUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProfitUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionLiquidated'): EventFragment;
 }
 
-export interface LiquidityPositionsLiquidatedEventObject {
-  accountId: BigNumber;
-  keeperAddress: string;
-  liquidationFee: BigNumber;
-  keeperFee: BigNumber;
-  insuranceFundFee: BigNumber;
-  accountMarketValueFinal: BigNumber;
+export namespace LiquidityPositionsLiquidatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    keeperAddress: AddressLike,
+    liquidationFee: BigNumberish,
+    keeperFee: BigNumberish,
+    insuranceFundFee: BigNumberish,
+    accountMarketValueFinal: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    keeperAddress: string,
+    liquidationFee: bigint,
+    keeperFee: bigint,
+    insuranceFundFee: bigint,
+    accountMarketValueFinal: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    keeperAddress: string;
+    liquidationFee: bigint;
+    keeperFee: bigint;
+    insuranceFundFee: bigint;
+    accountMarketValueFinal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityPositionsLiquidatedEvent = TypedEvent<
-  [BigNumber, string, BigNumber, BigNumber, BigNumber, BigNumber],
-  LiquidityPositionsLiquidatedEventObject
->;
 
-export type LiquidityPositionsLiquidatedEventFilter =
-  TypedEventFilter<LiquidityPositionsLiquidatedEvent>;
-
-export interface MarginUpdatedEventObject {
-  accountId: BigNumber;
-  collateralId: number;
-  amount: BigNumber;
-  isSettleProfit: boolean;
+export namespace MarginUpdatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    collateralId: BigNumberish,
+    amount: BigNumberish,
+    isSettleProfit: boolean
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    collateralId: bigint,
+    amount: bigint,
+    isSettleProfit: boolean
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    collateralId: bigint;
+    amount: bigint;
+    isSettleProfit: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MarginUpdatedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, boolean],
-  MarginUpdatedEventObject
->;
 
-export type MarginUpdatedEventFilter = TypedEventFilter<MarginUpdatedEvent>;
-
-export interface ProfitUpdatedEventObject {
-  accountId: BigNumber;
-  amount: BigNumber;
+export namespace ProfitUpdatedEvent {
+  export type InputTuple = [accountId: BigNumberish, amount: BigNumberish];
+  export type OutputTuple = [accountId: bigint, amount: bigint];
+  export interface OutputObject {
+    accountId: bigint;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProfitUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  ProfitUpdatedEventObject
->;
 
-export type ProfitUpdatedEventFilter = TypedEventFilter<ProfitUpdatedEvent>;
-
-export interface TokenPositionLiquidatedEventObject {
-  accountId: BigNumber;
-  poolId: number;
-  keeperFee: BigNumber;
-  insuranceFundFee: BigNumber;
-  accountMarketValueFinal: BigNumber;
+export namespace TokenPositionLiquidatedEvent {
+  export type InputTuple = [
+    accountId: BigNumberish,
+    poolId: BigNumberish,
+    keeperFee: BigNumberish,
+    insuranceFundFee: BigNumberish,
+    accountMarketValueFinal: BigNumberish
+  ];
+  export type OutputTuple = [
+    accountId: bigint,
+    poolId: bigint,
+    keeperFee: bigint,
+    insuranceFundFee: bigint,
+    accountMarketValueFinal: bigint
+  ];
+  export interface OutputObject {
+    accountId: bigint;
+    poolId: bigint;
+    keeperFee: bigint;
+    insuranceFundFee: bigint;
+    accountMarketValueFinal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenPositionLiquidatedEvent = TypedEvent<
-  [BigNumber, number, BigNumber, BigNumber, BigNumber],
-  TokenPositionLiquidatedEventObject
->;
-
-export type TokenPositionLiquidatedEventFilter =
-  TypedEventFilter<TokenPositionLiquidatedEvent>;
 
 export interface Account extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: AccountInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {};
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  callStatic: {};
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getEvent(
+    key: 'LiquidityPositionsLiquidated'
+  ): TypedContractEvent<
+    LiquidityPositionsLiquidatedEvent.InputTuple,
+    LiquidityPositionsLiquidatedEvent.OutputTuple,
+    LiquidityPositionsLiquidatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'MarginUpdated'
+  ): TypedContractEvent<
+    MarginUpdatedEvent.InputTuple,
+    MarginUpdatedEvent.OutputTuple,
+    MarginUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProfitUpdated'
+  ): TypedContractEvent<
+    ProfitUpdatedEvent.InputTuple,
+    ProfitUpdatedEvent.OutputTuple,
+    ProfitUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionLiquidated'
+  ): TypedContractEvent<
+    TokenPositionLiquidatedEvent.InputTuple,
+    TokenPositionLiquidatedEvent.OutputTuple,
+    TokenPositionLiquidatedEvent.OutputObject
+  >;
 
   filters: {
-    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      keeperAddress?: PromiseOrValue<string> | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): LiquidityPositionsLiquidatedEventFilter;
-    LiquidityPositionsLiquidated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      keeperAddress?: PromiseOrValue<string> | null,
-      liquidationFee?: null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): LiquidityPositionsLiquidatedEventFilter;
+    'LiquidityPositionsLiquidated(uint256,address,int256,int256,int256,int256)': TypedContractEvent<
+      LiquidityPositionsLiquidatedEvent.InputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputObject
+    >;
+    LiquidityPositionsLiquidated: TypedContractEvent<
+      LiquidityPositionsLiquidatedEvent.InputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputTuple,
+      LiquidityPositionsLiquidatedEvent.OutputObject
+    >;
 
-    'MarginUpdated(uint256,uint32,int256,bool)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      collateralId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      isSettleProfit?: null
-    ): MarginUpdatedEventFilter;
-    MarginUpdated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      collateralId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null,
-      isSettleProfit?: null
-    ): MarginUpdatedEventFilter;
+    'MarginUpdated(uint256,uint32,int256,bool)': TypedContractEvent<
+      MarginUpdatedEvent.InputTuple,
+      MarginUpdatedEvent.OutputTuple,
+      MarginUpdatedEvent.OutputObject
+    >;
+    MarginUpdated: TypedContractEvent<
+      MarginUpdatedEvent.InputTuple,
+      MarginUpdatedEvent.OutputTuple,
+      MarginUpdatedEvent.OutputObject
+    >;
 
-    'ProfitUpdated(uint256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null
-    ): ProfitUpdatedEventFilter;
-    ProfitUpdated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      amount?: null
-    ): ProfitUpdatedEventFilter;
+    'ProfitUpdated(uint256,int256)': TypedContractEvent<
+      ProfitUpdatedEvent.InputTuple,
+      ProfitUpdatedEvent.OutputTuple,
+      ProfitUpdatedEvent.OutputObject
+    >;
+    ProfitUpdated: TypedContractEvent<
+      ProfitUpdatedEvent.InputTuple,
+      ProfitUpdatedEvent.OutputTuple,
+      ProfitUpdatedEvent.OutputObject
+    >;
 
-    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)'(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): TokenPositionLiquidatedEventFilter;
-    TokenPositionLiquidated(
-      accountId?: PromiseOrValue<BigNumberish> | null,
-      poolId?: PromiseOrValue<BigNumberish> | null,
-      keeperFee?: null,
-      insuranceFundFee?: null,
-      accountMarketValueFinal?: null
-    ): TokenPositionLiquidatedEventFilter;
+    'TokenPositionLiquidated(uint256,uint32,int256,int256,int256)': TypedContractEvent<
+      TokenPositionLiquidatedEvent.InputTuple,
+      TokenPositionLiquidatedEvent.OutputTuple,
+      TokenPositionLiquidatedEvent.OutputObject
+    >;
+    TokenPositionLiquidated: TypedContractEvent<
+      TokenPositionLiquidatedEvent.InputTuple,
+      TokenPositionLiquidatedEvent.OutputTuple,
+      TokenPositionLiquidatedEvent.OutputObject
+    >;
   };
-
-  estimateGas: {};
-
-  populateTransaction: {};
 }

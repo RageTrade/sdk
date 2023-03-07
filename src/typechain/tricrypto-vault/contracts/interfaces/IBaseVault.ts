@@ -3,39 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IBaseVaultInterface extends utils.Interface {
-  functions: {
-    'closeTokenPosition()': FunctionFragment;
-    'depositCap()': FunctionFragment;
-    'ethPoolId()': FunctionFragment;
-    'rageAccountNo()': FunctionFragment;
-    'rageClearingHouse()': FunctionFragment;
-    'rageVPool()': FunctionFragment;
-    'rebalance()': FunctionFragment;
-    'swapSimulator()': FunctionFragment;
-  };
-
+export interface IBaseVaultInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'closeTokenPosition'
       | 'depositCap'
       | 'ethPoolId'
@@ -90,139 +77,96 @@ export interface IBaseVaultInterface extends utils.Interface {
     functionFragment: 'swapSimulator',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IBaseVault extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IBaseVaultInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    ethPoolId(overrides?: CallOverrides): Promise<[number]>;
+  closeTokenPosition: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
+  depositCap: TypedContractMethod<[], [bigint], 'view'>;
 
-    rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
+  ethPoolId: TypedContractMethod<[], [bigint], 'view'>;
 
-    rageVPool(overrides?: CallOverrides): Promise<[string]>;
+  rageAccountNo: TypedContractMethod<[], [bigint], 'view'>;
 
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  rageClearingHouse: TypedContractMethod<[], [string], 'view'>;
 
-    swapSimulator(overrides?: CallOverrides): Promise<[string]>;
-  };
+  rageVPool: TypedContractMethod<[], [string], 'view'>;
 
-  closeTokenPosition(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  rebalance: TypedContractMethod<[], [void], 'nonpayable'>;
 
-  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
+  swapSimulator: TypedContractMethod<[], [string], 'view'>;
 
-  ethPoolId(overrides?: CallOverrides): Promise<number>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-  rageClearingHouse(overrides?: CallOverrides): Promise<string>;
-
-  rageVPool(overrides?: CallOverrides): Promise<string>;
-
-  rebalance(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  swapSimulator(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    closeTokenPosition(overrides?: CallOverrides): Promise<void>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<number>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<string>;
-
-    rageVPool(overrides?: CallOverrides): Promise<string>;
-
-    rebalance(overrides?: CallOverrides): Promise<void>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'closeTokenPosition'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'depositCap'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'ethPoolId'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageAccountNo'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageClearingHouse'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageVPool'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'rebalance'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'swapSimulator'
+  ): TypedContractMethod<[], [string], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageVPool(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageVPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-  };
 }

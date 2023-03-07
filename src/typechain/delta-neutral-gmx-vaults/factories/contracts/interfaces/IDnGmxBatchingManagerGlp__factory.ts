@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IDnGmxBatchingManagerGlp,
   IDnGmxBatchingManagerGlpInterface,
@@ -371,21 +370,21 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IDnGmxBatchingManagerGlp__factory {
   static readonly abi = _abi;
   static createInterface(): IDnGmxBatchingManagerGlpInterface {
-    return new utils.Interface(_abi) as IDnGmxBatchingManagerGlpInterface;
+    return new Interface(_abi) as IDnGmxBatchingManagerGlpInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IDnGmxBatchingManagerGlp {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IDnGmxBatchingManagerGlp;
+      runner
+    ) as unknown as IDnGmxBatchingManagerGlp;
   }
 }

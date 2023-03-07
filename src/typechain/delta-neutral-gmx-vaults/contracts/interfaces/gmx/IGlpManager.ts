@@ -3,45 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IGlpManagerInterface extends utils.Interface {
-  functions: {
-    'addLiquidity(address,uint256,uint256,uint256)': FunctionFragment;
-    'addLiquidityForAccount(address,address,address,uint256,uint256,uint256)': FunctionFragment;
-    'cooldownDuration()': FunctionFragment;
-    'getAum(bool)': FunctionFragment;
-    'getAumInUsdg(bool)': FunctionFragment;
-    'getAums()': FunctionFragment;
-    'getGlobalShortAveragePrice(address)': FunctionFragment;
-    'gov()': FunctionFragment;
-    'lastAddedAt(address)': FunctionFragment;
-    'removeLiquidity(address,uint256,uint256,address)': FunctionFragment;
-    'removeLiquidityForAccount(address,address,uint256,uint256,address)': FunctionFragment;
-    'setCooldownDuration(uint256)': FunctionFragment;
-    'vault()': FunctionFragment;
-  };
-
+export interface IGlpManagerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'addLiquidity'
       | 'addLiquidityForAccount'
       | 'cooldownDuration'
@@ -59,68 +41,49 @@ export interface IGlpManagerInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'addLiquidity',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'addLiquidityForAccount',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'cooldownDuration',
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: 'getAum',
-    values: [PromiseOrValue<boolean>]
-  ): string;
+  encodeFunctionData(functionFragment: 'getAum', values: [boolean]): string;
   encodeFunctionData(
     functionFragment: 'getAumInUsdg',
-    values: [PromiseOrValue<boolean>]
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: 'getAums', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'getGlobalShortAveragePrice',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'gov', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'lastAddedAt',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLiquidity',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'removeLiquidityForAccount',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setCooldownDuration',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'vault', values?: undefined): string;
 
@@ -164,391 +127,215 @@ export interface IGlpManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'vault', data: BytesLike): Result;
-
-  events: {};
 }
 
 export interface IGlpManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IGlpManagerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    addLiquidity(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    addLiquidityForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    cooldownDuration(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  addLiquidity: TypedContractMethod<
+    [
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    getAum(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  addLiquidityForAccount: TypedContractMethod<
+    [
+      _fundingAccount: AddressLike,
+      _account: AddressLike,
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    getAumInUsdg(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  cooldownDuration: TypedContractMethod<[], [bigint], 'nonpayable'>;
 
-    getAums(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+  getAum: TypedContractMethod<[maximise: boolean], [bigint], 'view'>;
 
-    getGlobalShortAveragePrice(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  getAumInUsdg: TypedContractMethod<[maximise: boolean], [bigint], 'view'>;
 
-    gov(overrides?: CallOverrides): Promise<[string]>;
+  getAums: TypedContractMethod<[], [bigint[]], 'view'>;
 
-    lastAddedAt(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getGlobalShortAveragePrice: TypedContractMethod<
+    [token: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    removeLiquidity(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  gov: TypedContractMethod<[], [string], 'view'>;
 
-    removeLiquidityForAccount(
-      _account: PromiseOrValue<string>,
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  lastAddedAt: TypedContractMethod<
+    [_account: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    setCooldownDuration(
-      _cooldownDuration: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  removeLiquidity: TypedContractMethod<
+    [
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    vault(overrides?: CallOverrides): Promise<[string]>;
-  };
+  removeLiquidityForAccount: TypedContractMethod<
+    [
+      _account: AddressLike,
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-  addLiquidity(
-    _token: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _minUsdg: PromiseOrValue<BigNumberish>,
-    _minGlp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  setCooldownDuration: TypedContractMethod<
+    [_cooldownDuration: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  addLiquidityForAccount(
-    _fundingAccount: PromiseOrValue<string>,
-    _account: PromiseOrValue<string>,
-    _token: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _minUsdg: PromiseOrValue<BigNumberish>,
-    _minGlp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  vault: TypedContractMethod<[], [string], 'view'>;
 
-  cooldownDuration(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  getAum(
-    maximise: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAumInUsdg(
-    maximise: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getAums(overrides?: CallOverrides): Promise<BigNumber[]>;
-
-  getGlobalShortAveragePrice(
-    token: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  gov(overrides?: CallOverrides): Promise<string>;
-
-  lastAddedAt(
-    _account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  removeLiquidity(
-    _tokenOut: PromiseOrValue<string>,
-    _glpAmount: PromiseOrValue<BigNumberish>,
-    _minOut: PromiseOrValue<BigNumberish>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  removeLiquidityForAccount(
-    _account: PromiseOrValue<string>,
-    _tokenOut: PromiseOrValue<string>,
-    _glpAmount: PromiseOrValue<BigNumberish>,
-    _minOut: PromiseOrValue<BigNumberish>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setCooldownDuration(
-    _cooldownDuration: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  vault(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    addLiquidity(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    addLiquidityForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    cooldownDuration(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAum(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAumInUsdg(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAums(overrides?: CallOverrides): Promise<BigNumber[]>;
-
-    getGlobalShortAveragePrice(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    gov(overrides?: CallOverrides): Promise<string>;
-
-    lastAddedAt(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    removeLiquidity(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    removeLiquidityForAccount(
-      _account: PromiseOrValue<string>,
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setCooldownDuration(
-      _cooldownDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    vault(overrides?: CallOverrides): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'addLiquidity'
+  ): TypedContractMethod<
+    [
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'addLiquidityForAccount'
+  ): TypedContractMethod<
+    [
+      _fundingAccount: AddressLike,
+      _account: AddressLike,
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'cooldownDuration'
+  ): TypedContractMethod<[], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'getAum'
+  ): TypedContractMethod<[maximise: boolean], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAumInUsdg'
+  ): TypedContractMethod<[maximise: boolean], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getAums'
+  ): TypedContractMethod<[], [bigint[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getGlobalShortAveragePrice'
+  ): TypedContractMethod<[token: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'gov'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'lastAddedAt'
+  ): TypedContractMethod<[_account: AddressLike], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'removeLiquidity'
+  ): TypedContractMethod<
+    [
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'removeLiquidityForAccount'
+  ): TypedContractMethod<
+    [
+      _account: AddressLike,
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setCooldownDuration'
+  ): TypedContractMethod<
+    [_cooldownDuration: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'vault'
+  ): TypedContractMethod<[], [string], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    addLiquidity(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    addLiquidityForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    cooldownDuration(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getAum(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAumInUsdg(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAums(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getGlobalShortAveragePrice(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    gov(overrides?: CallOverrides): Promise<BigNumber>;
-
-    lastAddedAt(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    removeLiquidity(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    removeLiquidityForAccount(
-      _account: PromiseOrValue<string>,
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setCooldownDuration(
-      _cooldownDuration: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    vault(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    addLiquidity(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    addLiquidityForAccount(
-      _fundingAccount: PromiseOrValue<string>,
-      _account: PromiseOrValue<string>,
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    cooldownDuration(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getAum(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAumInUsdg(
-      maximise: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAums(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getGlobalShortAveragePrice(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    gov(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    lastAddedAt(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeLiquidity(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    removeLiquidityForAccount(
-      _account: PromiseOrValue<string>,
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCooldownDuration(
-      _cooldownDuration: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-  };
 }

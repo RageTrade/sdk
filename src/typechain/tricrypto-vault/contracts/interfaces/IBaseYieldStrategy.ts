@@ -3,37 +3,32 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IBaseYieldStrategyInterface extends utils.Interface {
-  functions: {
-    'getMarketValue(uint256)': FunctionFragment;
-    'getPriceX128()': FunctionFragment;
-  };
-
+export interface IBaseYieldStrategyInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'getMarketValue' | 'getPriceX128'
+    nameOrSignature: 'getMarketValue' | 'getPriceX128'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'getMarketValue',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPriceX128',
@@ -48,80 +43,66 @@ export interface IBaseYieldStrategyInterface extends utils.Interface {
     functionFragment: 'getPriceX128',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IBaseYieldStrategy extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IBaseYieldStrategyInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { marketValue: BigNumber }>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getPriceX128(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  getMarketValue(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getMarketValue: TypedContractMethod<[amount: BigNumberish], [bigint], 'view'>;
 
-  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
+  getPriceX128: TypedContractMethod<[], [bigint], 'view'>;
 
-  callStatic: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-  };
+  getFunction(
+    nameOrSignature: 'getMarketValue'
+  ): TypedContractMethod<[amount: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPriceX128'
+  ): TypedContractMethod<[], [bigint], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-  };
 }

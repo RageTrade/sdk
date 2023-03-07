@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ISelfPermit,
   ISelfPermitInterface,
@@ -162,17 +161,14 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class ISelfPermit__factory {
   static readonly abi = _abi;
   static createInterface(): ISelfPermitInterface {
-    return new utils.Interface(_abi) as ISelfPermitInterface;
+    return new Interface(_abi) as ISelfPermitInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ISelfPermit {
-    return new Contract(address, _abi, signerOrProvider) as ISelfPermit;
+  static connect(address: string, runner?: ContractRunner | null): ISelfPermit {
+    return new Contract(address, _abi, runner) as unknown as ISelfPermit;
   }
 }

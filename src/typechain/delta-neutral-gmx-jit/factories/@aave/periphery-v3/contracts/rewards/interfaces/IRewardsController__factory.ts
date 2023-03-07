@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IRewardsController,
   IRewardsControllerInterface,
@@ -885,17 +884,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IRewardsController__factory {
   static readonly abi = _abi;
   static createInterface(): IRewardsControllerInterface {
-    return new utils.Interface(_abi) as IRewardsControllerInterface;
+    return new Interface(_abi) as IRewardsControllerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IRewardsController {
-    return new Contract(address, _abi, signerOrProvider) as IRewardsController;
+    return new Contract(address, _abi, runner) as unknown as IRewardsController;
   }
 }

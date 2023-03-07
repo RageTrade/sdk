@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IPoolInitializer,
   IPoolInitializerInterface,
@@ -44,17 +43,17 @@ const _abi = [
     stateMutability: 'payable',
     type: 'function',
   },
-];
+] as const;
 
 export class IPoolInitializer__factory {
   static readonly abi = _abi;
   static createInterface(): IPoolInitializerInterface {
-    return new utils.Interface(_abi) as IPoolInitializerInterface;
+    return new Interface(_abi) as IPoolInitializerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IPoolInitializer {
-    return new Contract(address, _abi, signerOrProvider) as IPoolInitializer;
+    return new Contract(address, _abi, runner) as unknown as IPoolInitializer;
   }
 }

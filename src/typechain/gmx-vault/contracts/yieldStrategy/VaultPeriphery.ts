@@ -3,57 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PayableOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface VaultPeripheryInterface extends utils.Interface {
-  functions: {
-    'MAX_BPS()': FunctionFragment;
-    'MAX_TOLERANCE()': FunctionFragment;
-    'depositEth()': FunctionFragment;
-    'depositUsdc(uint256)': FunctionFragment;
-    'depositWeth(uint256)': FunctionFragment;
-    'initialize(address,address,address,address,address,address,address,address,address)': FunctionFragment;
-    'lpOracle()': FunctionFragment;
-    'lpToken()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'stableSwap()': FunctionFragment;
-    'swapRouter()': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'updateEthOracle(address)': FunctionFragment;
-    'updateSwapRouter(address)': FunctionFragment;
-    'updateTolerance(uint256)': FunctionFragment;
-    'usdc()': FunctionFragment;
-    'usdt()': FunctionFragment;
-    'vault()': FunctionFragment;
-    'weth()': FunctionFragment;
-  };
-
+export interface VaultPeripheryInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'MAX_BPS'
       | 'MAX_TOLERANCE'
       | 'depositEth'
@@ -76,6 +48,16 @@ export interface VaultPeripheryInterface extends utils.Interface {
       | 'weth'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'DepositPeriphery'
+      | 'EthOracleUpdated'
+      | 'Initialized'
+      | 'OwnershipTransferred'
+      | 'SlippageToleranceUpdated'
+      | 'SwapRouterUpdated'
+  ): EventFragment;
+
   encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'MAX_TOLERANCE',
@@ -87,24 +69,24 @@ export interface VaultPeripheryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'depositUsdc',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositWeth',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(functionFragment: 'lpOracle', values?: undefined): string;
@@ -124,19 +106,19 @@ export interface VaultPeripheryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateEthOracle',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateSwapRouter',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateTolerance',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'usdc', values?: undefined): string;
   encodeFunctionData(functionFragment: 'usdt', values?: undefined): string;
@@ -187,542 +169,418 @@ export interface VaultPeripheryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: 'usdt', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'vault', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'weth', data: BytesLike): Result;
-
-  events: {
-    'DepositPeriphery(address,address,uint256,uint256,uint256)': EventFragment;
-    'EthOracleUpdated(address,address)': EventFragment;
-    'Initialized(uint8)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'SlippageToleranceUpdated(uint256,uint256)': EventFragment;
-    'SwapRouterUpdated(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'DepositPeriphery'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EthOracleUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SlippageToleranceUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'SwapRouterUpdated'): EventFragment;
 }
 
-export interface DepositPeripheryEventObject {
-  owner: string;
-  token: string;
-  amount: BigNumber;
-  asset: BigNumber;
-  shares: BigNumber;
+export namespace DepositPeripheryEvent {
+  export type InputTuple = [
+    owner: AddressLike,
+    token: AddressLike,
+    amount: BigNumberish,
+    asset: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    owner: string,
+    token: string,
+    amount: bigint,
+    asset: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    owner: string;
+    token: string;
+    amount: bigint;
+    asset: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositPeripheryEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  DepositPeripheryEventObject
->;
 
-export type DepositPeripheryEventFilter =
-  TypedEventFilter<DepositPeripheryEvent>;
-
-export interface EthOracleUpdatedEventObject {
-  oldEthOracle: string;
-  newEthOracle: string;
+export namespace EthOracleUpdatedEvent {
+  export type InputTuple = [
+    oldEthOracle: AddressLike,
+    newEthOracle: AddressLike
+  ];
+  export type OutputTuple = [oldEthOracle: string, newEthOracle: string];
+  export interface OutputObject {
+    oldEthOracle: string;
+    newEthOracle: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EthOracleUpdatedEvent = TypedEvent<
-  [string, string],
-  EthOracleUpdatedEventObject
->;
 
-export type EthOracleUpdatedEventFilter =
-  TypedEventFilter<EthOracleUpdatedEvent>;
-
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface SlippageToleranceUpdatedEventObject {
-  oldTolerance: BigNumber;
-  newTolerance: BigNumber;
+export namespace SlippageToleranceUpdatedEvent {
+  export type InputTuple = [
+    oldTolerance: BigNumberish,
+    newTolerance: BigNumberish
+  ];
+  export type OutputTuple = [oldTolerance: bigint, newTolerance: bigint];
+  export interface OutputObject {
+    oldTolerance: bigint;
+    newTolerance: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SlippageToleranceUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  SlippageToleranceUpdatedEventObject
->;
 
-export type SlippageToleranceUpdatedEventFilter =
-  TypedEventFilter<SlippageToleranceUpdatedEvent>;
-
-export interface SwapRouterUpdatedEventObject {
-  oldSwapRouter: string;
-  newSwapRouter: string;
+export namespace SwapRouterUpdatedEvent {
+  export type InputTuple = [
+    oldSwapRouter: AddressLike,
+    newSwapRouter: AddressLike
+  ];
+  export type OutputTuple = [oldSwapRouter: string, newSwapRouter: string];
+  export interface OutputObject {
+    oldSwapRouter: string;
+    newSwapRouter: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SwapRouterUpdatedEvent = TypedEvent<
-  [string, string],
-  SwapRouterUpdatedEventObject
->;
-
-export type SwapRouterUpdatedEventFilter =
-  TypedEventFilter<SwapRouterUpdatedEvent>;
 
 export interface VaultPeriphery extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: VaultPeripheryInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    MAX_BPS(overrides?: CallOverrides): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    MAX_TOLERANCE(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    depositEth(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  MAX_BPS: TypedContractMethod<[], [bigint], 'view'>;
 
-    depositUsdc(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  MAX_TOLERANCE: TypedContractMethod<[], [bigint], 'view'>;
 
-    depositWeth(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  depositEth: TypedContractMethod<[], [bigint], 'payable'>;
 
-    initialize(
-      _usdc: PromiseOrValue<string>,
-      _usdt: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _lpToken: PromiseOrValue<string>,
-      _vault: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _lpOracle: PromiseOrValue<string>,
-      _stableSwap: PromiseOrValue<string>,
-      _ethOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  depositUsdc: TypedContractMethod<
+    [amount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    lpOracle(overrides?: CallOverrides): Promise<[string]>;
+  depositWeth: TypedContractMethod<
+    [amount: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    lpToken(overrides?: CallOverrides): Promise<[string]>;
+  initialize: TypedContractMethod<
+    [
+      _usdc: AddressLike,
+      _usdt: AddressLike,
+      _weth: AddressLike,
+      _lpToken: AddressLike,
+      _vault: AddressLike,
+      _swapRouter: AddressLike,
+      _lpOracle: AddressLike,
+      _stableSwap: AddressLike,
+      _ethOracle: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
+  lpOracle: TypedContractMethod<[], [string], 'view'>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  lpToken: TypedContractMethod<[], [string], 'view'>;
 
-    stableSwap(overrides?: CallOverrides): Promise<[string]>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    swapRouter(overrides?: CallOverrides): Promise<[string]>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  stableSwap: TypedContractMethod<[], [string], 'view'>;
 
-    updateEthOracle(
-      newOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  swapRouter: TypedContractMethod<[], [string], 'view'>;
 
-    updateSwapRouter(
-      newRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    updateTolerance(
-      newTolerance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  updateEthOracle: TypedContractMethod<
+    [newOracle: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    usdc(overrides?: CallOverrides): Promise<[string]>;
+  updateSwapRouter: TypedContractMethod<
+    [newRouter: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    usdt(overrides?: CallOverrides): Promise<[string]>;
+  updateTolerance: TypedContractMethod<
+    [newTolerance: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    vault(overrides?: CallOverrides): Promise<[string]>;
+  usdc: TypedContractMethod<[], [string], 'view'>;
 
-    weth(overrides?: CallOverrides): Promise<[string]>;
-  };
+  usdt: TypedContractMethod<[], [string], 'view'>;
 
-  MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
+  vault: TypedContractMethod<[], [string], 'view'>;
 
-  MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
+  weth: TypedContractMethod<[], [string], 'view'>;
 
-  depositEth(
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  depositUsdc(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction(
+    nameOrSignature: 'MAX_BPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_TOLERANCE'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'depositEth'
+  ): TypedContractMethod<[], [bigint], 'payable'>;
+  getFunction(
+    nameOrSignature: 'depositUsdc'
+  ): TypedContractMethod<[amount: BigNumberish], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'depositWeth'
+  ): TypedContractMethod<[amount: BigNumberish], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      _usdc: AddressLike,
+      _usdt: AddressLike,
+      _weth: AddressLike,
+      _lpToken: AddressLike,
+      _vault: AddressLike,
+      _swapRouter: AddressLike,
+      _lpOracle: AddressLike,
+      _stableSwap: AddressLike,
+      _ethOracle: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'lpOracle'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'lpToken'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'stableSwap'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'swapRouter'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'updateEthOracle'
+  ): TypedContractMethod<[newOracle: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'updateSwapRouter'
+  ): TypedContractMethod<[newRouter: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'updateTolerance'
+  ): TypedContractMethod<[newTolerance: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'usdc'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'usdt'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'vault'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'weth'
+  ): TypedContractMethod<[], [string], 'view'>;
 
-  depositWeth(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    _usdc: PromiseOrValue<string>,
-    _usdt: PromiseOrValue<string>,
-    _weth: PromiseOrValue<string>,
-    _lpToken: PromiseOrValue<string>,
-    _vault: PromiseOrValue<string>,
-    _swapRouter: PromiseOrValue<string>,
-    _lpOracle: PromiseOrValue<string>,
-    _stableSwap: PromiseOrValue<string>,
-    _ethOracle: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  lpOracle(overrides?: CallOverrides): Promise<string>;
-
-  lpToken(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stableSwap(overrides?: CallOverrides): Promise<string>;
-
-  swapRouter(overrides?: CallOverrides): Promise<string>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateEthOracle(
-    newOracle: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateSwapRouter(
-    newRouter: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateTolerance(
-    newTolerance: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  usdc(overrides?: CallOverrides): Promise<string>;
-
-  usdt(overrides?: CallOverrides): Promise<string>;
-
-  vault(overrides?: CallOverrides): Promise<string>;
-
-  weth(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    depositEth(overrides?: CallOverrides): Promise<BigNumber>;
-
-    depositUsdc(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositWeth(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initialize(
-      _usdc: PromiseOrValue<string>,
-      _usdt: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _lpToken: PromiseOrValue<string>,
-      _vault: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _lpOracle: PromiseOrValue<string>,
-      _stableSwap: PromiseOrValue<string>,
-      _ethOracle: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    lpOracle(overrides?: CallOverrides): Promise<string>;
-
-    lpToken(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    stableSwap(overrides?: CallOverrides): Promise<string>;
-
-    swapRouter(overrides?: CallOverrides): Promise<string>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateEthOracle(
-      newOracle: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateSwapRouter(
-      newRouter: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateTolerance(
-      newTolerance: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    usdc(overrides?: CallOverrides): Promise<string>;
-
-    usdt(overrides?: CallOverrides): Promise<string>;
-
-    vault(overrides?: CallOverrides): Promise<string>;
-
-    weth(overrides?: CallOverrides): Promise<string>;
-  };
+  getEvent(
+    key: 'DepositPeriphery'
+  ): TypedContractEvent<
+    DepositPeripheryEvent.InputTuple,
+    DepositPeripheryEvent.OutputTuple,
+    DepositPeripheryEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EthOracleUpdated'
+  ): TypedContractEvent<
+    EthOracleUpdatedEvent.InputTuple,
+    EthOracleUpdatedEvent.OutputTuple,
+    EthOracleUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'SlippageToleranceUpdated'
+  ): TypedContractEvent<
+    SlippageToleranceUpdatedEvent.InputTuple,
+    SlippageToleranceUpdatedEvent.OutputTuple,
+    SlippageToleranceUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'SwapRouterUpdated'
+  ): TypedContractEvent<
+    SwapRouterUpdatedEvent.InputTuple,
+    SwapRouterUpdatedEvent.OutputTuple,
+    SwapRouterUpdatedEvent.OutputObject
+  >;
 
   filters: {
-    'DepositPeriphery(address,address,uint256,uint256,uint256)'(
-      owner?: PromiseOrValue<string> | null,
-      token?: PromiseOrValue<string> | null,
-      amount?: null,
-      asset?: null,
-      shares?: null
-    ): DepositPeripheryEventFilter;
-    DepositPeriphery(
-      owner?: PromiseOrValue<string> | null,
-      token?: PromiseOrValue<string> | null,
-      amount?: null,
-      asset?: null,
-      shares?: null
-    ): DepositPeripheryEventFilter;
+    'DepositPeriphery(address,address,uint256,uint256,uint256)': TypedContractEvent<
+      DepositPeripheryEvent.InputTuple,
+      DepositPeripheryEvent.OutputTuple,
+      DepositPeripheryEvent.OutputObject
+    >;
+    DepositPeriphery: TypedContractEvent<
+      DepositPeripheryEvent.InputTuple,
+      DepositPeripheryEvent.OutputTuple,
+      DepositPeripheryEvent.OutputObject
+    >;
 
-    'EthOracleUpdated(address,address)'(
-      oldEthOracle?: PromiseOrValue<string> | null,
-      newEthOracle?: PromiseOrValue<string> | null
-    ): EthOracleUpdatedEventFilter;
-    EthOracleUpdated(
-      oldEthOracle?: PromiseOrValue<string> | null,
-      newEthOracle?: PromiseOrValue<string> | null
-    ): EthOracleUpdatedEventFilter;
+    'EthOracleUpdated(address,address)': TypedContractEvent<
+      EthOracleUpdatedEvent.InputTuple,
+      EthOracleUpdatedEvent.OutputTuple,
+      EthOracleUpdatedEvent.OutputObject
+    >;
+    EthOracleUpdated: TypedContractEvent<
+      EthOracleUpdatedEvent.InputTuple,
+      EthOracleUpdatedEvent.OutputTuple,
+      EthOracleUpdatedEvent.OutputObject
+    >;
 
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
 
-    'SlippageToleranceUpdated(uint256,uint256)'(
-      oldTolerance?: null,
-      newTolerance?: null
-    ): SlippageToleranceUpdatedEventFilter;
-    SlippageToleranceUpdated(
-      oldTolerance?: null,
-      newTolerance?: null
-    ): SlippageToleranceUpdatedEventFilter;
+    'SlippageToleranceUpdated(uint256,uint256)': TypedContractEvent<
+      SlippageToleranceUpdatedEvent.InputTuple,
+      SlippageToleranceUpdatedEvent.OutputTuple,
+      SlippageToleranceUpdatedEvent.OutputObject
+    >;
+    SlippageToleranceUpdated: TypedContractEvent<
+      SlippageToleranceUpdatedEvent.InputTuple,
+      SlippageToleranceUpdatedEvent.OutputTuple,
+      SlippageToleranceUpdatedEvent.OutputObject
+    >;
 
-    'SwapRouterUpdated(address,address)'(
-      oldSwapRouter?: PromiseOrValue<string> | null,
-      newSwapRouter?: PromiseOrValue<string> | null
-    ): SwapRouterUpdatedEventFilter;
-    SwapRouterUpdated(
-      oldSwapRouter?: PromiseOrValue<string> | null,
-      newSwapRouter?: PromiseOrValue<string> | null
-    ): SwapRouterUpdatedEventFilter;
-  };
-
-  estimateGas: {
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_TOLERANCE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    depositEth(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositUsdc(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositWeth(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      _usdc: PromiseOrValue<string>,
-      _usdt: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _lpToken: PromiseOrValue<string>,
-      _vault: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _lpOracle: PromiseOrValue<string>,
-      _stableSwap: PromiseOrValue<string>,
-      _ethOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    lpOracle(overrides?: CallOverrides): Promise<BigNumber>;
-
-    lpToken(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stableSwap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    swapRouter(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateEthOracle(
-      newOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateSwapRouter(
-      newRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateTolerance(
-      newTolerance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    usdc(overrides?: CallOverrides): Promise<BigNumber>;
-
-    usdt(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vault(overrides?: CallOverrides): Promise<BigNumber>;
-
-    weth(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    MAX_TOLERANCE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    depositEth(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositUsdc(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositWeth(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      _usdc: PromiseOrValue<string>,
-      _usdt: PromiseOrValue<string>,
-      _weth: PromiseOrValue<string>,
-      _lpToken: PromiseOrValue<string>,
-      _vault: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _lpOracle: PromiseOrValue<string>,
-      _stableSwap: PromiseOrValue<string>,
-      _ethOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    lpOracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    lpToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stableSwap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    swapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateEthOracle(
-      newOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateSwapRouter(
-      newRouter: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateTolerance(
-      newTolerance: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    usdc(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    usdt(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    vault(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    weth(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'SwapRouterUpdated(address,address)': TypedContractEvent<
+      SwapRouterUpdatedEvent.InputTuple,
+      SwapRouterUpdatedEvent.OutputTuple,
+      SwapRouterUpdatedEvent.OutputObject
+    >;
+    SwapRouterUpdated: TypedContractEvent<
+      SwapRouterUpdatedEvent.InputTuple,
+      SwapRouterUpdatedEvent.OutputTuple,
+      SwapRouterUpdatedEvent.OutputObject
+    >;
   };
 }

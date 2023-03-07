@@ -3,119 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../../common';
 
-export interface ErrorsInterface extends utils.Interface {
-  functions: {
-    'ACL_ADMIN_CANNOT_BE_ZERO()': FunctionFragment;
-    'ADDRESSES_PROVIDER_ALREADY_ADDED()': FunctionFragment;
-    'ADDRESSES_PROVIDER_NOT_REGISTERED()': FunctionFragment;
-    'AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE()': FunctionFragment;
-    'ASSET_NOT_BORROWABLE_IN_ISOLATION()': FunctionFragment;
-    'ASSET_NOT_LISTED()': FunctionFragment;
-    'BORROWING_NOT_ENABLED()': FunctionFragment;
-    'BORROW_CAP_EXCEEDED()': FunctionFragment;
-    'BRIDGE_PROTOCOL_FEE_INVALID()': FunctionFragment;
-    'CALLER_MUST_BE_POOL()': FunctionFragment;
-    'CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN()': FunctionFragment;
-    'CALLER_NOT_ATOKEN()': FunctionFragment;
-    'CALLER_NOT_BRIDGE()': FunctionFragment;
-    'CALLER_NOT_EMERGENCY_ADMIN()': FunctionFragment;
-    'CALLER_NOT_POOL_ADMIN()': FunctionFragment;
-    'CALLER_NOT_POOL_CONFIGURATOR()': FunctionFragment;
-    'CALLER_NOT_POOL_OR_EMERGENCY_ADMIN()': FunctionFragment;
-    'CALLER_NOT_RISK_OR_POOL_ADMIN()': FunctionFragment;
-    'COLLATERAL_BALANCE_IS_ZERO()': FunctionFragment;
-    'COLLATERAL_CANNOT_BE_LIQUIDATED()': FunctionFragment;
-    'COLLATERAL_CANNOT_COVER_NEW_BORROW()': FunctionFragment;
-    'COLLATERAL_SAME_AS_BORROWING_CURRENCY()': FunctionFragment;
-    'DEBT_CEILING_EXCEEDED()': FunctionFragment;
-    'DEBT_CEILING_NOT_ZERO()': FunctionFragment;
-    'EMODE_CATEGORY_RESERVED()': FunctionFragment;
-    'FLASHLOAN_DISABLED()': FunctionFragment;
-    'FLASHLOAN_PREMIUM_INVALID()': FunctionFragment;
-    'HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD()': FunctionFragment;
-    'HEALTH_FACTOR_NOT_BELOW_THRESHOLD()': FunctionFragment;
-    'INCONSISTENT_EMODE_CATEGORY()': FunctionFragment;
-    'INCONSISTENT_FLASHLOAN_PARAMS()': FunctionFragment;
-    'INCONSISTENT_PARAMS_LENGTH()': FunctionFragment;
-    'INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET()': FunctionFragment;
-    'INVALID_ADDRESSES_PROVIDER()': FunctionFragment;
-    'INVALID_ADDRESSES_PROVIDER_ID()': FunctionFragment;
-    'INVALID_AMOUNT()': FunctionFragment;
-    'INVALID_BORROW_CAP()': FunctionFragment;
-    'INVALID_BURN_AMOUNT()': FunctionFragment;
-    'INVALID_DEBT_CEILING()': FunctionFragment;
-    'INVALID_DECIMALS()': FunctionFragment;
-    'INVALID_EMODE_CATEGORY()': FunctionFragment;
-    'INVALID_EMODE_CATEGORY_ASSIGNMENT()': FunctionFragment;
-    'INVALID_EMODE_CATEGORY_PARAMS()': FunctionFragment;
-    'INVALID_EXPIRATION()': FunctionFragment;
-    'INVALID_FLASHLOAN_EXECUTOR_RETURN()': FunctionFragment;
-    'INVALID_INTEREST_RATE_MODE_SELECTED()': FunctionFragment;
-    'INVALID_LIQUIDATION_PROTOCOL_FEE()': FunctionFragment;
-    'INVALID_LIQ_BONUS()': FunctionFragment;
-    'INVALID_LIQ_THRESHOLD()': FunctionFragment;
-    'INVALID_LTV()': FunctionFragment;
-    'INVALID_MINT_AMOUNT()': FunctionFragment;
-    'INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO()': FunctionFragment;
-    'INVALID_OPTIMAL_USAGE_RATIO()': FunctionFragment;
-    'INVALID_RESERVE_FACTOR()': FunctionFragment;
-    'INVALID_RESERVE_INDEX()': FunctionFragment;
-    'INVALID_RESERVE_PARAMS()': FunctionFragment;
-    'INVALID_SIGNATURE()': FunctionFragment;
-    'INVALID_SUPPLY_CAP()': FunctionFragment;
-    'INVALID_UNBACKED_MINT_CAP()': FunctionFragment;
-    'LTV_VALIDATION_FAILED()': FunctionFragment;
-    'NOT_CONTRACT()': FunctionFragment;
-    'NOT_ENOUGH_AVAILABLE_USER_BALANCE()': FunctionFragment;
-    'NO_DEBT_OF_SELECTED_TYPE()': FunctionFragment;
-    'NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF()': FunctionFragment;
-    'NO_MORE_RESERVES_ALLOWED()': FunctionFragment;
-    'NO_OUTSTANDING_STABLE_DEBT()': FunctionFragment;
-    'NO_OUTSTANDING_VARIABLE_DEBT()': FunctionFragment;
-    'OPERATION_NOT_SUPPORTED()': FunctionFragment;
-    'POOL_ADDRESSES_DO_NOT_MATCH()': FunctionFragment;
-    'PRICE_ORACLE_SENTINEL_CHECK_FAILED()': FunctionFragment;
-    'RESERVE_ALREADY_ADDED()': FunctionFragment;
-    'RESERVE_ALREADY_INITIALIZED()': FunctionFragment;
-    'RESERVE_DEBT_NOT_ZERO()': FunctionFragment;
-    'RESERVE_FROZEN()': FunctionFragment;
-    'RESERVE_INACTIVE()': FunctionFragment;
-    'RESERVE_LIQUIDITY_NOT_ZERO()': FunctionFragment;
-    'RESERVE_PAUSED()': FunctionFragment;
-    'SILOED_BORROWING_VIOLATION()': FunctionFragment;
-    'SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER()': FunctionFragment;
-    'STABLE_BORROWING_ENABLED()': FunctionFragment;
-    'STABLE_BORROWING_NOT_ENABLED()': FunctionFragment;
-    'STABLE_DEBT_NOT_ZERO()': FunctionFragment;
-    'SUPPLY_CAP_EXCEEDED()': FunctionFragment;
-    'UNBACKED_MINT_CAP_EXCEEDED()': FunctionFragment;
-    'UNDERLYING_BALANCE_ZERO()': FunctionFragment;
-    'UNDERLYING_CANNOT_BE_RESCUED()': FunctionFragment;
-    'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO()': FunctionFragment;
-    'USER_IN_ISOLATION_MODE()': FunctionFragment;
-    'VARIABLE_DEBT_SUPPLY_NOT_ZERO()': FunctionFragment;
-    'ZERO_ADDRESS_NOT_VALID()': FunctionFragment;
-  };
-
+export interface ErrorsInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'ACL_ADMIN_CANNOT_BE_ZERO'
       | 'ADDRESSES_PROVIDER_ALREADY_ADDED'
       | 'ADDRESSES_PROVIDER_NOT_REGISTERED'
@@ -929,1265 +836,546 @@ export interface ErrorsInterface extends utils.Interface {
     functionFragment: 'ZERO_ADDRESS_NOT_VALID',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface Errors extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ErrorsInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    ACL_ADMIN_CANNOT_BE_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    ADDRESSES_PROVIDER_ALREADY_ADDED(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    ADDRESSES_PROVIDER_NOT_REGISTERED(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  ACL_ADMIN_CANNOT_BE_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  ADDRESSES_PROVIDER_ALREADY_ADDED: TypedContractMethod<[], [string], 'view'>;
 
-    ASSET_NOT_BORROWABLE_IN_ISOLATION(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  ADDRESSES_PROVIDER_NOT_REGISTERED: TypedContractMethod<[], [string], 'view'>;
 
-    ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<[string]>;
+  AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<[string]>;
+  ASSET_NOT_BORROWABLE_IN_ISOLATION: TypedContractMethod<[], [string], 'view'>;
 
-    BORROW_CAP_EXCEEDED(overrides?: CallOverrides): Promise<[string]>;
+  ASSET_NOT_LISTED: TypedContractMethod<[], [string], 'view'>;
 
-    BRIDGE_PROTOCOL_FEE_INVALID(overrides?: CallOverrides): Promise<[string]>;
+  BORROWING_NOT_ENABLED: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_MUST_BE_POOL(overrides?: CallOverrides): Promise<[string]>;
+  BORROW_CAP_EXCEEDED: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  BRIDGE_PROTOCOL_FEE_INVALID: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_ATOKEN(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_MUST_BE_POOL: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_BRIDGE(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    CALLER_NOT_EMERGENCY_ADMIN(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_ATOKEN: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_POOL_ADMIN(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_BRIDGE: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_POOL_CONFIGURATOR(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_EMERGENCY_ADMIN: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_POOL_OR_EMERGENCY_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  CALLER_NOT_POOL_ADMIN: TypedContractMethod<[], [string], 'view'>;
 
-    CALLER_NOT_RISK_OR_POOL_ADMIN(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_POOL_CONFIGURATOR: TypedContractMethod<[], [string], 'view'>;
 
-    COLLATERAL_BALANCE_IS_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  CALLER_NOT_POOL_OR_EMERGENCY_ADMIN: TypedContractMethod<[], [string], 'view'>;
 
-    COLLATERAL_CANNOT_BE_LIQUIDATED(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  CALLER_NOT_RISK_OR_POOL_ADMIN: TypedContractMethod<[], [string], 'view'>;
 
-    COLLATERAL_CANNOT_COVER_NEW_BORROW(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  COLLATERAL_BALANCE_IS_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    COLLATERAL_SAME_AS_BORROWING_CURRENCY(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  COLLATERAL_CANNOT_BE_LIQUIDATED: TypedContractMethod<[], [string], 'view'>;
 
-    DEBT_CEILING_EXCEEDED(overrides?: CallOverrides): Promise<[string]>;
+  COLLATERAL_CANNOT_COVER_NEW_BORROW: TypedContractMethod<[], [string], 'view'>;
 
-    DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  COLLATERAL_SAME_AS_BORROWING_CURRENCY: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<[string]>;
+  DEBT_CEILING_EXCEEDED: TypedContractMethod<[], [string], 'view'>;
 
-    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<[string]>;
+  DEBT_CEILING_NOT_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<[string]>;
+  EMODE_CATEGORY_RESERVED: TypedContractMethod<[], [string], 'view'>;
 
-    HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  FLASHLOAN_DISABLED: TypedContractMethod<[], [string], 'view'>;
 
-    HEALTH_FACTOR_NOT_BELOW_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  FLASHLOAN_PREMIUM_INVALID: TypedContractMethod<[], [string], 'view'>;
 
-    INCONSISTENT_EMODE_CATEGORY(overrides?: CallOverrides): Promise<[string]>;
+  HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    INCONSISTENT_FLASHLOAN_PARAMS(overrides?: CallOverrides): Promise<[string]>;
+  HEALTH_FACTOR_NOT_BELOW_THRESHOLD: TypedContractMethod<[], [string], 'view'>;
 
-    INCONSISTENT_PARAMS_LENGTH(overrides?: CallOverrides): Promise<[string]>;
+  INCONSISTENT_EMODE_CATEGORY: TypedContractMethod<[], [string], 'view'>;
 
-    INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INCONSISTENT_FLASHLOAN_PARAMS: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<[string]>;
+  INCONSISTENT_PARAMS_LENGTH: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_ADDRESSES_PROVIDER_ID(overrides?: CallOverrides): Promise<[string]>;
+  INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    INVALID_AMOUNT(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_ADDRESSES_PROVIDER: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_BORROW_CAP(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_ADDRESSES_PROVIDER_ID: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_BURN_AMOUNT(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_AMOUNT: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_DEBT_CEILING(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_BORROW_CAP: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_DECIMALS(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_BURN_AMOUNT: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_EMODE_CATEGORY(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_DEBT_CEILING: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_EMODE_CATEGORY_ASSIGNMENT(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INVALID_DECIMALS: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_EMODE_CATEGORY_PARAMS(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_EMODE_CATEGORY: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_EXPIRATION(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_EMODE_CATEGORY_ASSIGNMENT: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_FLASHLOAN_EXECUTOR_RETURN(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INVALID_EMODE_CATEGORY_PARAMS: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_INTEREST_RATE_MODE_SELECTED(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INVALID_EXPIRATION: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_LIQUIDATION_PROTOCOL_FEE(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INVALID_FLASHLOAN_EXECUTOR_RETURN: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_LIQ_BONUS(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_INTEREST_RATE_MODE_SELECTED: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    INVALID_LIQ_THRESHOLD(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_LIQUIDATION_PROTOCOL_FEE: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_LTV(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_LIQ_BONUS: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_MINT_AMOUNT(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_LIQ_THRESHOLD: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  INVALID_LTV: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_OPTIMAL_USAGE_RATIO(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_MINT_AMOUNT: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_RESERVE_FACTOR(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    INVALID_RESERVE_INDEX(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_OPTIMAL_USAGE_RATIO: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_RESERVE_PARAMS(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_RESERVE_FACTOR: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_SIGNATURE(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_RESERVE_INDEX: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_SUPPLY_CAP(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_RESERVE_PARAMS: TypedContractMethod<[], [string], 'view'>;
 
-    INVALID_UNBACKED_MINT_CAP(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_SIGNATURE: TypedContractMethod<[], [string], 'view'>;
 
-    LTV_VALIDATION_FAILED(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_SUPPLY_CAP: TypedContractMethod<[], [string], 'view'>;
 
-    NOT_CONTRACT(overrides?: CallOverrides): Promise<[string]>;
+  INVALID_UNBACKED_MINT_CAP: TypedContractMethod<[], [string], 'view'>;
 
-    NOT_ENOUGH_AVAILABLE_USER_BALANCE(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  LTV_VALIDATION_FAILED: TypedContractMethod<[], [string], 'view'>;
 
-    NO_DEBT_OF_SELECTED_TYPE(overrides?: CallOverrides): Promise<[string]>;
+  NOT_CONTRACT: TypedContractMethod<[], [string], 'view'>;
 
-    NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  NOT_ENOUGH_AVAILABLE_USER_BALANCE: TypedContractMethod<[], [string], 'view'>;
 
-    NO_MORE_RESERVES_ALLOWED(overrides?: CallOverrides): Promise<[string]>;
+  NO_DEBT_OF_SELECTED_TYPE: TypedContractMethod<[], [string], 'view'>;
 
-    NO_OUTSTANDING_STABLE_DEBT(overrides?: CallOverrides): Promise<[string]>;
+  NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    NO_OUTSTANDING_VARIABLE_DEBT(overrides?: CallOverrides): Promise<[string]>;
+  NO_MORE_RESERVES_ALLOWED: TypedContractMethod<[], [string], 'view'>;
 
-    OPERATION_NOT_SUPPORTED(overrides?: CallOverrides): Promise<[string]>;
+  NO_OUTSTANDING_STABLE_DEBT: TypedContractMethod<[], [string], 'view'>;
 
-    POOL_ADDRESSES_DO_NOT_MATCH(overrides?: CallOverrides): Promise<[string]>;
+  NO_OUTSTANDING_VARIABLE_DEBT: TypedContractMethod<[], [string], 'view'>;
 
-    PRICE_ORACLE_SENTINEL_CHECK_FAILED(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  OPERATION_NOT_SUPPORTED: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_ALREADY_ADDED(overrides?: CallOverrides): Promise<[string]>;
+  POOL_ADDRESSES_DO_NOT_MATCH: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_ALREADY_INITIALIZED(overrides?: CallOverrides): Promise<[string]>;
+  PRICE_ORACLE_SENTINEL_CHECK_FAILED: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_ALREADY_ADDED: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_FROZEN(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_ALREADY_INITIALIZED: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_INACTIVE(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_DEBT_NOT_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_LIQUIDITY_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_FROZEN: TypedContractMethod<[], [string], 'view'>;
 
-    RESERVE_PAUSED(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_INACTIVE: TypedContractMethod<[], [string], 'view'>;
 
-    SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<[string]>;
+  RESERVE_LIQUIDITY_NOT_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  RESERVE_PAUSED: TypedContractMethod<[], [string], 'view'>;
 
-    STABLE_BORROWING_ENABLED(overrides?: CallOverrides): Promise<[string]>;
+  SILOED_BORROWING_VIOLATION: TypedContractMethod<[], [string], 'view'>;
 
-    STABLE_BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<[string]>;
+  SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    STABLE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  STABLE_BORROWING_ENABLED: TypedContractMethod<[], [string], 'view'>;
 
-    SUPPLY_CAP_EXCEEDED(overrides?: CallOverrides): Promise<[string]>;
+  STABLE_BORROWING_NOT_ENABLED: TypedContractMethod<[], [string], 'view'>;
 
-    UNBACKED_MINT_CAP_EXCEEDED(overrides?: CallOverrides): Promise<[string]>;
+  STABLE_DEBT_NOT_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  SUPPLY_CAP_EXCEEDED: TypedContractMethod<[], [string], 'view'>;
 
-    UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<[string]>;
+  UNBACKED_MINT_CAP_EXCEEDED: TypedContractMethod<[], [string], 'view'>;
 
-    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<[string]>;
+  UNDERLYING_BALANCE_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-    USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<[string]>;
+  UNDERLYING_CANNOT_BE_RESCUED: TypedContractMethod<[], [string], 'view'>;
 
-    VARIABLE_DEBT_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<[string]>;
+  UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO: TypedContractMethod<
+    [],
+    [string],
+    'view'
+  >;
 
-    ZERO_ADDRESS_NOT_VALID(overrides?: CallOverrides): Promise<[string]>;
-  };
+  USER_IN_ISOLATION_MODE: TypedContractMethod<[], [string], 'view'>;
 
-  ACL_ADMIN_CANNOT_BE_ZERO(overrides?: CallOverrides): Promise<string>;
+  VARIABLE_DEBT_SUPPLY_NOT_ZERO: TypedContractMethod<[], [string], 'view'>;
 
-  ADDRESSES_PROVIDER_ALREADY_ADDED(overrides?: CallOverrides): Promise<string>;
+  ZERO_ADDRESS_NOT_VALID: TypedContractMethod<[], [string], 'view'>;
 
-  ADDRESSES_PROVIDER_NOT_REGISTERED(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  ASSET_NOT_BORROWABLE_IN_ISOLATION(overrides?: CallOverrides): Promise<string>;
-
-  ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<string>;
-
-  BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-  BORROW_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-  BRIDGE_PROTOCOL_FEE_INVALID(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_MUST_BE_POOL(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  CALLER_NOT_ATOKEN(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_BRIDGE(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_EMERGENCY_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_POOL_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_POOL_CONFIGURATOR(overrides?: CallOverrides): Promise<string>;
-
-  CALLER_NOT_POOL_OR_EMERGENCY_ADMIN(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  CALLER_NOT_RISK_OR_POOL_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-  COLLATERAL_BALANCE_IS_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  COLLATERAL_CANNOT_BE_LIQUIDATED(overrides?: CallOverrides): Promise<string>;
-
-  COLLATERAL_CANNOT_COVER_NEW_BORROW(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  COLLATERAL_SAME_AS_BORROWING_CURRENCY(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  DEBT_CEILING_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-  DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<string>;
-
-  FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<string>;
-
-  FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<string>;
-
-  HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  HEALTH_FACTOR_NOT_BELOW_THRESHOLD(overrides?: CallOverrides): Promise<string>;
-
-  INCONSISTENT_EMODE_CATEGORY(overrides?: CallOverrides): Promise<string>;
-
-  INCONSISTENT_FLASHLOAN_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-  INCONSISTENT_PARAMS_LENGTH(overrides?: CallOverrides): Promise<string>;
-
-  INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  INVALID_ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_ADDRESSES_PROVIDER_ID(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_BORROW_CAP(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_BURN_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_DEBT_CEILING(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_DECIMALS(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_EMODE_CATEGORY(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_EMODE_CATEGORY_ASSIGNMENT(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_EMODE_CATEGORY_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_EXPIRATION(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_FLASHLOAN_EXECUTOR_RETURN(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_INTEREST_RATE_MODE_SELECTED(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  INVALID_LIQUIDATION_PROTOCOL_FEE(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_LIQ_BONUS(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_LIQ_THRESHOLD(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_LTV(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_MINT_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  INVALID_OPTIMAL_USAGE_RATIO(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_RESERVE_FACTOR(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_RESERVE_INDEX(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_RESERVE_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_SIGNATURE(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_SUPPLY_CAP(overrides?: CallOverrides): Promise<string>;
-
-  INVALID_UNBACKED_MINT_CAP(overrides?: CallOverrides): Promise<string>;
-
-  LTV_VALIDATION_FAILED(overrides?: CallOverrides): Promise<string>;
-
-  NOT_CONTRACT(overrides?: CallOverrides): Promise<string>;
-
-  NOT_ENOUGH_AVAILABLE_USER_BALANCE(overrides?: CallOverrides): Promise<string>;
-
-  NO_DEBT_OF_SELECTED_TYPE(overrides?: CallOverrides): Promise<string>;
-
-  NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  NO_MORE_RESERVES_ALLOWED(overrides?: CallOverrides): Promise<string>;
-
-  NO_OUTSTANDING_STABLE_DEBT(overrides?: CallOverrides): Promise<string>;
-
-  NO_OUTSTANDING_VARIABLE_DEBT(overrides?: CallOverrides): Promise<string>;
-
-  OPERATION_NOT_SUPPORTED(overrides?: CallOverrides): Promise<string>;
-
-  POOL_ADDRESSES_DO_NOT_MATCH(overrides?: CallOverrides): Promise<string>;
-
-  PRICE_ORACLE_SENTINEL_CHECK_FAILED(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  RESERVE_ALREADY_ADDED(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_ALREADY_INITIALIZED(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_FROZEN(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_INACTIVE(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_LIQUIDITY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  RESERVE_PAUSED(overrides?: CallOverrides): Promise<string>;
-
-  SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<string>;
-
-  SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  STABLE_BORROWING_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-  STABLE_BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-  STABLE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  SUPPLY_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-  UNBACKED_MINT_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-  UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<string>;
-
-  UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<string>;
-
-  VARIABLE_DEBT_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-  ZERO_ADDRESS_NOT_VALID(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    ACL_ADMIN_CANNOT_BE_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    ADDRESSES_PROVIDER_ALREADY_ADDED(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ADDRESSES_PROVIDER_NOT_REGISTERED(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ASSET_NOT_BORROWABLE_IN_ISOLATION(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<string>;
-
-    BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-    BORROW_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-    BRIDGE_PROTOCOL_FEE_INVALID(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_MUST_BE_POOL(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    CALLER_NOT_ATOKEN(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_BRIDGE(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_EMERGENCY_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_POOL_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_POOL_CONFIGURATOR(overrides?: CallOverrides): Promise<string>;
-
-    CALLER_NOT_POOL_OR_EMERGENCY_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    CALLER_NOT_RISK_OR_POOL_ADMIN(overrides?: CallOverrides): Promise<string>;
-
-    COLLATERAL_BALANCE_IS_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    COLLATERAL_CANNOT_BE_LIQUIDATED(overrides?: CallOverrides): Promise<string>;
-
-    COLLATERAL_CANNOT_COVER_NEW_BORROW(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    COLLATERAL_SAME_AS_BORROWING_CURRENCY(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    DEBT_CEILING_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-    DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<string>;
-
-    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<string>;
-
-    FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<string>;
-
-    HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    HEALTH_FACTOR_NOT_BELOW_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INCONSISTENT_EMODE_CATEGORY(overrides?: CallOverrides): Promise<string>;
-
-    INCONSISTENT_FLASHLOAN_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-    INCONSISTENT_PARAMS_LENGTH(overrides?: CallOverrides): Promise<string>;
-
-    INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_ADDRESSES_PROVIDER_ID(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_BORROW_CAP(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_BURN_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_DEBT_CEILING(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_DECIMALS(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_EMODE_CATEGORY(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_EMODE_CATEGORY_ASSIGNMENT(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_EMODE_CATEGORY_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_EXPIRATION(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_FLASHLOAN_EXECUTOR_RETURN(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_INTEREST_RATE_MODE_SELECTED(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_LIQUIDATION_PROTOCOL_FEE(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_LIQ_BONUS(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_LIQ_THRESHOLD(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_LTV(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_MINT_AMOUNT(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    INVALID_OPTIMAL_USAGE_RATIO(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_RESERVE_FACTOR(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_RESERVE_INDEX(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_RESERVE_PARAMS(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_SIGNATURE(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_SUPPLY_CAP(overrides?: CallOverrides): Promise<string>;
-
-    INVALID_UNBACKED_MINT_CAP(overrides?: CallOverrides): Promise<string>;
-
-    LTV_VALIDATION_FAILED(overrides?: CallOverrides): Promise<string>;
-
-    NOT_CONTRACT(overrides?: CallOverrides): Promise<string>;
-
-    NOT_ENOUGH_AVAILABLE_USER_BALANCE(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    NO_DEBT_OF_SELECTED_TYPE(overrides?: CallOverrides): Promise<string>;
-
-    NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    NO_MORE_RESERVES_ALLOWED(overrides?: CallOverrides): Promise<string>;
-
-    NO_OUTSTANDING_STABLE_DEBT(overrides?: CallOverrides): Promise<string>;
-
-    NO_OUTSTANDING_VARIABLE_DEBT(overrides?: CallOverrides): Promise<string>;
-
-    OPERATION_NOT_SUPPORTED(overrides?: CallOverrides): Promise<string>;
-
-    POOL_ADDRESSES_DO_NOT_MATCH(overrides?: CallOverrides): Promise<string>;
-
-    PRICE_ORACLE_SENTINEL_CHECK_FAILED(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    RESERVE_ALREADY_ADDED(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_ALREADY_INITIALIZED(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_FROZEN(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_INACTIVE(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_LIQUIDITY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    RESERVE_PAUSED(overrides?: CallOverrides): Promise<string>;
-
-    SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<string>;
-
-    SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    STABLE_BORROWING_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-    STABLE_BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<string>;
-
-    STABLE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    SUPPLY_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-    UNBACKED_MINT_CAP_EXCEEDED(overrides?: CallOverrides): Promise<string>;
-
-    UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<string>;
-
-    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<string>;
-
-    VARIABLE_DEBT_SUPPLY_NOT_ZERO(overrides?: CallOverrides): Promise<string>;
-
-    ZERO_ADDRESS_NOT_VALID(overrides?: CallOverrides): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'ACL_ADMIN_CANNOT_BE_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'ADDRESSES_PROVIDER_ALREADY_ADDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'ADDRESSES_PROVIDER_NOT_REGISTERED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'ASSET_NOT_BORROWABLE_IN_ISOLATION'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'ASSET_NOT_LISTED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'BORROWING_NOT_ENABLED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'BORROW_CAP_EXCEEDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'BRIDGE_PROTOCOL_FEE_INVALID'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_MUST_BE_POOL'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_ATOKEN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_BRIDGE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_EMERGENCY_ADMIN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_POOL_ADMIN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_POOL_CONFIGURATOR'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_POOL_OR_EMERGENCY_ADMIN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'CALLER_NOT_RISK_OR_POOL_ADMIN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'COLLATERAL_BALANCE_IS_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'COLLATERAL_CANNOT_BE_LIQUIDATED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'COLLATERAL_CANNOT_COVER_NEW_BORROW'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'COLLATERAL_SAME_AS_BORROWING_CURRENCY'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'DEBT_CEILING_EXCEEDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'DEBT_CEILING_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'EMODE_CATEGORY_RESERVED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'FLASHLOAN_DISABLED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'FLASHLOAN_PREMIUM_INVALID'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'HEALTH_FACTOR_NOT_BELOW_THRESHOLD'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INCONSISTENT_EMODE_CATEGORY'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INCONSISTENT_FLASHLOAN_PARAMS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INCONSISTENT_PARAMS_LENGTH'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_ADDRESSES_PROVIDER'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_ADDRESSES_PROVIDER_ID'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_AMOUNT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_BORROW_CAP'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_BURN_AMOUNT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_DEBT_CEILING'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_DECIMALS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_EMODE_CATEGORY'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_EMODE_CATEGORY_ASSIGNMENT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_EMODE_CATEGORY_PARAMS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_EXPIRATION'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_FLASHLOAN_EXECUTOR_RETURN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_INTEREST_RATE_MODE_SELECTED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_LIQUIDATION_PROTOCOL_FEE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_LIQ_BONUS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_LIQ_THRESHOLD'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_LTV'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_MINT_AMOUNT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_OPTIMAL_USAGE_RATIO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_RESERVE_FACTOR'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_RESERVE_INDEX'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_RESERVE_PARAMS'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_SIGNATURE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_SUPPLY_CAP'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'INVALID_UNBACKED_MINT_CAP'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'LTV_VALIDATION_FAILED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NOT_CONTRACT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NOT_ENOUGH_AVAILABLE_USER_BALANCE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NO_DEBT_OF_SELECTED_TYPE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NO_MORE_RESERVES_ALLOWED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NO_OUTSTANDING_STABLE_DEBT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'NO_OUTSTANDING_VARIABLE_DEBT'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'OPERATION_NOT_SUPPORTED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'POOL_ADDRESSES_DO_NOT_MATCH'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'PRICE_ORACLE_SENTINEL_CHECK_FAILED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_ALREADY_ADDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_ALREADY_INITIALIZED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_DEBT_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_FROZEN'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_INACTIVE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_LIQUIDITY_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'RESERVE_PAUSED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'SILOED_BORROWING_VIOLATION'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'STABLE_BORROWING_ENABLED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'STABLE_BORROWING_NOT_ENABLED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'STABLE_DEBT_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'SUPPLY_CAP_EXCEEDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'UNBACKED_MINT_CAP_EXCEEDED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'UNDERLYING_BALANCE_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'UNDERLYING_CANNOT_BE_RESCUED'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'USER_IN_ISOLATION_MODE'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'VARIABLE_DEBT_SUPPLY_NOT_ZERO'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'ZERO_ADDRESS_NOT_VALID'
+  ): TypedContractMethod<[], [string], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    ACL_ADMIN_CANNOT_BE_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ADDRESSES_PROVIDER_ALREADY_ADDED(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ADDRESSES_PROVIDER_NOT_REGISTERED(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ASSET_NOT_BORROWABLE_IN_ISOLATION(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    BORROW_CAP_EXCEEDED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    BRIDGE_PROTOCOL_FEE_INVALID(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_MUST_BE_POOL(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    CALLER_NOT_ATOKEN(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_BRIDGE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_EMERGENCY_ADMIN(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_POOL_ADMIN(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_POOL_CONFIGURATOR(overrides?: CallOverrides): Promise<BigNumber>;
-
-    CALLER_NOT_POOL_OR_EMERGENCY_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    CALLER_NOT_RISK_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    COLLATERAL_BALANCE_IS_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    COLLATERAL_CANNOT_BE_LIQUIDATED(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    COLLATERAL_CANNOT_COVER_NEW_BORROW(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    COLLATERAL_SAME_AS_BORROWING_CURRENCY(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    DEBT_CEILING_EXCEEDED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DEBT_CEILING_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    EMODE_CATEGORY_RESERVED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_DISABLED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    FLASHLOAN_PREMIUM_INVALID(overrides?: CallOverrides): Promise<BigNumber>;
-
-    HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    HEALTH_FACTOR_NOT_BELOW_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INCONSISTENT_EMODE_CATEGORY(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INCONSISTENT_FLASHLOAN_PARAMS(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INCONSISTENT_PARAMS_LENGTH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_ADDRESSES_PROVIDER(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_ADDRESSES_PROVIDER_ID(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_BORROW_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_BURN_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_DEBT_CEILING(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_DECIMALS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_EMODE_CATEGORY(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_EMODE_CATEGORY_ASSIGNMENT(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_EMODE_CATEGORY_PARAMS(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_EXPIRATION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_FLASHLOAN_EXECUTOR_RETURN(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_INTEREST_RATE_MODE_SELECTED(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_LIQUIDATION_PROTOCOL_FEE(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_LIQ_BONUS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_LIQ_THRESHOLD(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_LTV(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_MINT_AMOUNT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    INVALID_OPTIMAL_USAGE_RATIO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_RESERVE_FACTOR(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_RESERVE_INDEX(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_RESERVE_PARAMS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_SIGNATURE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_SUPPLY_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    INVALID_UNBACKED_MINT_CAP(overrides?: CallOverrides): Promise<BigNumber>;
-
-    LTV_VALIDATION_FAILED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    NOT_CONTRACT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    NOT_ENOUGH_AVAILABLE_USER_BALANCE(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    NO_DEBT_OF_SELECTED_TYPE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    NO_MORE_RESERVES_ALLOWED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    NO_OUTSTANDING_STABLE_DEBT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    NO_OUTSTANDING_VARIABLE_DEBT(overrides?: CallOverrides): Promise<BigNumber>;
-
-    OPERATION_NOT_SUPPORTED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    POOL_ADDRESSES_DO_NOT_MATCH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    PRICE_ORACLE_SENTINEL_CHECK_FAILED(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    RESERVE_ALREADY_ADDED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_ALREADY_INITIALIZED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_FROZEN(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_INACTIVE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_LIQUIDITY_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    RESERVE_PAUSED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    SILOED_BORROWING_VIOLATION(overrides?: CallOverrides): Promise<BigNumber>;
-
-    SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    STABLE_BORROWING_ENABLED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    STABLE_BORROWING_NOT_ENABLED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    STABLE_DEBT_NOT_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    SUPPLY_CAP_EXCEEDED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNBACKED_MINT_CAP_EXCEEDED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNDERLYING_BALANCE_ZERO(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNDERLYING_CANNOT_BE_RESCUED(overrides?: CallOverrides): Promise<BigNumber>;
-
-    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    USER_IN_ISOLATION_MODE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    VARIABLE_DEBT_SUPPLY_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ZERO_ADDRESS_NOT_VALID(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    ACL_ADMIN_CANNOT_BE_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ADDRESSES_PROVIDER_ALREADY_ADDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ADDRESSES_PROVIDER_NOT_REGISTERED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    AMOUNT_BIGGER_THAN_MAX_LOAN_SIZE_STABLE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ASSET_NOT_BORROWABLE_IN_ISOLATION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ASSET_NOT_LISTED(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    BORROWING_NOT_ENABLED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    BORROW_CAP_EXCEEDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    BRIDGE_PROTOCOL_FEE_INVALID(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_MUST_BE_POOL(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_ASSET_LISTING_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_ATOKEN(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_BRIDGE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_EMERGENCY_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_POOL_CONFIGURATOR(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_POOL_OR_EMERGENCY_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    CALLER_NOT_RISK_OR_POOL_ADMIN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    COLLATERAL_BALANCE_IS_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    COLLATERAL_CANNOT_BE_LIQUIDATED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    COLLATERAL_CANNOT_COVER_NEW_BORROW(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    COLLATERAL_SAME_AS_BORROWING_CURRENCY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    DEBT_CEILING_EXCEEDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    DEBT_CEILING_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    EMODE_CATEGORY_RESERVED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    FLASHLOAN_DISABLED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    FLASHLOAN_PREMIUM_INVALID(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    HEALTH_FACTOR_LOWER_THAN_LIQUIDATION_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    HEALTH_FACTOR_NOT_BELOW_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INCONSISTENT_EMODE_CATEGORY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INCONSISTENT_FLASHLOAN_PARAMS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INCONSISTENT_PARAMS_LENGTH(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INTEREST_RATE_REBALANCE_CONDITIONS_NOT_MET(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_ADDRESSES_PROVIDER(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_ADDRESSES_PROVIDER_ID(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_AMOUNT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    INVALID_BORROW_CAP(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_BURN_AMOUNT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_DEBT_CEILING(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_DECIMALS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    INVALID_EMODE_CATEGORY(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_EMODE_CATEGORY_ASSIGNMENT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_EMODE_CATEGORY_PARAMS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_EXPIRATION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_FLASHLOAN_EXECUTOR_RETURN(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_INTEREST_RATE_MODE_SELECTED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_LIQUIDATION_PROTOCOL_FEE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_LIQ_BONUS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    INVALID_LIQ_THRESHOLD(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_LTV(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    INVALID_MINT_AMOUNT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_OPTIMAL_USAGE_RATIO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_RESERVE_FACTOR(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_RESERVE_INDEX(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_RESERVE_PARAMS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_SIGNATURE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    INVALID_SUPPLY_CAP(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    INVALID_UNBACKED_MINT_CAP(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    LTV_VALIDATION_FAILED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NOT_CONTRACT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    NOT_ENOUGH_AVAILABLE_USER_BALANCE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NO_DEBT_OF_SELECTED_TYPE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NO_EXPLICIT_AMOUNT_TO_REPAY_ON_BEHALF(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NO_MORE_RESERVES_ALLOWED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NO_OUTSTANDING_STABLE_DEBT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    NO_OUTSTANDING_VARIABLE_DEBT(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    OPERATION_NOT_SUPPORTED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    POOL_ADDRESSES_DO_NOT_MATCH(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    PRICE_ORACLE_SENTINEL_CHECK_FAILED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    RESERVE_ALREADY_ADDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    RESERVE_ALREADY_INITIALIZED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    RESERVE_DEBT_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    RESERVE_FROZEN(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    RESERVE_INACTIVE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    RESERVE_LIQUIDITY_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    RESERVE_PAUSED(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    SILOED_BORROWING_VIOLATION(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    SPECIFIED_CURRENCY_NOT_BORROWED_BY_USER(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    STABLE_BORROWING_ENABLED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    STABLE_BORROWING_NOT_ENABLED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    STABLE_DEBT_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    SUPPLY_CAP_EXCEEDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNBACKED_MINT_CAP_EXCEEDED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNDERLYING_BALANCE_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNDERLYING_CANNOT_BE_RESCUED(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    UNDERLYING_CLAIMABLE_RIGHTS_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    USER_IN_ISOLATION_MODE(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    VARIABLE_DEBT_SUPPLY_NOT_ZERO(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ZERO_ADDRESS_NOT_VALID(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

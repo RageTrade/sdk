@@ -3,35 +3,26 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
-export interface ClearingHouseStorageInterface extends utils.Interface {
-  functions: {
-    'insuranceFund()': FunctionFragment;
-    'numAccounts()': FunctionFragment;
-    'rageTradeFactoryAddress()': FunctionFragment;
-  };
-
+export interface ClearingHouseStorageInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
-      | 'insuranceFund'
-      | 'numAccounts'
-      | 'rageTradeFactoryAddress'
+    nameOrSignature: 'insuranceFund' | 'numAccounts' | 'rageTradeFactoryAddress'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -59,75 +50,71 @@ export interface ClearingHouseStorageInterface extends utils.Interface {
     functionFragment: 'rageTradeFactoryAddress',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ClearingHouseStorage extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ClearingHouseStorageInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    insuranceFund(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    numAccounts(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<[string]>;
-  };
+  insuranceFund: TypedContractMethod<[], [string], 'view'>;
 
-  insuranceFund(overrides?: CallOverrides): Promise<string>;
+  numAccounts: TypedContractMethod<[], [bigint], 'view'>;
 
-  numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
+  rageTradeFactoryAddress: TypedContractMethod<[], [string], 'view'>;
 
-  rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  callStatic: {
-    insuranceFund(overrides?: CallOverrides): Promise<string>;
-
-    numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<string>;
-  };
+  getFunction(
+    nameOrSignature: 'insuranceFund'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'numAccounts'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageTradeFactoryAddress'
+  ): TypedContractMethod<[], [string], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    insuranceFund(overrides?: CallOverrides): Promise<BigNumber>;
-
-    numAccounts(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageTradeFactoryAddress(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    insuranceFund(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    numAccounts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageTradeFactoryAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

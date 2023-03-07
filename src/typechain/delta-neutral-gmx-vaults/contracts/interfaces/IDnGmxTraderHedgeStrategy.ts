@@ -3,37 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IDnGmxTraderHedgeStrategyInterface extends utils.Interface {
-  functions: {
-    'btcTraderOIHedge()': FunctionFragment;
-    'ethTraderOIHedge()': FunctionFragment;
-    'overrideTraderOIHedges(int128,int128)': FunctionFragment;
-    'setTraderOIHedgeBps(uint16)': FunctionFragment;
-    'setTraderOIHedges()': FunctionFragment;
-  };
-
+export interface IDnGmxTraderHedgeStrategyInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'btcTraderOIHedge'
       | 'ethTraderOIHedge'
       | 'overrideTraderOIHedges'
@@ -51,11 +41,11 @@ export interface IDnGmxTraderHedgeStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'overrideTraderOIHedges',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTraderOIHedgeBps',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTraderOIHedges',
@@ -82,136 +72,97 @@ export interface IDnGmxTraderHedgeStrategyInterface extends utils.Interface {
     functionFragment: 'setTraderOIHedges',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IDnGmxTraderHedgeStrategy extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IDnGmxTraderHedgeStrategyInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    overrideTraderOIHedges(
-      btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  btcTraderOIHedge: TypedContractMethod<[], [bigint], 'view'>;
 
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  ethTraderOIHedge: TypedContractMethod<[], [bigint], 'view'>;
 
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  overrideTraderOIHedges: TypedContractMethod<
+    [btcTraderOIHedge: BigNumberish, ethTraderOIHedge: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
+  setTraderOIHedgeBps: TypedContractMethod<
+    [_traderOIHedgeBps: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
+  setTraderOIHedges: TypedContractMethod<[], [void], 'nonpayable'>;
 
-  overrideTraderOIHedges(
-    btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-    ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  setTraderOIHedgeBps(
-    _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTraderOIHedges(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    overrideTraderOIHedges(
-      btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTraderOIHedges(overrides?: CallOverrides): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'btcTraderOIHedge'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'ethTraderOIHedge'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'overrideTraderOIHedges'
+  ): TypedContractMethod<
+    [btcTraderOIHedge: BigNumberish, ethTraderOIHedge: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTraderOIHedgeBps'
+  ): TypedContractMethod<
+    [_traderOIHedgeBps: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTraderOIHedges'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
 
   filters: {};
-
-  estimateGas: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<BigNumber>;
-
-    overrideTraderOIHedges(
-      btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    btcTraderOIHedge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ethTraderOIHedge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    overrideTraderOIHedges(
-      btcTraderOIHedge: PromiseOrValue<BigNumberish>,
-      ethTraderOIHedge: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTraderOIHedgeBps(
-      _traderOIHedgeBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTraderOIHedges(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

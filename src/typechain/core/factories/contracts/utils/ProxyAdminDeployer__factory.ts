@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ProxyAdminDeployer,
   ProxyAdminDeployerInterface,
@@ -23,17 +22,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class ProxyAdminDeployer__factory {
   static readonly abi = _abi;
   static createInterface(): ProxyAdminDeployerInterface {
-    return new utils.Interface(_abi) as ProxyAdminDeployerInterface;
+    return new Interface(_abi) as ProxyAdminDeployerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ProxyAdminDeployer {
-    return new Contract(address, _abi, signerOrProvider) as ProxyAdminDeployer;
+    return new Contract(address, _abi, runner) as unknown as ProxyAdminDeployer;
   }
 }

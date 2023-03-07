@@ -3,33 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface ChainlinkOracleInterface extends utils.Interface {
-  functions: {
-    'aggregator()': FunctionFragment;
-    'chainlinkFlags()': FunctionFragment;
-    'getTwapPriceX128(uint32)': FunctionFragment;
-  };
-
+export interface ChainlinkOracleInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'aggregator' | 'chainlinkFlags' | 'getTwapPriceX128'
+    nameOrSignature: 'aggregator' | 'chainlinkFlags' | 'getTwapPriceX128'
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -42,7 +36,7 @@ export interface ChainlinkOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapPriceX128',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(functionFragment: 'aggregator', data: BytesLike): Result;
@@ -54,88 +48,75 @@ export interface ChainlinkOracleInterface extends utils.Interface {
     functionFragment: 'getTwapPriceX128',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ChainlinkOracle extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ChainlinkOracleInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    aggregator(overrides?: CallOverrides): Promise<[string]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    chainlinkFlags(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getTwapPriceX128(
-      twapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
-  };
+  aggregator: TypedContractMethod<[], [string], 'view'>;
 
-  aggregator(overrides?: CallOverrides): Promise<string>;
+  chainlinkFlags: TypedContractMethod<[], [string], 'view'>;
 
-  chainlinkFlags(overrides?: CallOverrides): Promise<string>;
+  getTwapPriceX128: TypedContractMethod<
+    [twapDuration: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  getTwapPriceX128(
-    twapDuration: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  callStatic: {
-    aggregator(overrides?: CallOverrides): Promise<string>;
-
-    chainlinkFlags(overrides?: CallOverrides): Promise<string>;
-
-    getTwapPriceX128(
-      twapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
+  getFunction(
+    nameOrSignature: 'aggregator'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'chainlinkFlags'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTwapPriceX128'
+  ): TypedContractMethod<[twapDuration: BigNumberish], [bigint], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    aggregator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    chainlinkFlags(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTwapPriceX128(
-      twapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    aggregator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    chainlinkFlags(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getTwapPriceX128(
-      twapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

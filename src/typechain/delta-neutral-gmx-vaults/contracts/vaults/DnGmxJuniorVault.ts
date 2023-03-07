@@ -3,115 +3,45 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace DnGmxJuniorVaultManager {
   export type TokensStruct = {
-    weth: PromiseOrValue<string>;
-    wbtc: PromiseOrValue<string>;
-    sGlp: PromiseOrValue<string>;
-    usdc: PromiseOrValue<string>;
+    weth: AddressLike;
+    wbtc: AddressLike;
+    sGlp: AddressLike;
+    usdc: AddressLike;
   };
 
-  export type TokensStructOutput = [string, string, string, string] & {
-    weth: string;
-    wbtc: string;
-    sGlp: string;
-    usdc: string;
-  };
+  export type TokensStructOutput = [
+    weth: string,
+    wbtc: string,
+    sGlp: string,
+    usdc: string
+  ] & { weth: string; wbtc: string; sGlp: string; usdc: string };
 }
 
-export interface DnGmxJuniorVaultInterface extends utils.Interface {
-  functions: {
-    'allowance(address,address)': FunctionFragment;
-    'approve(address,uint256)': FunctionFragment;
-    'asset()': FunctionFragment;
-    'balanceOf(address)': FunctionFragment;
-    'claimVestedGmx()': FunctionFragment;
-    'convertToAssets(uint256)': FunctionFragment;
-    'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
-    'decreaseAllowance(address,uint256)': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'depositCap()': FunctionFragment;
-    'dnUsdcDeposited()': FunctionFragment;
-    'getAdminParams()': FunctionFragment;
-    'getCurrentBorrows()': FunctionFragment;
-    'getHedgeParams()': FunctionFragment;
-    'getMarketValue(uint256)': FunctionFragment;
-    'getOptimalBorrows(uint256,bool)': FunctionFragment;
-    'getPrice(bool)': FunctionFragment;
-    'getPriceX128()': FunctionFragment;
-    'getRebalanceParams()': FunctionFragment;
-    'getThresholds()': FunctionFragment;
-    'getUsdcBorrowed()': FunctionFragment;
-    'getVaultMarketValue()': FunctionFragment;
-    'grantAllowances()': FunctionFragment;
-    'harvestFees()': FunctionFragment;
-    'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(string,string,address,address,address,(address,address,address,address),address)': FunctionFragment;
-    'isValidRebalance()': FunctionFragment;
-    'maxDeposit(address)': FunctionFragment;
-    'maxMint(address)': FunctionFragment;
-    'maxRedeem(address)': FunctionFragment;
-    'maxWithdraw(address)': FunctionFragment;
-    'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'pause()': FunctionFragment;
-    'paused()': FunctionFragment;
-    'previewDeposit(uint256)': FunctionFragment;
-    'previewMint(uint256)': FunctionFragment;
-    'previewRedeem(uint256)': FunctionFragment;
-    'previewWithdraw(uint256)': FunctionFragment;
-    'rebalance()': FunctionFragment;
-    'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
-    'redeem(uint256,address,address)': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setAdminParams(address,address,uint256,uint16,uint24)': FunctionFragment;
-    'setFeeParams(uint16,address)': FunctionFragment;
-    'setGmxParams(address)': FunctionFragment;
-    'setHedgeParams(address,address,uint256,address)': FunctionFragment;
-    'setParamsV1(uint128,address)': FunctionFragment;
-    'setRebalanceParams(uint32,uint16,uint16)': FunctionFragment;
-    'setThresholds(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)': FunctionFragment;
-    'stopVestAndStakeEsGmx()': FunctionFragment;
-    'symbol()': FunctionFragment;
-    'totalAssets()': FunctionFragment;
-    'totalSupply()': FunctionFragment;
-    'transfer(address,uint256)': FunctionFragment;
-    'transferFrom(address,address,uint256)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'unpause()': FunctionFragment;
-    'unstakeAndVestEsGmx()': FunctionFragment;
-    'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees()': FunctionFragment;
-  };
-
+export interface DnGmxJuniorVaultInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'allowance'
       | 'approve'
       | 'asset'
@@ -177,18 +107,52 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'withdrawFees'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'AdminParamsUpdated'
+      | 'AllowancesGranted'
+      | 'Approval'
+      | 'Deposit'
+      | 'DepositCapUpdated'
+      | 'DnGmxSeniorVaultUpdated'
+      | 'EsGmxStaked'
+      | 'EsGmxVested'
+      | 'FeeParamsUpdated'
+      | 'FeesWithdrawn'
+      | 'GmxClaimed'
+      | 'HedgeParamsUpdated'
+      | 'Initialized'
+      | 'KeeperUpdated'
+      | 'OwnershipTransferred'
+      | 'ParamsV1Updated'
+      | 'Paused'
+      | 'RebalanceParamsUpdated'
+      | 'Rebalanced'
+      | 'ThresholdsUpdated'
+      | 'TraderOIHedgesUpdated'
+      | 'Transfer'
+      | 'Unpaused'
+      | 'Withdraw'
+      | 'WithdrawFeeUpdated'
+      | 'GlpSwapped'
+      | 'ProtocolFeeAccrued'
+      | 'RewardsHarvested'
+      | 'TokenSwapped'
+      | 'VaultState'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'allowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'approve',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'asset', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'balanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimVestedGmx',
@@ -196,20 +160,20 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToAssets',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToShares',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'decreaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositCap',
@@ -233,16 +197,13 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getMarketValue',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getOptimalBorrows',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
+    values: [BigNumberish, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: 'getPrice',
-    values: [PromiseOrValue<boolean>]
-  ): string;
+  encodeFunctionData(functionFragment: 'getPrice', values: [boolean]): string;
   encodeFunctionData(
     functionFragment: 'getPriceX128',
     values?: undefined
@@ -273,18 +234,18 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'increaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
+      string,
+      string,
+      AddressLike,
+      AddressLike,
+      AddressLike,
       DnGmxJuniorVaultManager.TokensStruct,
-      PromiseOrValue<string>
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
@@ -293,23 +254,23 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'maxDeposit',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxMint',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxRedeem',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxWithdraw',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
@@ -317,37 +278,28 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'paused', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewMint',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewRedeem',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewWithdraw',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'receiveFlashLoan',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike[], BigNumberish[], BigNumberish[], BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'redeem',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
@@ -355,54 +307,39 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setAdminParams',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeParams',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setGmxParams',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setHedgeParams',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setParamsV1',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setRebalanceParams',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setThresholds',
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
@@ -420,19 +357,15 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transfer',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferFrom',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'unpause', values?: undefined): string;
   encodeFunctionData(
@@ -441,11 +374,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFees',
@@ -635,2314 +564,1823 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     functionFragment: 'withdrawFees',
     data: BytesLike
   ): Result;
-
-  events: {
-    'AdminParamsUpdated(address,address,uint256,address,uint16)': EventFragment;
-    'AllowancesGranted()': EventFragment;
-    'Approval(address,address,uint256)': EventFragment;
-    'Deposit(address,address,uint256,uint256)': EventFragment;
-    'DepositCapUpdated(uint256)': EventFragment;
-    'DnGmxSeniorVaultUpdated(address)': EventFragment;
-    'EsGmxStaked(uint256)': EventFragment;
-    'EsGmxVested(uint256)': EventFragment;
-    'FeeParamsUpdated(uint256,address)': EventFragment;
-    'FeesWithdrawn(uint256)': EventFragment;
-    'GmxClaimed(uint256)': EventFragment;
-    'HedgeParamsUpdated(address,address,uint256,address,address,address)': EventFragment;
-    'Initialized(uint8)': EventFragment;
-    'KeeperUpdated(address)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'ParamsV1Updated(uint128,address)': EventFragment;
-    'Paused(address)': EventFragment;
-    'RebalanceParamsUpdated(uint32,uint16,uint16)': EventFragment;
-    'Rebalanced()': EventFragment;
-    'ThresholdsUpdated(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)': EventFragment;
-    'TraderOIHedgesUpdated(int256,int256)': EventFragment;
-    'Transfer(address,address,uint256)': EventFragment;
-    'Unpaused(address)': EventFragment;
-    'Withdraw(address,address,address,uint256,uint256)': EventFragment;
-    'WithdrawFeeUpdated(uint256)': EventFragment;
-    'GlpSwapped(uint256,uint256,bool)': EventFragment;
-    'ProtocolFeeAccrued(uint256)': EventFragment;
-    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'TokenSwapped(address,address,uint256,uint256)': EventFragment;
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EsGmxStaked'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EsGmxVested'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeeParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GmxClaimed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'HedgeParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'KeeperUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ParamsV1Updated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RebalanceParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Rebalanced'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TraderOIHedgesUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'WithdrawFeeUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GlpSwapped'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeAccrued'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RewardsHarvested'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenSwapped'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'VaultState'): EventFragment;
 }
 
-export interface AdminParamsUpdatedEventObject {
-  newKeeper: string;
-  dnGmxSeniorVault: string;
-  newDepositCap: BigNumber;
-  batchingManager: string;
-  withdrawFeeBps: number;
+export namespace AdminParamsUpdatedEvent {
+  export type InputTuple = [
+    newKeeper: AddressLike,
+    dnGmxSeniorVault: AddressLike,
+    newDepositCap: BigNumberish,
+    batchingManager: AddressLike,
+    withdrawFeeBps: BigNumberish
+  ];
+  export type OutputTuple = [
+    newKeeper: string,
+    dnGmxSeniorVault: string,
+    newDepositCap: bigint,
+    batchingManager: string,
+    withdrawFeeBps: bigint
+  ];
+  export interface OutputObject {
+    newKeeper: string;
+    dnGmxSeniorVault: string;
+    newDepositCap: bigint;
+    batchingManager: string;
+    withdrawFeeBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AdminParamsUpdatedEvent = TypedEvent<
-  [string, string, BigNumber, string, number],
-  AdminParamsUpdatedEventObject
->;
 
-export type AdminParamsUpdatedEventFilter =
-  TypedEventFilter<AdminParamsUpdatedEvent>;
-
-export interface AllowancesGrantedEventObject {}
-export type AllowancesGrantedEvent = TypedEvent<
-  [],
-  AllowancesGrantedEventObject
->;
-
-export type AllowancesGrantedEventFilter =
-  TypedEventFilter<AllowancesGrantedEvent>;
-
-export interface ApprovalEventObject {
-  owner: string;
-  spender: string;
-  value: BigNumber;
+export namespace AllowancesGrantedEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ApprovalEvent = TypedEvent<
-  [string, string, BigNumber],
-  ApprovalEventObject
->;
 
-export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export interface DepositEventObject {
-  caller: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace ApprovalEvent {
+  export type InputTuple = [
+    owner: AddressLike,
+    spender: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [owner: string, spender: string, value: bigint];
+  export interface OutputObject {
+    owner: string;
+    spender: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  DepositEventObject
->;
 
-export type DepositEventFilter = TypedEventFilter<DepositEvent>;
-
-export interface DepositCapUpdatedEventObject {
-  _newDepositCap: BigNumber;
+export namespace DepositEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositCapUpdatedEvent = TypedEvent<
-  [BigNumber],
-  DepositCapUpdatedEventObject
->;
 
-export type DepositCapUpdatedEventFilter =
-  TypedEventFilter<DepositCapUpdatedEvent>;
-
-export interface DnGmxSeniorVaultUpdatedEventObject {
-  _dnGmxSeniorVault: string;
+export namespace DepositCapUpdatedEvent {
+  export type InputTuple = [_newDepositCap: BigNumberish];
+  export type OutputTuple = [_newDepositCap: bigint];
+  export interface OutputObject {
+    _newDepositCap: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DnGmxSeniorVaultUpdatedEvent = TypedEvent<
-  [string],
-  DnGmxSeniorVaultUpdatedEventObject
->;
 
-export type DnGmxSeniorVaultUpdatedEventFilter =
-  TypedEventFilter<DnGmxSeniorVaultUpdatedEvent>;
-
-export interface EsGmxStakedEventObject {
-  amount: BigNumber;
+export namespace DnGmxSeniorVaultUpdatedEvent {
+  export type InputTuple = [_dnGmxSeniorVault: AddressLike];
+  export type OutputTuple = [_dnGmxSeniorVault: string];
+  export interface OutputObject {
+    _dnGmxSeniorVault: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EsGmxStakedEvent = TypedEvent<[BigNumber], EsGmxStakedEventObject>;
 
-export type EsGmxStakedEventFilter = TypedEventFilter<EsGmxStakedEvent>;
-
-export interface EsGmxVestedEventObject {
-  amount: BigNumber;
+export namespace EsGmxStakedEvent {
+  export type InputTuple = [amount: BigNumberish];
+  export type OutputTuple = [amount: bigint];
+  export interface OutputObject {
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EsGmxVestedEvent = TypedEvent<[BigNumber], EsGmxVestedEventObject>;
 
-export type EsGmxVestedEventFilter = TypedEventFilter<EsGmxVestedEvent>;
-
-export interface FeeParamsUpdatedEventObject {
-  feeBps: BigNumber;
-  _newFeeRecipient: string;
+export namespace EsGmxVestedEvent {
+  export type InputTuple = [amount: BigNumberish];
+  export type OutputTuple = [amount: bigint];
+  export interface OutputObject {
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeeParamsUpdatedEvent = TypedEvent<
-  [BigNumber, string],
-  FeeParamsUpdatedEventObject
->;
 
-export type FeeParamsUpdatedEventFilter =
-  TypedEventFilter<FeeParamsUpdatedEvent>;
-
-export interface FeesWithdrawnEventObject {
-  feeAmount: BigNumber;
+export namespace FeeParamsUpdatedEvent {
+  export type InputTuple = [
+    feeBps: BigNumberish,
+    _newFeeRecipient: AddressLike
+  ];
+  export type OutputTuple = [feeBps: bigint, _newFeeRecipient: string];
+  export interface OutputObject {
+    feeBps: bigint;
+    _newFeeRecipient: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesWithdrawnEvent = TypedEvent<
-  [BigNumber],
-  FeesWithdrawnEventObject
->;
 
-export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
-
-export interface GmxClaimedEventObject {
-  amount: BigNumber;
+export namespace FeesWithdrawnEvent {
+  export type InputTuple = [feeAmount: BigNumberish];
+  export type OutputTuple = [feeAmount: bigint];
+  export interface OutputObject {
+    feeAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GmxClaimedEvent = TypedEvent<[BigNumber], GmxClaimedEventObject>;
 
-export type GmxClaimedEventFilter = TypedEventFilter<GmxClaimedEvent>;
-
-export interface HedgeParamsUpdatedEventObject {
-  vault: string;
-  swapRouter: string;
-  targetHealthFactor: BigNumber;
-  aaveRewardsController: string;
-  pool: string;
-  oracle: string;
+export namespace GmxClaimedEvent {
+  export type InputTuple = [amount: BigNumberish];
+  export type OutputTuple = [amount: bigint];
+  export interface OutputObject {
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type HedgeParamsUpdatedEvent = TypedEvent<
-  [string, string, BigNumber, string, string, string],
-  HedgeParamsUpdatedEventObject
->;
 
-export type HedgeParamsUpdatedEventFilter =
-  TypedEventFilter<HedgeParamsUpdatedEvent>;
-
-export interface InitializedEventObject {
-  version: number;
+export namespace HedgeParamsUpdatedEvent {
+  export type InputTuple = [
+    vault: AddressLike,
+    swapRouter: AddressLike,
+    targetHealthFactor: BigNumberish,
+    aaveRewardsController: AddressLike,
+    pool: AddressLike,
+    oracle: AddressLike
+  ];
+  export type OutputTuple = [
+    vault: string,
+    swapRouter: string,
+    targetHealthFactor: bigint,
+    aaveRewardsController: string,
+    pool: string,
+    oracle: string
+  ];
+  export interface OutputObject {
+    vault: string;
+    swapRouter: string;
+    targetHealthFactor: bigint;
+    aaveRewardsController: string;
+    pool: string;
+    oracle: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface KeeperUpdatedEventObject {
-  _newKeeper: string;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type KeeperUpdatedEvent = TypedEvent<[string], KeeperUpdatedEventObject>;
 
-export type KeeperUpdatedEventFilter = TypedEventFilter<KeeperUpdatedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace KeeperUpdatedEvent {
+  export type InputTuple = [_newKeeper: AddressLike];
+  export type OutputTuple = [_newKeeper: string];
+  export interface OutputObject {
+    _newKeeper: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface ParamsV1UpdatedEventObject {
-  rebalanceProfitUsdcAmountThreshold: BigNumber;
-  dnGmxTraderHedgeStrategy: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ParamsV1UpdatedEvent = TypedEvent<
-  [BigNumber, string],
-  ParamsV1UpdatedEventObject
->;
 
-export type ParamsV1UpdatedEventFilter = TypedEventFilter<ParamsV1UpdatedEvent>;
-
-export interface PausedEventObject {
-  account: string;
+export namespace ParamsV1UpdatedEvent {
+  export type InputTuple = [
+    rebalanceProfitUsdcAmountThreshold: BigNumberish,
+    dnGmxTraderHedgeStrategy: AddressLike
+  ];
+  export type OutputTuple = [
+    rebalanceProfitUsdcAmountThreshold: bigint,
+    dnGmxTraderHedgeStrategy: string
+  ];
+  export interface OutputObject {
+    rebalanceProfitUsdcAmountThreshold: bigint;
+    dnGmxTraderHedgeStrategy: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PausedEvent = TypedEvent<[string], PausedEventObject>;
 
-export type PausedEventFilter = TypedEventFilter<PausedEvent>;
-
-export interface RebalanceParamsUpdatedEventObject {
-  rebalanceTimeThreshold: number;
-  rebalanceDeltaThresholdBps: number;
-  rebalanceHfThresholdBps: number;
+export namespace PausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RebalanceParamsUpdatedEvent = TypedEvent<
-  [number, number, number],
-  RebalanceParamsUpdatedEventObject
->;
 
-export type RebalanceParamsUpdatedEventFilter =
-  TypedEventFilter<RebalanceParamsUpdatedEvent>;
-
-export interface RebalancedEventObject {}
-export type RebalancedEvent = TypedEvent<[], RebalancedEventObject>;
-
-export type RebalancedEventFilter = TypedEventFilter<RebalancedEvent>;
-
-export interface ThresholdsUpdatedEventObject {
-  slippageThresholdSwapBtcBps: number;
-  slippageThresholdSwapEthBps: number;
-  slippageThresholdGmxBps: number;
-  usdcConversionThreshold: BigNumber;
-  wethConversionThreshold: BigNumber;
-  hedgeUsdcAmountThreshold: BigNumber;
-  partialBtcHedgeUsdcAmountThreshold: BigNumber;
-  partialEthHedgeUsdcAmountThreshold: BigNumber;
+export namespace RebalanceParamsUpdatedEvent {
+  export type InputTuple = [
+    rebalanceTimeThreshold: BigNumberish,
+    rebalanceDeltaThresholdBps: BigNumberish,
+    rebalanceHfThresholdBps: BigNumberish
+  ];
+  export type OutputTuple = [
+    rebalanceTimeThreshold: bigint,
+    rebalanceDeltaThresholdBps: bigint,
+    rebalanceHfThresholdBps: bigint
+  ];
+  export interface OutputObject {
+    rebalanceTimeThreshold: bigint;
+    rebalanceDeltaThresholdBps: bigint;
+    rebalanceHfThresholdBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ThresholdsUpdatedEvent = TypedEvent<
-  [
-    number,
-    number,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  ThresholdsUpdatedEventObject
->;
 
-export type ThresholdsUpdatedEventFilter =
-  TypedEventFilter<ThresholdsUpdatedEvent>;
-
-export interface TraderOIHedgesUpdatedEventObject {
-  btcTraderOIHedge: BigNumber;
-  ethTraderOIHedge: BigNumber;
+export namespace RebalancedEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TraderOIHedgesUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber],
-  TraderOIHedgesUpdatedEventObject
->;
 
-export type TraderOIHedgesUpdatedEventFilter =
-  TypedEventFilter<TraderOIHedgesUpdatedEvent>;
-
-export interface TransferEventObject {
-  from: string;
-  to: string;
-  value: BigNumber;
+export namespace ThresholdsUpdatedEvent {
+  export type InputTuple = [
+    slippageThresholdSwapBtcBps: BigNumberish,
+    slippageThresholdSwapEthBps: BigNumberish,
+    slippageThresholdGmxBps: BigNumberish,
+    usdcConversionThreshold: BigNumberish,
+    wethConversionThreshold: BigNumberish,
+    hedgeUsdcAmountThreshold: BigNumberish,
+    partialBtcHedgeUsdcAmountThreshold: BigNumberish,
+    partialEthHedgeUsdcAmountThreshold: BigNumberish
+  ];
+  export type OutputTuple = [
+    slippageThresholdSwapBtcBps: bigint,
+    slippageThresholdSwapEthBps: bigint,
+    slippageThresholdGmxBps: bigint,
+    usdcConversionThreshold: bigint,
+    wethConversionThreshold: bigint,
+    hedgeUsdcAmountThreshold: bigint,
+    partialBtcHedgeUsdcAmountThreshold: bigint,
+    partialEthHedgeUsdcAmountThreshold: bigint
+  ];
+  export interface OutputObject {
+    slippageThresholdSwapBtcBps: bigint;
+    slippageThresholdSwapEthBps: bigint;
+    slippageThresholdGmxBps: bigint;
+    usdcConversionThreshold: bigint;
+    wethConversionThreshold: bigint;
+    hedgeUsdcAmountThreshold: bigint;
+    partialBtcHedgeUsdcAmountThreshold: bigint;
+    partialEthHedgeUsdcAmountThreshold: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber],
-  TransferEventObject
->;
 
-export type TransferEventFilter = TypedEventFilter<TransferEvent>;
-
-export interface UnpausedEventObject {
-  account: string;
+export namespace TraderOIHedgesUpdatedEvent {
+  export type InputTuple = [
+    btcTraderOIHedge: BigNumberish,
+    ethTraderOIHedge: BigNumberish
+  ];
+  export type OutputTuple = [
+    btcTraderOIHedge: bigint,
+    ethTraderOIHedge: bigint
+  ];
+  export interface OutputObject {
+    btcTraderOIHedge: bigint;
+    ethTraderOIHedge: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
 
-export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface WithdrawEventObject {
-  caller: string;
-  receiver: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace TransferEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [from: string, to: string, value: bigint];
+  export interface OutputObject {
+    from: string;
+    to: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type WithdrawEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
-  WithdrawEventObject
->;
 
-export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
-
-export interface WithdrawFeeUpdatedEventObject {
-  _withdrawFeeBps: BigNumber;
+export namespace UnpausedEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type WithdrawFeeUpdatedEvent = TypedEvent<
-  [BigNumber],
-  WithdrawFeeUpdatedEventObject
->;
 
-export type WithdrawFeeUpdatedEventFilter =
-  TypedEventFilter<WithdrawFeeUpdatedEvent>;
-
-export interface GlpSwappedEventObject {
-  glpQuantity: BigNumber;
-  usdcQuantity: BigNumber;
-  fromGlpToUsdc: boolean;
+export namespace WithdrawEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    receiver: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    receiver: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    receiver: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GlpSwappedEvent = TypedEvent<
-  [BigNumber, BigNumber, boolean],
-  GlpSwappedEventObject
->;
 
-export type GlpSwappedEventFilter = TypedEventFilter<GlpSwappedEvent>;
-
-export interface ProtocolFeeAccruedEventObject {
-  fees: BigNumber;
+export namespace WithdrawFeeUpdatedEvent {
+  export type InputTuple = [_withdrawFeeBps: BigNumberish];
+  export type OutputTuple = [_withdrawFeeBps: bigint];
+  export interface OutputObject {
+    _withdrawFeeBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProtocolFeeAccruedEvent = TypedEvent<
-  [BigNumber],
-  ProtocolFeeAccruedEventObject
->;
 
-export type ProtocolFeeAccruedEventFilter =
-  TypedEventFilter<ProtocolFeeAccruedEvent>;
-
-export interface RewardsHarvestedEventObject {
-  wethHarvested: BigNumber;
-  esGmxStaked: BigNumber;
-  juniorVaultWeth: BigNumber;
-  seniorVaultWeth: BigNumber;
-  juniorVaultGlp: BigNumber;
-  seniorVaultAUsdc: BigNumber;
+export namespace GlpSwappedEvent {
+  export type InputTuple = [
+    glpQuantity: BigNumberish,
+    usdcQuantity: BigNumberish,
+    fromGlpToUsdc: boolean
+  ];
+  export type OutputTuple = [
+    glpQuantity: bigint,
+    usdcQuantity: bigint,
+    fromGlpToUsdc: boolean
+  ];
+  export interface OutputObject {
+    glpQuantity: bigint;
+    usdcQuantity: bigint;
+    fromGlpToUsdc: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RewardsHarvestedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  RewardsHarvestedEventObject
->;
 
-export type RewardsHarvestedEventFilter =
-  TypedEventFilter<RewardsHarvestedEvent>;
-
-export interface TokenSwappedEventObject {
-  fromToken: string;
-  toToken: string;
-  fromQuantity: BigNumber;
-  toQuantity: BigNumber;
+export namespace ProtocolFeeAccruedEvent {
+  export type InputTuple = [fees: BigNumberish];
+  export type OutputTuple = [fees: bigint];
+  export interface OutputObject {
+    fees: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TokenSwappedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  TokenSwappedEventObject
->;
 
-export type TokenSwappedEventFilter = TypedEventFilter<TokenSwappedEvent>;
-
-export interface VaultStateEventObject {
-  eventType: BigNumber;
-  btcBorrows: BigNumber;
-  ethBorrows: BigNumber;
-  glpPrice: BigNumber;
-  glpBalance: BigNumber;
-  totalAssets: BigNumber;
-  dnUsdcDeposited: BigNumber;
-  unhedgedGlpInUsdc: BigNumber;
-  juniorVaultAusdc: BigNumber;
-  seniorVaultAusdc: BigNumber;
+export namespace RewardsHarvestedEvent {
+  export type InputTuple = [
+    wethHarvested: BigNumberish,
+    esGmxStaked: BigNumberish,
+    juniorVaultWeth: BigNumberish,
+    seniorVaultWeth: BigNumberish,
+    juniorVaultGlp: BigNumberish,
+    seniorVaultAUsdc: BigNumberish
+  ];
+  export type OutputTuple = [
+    wethHarvested: bigint,
+    esGmxStaked: bigint,
+    juniorVaultWeth: bigint,
+    seniorVaultWeth: bigint,
+    juniorVaultGlp: bigint,
+    seniorVaultAUsdc: bigint
+  ];
+  export interface OutputObject {
+    wethHarvested: bigint;
+    esGmxStaked: bigint;
+    juniorVaultWeth: bigint;
+    seniorVaultWeth: bigint;
+    juniorVaultGlp: bigint;
+    seniorVaultAUsdc: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type VaultStateEvent = TypedEvent<
-  [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
-  ],
-  VaultStateEventObject
->;
 
-export type VaultStateEventFilter = TypedEventFilter<VaultStateEvent>;
+export namespace TokenSwappedEvent {
+  export type InputTuple = [
+    fromToken: AddressLike,
+    toToken: AddressLike,
+    fromQuantity: BigNumberish,
+    toQuantity: BigNumberish
+  ];
+  export type OutputTuple = [
+    fromToken: string,
+    toToken: string,
+    fromQuantity: bigint,
+    toQuantity: bigint
+  ];
+  export interface OutputObject {
+    fromToken: string;
+    toToken: string;
+    fromQuantity: bigint;
+    toQuantity: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace VaultStateEvent {
+  export type InputTuple = [
+    eventType: BigNumberish,
+    btcBorrows: BigNumberish,
+    ethBorrows: BigNumberish,
+    glpPrice: BigNumberish,
+    glpBalance: BigNumberish,
+    totalAssets: BigNumberish,
+    dnUsdcDeposited: BigNumberish,
+    unhedgedGlpInUsdc: BigNumberish,
+    juniorVaultAusdc: BigNumberish,
+    seniorVaultAusdc: BigNumberish
+  ];
+  export type OutputTuple = [
+    eventType: bigint,
+    btcBorrows: bigint,
+    ethBorrows: bigint,
+    glpPrice: bigint,
+    glpBalance: bigint,
+    totalAssets: bigint,
+    dnUsdcDeposited: bigint,
+    unhedgedGlpInUsdc: bigint,
+    juniorVaultAusdc: bigint,
+    seniorVaultAusdc: bigint
+  ];
+  export interface OutputObject {
+    eventType: bigint;
+    btcBorrows: bigint;
+    ethBorrows: bigint;
+    glpPrice: bigint;
+    glpBalance: bigint;
+    totalAssets: bigint;
+    dnUsdcDeposited: bigint;
+    unhedgedGlpInUsdc: bigint;
+    juniorVaultAusdc: bigint;
+    seniorVaultAusdc: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
 
 export interface DnGmxJuniorVault extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: DnGmxJuniorVaultInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<[string]>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    claimVestedGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    decimals(overrides?: CallOverrides): Promise<[number]>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    dnUsdcDeposited(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, number, number] & {
-        keeper: string;
-        dnGmxSeniorVault: string;
-        depositCap_: BigNumber;
-        withdrawFeeBps: number;
-        feeTierWethWbtcPool: number;
-      }
-    >;
-
-    getCurrentBorrows(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber] & {
-        currentBtcBorrow: BigNumber;
-        currentEthBorrow: BigNumber;
-      }
-    >;
-
-    getHedgeParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string] & {
-        balancerVault: string;
-        swapRouter: string;
-        targetHealthFactor: BigNumber;
-        aaveRewardsController: string;
-      }
-    >;
-
-    getMarketValue(
-      assetAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { marketValue: BigNumber }>;
-
-    getOptimalBorrows(
-      glpDeposited: PromiseOrValue<BigNumberish>,
-      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        optimalBtcBorrow: BigNumber;
-        optimalEthBorrow: BigNumber;
-      }
-    >;
-
-    getPrice(
-      maximize: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getRebalanceParams(overrides?: CallOverrides): Promise<
-      [number, number, number] & {
-        rebalanceTimeThreshold: number;
-        rebalanceDeltaThresholdBps: number;
-        rebalanceHfThresholdBps: number;
-      }
-    >;
-
-    getThresholds(overrides?: CallOverrides): Promise<
-      [
-        number,
-        number,
-        number,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        slippageThresholdSwapBtcBps: number;
-        slippageThresholdSwapEthBps: number;
-        slippageThresholdGmxBps: number;
-        usdcConversionThreshold: BigNumber;
-        wethConversionThreshold: BigNumber;
-        hedgeUsdcAmountThreshold: BigNumber;
-        partialBtcHedgeUsdcAmountThreshold: BigNumber;
-        partialEthHedgeUsdcAmountThreshold: BigNumber;
-      }
-    >;
-
-    getUsdcBorrowed(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { usdcAmount: BigNumber }>;
-
-    getVaultMarketValue(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { vaultMarketValue: BigNumber }>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    initialize(
-      _name: PromiseOrValue<string>,
-      _symbol: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _mintBurnRewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultManager.TokensStruct,
-      _poolAddressesProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    isValidRebalance(overrides?: CallOverrides): Promise<[boolean]>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxMint(
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    name(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<[boolean]>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setAdminParams(
-      newKeeper: PromiseOrValue<string>,
-      dnGmxSeniorVault: PromiseOrValue<string>,
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      withdrawFeeBps: PromiseOrValue<BigNumberish>,
-      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setFeeParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setGmxParams(
-      _glpManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setHedgeParams(
-      vault: PromiseOrValue<string>,
-      swapRouter: PromiseOrValue<string>,
-      targetHealthFactor: PromiseOrValue<BigNumberish>,
-      aaveRewardsController: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setParamsV1(
-      rebalanceProfitUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      dnGmxTraderHedgeStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setRebalanceParams(
-      rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      rebalanceDeltaThresholdBps: PromiseOrValue<BigNumberish>,
-      rebalanceHfThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setThresholds(
-      slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      usdcConversionThreshold: PromiseOrValue<BigNumberish>,
-      wethConversionThreshold: PromiseOrValue<BigNumberish>,
-      hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialBtcHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialEthHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    stopVestAndStakeEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    totalAssets(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    unstakeAndVestEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  allowance(
-    owner: PromiseOrValue<string>,
-    spender: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  approve(
-    spender: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  asset(overrides?: CallOverrides): Promise<string>;
-
-  balanceOf(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  claimVestedGmx(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  convertToAssets(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  convertToShares(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  decimals(overrides?: CallOverrides): Promise<number>;
-
-  decreaseAllowance(
-    spender: PromiseOrValue<string>,
-    subtractedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  deposit(
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-  dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getAdminParams(overrides?: CallOverrides): Promise<
-    [string, string, BigNumber, number, number] & {
-      keeper: string;
-      dnGmxSeniorVault: string;
-      depositCap_: BigNumber;
-      withdrawFeeBps: number;
-      feeTierWethWbtcPool: number;
-    }
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  allowance: TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
   >;
 
-  getCurrentBorrows(overrides?: CallOverrides): Promise<
-    [BigNumber, BigNumber] & {
-      currentBtcBorrow: BigNumber;
-      currentEthBorrow: BigNumber;
-    }
+  approve: TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
   >;
 
-  getHedgeParams(overrides?: CallOverrides): Promise<
-    [string, string, BigNumber, string] & {
-      balancerVault: string;
-      swapRouter: string;
-      targetHealthFactor: BigNumber;
-      aaveRewardsController: string;
-    }
+  asset: TypedContractMethod<[], [string], 'view'>;
+
+  balanceOf: TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+
+  claimVestedGmx: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  convertToAssets: TypedContractMethod<
+    [shares: BigNumberish],
+    [bigint],
+    'view'
   >;
 
-  getMarketValue(
-    assetAmount: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getOptimalBorrows(
-    glpDeposited: PromiseOrValue<BigNumberish>,
-    withUpdatedPoolAmounts: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      optimalBtcBorrow: BigNumber;
-      optimalEthBorrow: BigNumber;
-    }
+  convertToShares: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
   >;
 
-  getPrice(
-    maximize: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  decimals: TypedContractMethod<[], [bigint], 'view'>;
 
-  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getRebalanceParams(overrides?: CallOverrides): Promise<
-    [number, number, number] & {
-      rebalanceTimeThreshold: number;
-      rebalanceDeltaThresholdBps: number;
-      rebalanceHfThresholdBps: number;
-    }
+  decreaseAllowance: TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
   >;
 
-  getThresholds(overrides?: CallOverrides): Promise<
+  deposit: TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  depositCap: TypedContractMethod<[], [bigint], 'view'>;
+
+  dnUsdcDeposited: TypedContractMethod<[], [bigint], 'view'>;
+
+  getAdminParams: TypedContractMethod<
+    [],
     [
-      number,
-      number,
-      number,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber
-    ] & {
-      slippageThresholdSwapBtcBps: number;
-      slippageThresholdSwapEthBps: number;
-      slippageThresholdGmxBps: number;
-      usdcConversionThreshold: BigNumber;
-      wethConversionThreshold: BigNumber;
-      hedgeUsdcAmountThreshold: BigNumber;
-      partialBtcHedgeUsdcAmountThreshold: BigNumber;
-      partialEthHedgeUsdcAmountThreshold: BigNumber;
-    }
-  >;
-
-  getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-  grantAllowances(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  harvestFees(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  increaseAllowance(
-    spender: PromiseOrValue<string>,
-    addedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    _name: PromiseOrValue<string>,
-    _symbol: PromiseOrValue<string>,
-    _swapRouter: PromiseOrValue<string>,
-    _rewardRouter: PromiseOrValue<string>,
-    _mintBurnRewardRouter: PromiseOrValue<string>,
-    _tokens: DnGmxJuniorVaultManager.TokensStruct,
-    _poolAddressesProvider: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  isValidRebalance(overrides?: CallOverrides): Promise<boolean>;
-
-  maxDeposit(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxMint(
-    receiver: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxRedeem(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxWithdraw(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  mint(
-    shares: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  name(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  pause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  paused(overrides?: CallOverrides): Promise<boolean>;
-
-  previewDeposit(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewMint(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewRedeem(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewWithdraw(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  rebalance(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  receiveFlashLoan(
-    tokens: PromiseOrValue<string>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    feeAmounts: PromiseOrValue<BigNumberish>[],
-    userData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  redeem(
-    shares: PromiseOrValue<BigNumberish>,
-    receiver: PromiseOrValue<string>,
-    owner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setAdminParams(
-    newKeeper: PromiseOrValue<string>,
-    dnGmxSeniorVault: PromiseOrValue<string>,
-    newDepositCap: PromiseOrValue<BigNumberish>,
-    withdrawFeeBps: PromiseOrValue<BigNumberish>,
-    feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setFeeParams(
-    _feeBps: PromiseOrValue<BigNumberish>,
-    _feeRecipient: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setGmxParams(
-    _glpManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setHedgeParams(
-    vault: PromiseOrValue<string>,
-    swapRouter: PromiseOrValue<string>,
-    targetHealthFactor: PromiseOrValue<BigNumberish>,
-    aaveRewardsController: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setParamsV1(
-    rebalanceProfitUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-    dnGmxTraderHedgeStrategy: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setRebalanceParams(
-    rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-    rebalanceDeltaThresholdBps: PromiseOrValue<BigNumberish>,
-    rebalanceHfThresholdBps: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setThresholds(
-    slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-    slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-    slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-    usdcConversionThreshold: PromiseOrValue<BigNumberish>,
-    wethConversionThreshold: PromiseOrValue<BigNumberish>,
-    hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-    partialBtcHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-    partialEthHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stopVestAndStakeEsGmx(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  transfer(
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unpause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeAndVestEsGmx(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdraw(
-    assets: PromiseOrValue<BigNumberish>,
-    receiver: PromiseOrValue<string>,
-    owner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawFees(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    asset(overrides?: CallOverrides): Promise<string>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimVestedGmx(overrides?: CallOverrides): Promise<void>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<number>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAdminParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, number, number] & {
+      [string, string, bigint, bigint, bigint] & {
         keeper: string;
         dnGmxSeniorVault: string;
-        depositCap_: BigNumber;
-        withdrawFeeBps: number;
-        feeTierWethWbtcPool: number;
+        depositCap_: bigint;
+        withdrawFeeBps: bigint;
+        feeTierWethWbtcPool: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getCurrentBorrows(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber] & {
-        currentBtcBorrow: BigNumber;
-        currentEthBorrow: BigNumber;
-      }
-    >;
+  getCurrentBorrows: TypedContractMethod<
+    [],
+    [[bigint, bigint] & { currentBtcBorrow: bigint; currentEthBorrow: bigint }],
+    'view'
+  >;
 
-    getHedgeParams(overrides?: CallOverrides): Promise<
-      [string, string, BigNumber, string] & {
+  getHedgeParams: TypedContractMethod<
+    [],
+    [
+      [string, string, bigint, string] & {
         balancerVault: string;
         swapRouter: string;
-        targetHealthFactor: BigNumber;
+        targetHealthFactor: bigint;
         aaveRewardsController: string;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getMarketValue(
-      assetAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  getMarketValue: TypedContractMethod<
+    [assetAmount: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-    getOptimalBorrows(
-      glpDeposited: PromiseOrValue<BigNumberish>,
-      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        optimalBtcBorrow: BigNumber;
-        optimalEthBorrow: BigNumber;
+  getOptimalBorrows: TypedContractMethod<
+    [glpDeposited: BigNumberish, withUpdatedPoolAmounts: boolean],
+    [[bigint, bigint] & { optimalBtcBorrow: bigint; optimalEthBorrow: bigint }],
+    'view'
+  >;
+
+  getPrice: TypedContractMethod<[maximize: boolean], [bigint], 'view'>;
+
+  getPriceX128: TypedContractMethod<[], [bigint], 'view'>;
+
+  getRebalanceParams: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        rebalanceTimeThreshold: bigint;
+        rebalanceDeltaThresholdBps: bigint;
+        rebalanceHfThresholdBps: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getPrice(
-      maximize: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRebalanceParams(overrides?: CallOverrides): Promise<
-      [number, number, number] & {
-        rebalanceTimeThreshold: number;
-        rebalanceDeltaThresholdBps: number;
-        rebalanceHfThresholdBps: number;
+  getThresholds: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint] & {
+        slippageThresholdSwapBtcBps: bigint;
+        slippageThresholdSwapEthBps: bigint;
+        slippageThresholdGmxBps: bigint;
+        usdcConversionThreshold: bigint;
+        wethConversionThreshold: bigint;
+        hedgeUsdcAmountThreshold: bigint;
+        partialBtcHedgeUsdcAmountThreshold: bigint;
+        partialEthHedgeUsdcAmountThreshold: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getThresholds(overrides?: CallOverrides): Promise<
-      [
-        number,
-        number,
-        number,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber
-      ] & {
-        slippageThresholdSwapBtcBps: number;
-        slippageThresholdSwapEthBps: number;
-        slippageThresholdGmxBps: number;
-        usdcConversionThreshold: BigNumber;
-        wethConversionThreshold: BigNumber;
-        hedgeUsdcAmountThreshold: BigNumber;
-        partialBtcHedgeUsdcAmountThreshold: BigNumber;
-        partialEthHedgeUsdcAmountThreshold: BigNumber;
-      }
-    >;
+  getUsdcBorrowed: TypedContractMethod<[], [bigint], 'view'>;
 
-    getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
+  getVaultMarketValue: TypedContractMethod<[], [bigint], 'view'>;
 
-    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
+  grantAllowances: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    grantAllowances(overrides?: CallOverrides): Promise<void>;
+  harvestFees: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    harvestFees(overrides?: CallOverrides): Promise<void>;
+  increaseAllowance: TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    initialize(
-      _name: PromiseOrValue<string>,
-      _symbol: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _mintBurnRewardRouter: PromiseOrValue<string>,
+  initialize: TypedContractMethod<
+    [
+      _name: string,
+      _symbol: string,
+      _swapRouter: AddressLike,
+      _rewardRouter: AddressLike,
+      _mintBurnRewardRouter: AddressLike,
       _tokens: DnGmxJuniorVaultManager.TokensStruct,
-      _poolAddressesProvider: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+      _poolAddressesProvider: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    isValidRebalance(overrides?: CallOverrides): Promise<boolean>;
+  isValidRebalance: TypedContractMethod<[], [boolean], 'view'>;
 
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  maxDeposit: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
 
-    maxMint(
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  maxMint: TypedContractMethod<[receiver: AddressLike], [bigint], 'view'>;
 
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  maxRedeem: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
 
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  maxWithdraw: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
 
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  mint: TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    name(overrides?: CallOverrides): Promise<string>;
+  name: TypedContractMethod<[], [string], 'view'>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    pause(overrides?: CallOverrides): Promise<void>;
+  pause: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    paused(overrides?: CallOverrides): Promise<boolean>;
+  paused: TypedContractMethod<[], [boolean], 'view'>;
 
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  previewDeposit: TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
 
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  previewMint: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
 
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  previewRedeem: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
 
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  previewWithdraw: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-    rebalance(overrides?: CallOverrides): Promise<void>;
+  rebalance: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  receiveFlashLoan: TypedContractMethod<
+    [
+      tokens: AddressLike[],
+      amounts: BigNumberish[],
+      feeAmounts: BigNumberish[],
+      userData: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  redeem: TypedContractMethod<
+    [shares: BigNumberish, receiver: AddressLike, owner: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    setAdminParams(
-      newKeeper: PromiseOrValue<string>,
-      dnGmxSeniorVault: PromiseOrValue<string>,
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      withdrawFeeBps: PromiseOrValue<BigNumberish>,
-      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setAdminParams: TypedContractMethod<
+    [
+      newKeeper: AddressLike,
+      dnGmxSeniorVault: AddressLike,
+      newDepositCap: BigNumberish,
+      withdrawFeeBps: BigNumberish,
+      feeTierWethWbtcPool: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    setFeeParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setFeeParams: TypedContractMethod<
+    [_feeBps: BigNumberish, _feeRecipient: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setGmxParams(
-      _glpManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setGmxParams: TypedContractMethod<
+    [_glpManager: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setHedgeParams(
-      vault: PromiseOrValue<string>,
-      swapRouter: PromiseOrValue<string>,
-      targetHealthFactor: PromiseOrValue<BigNumberish>,
-      aaveRewardsController: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setHedgeParams: TypedContractMethod<
+    [
+      vault: AddressLike,
+      swapRouter: AddressLike,
+      targetHealthFactor: BigNumberish,
+      aaveRewardsController: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    setParamsV1(
-      rebalanceProfitUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      dnGmxTraderHedgeStrategy: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setParamsV1: TypedContractMethod<
+    [
+      rebalanceProfitUsdcAmountThreshold: BigNumberish,
+      dnGmxTraderHedgeStrategy: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    setRebalanceParams(
-      rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      rebalanceDeltaThresholdBps: PromiseOrValue<BigNumberish>,
-      rebalanceHfThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setRebalanceParams: TypedContractMethod<
+    [
+      rebalanceTimeThreshold: BigNumberish,
+      rebalanceDeltaThresholdBps: BigNumberish,
+      rebalanceHfThresholdBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    setThresholds(
-      slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      usdcConversionThreshold: PromiseOrValue<BigNumberish>,
-      wethConversionThreshold: PromiseOrValue<BigNumberish>,
-      hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialBtcHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialEthHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setThresholds: TypedContractMethod<
+    [
+      slippageThresholdSwapBtcBps: BigNumberish,
+      slippageThresholdSwapEthBps: BigNumberish,
+      slippageThresholdGmxBps: BigNumberish,
+      usdcConversionThreshold: BigNumberish,
+      wethConversionThreshold: BigNumberish,
+      hedgeUsdcAmountThreshold: BigNumberish,
+      partialBtcHedgeUsdcAmountThreshold: BigNumberish,
+      partialEthHedgeUsdcAmountThreshold: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    stopVestAndStakeEsGmx(overrides?: CallOverrides): Promise<void>;
+  stopVestAndStakeEsGmx: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    symbol(overrides?: CallOverrides): Promise<string>;
+  symbol: TypedContractMethod<[], [string], 'view'>;
 
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
+  totalAssets: TypedContractMethod<[], [bigint], 'view'>;
 
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
+  totalSupply: TypedContractMethod<[], [bigint], 'view'>;
 
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+  transfer: TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+  transferFrom: TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    unpause(overrides?: CallOverrides): Promise<void>;
+  unpause: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    unstakeAndVestEsGmx(overrides?: CallOverrides): Promise<void>;
+  unstakeAndVestEsGmx: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    withdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  withdraw: TypedContractMethod<
+    [assets: BigNumberish, receiver: AddressLike, owner: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    withdrawFees(overrides?: CallOverrides): Promise<void>;
-  };
+  withdrawFees: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'allowance'
+  ): TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'approve'
+  ): TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'asset'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'balanceOf'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claimVestedGmx'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'convertToAssets'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'convertToShares'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decimals'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decreaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'depositCap'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'dnUsdcDeposited'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(nameOrSignature: 'getAdminParams'): TypedContractMethod<
+    [],
+    [
+      [string, string, bigint, bigint, bigint] & {
+        keeper: string;
+        dnGmxSeniorVault: string;
+        depositCap_: bigint;
+        withdrawFeeBps: bigint;
+        feeTierWethWbtcPool: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getCurrentBorrows'
+  ): TypedContractMethod<
+    [],
+    [[bigint, bigint] & { currentBtcBorrow: bigint; currentEthBorrow: bigint }],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'getHedgeParams'): TypedContractMethod<
+    [],
+    [
+      [string, string, bigint, string] & {
+        balancerVault: string;
+        swapRouter: string;
+        targetHealthFactor: bigint;
+        aaveRewardsController: string;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getMarketValue'
+  ): TypedContractMethod<[assetAmount: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getOptimalBorrows'
+  ): TypedContractMethod<
+    [glpDeposited: BigNumberish, withUpdatedPoolAmounts: boolean],
+    [[bigint, bigint] & { optimalBtcBorrow: bigint; optimalEthBorrow: bigint }],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getPrice'
+  ): TypedContractMethod<[maximize: boolean], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPriceX128'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(nameOrSignature: 'getRebalanceParams'): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        rebalanceTimeThreshold: bigint;
+        rebalanceDeltaThresholdBps: bigint;
+        rebalanceHfThresholdBps: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'getThresholds'): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint] & {
+        slippageThresholdSwapBtcBps: bigint;
+        slippageThresholdSwapEthBps: bigint;
+        slippageThresholdGmxBps: bigint;
+        usdcConversionThreshold: bigint;
+        wethConversionThreshold: bigint;
+        hedgeUsdcAmountThreshold: bigint;
+        partialBtcHedgeUsdcAmountThreshold: bigint;
+        partialEthHedgeUsdcAmountThreshold: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUsdcBorrowed'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVaultMarketValue'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'grantAllowances'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'harvestFees'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'increaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      _name: string,
+      _symbol: string,
+      _swapRouter: AddressLike,
+      _rewardRouter: AddressLike,
+      _mintBurnRewardRouter: AddressLike,
+      _tokens: DnGmxJuniorVaultManager.TokensStruct,
+      _poolAddressesProvider: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'isValidRebalance'
+  ): TypedContractMethod<[], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxDeposit'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxMint'
+  ): TypedContractMethod<[receiver: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxRedeem'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxWithdraw'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'mint'
+  ): TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'name'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'pause'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'paused'
+  ): TypedContractMethod<[], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewDeposit'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewMint'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewRedeem'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewWithdraw'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rebalance'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'receiveFlashLoan'
+  ): TypedContractMethod<
+    [
+      tokens: AddressLike[],
+      amounts: BigNumberish[],
+      feeAmounts: BigNumberish[],
+      userData: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'redeem'
+  ): TypedContractMethod<
+    [shares: BigNumberish, receiver: AddressLike, owner: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setAdminParams'
+  ): TypedContractMethod<
+    [
+      newKeeper: AddressLike,
+      dnGmxSeniorVault: AddressLike,
+      newDepositCap: BigNumberish,
+      withdrawFeeBps: BigNumberish,
+      feeTierWethWbtcPool: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setFeeParams'
+  ): TypedContractMethod<
+    [_feeBps: BigNumberish, _feeRecipient: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setGmxParams'
+  ): TypedContractMethod<[_glpManager: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setHedgeParams'
+  ): TypedContractMethod<
+    [
+      vault: AddressLike,
+      swapRouter: AddressLike,
+      targetHealthFactor: BigNumberish,
+      aaveRewardsController: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setParamsV1'
+  ): TypedContractMethod<
+    [
+      rebalanceProfitUsdcAmountThreshold: BigNumberish,
+      dnGmxTraderHedgeStrategy: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setRebalanceParams'
+  ): TypedContractMethod<
+    [
+      rebalanceTimeThreshold: BigNumberish,
+      rebalanceDeltaThresholdBps: BigNumberish,
+      rebalanceHfThresholdBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setThresholds'
+  ): TypedContractMethod<
+    [
+      slippageThresholdSwapBtcBps: BigNumberish,
+      slippageThresholdSwapEthBps: BigNumberish,
+      slippageThresholdGmxBps: BigNumberish,
+      usdcConversionThreshold: BigNumberish,
+      wethConversionThreshold: BigNumberish,
+      hedgeUsdcAmountThreshold: BigNumberish,
+      partialBtcHedgeUsdcAmountThreshold: BigNumberish,
+      partialEthHedgeUsdcAmountThreshold: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'stopVestAndStakeEsGmx'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'symbol'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalAssets'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalSupply'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transfer'
+  ): TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferFrom'
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'unpause'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'unstakeAndVestEsGmx'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'withdraw'
+  ): TypedContractMethod<
+    [assets: BigNumberish, receiver: AddressLike, owner: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdrawFees'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'AdminParamsUpdated'
+  ): TypedContractEvent<
+    AdminParamsUpdatedEvent.InputTuple,
+    AdminParamsUpdatedEvent.OutputTuple,
+    AdminParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'AllowancesGranted'
+  ): TypedContractEvent<
+    AllowancesGrantedEvent.InputTuple,
+    AllowancesGrantedEvent.OutputTuple,
+    AllowancesGrantedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Approval'
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Deposit'
+  ): TypedContractEvent<
+    DepositEvent.InputTuple,
+    DepositEvent.OutputTuple,
+    DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: 'DepositCapUpdated'
+  ): TypedContractEvent<
+    DepositCapUpdatedEvent.InputTuple,
+    DepositCapUpdatedEvent.OutputTuple,
+    DepositCapUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'DnGmxSeniorVaultUpdated'
+  ): TypedContractEvent<
+    DnGmxSeniorVaultUpdatedEvent.InputTuple,
+    DnGmxSeniorVaultUpdatedEvent.OutputTuple,
+    DnGmxSeniorVaultUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EsGmxStaked'
+  ): TypedContractEvent<
+    EsGmxStakedEvent.InputTuple,
+    EsGmxStakedEvent.OutputTuple,
+    EsGmxStakedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EsGmxVested'
+  ): TypedContractEvent<
+    EsGmxVestedEvent.InputTuple,
+    EsGmxVestedEvent.OutputTuple,
+    EsGmxVestedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeeParamsUpdated'
+  ): TypedContractEvent<
+    FeeParamsUpdatedEvent.InputTuple,
+    FeeParamsUpdatedEvent.OutputTuple,
+    FeeParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesWithdrawn'
+  ): TypedContractEvent<
+    FeesWithdrawnEvent.InputTuple,
+    FeesWithdrawnEvent.OutputTuple,
+    FeesWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GmxClaimed'
+  ): TypedContractEvent<
+    GmxClaimedEvent.InputTuple,
+    GmxClaimedEvent.OutputTuple,
+    GmxClaimedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'HedgeParamsUpdated'
+  ): TypedContractEvent<
+    HedgeParamsUpdatedEvent.InputTuple,
+    HedgeParamsUpdatedEvent.OutputTuple,
+    HedgeParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'KeeperUpdated'
+  ): TypedContractEvent<
+    KeeperUpdatedEvent.InputTuple,
+    KeeperUpdatedEvent.OutputTuple,
+    KeeperUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ParamsV1Updated'
+  ): TypedContractEvent<
+    ParamsV1UpdatedEvent.InputTuple,
+    ParamsV1UpdatedEvent.OutputTuple,
+    ParamsV1UpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Paused'
+  ): TypedContractEvent<
+    PausedEvent.InputTuple,
+    PausedEvent.OutputTuple,
+    PausedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RebalanceParamsUpdated'
+  ): TypedContractEvent<
+    RebalanceParamsUpdatedEvent.InputTuple,
+    RebalanceParamsUpdatedEvent.OutputTuple,
+    RebalanceParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Rebalanced'
+  ): TypedContractEvent<
+    RebalancedEvent.InputTuple,
+    RebalancedEvent.OutputTuple,
+    RebalancedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ThresholdsUpdated'
+  ): TypedContractEvent<
+    ThresholdsUpdatedEvent.InputTuple,
+    ThresholdsUpdatedEvent.OutputTuple,
+    ThresholdsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TraderOIHedgesUpdated'
+  ): TypedContractEvent<
+    TraderOIHedgesUpdatedEvent.InputTuple,
+    TraderOIHedgesUpdatedEvent.OutputTuple,
+    TraderOIHedgesUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Transfer'
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Unpaused'
+  ): TypedContractEvent<
+    UnpausedEvent.InputTuple,
+    UnpausedEvent.OutputTuple,
+    UnpausedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Withdraw'
+  ): TypedContractEvent<
+    WithdrawEvent.InputTuple,
+    WithdrawEvent.OutputTuple,
+    WithdrawEvent.OutputObject
+  >;
+  getEvent(
+    key: 'WithdrawFeeUpdated'
+  ): TypedContractEvent<
+    WithdrawFeeUpdatedEvent.InputTuple,
+    WithdrawFeeUpdatedEvent.OutputTuple,
+    WithdrawFeeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GlpSwapped'
+  ): TypedContractEvent<
+    GlpSwappedEvent.InputTuple,
+    GlpSwappedEvent.OutputTuple,
+    GlpSwappedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProtocolFeeAccrued'
+  ): TypedContractEvent<
+    ProtocolFeeAccruedEvent.InputTuple,
+    ProtocolFeeAccruedEvent.OutputTuple,
+    ProtocolFeeAccruedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RewardsHarvested'
+  ): TypedContractEvent<
+    RewardsHarvestedEvent.InputTuple,
+    RewardsHarvestedEvent.OutputTuple,
+    RewardsHarvestedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenSwapped'
+  ): TypedContractEvent<
+    TokenSwappedEvent.InputTuple,
+    TokenSwappedEvent.OutputTuple,
+    TokenSwappedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'VaultState'
+  ): TypedContractEvent<
+    VaultStateEvent.InputTuple,
+    VaultStateEvent.OutputTuple,
+    VaultStateEvent.OutputObject
+  >;
 
   filters: {
-    'AdminParamsUpdated(address,address,uint256,address,uint16)'(
-      newKeeper?: null,
-      dnGmxSeniorVault?: null,
-      newDepositCap?: null,
-      batchingManager?: null,
-      withdrawFeeBps?: null
-    ): AdminParamsUpdatedEventFilter;
-    AdminParamsUpdated(
-      newKeeper?: null,
-      dnGmxSeniorVault?: null,
-      newDepositCap?: null,
-      batchingManager?: null,
-      withdrawFeeBps?: null
-    ): AdminParamsUpdatedEventFilter;
-
-    'AllowancesGranted()'(): AllowancesGrantedEventFilter;
-    AllowancesGranted(): AllowancesGrantedEventFilter;
-
-    'Approval(address,address,uint256)'(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-    Approval(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-
-    'Deposit(address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-    Deposit(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-
-    'DepositCapUpdated(uint256)'(
-      _newDepositCap?: null
-    ): DepositCapUpdatedEventFilter;
-    DepositCapUpdated(_newDepositCap?: null): DepositCapUpdatedEventFilter;
-
-    'DnGmxSeniorVaultUpdated(address)'(
-      _dnGmxSeniorVault?: null
-    ): DnGmxSeniorVaultUpdatedEventFilter;
-    DnGmxSeniorVaultUpdated(
-      _dnGmxSeniorVault?: null
-    ): DnGmxSeniorVaultUpdatedEventFilter;
-
-    'EsGmxStaked(uint256)'(amount?: null): EsGmxStakedEventFilter;
-    EsGmxStaked(amount?: null): EsGmxStakedEventFilter;
-
-    'EsGmxVested(uint256)'(amount?: null): EsGmxVestedEventFilter;
-    EsGmxVested(amount?: null): EsGmxVestedEventFilter;
-
-    'FeeParamsUpdated(uint256,address)'(
-      feeBps?: null,
-      _newFeeRecipient?: null
-    ): FeeParamsUpdatedEventFilter;
-    FeeParamsUpdated(
-      feeBps?: null,
-      _newFeeRecipient?: null
-    ): FeeParamsUpdatedEventFilter;
-
-    'FeesWithdrawn(uint256)'(feeAmount?: null): FeesWithdrawnEventFilter;
-    FeesWithdrawn(feeAmount?: null): FeesWithdrawnEventFilter;
-
-    'GmxClaimed(uint256)'(amount?: null): GmxClaimedEventFilter;
-    GmxClaimed(amount?: null): GmxClaimedEventFilter;
-
-    'HedgeParamsUpdated(address,address,uint256,address,address,address)'(
-      vault?: null,
-      swapRouter?: null,
-      targetHealthFactor?: null,
-      aaveRewardsController?: null,
-      pool?: null,
-      oracle?: null
-    ): HedgeParamsUpdatedEventFilter;
-    HedgeParamsUpdated(
-      vault?: null,
-      swapRouter?: null,
-      targetHealthFactor?: null,
-      aaveRewardsController?: null,
-      pool?: null,
-      oracle?: null
-    ): HedgeParamsUpdatedEventFilter;
-
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
-
-    'KeeperUpdated(address)'(_newKeeper?: null): KeeperUpdatedEventFilter;
-    KeeperUpdated(_newKeeper?: null): KeeperUpdatedEventFilter;
-
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-
-    'ParamsV1Updated(uint128,address)'(
-      rebalanceProfitUsdcAmountThreshold?: null,
-      dnGmxTraderHedgeStrategy?: null
-    ): ParamsV1UpdatedEventFilter;
-    ParamsV1Updated(
-      rebalanceProfitUsdcAmountThreshold?: null,
-      dnGmxTraderHedgeStrategy?: null
-    ): ParamsV1UpdatedEventFilter;
-
-    'Paused(address)'(account?: null): PausedEventFilter;
-    Paused(account?: null): PausedEventFilter;
-
-    'RebalanceParamsUpdated(uint32,uint16,uint16)'(
-      rebalanceTimeThreshold?: null,
-      rebalanceDeltaThresholdBps?: null,
-      rebalanceHfThresholdBps?: null
-    ): RebalanceParamsUpdatedEventFilter;
-    RebalanceParamsUpdated(
-      rebalanceTimeThreshold?: null,
-      rebalanceDeltaThresholdBps?: null,
-      rebalanceHfThresholdBps?: null
-    ): RebalanceParamsUpdatedEventFilter;
-
-    'Rebalanced()'(): RebalancedEventFilter;
-    Rebalanced(): RebalancedEventFilter;
-
-    'ThresholdsUpdated(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)'(
-      slippageThresholdSwapBtcBps?: null,
-      slippageThresholdSwapEthBps?: null,
-      slippageThresholdGmxBps?: null,
-      usdcConversionThreshold?: null,
-      wethConversionThreshold?: null,
-      hedgeUsdcAmountThreshold?: null,
-      partialBtcHedgeUsdcAmountThreshold?: null,
-      partialEthHedgeUsdcAmountThreshold?: null
-    ): ThresholdsUpdatedEventFilter;
-    ThresholdsUpdated(
-      slippageThresholdSwapBtcBps?: null,
-      slippageThresholdSwapEthBps?: null,
-      slippageThresholdGmxBps?: null,
-      usdcConversionThreshold?: null,
-      wethConversionThreshold?: null,
-      hedgeUsdcAmountThreshold?: null,
-      partialBtcHedgeUsdcAmountThreshold?: null,
-      partialEthHedgeUsdcAmountThreshold?: null
-    ): ThresholdsUpdatedEventFilter;
-
-    'TraderOIHedgesUpdated(int256,int256)'(
-      btcTraderOIHedge?: null,
-      ethTraderOIHedge?: null
-    ): TraderOIHedgesUpdatedEventFilter;
-    TraderOIHedgesUpdated(
-      btcTraderOIHedge?: null,
-      ethTraderOIHedge?: null
-    ): TraderOIHedgesUpdatedEventFilter;
-
-    'Transfer(address,address,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-    Transfer(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-
-    'Unpaused(address)'(account?: null): UnpausedEventFilter;
-    Unpaused(account?: null): UnpausedEventFilter;
-
-    'Withdraw(address,address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-    Withdraw(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-
-    'WithdrawFeeUpdated(uint256)'(
-      _withdrawFeeBps?: null
-    ): WithdrawFeeUpdatedEventFilter;
-    WithdrawFeeUpdated(_withdrawFeeBps?: null): WithdrawFeeUpdatedEventFilter;
-
-    'GlpSwapped(uint256,uint256,bool)'(
-      glpQuantity?: null,
-      usdcQuantity?: null,
-      fromGlpToUsdc?: null
-    ): GlpSwappedEventFilter;
-    GlpSwapped(
-      glpQuantity?: null,
-      usdcQuantity?: null,
-      fromGlpToUsdc?: null
-    ): GlpSwappedEventFilter;
-
-    'ProtocolFeeAccrued(uint256)'(fees?: null): ProtocolFeeAccruedEventFilter;
-    ProtocolFeeAccrued(fees?: null): ProtocolFeeAccruedEventFilter;
-
-    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)'(
-      wethHarvested?: null,
-      esGmxStaked?: null,
-      juniorVaultWeth?: null,
-      seniorVaultWeth?: null,
-      juniorVaultGlp?: null,
-      seniorVaultAUsdc?: null
-    ): RewardsHarvestedEventFilter;
-    RewardsHarvested(
-      wethHarvested?: null,
-      esGmxStaked?: null,
-      juniorVaultWeth?: null,
-      seniorVaultWeth?: null,
-      juniorVaultGlp?: null,
-      seniorVaultAUsdc?: null
-    ): RewardsHarvestedEventFilter;
-
-    'TokenSwapped(address,address,uint256,uint256)'(
-      fromToken?: PromiseOrValue<string> | null,
-      toToken?: PromiseOrValue<string> | null,
-      fromQuantity?: null,
-      toQuantity?: null
-    ): TokenSwappedEventFilter;
-    TokenSwapped(
-      fromToken?: PromiseOrValue<string> | null,
-      toToken?: PromiseOrValue<string> | null,
-      fromQuantity?: null,
-      toQuantity?: null
-    ): TokenSwappedEventFilter;
-
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
-      eventType?: PromiseOrValue<BigNumberish> | null,
-      btcBorrows?: null,
-      ethBorrows?: null,
-      glpPrice?: null,
-      glpBalance?: null,
-      totalAssets?: null,
-      dnUsdcDeposited?: null,
-      unhedgedGlpInUsdc?: null,
-      juniorVaultAusdc?: null,
-      seniorVaultAusdc?: null
-    ): VaultStateEventFilter;
-    VaultState(
-      eventType?: PromiseOrValue<BigNumberish> | null,
-      btcBorrows?: null,
-      ethBorrows?: null,
-      glpPrice?: null,
-      glpBalance?: null,
-      totalAssets?: null,
-      dnUsdcDeposited?: null,
-      unhedgedGlpInUsdc?: null,
-      juniorVaultAusdc?: null,
-      seniorVaultAusdc?: null
-    ): VaultStateEventFilter;
-  };
-
-  estimateGas: {
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    asset(overrides?: CallOverrides): Promise<BigNumber>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimVestedGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    dnUsdcDeposited(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getAdminParams(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getCurrentBorrows(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getHedgeParams(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getMarketValue(
-      assetAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getOptimalBorrows(
-      glpDeposited: PromiseOrValue<BigNumberish>,
-      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPrice(
-      maximize: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRebalanceParams(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getThresholds(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getUsdcBorrowed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      _name: PromiseOrValue<string>,
-      _symbol: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _mintBurnRewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultManager.TokensStruct,
-      _poolAddressesProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    isValidRebalance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxMint(
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    paused(overrides?: CallOverrides): Promise<BigNumber>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setAdminParams(
-      newKeeper: PromiseOrValue<string>,
-      dnGmxSeniorVault: PromiseOrValue<string>,
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      withdrawFeeBps: PromiseOrValue<BigNumberish>,
-      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setFeeParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setGmxParams(
-      _glpManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setHedgeParams(
-      vault: PromiseOrValue<string>,
-      swapRouter: PromiseOrValue<string>,
-      targetHealthFactor: PromiseOrValue<BigNumberish>,
-      aaveRewardsController: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setParamsV1(
-      rebalanceProfitUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      dnGmxTraderHedgeStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setRebalanceParams(
-      rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      rebalanceDeltaThresholdBps: PromiseOrValue<BigNumberish>,
-      rebalanceHfThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setThresholds(
-      slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      usdcConversionThreshold: PromiseOrValue<BigNumberish>,
-      wethConversionThreshold: PromiseOrValue<BigNumberish>,
-      hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialBtcHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialEthHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stopVestAndStakeEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeAndVestEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimVestedGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    dnUsdcDeposited(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getAdminParams(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getCurrentBorrows(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getHedgeParams(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getMarketValue(
-      assetAmount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getOptimalBorrows(
-      glpDeposited: PromiseOrValue<BigNumberish>,
-      withUpdatedPoolAmounts: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPrice(
-      maximize: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getRebalanceParams(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getThresholds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getUsdcBorrowed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getVaultMarketValue(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    harvestFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      _name: PromiseOrValue<string>,
-      _symbol: PromiseOrValue<string>,
-      _swapRouter: PromiseOrValue<string>,
-      _rewardRouter: PromiseOrValue<string>,
-      _mintBurnRewardRouter: PromiseOrValue<string>,
-      _tokens: DnGmxJuniorVaultManager.TokensStruct,
-      _poolAddressesProvider: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isValidRebalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxMint(
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setAdminParams(
-      newKeeper: PromiseOrValue<string>,
-      dnGmxSeniorVault: PromiseOrValue<string>,
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      withdrawFeeBps: PromiseOrValue<BigNumberish>,
-      feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setFeeParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setGmxParams(
-      _glpManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setHedgeParams(
-      vault: PromiseOrValue<string>,
-      swapRouter: PromiseOrValue<string>,
-      targetHealthFactor: PromiseOrValue<BigNumberish>,
-      aaveRewardsController: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setParamsV1(
-      rebalanceProfitUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      dnGmxTraderHedgeStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRebalanceParams(
-      rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      rebalanceDeltaThresholdBps: PromiseOrValue<BigNumberish>,
-      rebalanceHfThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setThresholds(
-      slippageThresholdSwapBtcBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdSwapEthBps: PromiseOrValue<BigNumberish>,
-      slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
-      usdcConversionThreshold: PromiseOrValue<BigNumberish>,
-      wethConversionThreshold: PromiseOrValue<BigNumberish>,
-      hedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialBtcHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      partialEthHedgeUsdcAmountThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stopVestAndStakeEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeAndVestEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      receiver: PromiseOrValue<string>,
-      owner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'AdminParamsUpdated(address,address,uint256,address,uint16)': TypedContractEvent<
+      AdminParamsUpdatedEvent.InputTuple,
+      AdminParamsUpdatedEvent.OutputTuple,
+      AdminParamsUpdatedEvent.OutputObject
+    >;
+    AdminParamsUpdated: TypedContractEvent<
+      AdminParamsUpdatedEvent.InputTuple,
+      AdminParamsUpdatedEvent.OutputTuple,
+      AdminParamsUpdatedEvent.OutputObject
+    >;
+
+    'AllowancesGranted()': TypedContractEvent<
+      AllowancesGrantedEvent.InputTuple,
+      AllowancesGrantedEvent.OutputTuple,
+      AllowancesGrantedEvent.OutputObject
+    >;
+    AllowancesGranted: TypedContractEvent<
+      AllowancesGrantedEvent.InputTuple,
+      AllowancesGrantedEvent.OutputTuple,
+      AllowancesGrantedEvent.OutputObject
+    >;
+
+    'Approval(address,address,uint256)': TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+
+    'Deposit(address,address,uint256,uint256)': TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+    Deposit: TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+
+    'DepositCapUpdated(uint256)': TypedContractEvent<
+      DepositCapUpdatedEvent.InputTuple,
+      DepositCapUpdatedEvent.OutputTuple,
+      DepositCapUpdatedEvent.OutputObject
+    >;
+    DepositCapUpdated: TypedContractEvent<
+      DepositCapUpdatedEvent.InputTuple,
+      DepositCapUpdatedEvent.OutputTuple,
+      DepositCapUpdatedEvent.OutputObject
+    >;
+
+    'DnGmxSeniorVaultUpdated(address)': TypedContractEvent<
+      DnGmxSeniorVaultUpdatedEvent.InputTuple,
+      DnGmxSeniorVaultUpdatedEvent.OutputTuple,
+      DnGmxSeniorVaultUpdatedEvent.OutputObject
+    >;
+    DnGmxSeniorVaultUpdated: TypedContractEvent<
+      DnGmxSeniorVaultUpdatedEvent.InputTuple,
+      DnGmxSeniorVaultUpdatedEvent.OutputTuple,
+      DnGmxSeniorVaultUpdatedEvent.OutputObject
+    >;
+
+    'EsGmxStaked(uint256)': TypedContractEvent<
+      EsGmxStakedEvent.InputTuple,
+      EsGmxStakedEvent.OutputTuple,
+      EsGmxStakedEvent.OutputObject
+    >;
+    EsGmxStaked: TypedContractEvent<
+      EsGmxStakedEvent.InputTuple,
+      EsGmxStakedEvent.OutputTuple,
+      EsGmxStakedEvent.OutputObject
+    >;
+
+    'EsGmxVested(uint256)': TypedContractEvent<
+      EsGmxVestedEvent.InputTuple,
+      EsGmxVestedEvent.OutputTuple,
+      EsGmxVestedEvent.OutputObject
+    >;
+    EsGmxVested: TypedContractEvent<
+      EsGmxVestedEvent.InputTuple,
+      EsGmxVestedEvent.OutputTuple,
+      EsGmxVestedEvent.OutputObject
+    >;
+
+    'FeeParamsUpdated(uint256,address)': TypedContractEvent<
+      FeeParamsUpdatedEvent.InputTuple,
+      FeeParamsUpdatedEvent.OutputTuple,
+      FeeParamsUpdatedEvent.OutputObject
+    >;
+    FeeParamsUpdated: TypedContractEvent<
+      FeeParamsUpdatedEvent.InputTuple,
+      FeeParamsUpdatedEvent.OutputTuple,
+      FeeParamsUpdatedEvent.OutputObject
+    >;
+
+    'FeesWithdrawn(uint256)': TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+    FeesWithdrawn: TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+
+    'GmxClaimed(uint256)': TypedContractEvent<
+      GmxClaimedEvent.InputTuple,
+      GmxClaimedEvent.OutputTuple,
+      GmxClaimedEvent.OutputObject
+    >;
+    GmxClaimed: TypedContractEvent<
+      GmxClaimedEvent.InputTuple,
+      GmxClaimedEvent.OutputTuple,
+      GmxClaimedEvent.OutputObject
+    >;
+
+    'HedgeParamsUpdated(address,address,uint256,address,address,address)': TypedContractEvent<
+      HedgeParamsUpdatedEvent.InputTuple,
+      HedgeParamsUpdatedEvent.OutputTuple,
+      HedgeParamsUpdatedEvent.OutputObject
+    >;
+    HedgeParamsUpdated: TypedContractEvent<
+      HedgeParamsUpdatedEvent.InputTuple,
+      HedgeParamsUpdatedEvent.OutputTuple,
+      HedgeParamsUpdatedEvent.OutputObject
+    >;
+
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
+    'KeeperUpdated(address)': TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
+    KeeperUpdated: TypedContractEvent<
+      KeeperUpdatedEvent.InputTuple,
+      KeeperUpdatedEvent.OutputTuple,
+      KeeperUpdatedEvent.OutputObject
+    >;
+
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
+    'ParamsV1Updated(uint128,address)': TypedContractEvent<
+      ParamsV1UpdatedEvent.InputTuple,
+      ParamsV1UpdatedEvent.OutputTuple,
+      ParamsV1UpdatedEvent.OutputObject
+    >;
+    ParamsV1Updated: TypedContractEvent<
+      ParamsV1UpdatedEvent.InputTuple,
+      ParamsV1UpdatedEvent.OutputTuple,
+      ParamsV1UpdatedEvent.OutputObject
+    >;
+
+    'Paused(address)': TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+    Paused: TypedContractEvent<
+      PausedEvent.InputTuple,
+      PausedEvent.OutputTuple,
+      PausedEvent.OutputObject
+    >;
+
+    'RebalanceParamsUpdated(uint32,uint16,uint16)': TypedContractEvent<
+      RebalanceParamsUpdatedEvent.InputTuple,
+      RebalanceParamsUpdatedEvent.OutputTuple,
+      RebalanceParamsUpdatedEvent.OutputObject
+    >;
+    RebalanceParamsUpdated: TypedContractEvent<
+      RebalanceParamsUpdatedEvent.InputTuple,
+      RebalanceParamsUpdatedEvent.OutputTuple,
+      RebalanceParamsUpdatedEvent.OutputObject
+    >;
+
+    'Rebalanced()': TypedContractEvent<
+      RebalancedEvent.InputTuple,
+      RebalancedEvent.OutputTuple,
+      RebalancedEvent.OutputObject
+    >;
+    Rebalanced: TypedContractEvent<
+      RebalancedEvent.InputTuple,
+      RebalancedEvent.OutputTuple,
+      RebalancedEvent.OutputObject
+    >;
+
+    'ThresholdsUpdated(uint16,uint16,uint16,uint128,uint128,uint128,uint128,uint128)': TypedContractEvent<
+      ThresholdsUpdatedEvent.InputTuple,
+      ThresholdsUpdatedEvent.OutputTuple,
+      ThresholdsUpdatedEvent.OutputObject
+    >;
+    ThresholdsUpdated: TypedContractEvent<
+      ThresholdsUpdatedEvent.InputTuple,
+      ThresholdsUpdatedEvent.OutputTuple,
+      ThresholdsUpdatedEvent.OutputObject
+    >;
+
+    'TraderOIHedgesUpdated(int256,int256)': TypedContractEvent<
+      TraderOIHedgesUpdatedEvent.InputTuple,
+      TraderOIHedgesUpdatedEvent.OutputTuple,
+      TraderOIHedgesUpdatedEvent.OutputObject
+    >;
+    TraderOIHedgesUpdated: TypedContractEvent<
+      TraderOIHedgesUpdatedEvent.InputTuple,
+      TraderOIHedgesUpdatedEvent.OutputTuple,
+      TraderOIHedgesUpdatedEvent.OutputObject
+    >;
+
+    'Transfer(address,address,uint256)': TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+
+    'Unpaused(address)': TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+    Unpaused: TypedContractEvent<
+      UnpausedEvent.InputTuple,
+      UnpausedEvent.OutputTuple,
+      UnpausedEvent.OutputObject
+    >;
+
+    'Withdraw(address,address,address,uint256,uint256)': TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+    Withdraw: TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+
+    'WithdrawFeeUpdated(uint256)': TypedContractEvent<
+      WithdrawFeeUpdatedEvent.InputTuple,
+      WithdrawFeeUpdatedEvent.OutputTuple,
+      WithdrawFeeUpdatedEvent.OutputObject
+    >;
+    WithdrawFeeUpdated: TypedContractEvent<
+      WithdrawFeeUpdatedEvent.InputTuple,
+      WithdrawFeeUpdatedEvent.OutputTuple,
+      WithdrawFeeUpdatedEvent.OutputObject
+    >;
+
+    'GlpSwapped(uint256,uint256,bool)': TypedContractEvent<
+      GlpSwappedEvent.InputTuple,
+      GlpSwappedEvent.OutputTuple,
+      GlpSwappedEvent.OutputObject
+    >;
+    GlpSwapped: TypedContractEvent<
+      GlpSwappedEvent.InputTuple,
+      GlpSwappedEvent.OutputTuple,
+      GlpSwappedEvent.OutputObject
+    >;
+
+    'ProtocolFeeAccrued(uint256)': TypedContractEvent<
+      ProtocolFeeAccruedEvent.InputTuple,
+      ProtocolFeeAccruedEvent.OutputTuple,
+      ProtocolFeeAccruedEvent.OutputObject
+    >;
+    ProtocolFeeAccrued: TypedContractEvent<
+      ProtocolFeeAccruedEvent.InputTuple,
+      ProtocolFeeAccruedEvent.OutputTuple,
+      ProtocolFeeAccruedEvent.OutputObject
+    >;
+
+    'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': TypedContractEvent<
+      RewardsHarvestedEvent.InputTuple,
+      RewardsHarvestedEvent.OutputTuple,
+      RewardsHarvestedEvent.OutputObject
+    >;
+    RewardsHarvested: TypedContractEvent<
+      RewardsHarvestedEvent.InputTuple,
+      RewardsHarvestedEvent.OutputTuple,
+      RewardsHarvestedEvent.OutputObject
+    >;
+
+    'TokenSwapped(address,address,uint256,uint256)': TypedContractEvent<
+      TokenSwappedEvent.InputTuple,
+      TokenSwappedEvent.OutputTuple,
+      TokenSwappedEvent.OutputObject
+    >;
+    TokenSwapped: TypedContractEvent<
+      TokenSwappedEvent.InputTuple,
+      TokenSwappedEvent.OutputTuple,
+      TokenSwappedEvent.OutputObject
+    >;
+
+    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': TypedContractEvent<
+      VaultStateEvent.InputTuple,
+      VaultStateEvent.OutputTuple,
+      VaultStateEvent.OutputObject
+    >;
+    VaultState: TypedContractEvent<
+      VaultStateEvent.InputTuple,
+      VaultStateEvent.OutputTuple,
+      VaultStateEvent.OutputObject
+    >;
   };
 }

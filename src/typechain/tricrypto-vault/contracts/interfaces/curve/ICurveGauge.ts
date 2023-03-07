@@ -3,44 +3,27 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface ICurveGaugeInterface extends utils.Interface {
-  functions: {
-    'balanceOf(address)': FunctionFragment;
-    'claim_rewards(address)': FunctionFragment;
-    'claim_rewards(address,address)': FunctionFragment;
-    'claim_rewards()': FunctionFragment;
-    'claimable_reward(address,address)': FunctionFragment;
-    'claimable_reward_write(address,address)': FunctionFragment;
-    'claimable_tokens(address)': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'deposit(uint256)': FunctionFragment;
-    'integrate_fraction(address)': FunctionFragment;
-    'withdraw(uint256)': FunctionFragment;
-    'withdraw(uint256,bool)': FunctionFragment;
-  };
-
+export interface ICurveGaugeInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'balanceOf'
       | 'claim_rewards(address)'
       | 'claim_rewards(address,address)'
@@ -57,15 +40,15 @@ export interface ICurveGaugeInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'balanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claim_rewards(address)',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claim_rewards(address,address)',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claim_rewards()',
@@ -73,35 +56,35 @@ export interface ICurveGaugeInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'claimable_reward',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimable_reward_write',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimable_tokens',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit(uint256,address)',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit(uint256)',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'integrate_fraction',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw(uint256)',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw(uint256,bool)',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
+    values: [BigNumberish, boolean]
   ): string;
 
   decodeFunctionResult(functionFragment: 'balanceOf', data: BytesLike): Result;
@@ -149,361 +132,176 @@ export interface ICurveGaugeInterface extends utils.Interface {
     functionFragment: 'withdraw(uint256,bool)',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface ICurveGauge extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ICurveGaugeInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    balanceOf(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    'claim_rewards(address)'(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    'claim_rewards(address,address)'(
-      addr: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  balanceOf: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
 
-    'claim_rewards()'(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  'claim_rewards(address)': TypedContractMethod<
+    [addr: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    claimable_reward(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  'claim_rewards(address,address)': TypedContractMethod<
+    [addr: AddressLike, receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    claimable_reward_write(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  'claim_rewards()': TypedContractMethod<[], [void], 'nonpayable'>;
 
-    claimable_tokens(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claimable_reward: TypedContractMethod<
+    [user: AddressLike, token: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-    'deposit(uint256,address)'(
-      _value: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claimable_reward_write: TypedContractMethod<
+    [user: AddressLike, token: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    'deposit(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claimable_tokens: TypedContractMethod<
+    [addr: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-    integrate_fraction(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  'deposit(uint256,address)': TypedContractMethod<
+    [_value: BigNumberish, addr: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    'withdraw(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  'deposit(uint256)': TypedContractMethod<
+    [_value: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    'withdraw(uint256,bool)'(
-      _value: PromiseOrValue<BigNumberish>,
-      claim_rewards: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  integrate_fraction: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    'view'
+  >;
 
-  balanceOf(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  'withdraw(uint256)': TypedContractMethod<
+    [_value: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  'claim_rewards(address)'(
-    addr: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  'withdraw(uint256,bool)': TypedContractMethod<
+    [_value: BigNumberish, claim_rewards: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-  'claim_rewards(address,address)'(
-    addr: PromiseOrValue<string>,
-    receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  'claim_rewards()'(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimable_reward(
-    user: PromiseOrValue<string>,
-    token: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  claimable_reward_write(
-    user: PromiseOrValue<string>,
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimable_tokens(
-    addr: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  'deposit(uint256,address)'(
-    _value: PromiseOrValue<BigNumberish>,
-    addr: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  'deposit(uint256)'(
-    _value: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  integrate_fraction(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  'withdraw(uint256)'(
-    _value: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  'withdraw(uint256,bool)'(
-    _value: PromiseOrValue<BigNumberish>,
-    claim_rewards: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    balanceOf(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'claim_rewards(address)'(
-      addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'claim_rewards(address,address)'(
-      addr: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'claim_rewards()'(overrides?: CallOverrides): Promise<void>;
-
-    claimable_reward(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimable_reward_write(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimable_tokens(
-      addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'deposit(uint256,address)'(
-      _value: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'deposit(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    integrate_fraction(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'withdraw(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    'withdraw(uint256,bool)'(
-      _value: PromiseOrValue<BigNumberish>,
-      claim_rewards: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'balanceOf'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'claim_rewards(address)'
+  ): TypedContractMethod<[addr: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claim_rewards(address,address)'
+  ): TypedContractMethod<
+    [addr: AddressLike, receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claim_rewards()'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claimable_reward'
+  ): TypedContractMethod<
+    [user: AddressLike, token: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'claimable_reward_write'
+  ): TypedContractMethod<
+    [user: AddressLike, token: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimable_tokens'
+  ): TypedContractMethod<[addr: AddressLike], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'deposit(uint256,address)'
+  ): TypedContractMethod<
+    [_value: BigNumberish, addr: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'deposit(uint256)'
+  ): TypedContractMethod<[_value: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'integrate_fraction'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'withdraw(uint256)'
+  ): TypedContractMethod<[_value: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'withdraw(uint256,bool)'
+  ): TypedContractMethod<
+    [_value: BigNumberish, claim_rewards: boolean],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    balanceOf(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'claim_rewards(address)'(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'claim_rewards(address,address)'(
-      addr: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'claim_rewards()'(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimable_reward(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimable_reward_write(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimable_tokens(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'deposit(uint256,address)'(
-      _value: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'deposit(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    integrate_fraction(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'withdraw(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    'withdraw(uint256,bool)'(
-      _value: PromiseOrValue<BigNumberish>,
-      claim_rewards: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    balanceOf(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'claim_rewards(address)'(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'claim_rewards(address,address)'(
-      addr: PromiseOrValue<string>,
-      receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'claim_rewards()'(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimable_reward(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    claimable_reward_write(
-      user: PromiseOrValue<string>,
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimable_tokens(
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'deposit(uint256,address)'(
-      _value: PromiseOrValue<BigNumberish>,
-      addr: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'deposit(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    integrate_fraction(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'withdraw(uint256)'(
-      _value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    'withdraw(uint256,bool)'(
-      _value: PromiseOrValue<BigNumberish>,
-      claim_rewards: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

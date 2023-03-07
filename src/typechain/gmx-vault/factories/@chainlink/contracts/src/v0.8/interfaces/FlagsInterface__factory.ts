@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   FlagsInterface,
   FlagsInterfaceInterface,
@@ -100,17 +99,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class FlagsInterface__factory {
   static readonly abi = _abi;
   static createInterface(): FlagsInterfaceInterface {
-    return new utils.Interface(_abi) as FlagsInterfaceInterface;
+    return new Interface(_abi) as FlagsInterfaceInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): FlagsInterface {
-    return new Contract(address, _abi, signerOrProvider) as FlagsInterface;
+    return new Contract(address, _abi, runner) as unknown as FlagsInterface;
   }
 }

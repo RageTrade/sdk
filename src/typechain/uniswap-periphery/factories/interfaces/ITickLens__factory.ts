@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type { ITickLens, ITickLensInterface } from '../../interfaces/ITickLens';
 
 const _abi = [
@@ -48,17 +47,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class ITickLens__factory {
   static readonly abi = _abi;
   static createInterface(): ITickLensInterface {
-    return new utils.Interface(_abi) as ITickLensInterface;
+    return new Interface(_abi) as ITickLensInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ITickLens {
-    return new Contract(address, _abi, signerOrProvider) as ITickLens;
+  static connect(address: string, runner?: ContractRunner | null): ITickLens {
+    return new Contract(address, _abi, runner) as unknown as ITickLens;
   }
 }

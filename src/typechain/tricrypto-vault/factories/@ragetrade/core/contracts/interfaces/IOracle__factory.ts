@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IOracle,
   IOracleInterface,
@@ -29,17 +28,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IOracle__factory {
   static readonly abi = _abi;
   static createInterface(): IOracleInterface {
-    return new utils.Interface(_abi) as IOracleInterface;
+    return new Interface(_abi) as IOracleInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IOracle {
-    return new Contract(address, _abi, signerOrProvider) as IOracle;
+  static connect(address: string, runner?: ContractRunner | null): IOracle {
+    return new Contract(address, _abi, runner) as unknown as IOracle;
   }
 }

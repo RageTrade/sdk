@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IClearingHouseCustomErrors,
   IClearingHouseCustomErrorsInterface,
@@ -166,21 +165,21 @@ const _abi = [
     name: 'ZeroAmount',
     type: 'error',
   },
-];
+] as const;
 
 export class IClearingHouseCustomErrors__factory {
   static readonly abi = _abi;
   static createInterface(): IClearingHouseCustomErrorsInterface {
-    return new utils.Interface(_abi) as IClearingHouseCustomErrorsInterface;
+    return new Interface(_abi) as IClearingHouseCustomErrorsInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IClearingHouseCustomErrors {
     return new Contract(
       address,
       _abi,
-      signerOrProvider
-    ) as IClearingHouseCustomErrors;
+      runner
+    ) as unknown as IClearingHouseCustomErrors;
   }
 }

@@ -3,40 +3,35 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
-export interface IExtsloadInterface extends utils.Interface {
-  functions: {
-    'extsload(bytes32)': FunctionFragment;
-    'extsload(bytes32[])': FunctionFragment;
-  };
-
+export interface IExtsloadInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'extsload(bytes32)' | 'extsload(bytes32[])'
+    nameOrSignature: 'extsload(bytes32)' | 'extsload(bytes32[])'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32[])',
-    values: [PromiseOrValue<BytesLike>[]]
+    values: [BytesLike[]]
   ): string;
 
   decodeFunctionResult(
@@ -47,93 +42,70 @@ export interface IExtsloadInterface extends utils.Interface {
     functionFragment: 'extsload(bytes32[])',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IExtsload extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IExtsloadInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { value: string }>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  'extsload(bytes32)'(
-    slot: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
+  'extsload(bytes32)': TypedContractMethod<[slot: BytesLike], [string], 'view'>;
 
-  'extsload(bytes32[])'(
-    slots: PromiseOrValue<BytesLike>[],
-    overrides?: CallOverrides
-  ): Promise<string[]>;
+  'extsload(bytes32[])': TypedContractMethod<
+    [slots: BytesLike[]],
+    [string[]],
+    'view'
+  >;
 
-  callStatic: {
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-  };
+  getFunction(
+    nameOrSignature: 'extsload(bytes32)'
+  ): TypedContractMethod<[slot: BytesLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'extsload(bytes32[])'
+  ): TypedContractMethod<[slots: BytesLike[]], [string[]], 'view'>;
 
   filters: {};
-
-  estimateGas: {
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

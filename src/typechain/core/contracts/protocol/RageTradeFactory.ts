@@ -3,68 +3,64 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace VTokenDeployer {
   export type DeployVTokenParamsStruct = {
-    vTokenName: PromiseOrValue<string>;
-    vTokenSymbol: PromiseOrValue<string>;
-    cTokenDecimals: PromiseOrValue<BigNumberish>;
-  };
-
-  export type DeployVTokenParamsStructOutput = [string, string, number] & {
     vTokenName: string;
     vTokenSymbol: string;
-    cTokenDecimals: number;
+    cTokenDecimals: BigNumberish;
   };
+
+  export type DeployVTokenParamsStructOutput = [
+    vTokenName: string,
+    vTokenSymbol: string,
+    cTokenDecimals: bigint
+  ] & { vTokenName: string; vTokenSymbol: string; cTokenDecimals: bigint };
 }
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
@@ -75,46 +71,29 @@ export declare namespace RageTradeFactory {
   export type InitializePoolParamsStruct = {
     deployVTokenParams: VTokenDeployer.DeployVTokenParamsStruct;
     poolInitialSettings: IClearingHouseStructures.PoolSettingsStruct;
-    liquidityFeePips: PromiseOrValue<BigNumberish>;
-    protocolFeePips: PromiseOrValue<BigNumberish>;
-    slotsToInitialize: PromiseOrValue<BigNumberish>;
+    liquidityFeePips: BigNumberish;
+    protocolFeePips: BigNumberish;
+    slotsToInitialize: BigNumberish;
   };
 
   export type InitializePoolParamsStructOutput = [
-    VTokenDeployer.DeployVTokenParamsStructOutput,
-    IClearingHouseStructures.PoolSettingsStructOutput,
-    number,
-    number,
-    number
+    deployVTokenParams: VTokenDeployer.DeployVTokenParamsStructOutput,
+    poolInitialSettings: IClearingHouseStructures.PoolSettingsStructOutput,
+    liquidityFeePips: bigint,
+    protocolFeePips: bigint,
+    slotsToInitialize: bigint
   ] & {
     deployVTokenParams: VTokenDeployer.DeployVTokenParamsStructOutput;
     poolInitialSettings: IClearingHouseStructures.PoolSettingsStructOutput;
-    liquidityFeePips: number;
-    protocolFeePips: number;
-    slotsToInitialize: number;
+    liquidityFeePips: bigint;
+    protocolFeePips: bigint;
+    slotsToInitialize: bigint;
   };
 }
 
-export interface RageTradeFactoryInterface extends utils.Interface {
-  functions: {
-    'acceptGovernanceTransfer()': FunctionFragment;
-    'acceptTeamMultisigTransfer()': FunctionFragment;
-    'clearingHouse()': FunctionFragment;
-    'governance()': FunctionFragment;
-    'governancePending()': FunctionFragment;
-    'initializePool(((string,string,uint8),(uint16,uint16,uint16,uint32,bool,bool,address),uint24,uint24,uint16))': FunctionFragment;
-    'initiateGovernanceTransfer(address)': FunctionFragment;
-    'initiateTeamMultisigTransfer(address)': FunctionFragment;
-    'proxyAdmin()': FunctionFragment;
-    'setVPoolWrapperLogicAddress(address)': FunctionFragment;
-    'teamMultisig()': FunctionFragment;
-    'teamMultisigPending()': FunctionFragment;
-    'vPoolWrapperLogicAddress()': FunctionFragment;
-    'vQuote()': FunctionFragment;
-  };
-
+export interface RageTradeFactoryInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'acceptGovernanceTransfer'
       | 'acceptTeamMultisigTransfer'
       | 'clearingHouse'
@@ -130,6 +109,15 @@ export interface RageTradeFactoryInterface extends utils.Interface {
       | 'vPoolWrapperLogicAddress'
       | 'vQuote'
   ): FunctionFragment;
+
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'GovernancePending'
+      | 'GovernanceTransferred'
+      | 'PoolInitialized'
+      | 'TeamMultisigPending'
+      | 'TeamMultisigTransferred'
+  ): EventFragment;
 
   encodeFunctionData(
     functionFragment: 'acceptGovernanceTransfer',
@@ -157,11 +145,11 @@ export interface RageTradeFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateGovernanceTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'initiateTeamMultisigTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'proxyAdmin',
@@ -169,7 +157,7 @@ export interface RageTradeFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setVPoolWrapperLogicAddress',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'teamMultisig',
@@ -232,382 +220,344 @@ export interface RageTradeFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'vQuote', data: BytesLike): Result;
-
-  events: {
-    'GovernancePending(address,address)': EventFragment;
-    'GovernanceTransferred(address,address)': EventFragment;
-    'PoolInitialized(address,address,address)': EventFragment;
-    'TeamMultisigPending(address,address)': EventFragment;
-    'TeamMultisigTransferred(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'GovernancePending'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'GovernanceTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'PoolInitialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TeamMultisigPending'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TeamMultisigTransferred'): EventFragment;
 }
 
-export interface GovernancePendingEventObject {
-  previousGovernancePending: string;
-  newGovernancePending: string;
+export namespace GovernancePendingEvent {
+  export type InputTuple = [
+    previousGovernancePending: AddressLike,
+    newGovernancePending: AddressLike
+  ];
+  export type OutputTuple = [
+    previousGovernancePending: string,
+    newGovernancePending: string
+  ];
+  export interface OutputObject {
+    previousGovernancePending: string;
+    newGovernancePending: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GovernancePendingEvent = TypedEvent<
-  [string, string],
-  GovernancePendingEventObject
->;
 
-export type GovernancePendingEventFilter =
-  TypedEventFilter<GovernancePendingEvent>;
-
-export interface GovernanceTransferredEventObject {
-  previousGovernance: string;
-  newGovernance: string;
+export namespace GovernanceTransferredEvent {
+  export type InputTuple = [
+    previousGovernance: AddressLike,
+    newGovernance: AddressLike
+  ];
+  export type OutputTuple = [previousGovernance: string, newGovernance: string];
+  export interface OutputObject {
+    previousGovernance: string;
+    newGovernance: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type GovernanceTransferredEvent = TypedEvent<
-  [string, string],
-  GovernanceTransferredEventObject
->;
 
-export type GovernanceTransferredEventFilter =
-  TypedEventFilter<GovernanceTransferredEvent>;
-
-export interface PoolInitializedEventObject {
-  vPool: string;
-  vToken: string;
-  vPoolWrapper: string;
+export namespace PoolInitializedEvent {
+  export type InputTuple = [
+    vPool: AddressLike,
+    vToken: AddressLike,
+    vPoolWrapper: AddressLike
+  ];
+  export type OutputTuple = [
+    vPool: string,
+    vToken: string,
+    vPoolWrapper: string
+  ];
+  export interface OutputObject {
+    vPool: string;
+    vToken: string;
+    vPoolWrapper: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type PoolInitializedEvent = TypedEvent<
-  [string, string, string],
-  PoolInitializedEventObject
->;
 
-export type PoolInitializedEventFilter = TypedEventFilter<PoolInitializedEvent>;
-
-export interface TeamMultisigPendingEventObject {
-  previousTeamMultisigPending: string;
-  newTeamMultisigPending: string;
+export namespace TeamMultisigPendingEvent {
+  export type InputTuple = [
+    previousTeamMultisigPending: AddressLike,
+    newTeamMultisigPending: AddressLike
+  ];
+  export type OutputTuple = [
+    previousTeamMultisigPending: string,
+    newTeamMultisigPending: string
+  ];
+  export interface OutputObject {
+    previousTeamMultisigPending: string;
+    newTeamMultisigPending: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TeamMultisigPendingEvent = TypedEvent<
-  [string, string],
-  TeamMultisigPendingEventObject
->;
 
-export type TeamMultisigPendingEventFilter =
-  TypedEventFilter<TeamMultisigPendingEvent>;
-
-export interface TeamMultisigTransferredEventObject {
-  previousTeamMultisig: string;
-  newTeamMultisig: string;
+export namespace TeamMultisigTransferredEvent {
+  export type InputTuple = [
+    previousTeamMultisig: AddressLike,
+    newTeamMultisig: AddressLike
+  ];
+  export type OutputTuple = [
+    previousTeamMultisig: string,
+    newTeamMultisig: string
+  ];
+  export interface OutputObject {
+    previousTeamMultisig: string;
+    newTeamMultisig: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TeamMultisigTransferredEvent = TypedEvent<
-  [string, string],
-  TeamMultisigTransferredEventObject
->;
-
-export type TeamMultisigTransferredEventFilter =
-  TypedEventFilter<TeamMultisigTransferredEvent>;
 
 export interface RageTradeFactory extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: RageTradeFactoryInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    clearingHouse(overrides?: CallOverrides): Promise<[string]>;
+  acceptGovernanceTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    governance(overrides?: CallOverrides): Promise<[string]>;
+  acceptTeamMultisigTransfer: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    governancePending(overrides?: CallOverrides): Promise<[string]>;
+  clearingHouse: TypedContractMethod<[], [string], 'view'>;
 
-    initializePool(
-      initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  governance: TypedContractMethod<[], [string], 'view'>;
 
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  governancePending: TypedContractMethod<[], [string], 'view'>;
 
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  initializePool: TypedContractMethod<
+    [initializePoolParams: RageTradeFactory.InitializePoolParamsStruct],
+    [void],
+    'nonpayable'
+  >;
 
-    proxyAdmin(overrides?: CallOverrides): Promise<[string]>;
+  initiateGovernanceTransfer: TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  initiateTeamMultisigTransfer: TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    teamMultisig(overrides?: CallOverrides): Promise<[string]>;
+  proxyAdmin: TypedContractMethod<[], [string], 'view'>;
 
-    teamMultisigPending(overrides?: CallOverrides): Promise<[string]>;
+  setVPoolWrapperLogicAddress: TypedContractMethod<
+    [_vPoolWrapperLogicAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<[string]>;
+  teamMultisig: TypedContractMethod<[], [string], 'view'>;
 
-    vQuote(overrides?: CallOverrides): Promise<[string]>;
-  };
+  teamMultisigPending: TypedContractMethod<[], [string], 'view'>;
 
-  acceptGovernanceTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  vPoolWrapperLogicAddress: TypedContractMethod<[], [string], 'view'>;
 
-  acceptTeamMultisigTransfer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  vQuote: TypedContractMethod<[], [string], 'view'>;
 
-  clearingHouse(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  governance(overrides?: CallOverrides): Promise<string>;
+  getFunction(
+    nameOrSignature: 'acceptGovernanceTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'acceptTeamMultisigTransfer'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'clearingHouse'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'governance'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'governancePending'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'initializePool'
+  ): TypedContractMethod<
+    [initializePoolParams: RageTradeFactory.InitializePoolParamsStruct],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initiateGovernanceTransfer'
+  ): TypedContractMethod<
+    [newGovernancePending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initiateTeamMultisigTransfer'
+  ): TypedContractMethod<
+    [newTeamMultisigPending: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'proxyAdmin'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'setVPoolWrapperLogicAddress'
+  ): TypedContractMethod<
+    [_vPoolWrapperLogicAddress: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'teamMultisig'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'teamMultisigPending'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'vPoolWrapperLogicAddress'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'vQuote'
+  ): TypedContractMethod<[], [string], 'view'>;
 
-  governancePending(overrides?: CallOverrides): Promise<string>;
-
-  initializePool(
-    initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initiateGovernanceTransfer(
-    newGovernancePending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initiateTeamMultisigTransfer(
-    newTeamMultisigPending: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  proxyAdmin(overrides?: CallOverrides): Promise<string>;
-
-  setVPoolWrapperLogicAddress(
-    _vPoolWrapperLogicAddress: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-  teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-
-  vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<string>;
-
-  vQuote(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    acceptGovernanceTransfer(overrides?: CallOverrides): Promise<void>;
-
-    acceptTeamMultisigTransfer(overrides?: CallOverrides): Promise<void>;
-
-    clearingHouse(overrides?: CallOverrides): Promise<string>;
-
-    governance(overrides?: CallOverrides): Promise<string>;
-
-    governancePending(overrides?: CallOverrides): Promise<string>;
-
-    initializePool(
-      initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    proxyAdmin(overrides?: CallOverrides): Promise<string>;
-
-    setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<string>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<string>;
-
-    vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<string>;
-
-    vQuote(overrides?: CallOverrides): Promise<string>;
-  };
+  getEvent(
+    key: 'GovernancePending'
+  ): TypedContractEvent<
+    GovernancePendingEvent.InputTuple,
+    GovernancePendingEvent.OutputTuple,
+    GovernancePendingEvent.OutputObject
+  >;
+  getEvent(
+    key: 'GovernanceTransferred'
+  ): TypedContractEvent<
+    GovernanceTransferredEvent.InputTuple,
+    GovernanceTransferredEvent.OutputTuple,
+    GovernanceTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'PoolInitialized'
+  ): TypedContractEvent<
+    PoolInitializedEvent.InputTuple,
+    PoolInitializedEvent.OutputTuple,
+    PoolInitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TeamMultisigPending'
+  ): TypedContractEvent<
+    TeamMultisigPendingEvent.InputTuple,
+    TeamMultisigPendingEvent.OutputTuple,
+    TeamMultisigPendingEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TeamMultisigTransferred'
+  ): TypedContractEvent<
+    TeamMultisigTransferredEvent.InputTuple,
+    TeamMultisigTransferredEvent.OutputTuple,
+    TeamMultisigTransferredEvent.OutputObject
+  >;
 
   filters: {
-    'GovernancePending(address,address)'(
-      previousGovernancePending?: PromiseOrValue<string> | null,
-      newGovernancePending?: PromiseOrValue<string> | null
-    ): GovernancePendingEventFilter;
-    GovernancePending(
-      previousGovernancePending?: PromiseOrValue<string> | null,
-      newGovernancePending?: PromiseOrValue<string> | null
-    ): GovernancePendingEventFilter;
+    'GovernancePending(address,address)': TypedContractEvent<
+      GovernancePendingEvent.InputTuple,
+      GovernancePendingEvent.OutputTuple,
+      GovernancePendingEvent.OutputObject
+    >;
+    GovernancePending: TypedContractEvent<
+      GovernancePendingEvent.InputTuple,
+      GovernancePendingEvent.OutputTuple,
+      GovernancePendingEvent.OutputObject
+    >;
 
-    'GovernanceTransferred(address,address)'(
-      previousGovernance?: PromiseOrValue<string> | null,
-      newGovernance?: PromiseOrValue<string> | null
-    ): GovernanceTransferredEventFilter;
-    GovernanceTransferred(
-      previousGovernance?: PromiseOrValue<string> | null,
-      newGovernance?: PromiseOrValue<string> | null
-    ): GovernanceTransferredEventFilter;
+    'GovernanceTransferred(address,address)': TypedContractEvent<
+      GovernanceTransferredEvent.InputTuple,
+      GovernanceTransferredEvent.OutputTuple,
+      GovernanceTransferredEvent.OutputObject
+    >;
+    GovernanceTransferred: TypedContractEvent<
+      GovernanceTransferredEvent.InputTuple,
+      GovernanceTransferredEvent.OutputTuple,
+      GovernanceTransferredEvent.OutputObject
+    >;
 
-    'PoolInitialized(address,address,address)'(
-      vPool?: null,
-      vToken?: null,
-      vPoolWrapper?: null
-    ): PoolInitializedEventFilter;
-    PoolInitialized(
-      vPool?: null,
-      vToken?: null,
-      vPoolWrapper?: null
-    ): PoolInitializedEventFilter;
+    'PoolInitialized(address,address,address)': TypedContractEvent<
+      PoolInitializedEvent.InputTuple,
+      PoolInitializedEvent.OutputTuple,
+      PoolInitializedEvent.OutputObject
+    >;
+    PoolInitialized: TypedContractEvent<
+      PoolInitializedEvent.InputTuple,
+      PoolInitializedEvent.OutputTuple,
+      PoolInitializedEvent.OutputObject
+    >;
 
-    'TeamMultisigPending(address,address)'(
-      previousTeamMultisigPending?: PromiseOrValue<string> | null,
-      newTeamMultisigPending?: PromiseOrValue<string> | null
-    ): TeamMultisigPendingEventFilter;
-    TeamMultisigPending(
-      previousTeamMultisigPending?: PromiseOrValue<string> | null,
-      newTeamMultisigPending?: PromiseOrValue<string> | null
-    ): TeamMultisigPendingEventFilter;
+    'TeamMultisigPending(address,address)': TypedContractEvent<
+      TeamMultisigPendingEvent.InputTuple,
+      TeamMultisigPendingEvent.OutputTuple,
+      TeamMultisigPendingEvent.OutputObject
+    >;
+    TeamMultisigPending: TypedContractEvent<
+      TeamMultisigPendingEvent.InputTuple,
+      TeamMultisigPendingEvent.OutputTuple,
+      TeamMultisigPendingEvent.OutputObject
+    >;
 
-    'TeamMultisigTransferred(address,address)'(
-      previousTeamMultisig?: PromiseOrValue<string> | null,
-      newTeamMultisig?: PromiseOrValue<string> | null
-    ): TeamMultisigTransferredEventFilter;
-    TeamMultisigTransferred(
-      previousTeamMultisig?: PromiseOrValue<string> | null,
-      newTeamMultisig?: PromiseOrValue<string> | null
-    ): TeamMultisigTransferredEventFilter;
-  };
-
-  estimateGas: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    clearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
-
-    governance(overrides?: CallOverrides): Promise<BigNumber>;
-
-    governancePending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    initializePool(
-      initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    proxyAdmin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<BigNumber>;
-
-    teamMultisigPending(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vPoolWrapperLogicAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    vQuote(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    acceptGovernanceTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    acceptTeamMultisigTransfer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    clearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    governance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    governancePending(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    initializePool(
-      initializePoolParams: RageTradeFactory.InitializePoolParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initiateGovernanceTransfer(
-      newGovernancePending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initiateTeamMultisigTransfer(
-      newTeamMultisigPending: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    proxyAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setVPoolWrapperLogicAddress(
-      _vPoolWrapperLogicAddress: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    teamMultisig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    teamMultisigPending(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    vPoolWrapperLogicAddress(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    vQuote(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'TeamMultisigTransferred(address,address)': TypedContractEvent<
+      TeamMultisigTransferredEvent.InputTuple,
+      TeamMultisigTransferredEvent.OutputTuple,
+      TeamMultisigTransferredEvent.OutputObject
+    >;
+    TeamMultisigTransferred: TypedContractEvent<
+      TeamMultisigTransferredEvent.InputTuple,
+      TeamMultisigTransferredEvent.OutputTuple,
+      TeamMultisigTransferredEvent.OutputObject
+    >;
   };
 }

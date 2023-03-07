@@ -3,67 +3,65 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
 export declare namespace IClearingHouseStructures {
   export type PoolSettingsStruct = {
-    initialMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maintainanceMarginRatioBps: PromiseOrValue<BigNumberish>;
-    maxVirtualPriceDeviationRatioBps: PromiseOrValue<BigNumberish>;
-    twapDuration: PromiseOrValue<BigNumberish>;
-    isAllowedForTrade: PromiseOrValue<boolean>;
-    isCrossMargined: PromiseOrValue<boolean>;
-    oracle: PromiseOrValue<string>;
+    initialMarginRatioBps: BigNumberish;
+    maintainanceMarginRatioBps: BigNumberish;
+    maxVirtualPriceDeviationRatioBps: BigNumberish;
+    twapDuration: BigNumberish;
+    isAllowedForTrade: boolean;
+    isCrossMargined: boolean;
+    oracle: AddressLike;
   };
 
   export type PoolSettingsStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    boolean,
-    boolean,
-    string
+    initialMarginRatioBps: bigint,
+    maintainanceMarginRatioBps: bigint,
+    maxVirtualPriceDeviationRatioBps: bigint,
+    twapDuration: bigint,
+    isAllowedForTrade: boolean,
+    isCrossMargined: boolean,
+    oracle: string
   ] & {
-    initialMarginRatioBps: number;
-    maintainanceMarginRatioBps: number;
-    maxVirtualPriceDeviationRatioBps: number;
-    twapDuration: number;
+    initialMarginRatioBps: bigint;
+    maintainanceMarginRatioBps: bigint;
+    maxVirtualPriceDeviationRatioBps: bigint;
+    twapDuration: bigint;
     isAllowedForTrade: boolean;
     isCrossMargined: boolean;
     oracle: string;
   };
 
   export type PoolStruct = {
-    vToken: PromiseOrValue<string>;
-    vPool: PromiseOrValue<string>;
-    vPoolWrapper: PromiseOrValue<string>;
+    vToken: AddressLike;
+    vPool: AddressLike;
+    vPoolWrapper: AddressLike;
     settings: IClearingHouseStructures.PoolSettingsStruct;
   };
 
   export type PoolStructOutput = [
-    string,
-    string,
-    string,
-    IClearingHouseStructures.PoolSettingsStructOutput
+    vToken: string,
+    vPool: string,
+    vPoolWrapper: string,
+    settings: IClearingHouseStructures.PoolSettingsStructOutput
   ] & {
     vToken: string;
     vPool: string;
@@ -72,26 +70,19 @@ export declare namespace IClearingHouseStructures {
   };
 }
 
-export interface IClearingHouseSystemActionsInterface extends utils.Interface {
-  functions: {
-    'initialize(address,address,address,address,address,address,address)': FunctionFragment;
-    'registerPool((address,address,address,(uint16,uint16,uint16,uint32,bool,bool,address)))': FunctionFragment;
-  };
-
-  getFunction(
-    nameOrSignatureOrTopic: 'initialize' | 'registerPool'
-  ): FunctionFragment;
+export interface IClearingHouseSystemActionsInterface extends Interface {
+  getFunction(nameOrSignature: 'initialize' | 'registerPool'): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'initialize',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
@@ -104,123 +95,98 @@ export interface IClearingHouseSystemActionsInterface extends utils.Interface {
     functionFragment: 'registerPool',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IClearingHouseSystemActions extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IClearingHouseSystemActionsInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    initialize(
-      rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      defaultCollateralToken: PromiseOrValue<string>,
-      defaultCollateralTokenOracle: PromiseOrValue<string>,
-      insuranceFund: PromiseOrValue<string>,
-      vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  initialize(
-    rageTradeFactoryAddress: PromiseOrValue<string>,
-    initialGovernance: PromiseOrValue<string>,
-    initialTeamMultisig: PromiseOrValue<string>,
-    defaultCollateralToken: PromiseOrValue<string>,
-    defaultCollateralTokenOracle: PromiseOrValue<string>,
-    insuranceFund: PromiseOrValue<string>,
-    vQuote: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  initialize: TypedContractMethod<
+    [
+      rageTradeFactoryAddress: AddressLike,
+      initialGovernance: AddressLike,
+      initialTeamMultisig: AddressLike,
+      defaultCollateralToken: AddressLike,
+      defaultCollateralTokenOracle: AddressLike,
+      insuranceFund: AddressLike,
+      vQuote: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-  registerPool(
-    poolInfo: IClearingHouseStructures.PoolStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  registerPool: TypedContractMethod<
+    [poolInfo: IClearingHouseStructures.PoolStruct],
+    [void],
+    'nonpayable'
+  >;
 
-  callStatic: {
-    initialize(
-      rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      defaultCollateralToken: PromiseOrValue<string>,
-      defaultCollateralTokenOracle: PromiseOrValue<string>,
-      insuranceFund: PromiseOrValue<string>,
-      vQuote: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      rageTradeFactoryAddress: AddressLike,
+      initialGovernance: AddressLike,
+      initialTeamMultisig: AddressLike,
+      defaultCollateralToken: AddressLike,
+      defaultCollateralTokenOracle: AddressLike,
+      insuranceFund: AddressLike,
+      vQuote: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'registerPool'
+  ): TypedContractMethod<
+    [poolInfo: IClearingHouseStructures.PoolStruct],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    initialize(
-      rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      defaultCollateralToken: PromiseOrValue<string>,
-      defaultCollateralTokenOracle: PromiseOrValue<string>,
-      insuranceFund: PromiseOrValue<string>,
-      vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    initialize(
-      rageTradeFactoryAddress: PromiseOrValue<string>,
-      initialGovernance: PromiseOrValue<string>,
-      initialTeamMultisig: PromiseOrValue<string>,
-      defaultCollateralToken: PromiseOrValue<string>,
-      defaultCollateralTokenOracle: PromiseOrValue<string>,
-      insuranceFund: PromiseOrValue<string>,
-      vQuote: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    registerPool(
-      poolInfo: IClearingHouseStructures.PoolStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

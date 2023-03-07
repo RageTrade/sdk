@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ICurveGauge,
   ICurveGaugeInterface,
@@ -215,17 +214,14 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class ICurveGauge__factory {
   static readonly abi = _abi;
   static createInterface(): ICurveGaugeInterface {
-    return new utils.Interface(_abi) as ICurveGaugeInterface;
+    return new Interface(_abi) as ICurveGaugeInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): ICurveGauge {
-    return new Contract(address, _abi, signerOrProvider) as ICurveGauge;
+  static connect(address: string, runner?: ContractRunner | null): ICurveGauge {
+    return new Contract(address, _abi, runner) as unknown as ICurveGauge;
   }
 }

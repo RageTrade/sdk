@@ -3,123 +3,103 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace IVPoolWrapper {
   export type SwapResultStruct = {
-    amountSpecified: PromiseOrValue<BigNumberish>;
-    vTokenIn: PromiseOrValue<BigNumberish>;
-    vQuoteIn: PromiseOrValue<BigNumberish>;
-    liquidityFees: PromiseOrValue<BigNumberish>;
-    protocolFees: PromiseOrValue<BigNumberish>;
-    sqrtPriceX96Start: PromiseOrValue<BigNumberish>;
-    sqrtPriceX96End: PromiseOrValue<BigNumberish>;
+    amountSpecified: BigNumberish;
+    vTokenIn: BigNumberish;
+    vQuoteIn: BigNumberish;
+    liquidityFees: BigNumberish;
+    protocolFees: BigNumberish;
+    sqrtPriceX96Start: BigNumberish;
+    sqrtPriceX96End: BigNumberish;
   };
 
   export type SwapResultStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    amountSpecified: bigint,
+    vTokenIn: bigint,
+    vQuoteIn: bigint,
+    liquidityFees: bigint,
+    protocolFees: bigint,
+    sqrtPriceX96Start: bigint,
+    sqrtPriceX96End: bigint
   ] & {
-    amountSpecified: BigNumber;
-    vTokenIn: BigNumber;
-    vQuoteIn: BigNumber;
-    liquidityFees: BigNumber;
-    protocolFees: BigNumber;
-    sqrtPriceX96Start: BigNumber;
-    sqrtPriceX96End: BigNumber;
+    amountSpecified: bigint;
+    vTokenIn: bigint;
+    vQuoteIn: bigint;
+    liquidityFees: bigint;
+    protocolFees: bigint;
+    sqrtPriceX96Start: bigint;
+    sqrtPriceX96End: bigint;
   };
 
   export type WrapperValuesInsideStruct = {
-    sumAX128: PromiseOrValue<BigNumberish>;
-    sumBInsideX128: PromiseOrValue<BigNumberish>;
-    sumFpInsideX128: PromiseOrValue<BigNumberish>;
-    sumFeeInsideX128: PromiseOrValue<BigNumberish>;
+    sumAX128: BigNumberish;
+    sumBInsideX128: BigNumberish;
+    sumFpInsideX128: BigNumberish;
+    sumFeeInsideX128: BigNumberish;
   };
 
   export type WrapperValuesInsideStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    sumAX128: bigint,
+    sumBInsideX128: bigint,
+    sumFpInsideX128: bigint,
+    sumFeeInsideX128: bigint
   ] & {
-    sumAX128: BigNumber;
-    sumBInsideX128: BigNumber;
-    sumFpInsideX128: BigNumber;
-    sumFeeInsideX128: BigNumber;
+    sumAX128: bigint;
+    sumBInsideX128: bigint;
+    sumFpInsideX128: bigint;
+    sumFeeInsideX128: bigint;
   };
 
   export type InitializeVPoolWrapperParamsStruct = {
-    clearingHouse: PromiseOrValue<string>;
-    vToken: PromiseOrValue<string>;
-    vQuote: PromiseOrValue<string>;
-    vPool: PromiseOrValue<string>;
-    liquidityFeePips: PromiseOrValue<BigNumberish>;
-    protocolFeePips: PromiseOrValue<BigNumberish>;
+    clearingHouse: AddressLike;
+    vToken: AddressLike;
+    vQuote: AddressLike;
+    vPool: AddressLike;
+    liquidityFeePips: BigNumberish;
+    protocolFeePips: BigNumberish;
   };
 
   export type InitializeVPoolWrapperParamsStructOutput = [
-    string,
-    string,
-    string,
-    string,
-    number,
-    number
+    clearingHouse: string,
+    vToken: string,
+    vQuote: string,
+    vPool: string,
+    liquidityFeePips: bigint,
+    protocolFeePips: bigint
   ] & {
     clearingHouse: string;
     vToken: string;
     vQuote: string;
     vPool: string;
-    liquidityFeePips: number;
-    protocolFeePips: number;
+    liquidityFeePips: bigint;
+    protocolFeePips: bigint;
   };
 }
 
-export interface IVPoolWrapperInterface extends utils.Interface {
-  functions: {
-    'burn(int24,int24,uint128)': FunctionFragment;
-    'collectAccruedProtocolFee()': FunctionFragment;
-    'getExtrapolatedSumAX128()': FunctionFragment;
-    'getExtrapolatedValuesInside(int24,int24)': FunctionFragment;
-    'getSumAX128()': FunctionFragment;
-    'getValuesInside(int24,int24)': FunctionFragment;
-    'initialize((address,address,address,address,uint24,uint24))': FunctionFragment;
-    'liquidityFeePips()': FunctionFragment;
-    'mint(int24,int24,uint128)': FunctionFragment;
-    'protocolFeePips()': FunctionFragment;
-    'swap(bool,int256,uint160)': FunctionFragment;
-    'updateGlobalFundingState(bool)': FunctionFragment;
-    'vPool()': FunctionFragment;
-  };
-
+export interface IVPoolWrapperInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'burn'
       | 'collectAccruedProtocolFee'
       | 'getExtrapolatedSumAX128'
@@ -135,13 +115,20 @@ export interface IVPoolWrapperInterface extends utils.Interface {
       | 'vPool'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'AccruedProtocolFeeCollected'
+      | 'Burn'
+      | 'FundingRateOverrideUpdated'
+      | 'LiquidityFeeUpdated'
+      | 'Mint'
+      | 'ProtocolFeeUpdated'
+      | 'Swap'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'burn',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'collectAccruedProtocolFee',
@@ -153,7 +140,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getExtrapolatedValuesInside',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getSumAX128',
@@ -161,7 +148,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getValuesInside',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -173,11 +160,7 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'protocolFeePips',
@@ -185,15 +168,11 @@ export interface IVPoolWrapperInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'swap',
-    values: [
-      PromiseOrValue<boolean>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [boolean, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateGlobalFundingState',
-    values: [PromiseOrValue<boolean>]
+    values: [boolean]
   ): string;
   encodeFunctionData(functionFragment: 'vPool', values?: undefined): string;
 
@@ -234,507 +213,444 @@ export interface IVPoolWrapperInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'vPool', data: BytesLike): Result;
-
-  events: {
-    'AccruedProtocolFeeCollected(uint256)': EventFragment;
-    'Burn(int24,int24,uint128,uint256,uint256)': EventFragment;
-    'FundingRateOverrideUpdated(int256)': EventFragment;
-    'LiquidityFeeUpdated(uint24)': EventFragment;
-    'Mint(int24,int24,uint128,uint256,uint256)': EventFragment;
-    'ProtocolFeeUpdated(uint24)': EventFragment;
-    'Swap(tuple)': EventFragment;
-  };
-
-  getEvent(
-    nameOrSignatureOrTopic: 'AccruedProtocolFeeCollected'
-  ): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Burn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FundingRateOverrideUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'LiquidityFeeUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Mint'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ProtocolFeeUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Swap'): EventFragment;
 }
 
-export interface AccruedProtocolFeeCollectedEventObject {
-  amount: BigNumber;
+export namespace AccruedProtocolFeeCollectedEvent {
+  export type InputTuple = [amount: BigNumberish];
+  export type OutputTuple = [amount: bigint];
+  export interface OutputObject {
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AccruedProtocolFeeCollectedEvent = TypedEvent<
-  [BigNumber],
-  AccruedProtocolFeeCollectedEventObject
->;
 
-export type AccruedProtocolFeeCollectedEventFilter =
-  TypedEventFilter<AccruedProtocolFeeCollectedEvent>;
-
-export interface BurnEventObject {
-  tickLower: number;
-  tickUpper: number;
-  liquidity: BigNumber;
-  vTokenPrincipal: BigNumber;
-  vQuotePrincipal: BigNumber;
+export namespace BurnEvent {
+  export type InputTuple = [
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish,
+    vTokenPrincipal: BigNumberish,
+    vQuotePrincipal: BigNumberish
+  ];
+  export type OutputTuple = [
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidity: bigint,
+    vTokenPrincipal: bigint,
+    vQuotePrincipal: bigint
+  ];
+  export interface OutputObject {
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidity: bigint;
+    vTokenPrincipal: bigint;
+    vQuotePrincipal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BurnEvent = TypedEvent<
-  [number, number, BigNumber, BigNumber, BigNumber],
-  BurnEventObject
->;
 
-export type BurnEventFilter = TypedEventFilter<BurnEvent>;
-
-export interface FundingRateOverrideUpdatedEventObject {
-  fundingRateOverrideX128: BigNumber;
+export namespace FundingRateOverrideUpdatedEvent {
+  export type InputTuple = [fundingRateOverrideX128: BigNumberish];
+  export type OutputTuple = [fundingRateOverrideX128: bigint];
+  export interface OutputObject {
+    fundingRateOverrideX128: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FundingRateOverrideUpdatedEvent = TypedEvent<
-  [BigNumber],
-  FundingRateOverrideUpdatedEventObject
->;
 
-export type FundingRateOverrideUpdatedEventFilter =
-  TypedEventFilter<FundingRateOverrideUpdatedEvent>;
-
-export interface LiquidityFeeUpdatedEventObject {
-  liquidityFeePips: number;
+export namespace LiquidityFeeUpdatedEvent {
+  export type InputTuple = [liquidityFeePips: BigNumberish];
+  export type OutputTuple = [liquidityFeePips: bigint];
+  export interface OutputObject {
+    liquidityFeePips: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type LiquidityFeeUpdatedEvent = TypedEvent<
-  [number],
-  LiquidityFeeUpdatedEventObject
->;
 
-export type LiquidityFeeUpdatedEventFilter =
-  TypedEventFilter<LiquidityFeeUpdatedEvent>;
-
-export interface MintEventObject {
-  tickLower: number;
-  tickUpper: number;
-  liquidity: BigNumber;
-  vTokenPrincipal: BigNumber;
-  vQuotePrincipal: BigNumber;
+export namespace MintEvent {
+  export type InputTuple = [
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish,
+    vTokenPrincipal: BigNumberish,
+    vQuotePrincipal: BigNumberish
+  ];
+  export type OutputTuple = [
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidity: bigint,
+    vTokenPrincipal: bigint,
+    vQuotePrincipal: bigint
+  ];
+  export interface OutputObject {
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidity: bigint;
+    vTokenPrincipal: bigint;
+    vQuotePrincipal: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type MintEvent = TypedEvent<
-  [number, number, BigNumber, BigNumber, BigNumber],
-  MintEventObject
->;
 
-export type MintEventFilter = TypedEventFilter<MintEvent>;
-
-export interface ProtocolFeeUpdatedEventObject {
-  protocolFeePips: number;
+export namespace ProtocolFeeUpdatedEvent {
+  export type InputTuple = [protocolFeePips: BigNumberish];
+  export type OutputTuple = [protocolFeePips: bigint];
+  export interface OutputObject {
+    protocolFeePips: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ProtocolFeeUpdatedEvent = TypedEvent<
-  [number],
-  ProtocolFeeUpdatedEventObject
->;
 
-export type ProtocolFeeUpdatedEventFilter =
-  TypedEventFilter<ProtocolFeeUpdatedEvent>;
-
-export interface SwapEventObject {
-  swapResult: IVPoolWrapper.SwapResultStructOutput;
+export namespace SwapEvent {
+  export type InputTuple = [swapResult: IVPoolWrapper.SwapResultStruct];
+  export type OutputTuple = [swapResult: IVPoolWrapper.SwapResultStructOutput];
+  export interface OutputObject {
+    swapResult: IVPoolWrapper.SwapResultStructOutput;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type SwapEvent = TypedEvent<
-  [IVPoolWrapper.SwapResultStructOutput],
-  SwapEventObject
->;
-
-export type SwapEventFilter = TypedEventFilter<SwapEvent>;
 
 export interface IVPoolWrapper extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IVPoolWrapperInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    burn(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getExtrapolatedValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+  burn: TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish, liquidity: BigNumberish],
+    [
+      [bigint, bigint, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: bigint;
+        vQuotePrincipal: bigint;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
-    >;
+    ],
+    'nonpayable'
+  >;
 
-    getSumAX128(overrides?: CallOverrides): Promise<[BigNumber]>;
+  collectAccruedProtocolFee: TypedContractMethod<[], [bigint], 'nonpayable'>;
 
-    getValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+  getExtrapolatedSumAX128: TypedContractMethod<[], [bigint], 'view'>;
+
+  getExtrapolatedValuesInside: TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish],
+    [IVPoolWrapper.WrapperValuesInsideStructOutput],
+    'view'
+  >;
+
+  getSumAX128: TypedContractMethod<[], [bigint], 'view'>;
+
+  getValuesInside: TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish],
+    [IVPoolWrapper.WrapperValuesInsideStructOutput],
+    'view'
+  >;
+
+  initialize: TypedContractMethod<
+    [params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct],
+    [void],
+    'nonpayable'
+  >;
+
+  liquidityFeePips: TypedContractMethod<[], [bigint], 'view'>;
+
+  mint: TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish, liquidity: BigNumberish],
+    [
+      [bigint, bigint, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: bigint;
+        vQuotePrincipal: bigint;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
-    >;
+    ],
+    'nonpayable'
+  >;
 
-    initialize(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  protocolFeePips: TypedContractMethod<[], [bigint], 'view'>;
 
-    liquidityFeePips(overrides?: CallOverrides): Promise<[number]>;
+  swap: TypedContractMethod<
+    [
+      swapVTokenForVQuote: boolean,
+      amountSpecified: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish
+    ],
+    [IVPoolWrapper.SwapResultStructOutput],
+    'nonpayable'
+  >;
 
-    mint(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  updateGlobalFundingState: TypedContractMethod<
+    [useZeroFundingRate: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-    protocolFeePips(overrides?: CallOverrides): Promise<[number]>;
+  vPool: TypedContractMethod<[], [string], 'view'>;
 
-    swap(
-      swapVTokenForVQuote: PromiseOrValue<boolean>,
-      amountSpecified: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-    updateGlobalFundingState(
-      useZeroFundingRate: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    vPool(overrides?: CallOverrides): Promise<[string]>;
-  };
-
-  burn(
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    liquidity: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  collectAccruedProtocolFee(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getExtrapolatedValuesInside(
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
-
-  getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getValuesInside(
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
-
-  initialize(
-    params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  liquidityFeePips(overrides?: CallOverrides): Promise<number>;
-
-  mint(
-    tickLower: PromiseOrValue<BigNumberish>,
-    tickUpper: PromiseOrValue<BigNumberish>,
-    liquidity: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  protocolFeePips(overrides?: CallOverrides): Promise<number>;
-
-  swap(
-    swapVTokenForVQuote: PromiseOrValue<boolean>,
-    amountSpecified: PromiseOrValue<BigNumberish>,
-    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateGlobalFundingState(
-    useZeroFundingRate: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  vPool(overrides?: CallOverrides): Promise<string>;
-
-  callStatic: {
-    burn(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
-        vTokenPrincipal: BigNumber;
-        vQuotePrincipal: BigNumber;
+  getFunction(nameOrSignature: 'burn'): TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish, liquidity: BigNumberish],
+    [
+      [bigint, bigint, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: bigint;
+        vQuotePrincipal: bigint;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
-    >;
-
-    collectAccruedProtocolFee(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getExtrapolatedValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
-
-    getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IVPoolWrapper.WrapperValuesInsideStructOutput>;
-
-    initialize(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<number>;
-
-    mint(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
-        vTokenPrincipal: BigNumber;
-        vQuotePrincipal: BigNumber;
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'collectAccruedProtocolFee'
+  ): TypedContractMethod<[], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'getExtrapolatedSumAX128'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getExtrapolatedValuesInside'
+  ): TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish],
+    [IVPoolWrapper.WrapperValuesInsideStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getSumAX128'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getValuesInside'
+  ): TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish],
+    [IVPoolWrapper.WrapperValuesInsideStructOutput],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'liquidityFeePips'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(nameOrSignature: 'mint'): TypedContractMethod<
+    [tickLower: BigNumberish, tickUpper: BigNumberish, liquidity: BigNumberish],
+    [
+      [bigint, bigint, IVPoolWrapper.WrapperValuesInsideStructOutput] & {
+        vTokenPrincipal: bigint;
+        vQuotePrincipal: bigint;
         wrapperValuesInside: IVPoolWrapper.WrapperValuesInsideStructOutput;
       }
-    >;
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'protocolFeePips'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'swap'
+  ): TypedContractMethod<
+    [
+      swapVTokenForVQuote: boolean,
+      amountSpecified: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish
+    ],
+    [IVPoolWrapper.SwapResultStructOutput],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateGlobalFundingState'
+  ): TypedContractMethod<[useZeroFundingRate: boolean], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'vPool'
+  ): TypedContractMethod<[], [string], 'view'>;
 
-    protocolFeePips(overrides?: CallOverrides): Promise<number>;
-
-    swap(
-      swapVTokenForVQuote: PromiseOrValue<boolean>,
-      amountSpecified: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<IVPoolWrapper.SwapResultStructOutput>;
-
-    updateGlobalFundingState(
-      useZeroFundingRate: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    vPool(overrides?: CallOverrides): Promise<string>;
-  };
+  getEvent(
+    key: 'AccruedProtocolFeeCollected'
+  ): TypedContractEvent<
+    AccruedProtocolFeeCollectedEvent.InputTuple,
+    AccruedProtocolFeeCollectedEvent.OutputTuple,
+    AccruedProtocolFeeCollectedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Burn'
+  ): TypedContractEvent<
+    BurnEvent.InputTuple,
+    BurnEvent.OutputTuple,
+    BurnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FundingRateOverrideUpdated'
+  ): TypedContractEvent<
+    FundingRateOverrideUpdatedEvent.InputTuple,
+    FundingRateOverrideUpdatedEvent.OutputTuple,
+    FundingRateOverrideUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'LiquidityFeeUpdated'
+  ): TypedContractEvent<
+    LiquidityFeeUpdatedEvent.InputTuple,
+    LiquidityFeeUpdatedEvent.OutputTuple,
+    LiquidityFeeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Mint'
+  ): TypedContractEvent<
+    MintEvent.InputTuple,
+    MintEvent.OutputTuple,
+    MintEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ProtocolFeeUpdated'
+  ): TypedContractEvent<
+    ProtocolFeeUpdatedEvent.InputTuple,
+    ProtocolFeeUpdatedEvent.OutputTuple,
+    ProtocolFeeUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Swap'
+  ): TypedContractEvent<
+    SwapEvent.InputTuple,
+    SwapEvent.OutputTuple,
+    SwapEvent.OutputObject
+  >;
 
   filters: {
-    'AccruedProtocolFeeCollected(uint256)'(
-      amount?: null
-    ): AccruedProtocolFeeCollectedEventFilter;
-    AccruedProtocolFeeCollected(
-      amount?: null
-    ): AccruedProtocolFeeCollectedEventFilter;
+    'AccruedProtocolFeeCollected(uint256)': TypedContractEvent<
+      AccruedProtocolFeeCollectedEvent.InputTuple,
+      AccruedProtocolFeeCollectedEvent.OutputTuple,
+      AccruedProtocolFeeCollectedEvent.OutputObject
+    >;
+    AccruedProtocolFeeCollected: TypedContractEvent<
+      AccruedProtocolFeeCollectedEvent.InputTuple,
+      AccruedProtocolFeeCollectedEvent.OutputTuple,
+      AccruedProtocolFeeCollectedEvent.OutputObject
+    >;
 
-    'Burn(int24,int24,uint128,uint256,uint256)'(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null,
-      vTokenPrincipal?: null,
-      vQuotePrincipal?: null
-    ): BurnEventFilter;
-    Burn(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null,
-      vTokenPrincipal?: null,
-      vQuotePrincipal?: null
-    ): BurnEventFilter;
+    'Burn(int24,int24,uint128,uint256,uint256)': TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
+    Burn: TypedContractEvent<
+      BurnEvent.InputTuple,
+      BurnEvent.OutputTuple,
+      BurnEvent.OutputObject
+    >;
 
-    'FundingRateOverrideUpdated(int256)'(
-      fundingRateOverrideX128?: null
-    ): FundingRateOverrideUpdatedEventFilter;
-    FundingRateOverrideUpdated(
-      fundingRateOverrideX128?: null
-    ): FundingRateOverrideUpdatedEventFilter;
+    'FundingRateOverrideUpdated(int256)': TypedContractEvent<
+      FundingRateOverrideUpdatedEvent.InputTuple,
+      FundingRateOverrideUpdatedEvent.OutputTuple,
+      FundingRateOverrideUpdatedEvent.OutputObject
+    >;
+    FundingRateOverrideUpdated: TypedContractEvent<
+      FundingRateOverrideUpdatedEvent.InputTuple,
+      FundingRateOverrideUpdatedEvent.OutputTuple,
+      FundingRateOverrideUpdatedEvent.OutputObject
+    >;
 
-    'LiquidityFeeUpdated(uint24)'(
-      liquidityFeePips?: null
-    ): LiquidityFeeUpdatedEventFilter;
-    LiquidityFeeUpdated(
-      liquidityFeePips?: null
-    ): LiquidityFeeUpdatedEventFilter;
+    'LiquidityFeeUpdated(uint24)': TypedContractEvent<
+      LiquidityFeeUpdatedEvent.InputTuple,
+      LiquidityFeeUpdatedEvent.OutputTuple,
+      LiquidityFeeUpdatedEvent.OutputObject
+    >;
+    LiquidityFeeUpdated: TypedContractEvent<
+      LiquidityFeeUpdatedEvent.InputTuple,
+      LiquidityFeeUpdatedEvent.OutputTuple,
+      LiquidityFeeUpdatedEvent.OutputObject
+    >;
 
-    'Mint(int24,int24,uint128,uint256,uint256)'(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null,
-      vTokenPrincipal?: null,
-      vQuotePrincipal?: null
-    ): MintEventFilter;
-    Mint(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null,
-      vTokenPrincipal?: null,
-      vQuotePrincipal?: null
-    ): MintEventFilter;
+    'Mint(int24,int24,uint128,uint256,uint256)': TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
+    Mint: TypedContractEvent<
+      MintEvent.InputTuple,
+      MintEvent.OutputTuple,
+      MintEvent.OutputObject
+    >;
 
-    'ProtocolFeeUpdated(uint24)'(
-      protocolFeePips?: null
-    ): ProtocolFeeUpdatedEventFilter;
-    ProtocolFeeUpdated(protocolFeePips?: null): ProtocolFeeUpdatedEventFilter;
+    'ProtocolFeeUpdated(uint24)': TypedContractEvent<
+      ProtocolFeeUpdatedEvent.InputTuple,
+      ProtocolFeeUpdatedEvent.OutputTuple,
+      ProtocolFeeUpdatedEvent.OutputObject
+    >;
+    ProtocolFeeUpdated: TypedContractEvent<
+      ProtocolFeeUpdatedEvent.InputTuple,
+      ProtocolFeeUpdatedEvent.OutputTuple,
+      ProtocolFeeUpdatedEvent.OutputObject
+    >;
 
-    'Swap(tuple)'(swapResult?: null): SwapEventFilter;
-    Swap(swapResult?: null): SwapEventFilter;
-  };
-
-  estimateGas: {
-    burn(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getExtrapolatedSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getExtrapolatedValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getSumAX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initialize(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<BigNumber>;
-
-    mint(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    protocolFeePips(overrides?: CallOverrides): Promise<BigNumber>;
-
-    swap(
-      swapVTokenForVQuote: PromiseOrValue<boolean>,
-      amountSpecified: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateGlobalFundingState(
-      useZeroFundingRate: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    vPool(overrides?: CallOverrides): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    burn(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    collectAccruedProtocolFee(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getExtrapolatedSumAX128(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getExtrapolatedValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getSumAX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getValuesInside(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      params: IVPoolWrapper.InitializeVPoolWrapperParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidityFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    mint(
-      tickLower: PromiseOrValue<BigNumberish>,
-      tickUpper: PromiseOrValue<BigNumberish>,
-      liquidity: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    protocolFeePips(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    swap(
-      swapVTokenForVQuote: PromiseOrValue<boolean>,
-      amountSpecified: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateGlobalFundingState(
-      useZeroFundingRate: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    vPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    'Swap(tuple)': TypedContractEvent<
+      SwapEvent.InputTuple,
+      SwapEvent.OutputTuple,
+      SwapEvent.OutputObject
+    >;
+    Swap: TypedContractEvent<
+      SwapEvent.InputTuple,
+      SwapEvent.OutputTuple,
+      SwapEvent.OutputObject
+    >;
   };
 }

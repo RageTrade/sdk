@@ -3,124 +3,109 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IFlashLoanRecipientInterface extends utils.Interface {
-  functions: {
-    'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
-  };
-
-  getFunction(nameOrSignatureOrTopic: 'receiveFlashLoan'): FunctionFragment;
+export interface IFlashLoanRecipientInterface extends Interface {
+  getFunction(nameOrSignature: 'receiveFlashLoan'): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'receiveFlashLoan',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BigNumberish>[],
-      PromiseOrValue<BytesLike>
-    ]
+    values: [AddressLike[], BigNumberish[], BigNumberish[], BytesLike]
   ): string;
 
   decodeFunctionResult(
     functionFragment: 'receiveFlashLoan',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface IFlashLoanRecipient extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IFlashLoanRecipientInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  receiveFlashLoan(
-    tokens: PromiseOrValue<string>[],
-    amounts: PromiseOrValue<BigNumberish>[],
-    feeAmounts: PromiseOrValue<BigNumberish>[],
-    userData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  callStatic: {
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  receiveFlashLoan: TypedContractMethod<
+    [
+      tokens: AddressLike[],
+      amounts: BigNumberish[],
+      feeAmounts: BigNumberish[],
+      userData: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'receiveFlashLoan'
+  ): TypedContractMethod<
+    [
+      tokens: AddressLike[],
+      amounts: BigNumberish[],
+      feeAmounts: BigNumberish[],
+      userData: BytesLike
+    ],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    receiveFlashLoan(
-      tokens: PromiseOrValue<string>[],
-      amounts: PromiseOrValue<BigNumberish>[],
-      feeAmounts: PromiseOrValue<BigNumberish>[],
-      userData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

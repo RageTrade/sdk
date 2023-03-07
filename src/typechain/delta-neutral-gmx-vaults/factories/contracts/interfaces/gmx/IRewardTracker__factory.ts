@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IRewardTracker,
   IRewardTrackerInterface,
@@ -265,17 +264,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IRewardTracker__factory {
   static readonly abi = _abi;
   static createInterface(): IRewardTrackerInterface {
-    return new utils.Interface(_abi) as IRewardTrackerInterface;
+    return new Interface(_abi) as IRewardTrackerInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IRewardTracker {
-    return new Contract(address, _abi, signerOrProvider) as IRewardTracker;
+    return new Contract(address, _abi, runner) as unknown as IRewardTracker;
   }
 }

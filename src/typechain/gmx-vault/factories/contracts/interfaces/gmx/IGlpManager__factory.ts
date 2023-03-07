@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IGlpManager,
   IGlpManagerInterface,
@@ -257,17 +256,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IGlpManager__factory {
   static readonly abi = _abi;
   static createInterface(): IGlpManagerInterface {
-    return new utils.Interface(_abi) as IGlpManagerInterface;
+    return new Interface(_abi) as IGlpManagerInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IGlpManager {
-    return new Contract(address, _abi, signerOrProvider) as IGlpManager;
+  static connect(address: string, runner?: ContractRunner | null): IGlpManager {
+    return new Contract(address, _abi, runner) as unknown as IGlpManager;
   }
 }

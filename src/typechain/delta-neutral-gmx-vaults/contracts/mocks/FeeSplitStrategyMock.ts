@@ -3,57 +3,48 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace FeeSplitStrategy {
   export type InfoStruct = {
-    optimalUtilizationRate: PromiseOrValue<BigNumberish>;
-    baseVariableBorrowRate: PromiseOrValue<BigNumberish>;
-    variableRateSlope1: PromiseOrValue<BigNumberish>;
-    variableRateSlope2: PromiseOrValue<BigNumberish>;
+    optimalUtilizationRate: BigNumberish;
+    baseVariableBorrowRate: BigNumberish;
+    variableRateSlope1: BigNumberish;
+    variableRateSlope2: BigNumberish;
   };
 
   export type InfoStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    optimalUtilizationRate: bigint,
+    baseVariableBorrowRate: bigint,
+    variableRateSlope1: bigint,
+    variableRateSlope2: bigint
   ] & {
-    optimalUtilizationRate: BigNumber;
-    baseVariableBorrowRate: BigNumber;
-    variableRateSlope1: BigNumber;
-    variableRateSlope2: BigNumber;
+    optimalUtilizationRate: bigint;
+    baseVariableBorrowRate: bigint;
+    variableRateSlope1: bigint;
+    variableRateSlope2: bigint;
   };
 }
 
-export interface FeeSplitStrategyMockInterface extends utils.Interface {
-  functions: {
-    'calculateFeeSplit(uint256,uint256)': FunctionFragment;
-    'getMaxVariableBorrowRate()': FunctionFragment;
-    'info()': FunctionFragment;
-    'setFeeSplitStrategy((uint128,uint128,uint128,uint128))': FunctionFragment;
-  };
-
+export interface FeeSplitStrategyMockInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'calculateFeeSplit'
       | 'getMaxVariableBorrowRate'
       | 'info'
@@ -62,7 +53,7 @@ export interface FeeSplitStrategyMockInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: 'calculateFeeSplit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getMaxVariableBorrowRate',
@@ -87,141 +78,112 @@ export interface FeeSplitStrategyMockInterface extends utils.Interface {
     functionFragment: 'setFeeSplitStrategy',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface FeeSplitStrategyMock extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: FeeSplitStrategyMockInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    calculateFeeSplit(
-      availableLiquidity: PromiseOrValue<BigNumberish>,
-      usedLiquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { feeSplitRate: BigNumber }>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getMaxVariableBorrowRate(overrides?: CallOverrides): Promise<[BigNumber]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    info(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        optimalUtilizationRate: BigNumber;
-        baseVariableBorrowRate: BigNumber;
-        variableRateSlope1: BigNumber;
-        variableRateSlope2: BigNumber;
-      }
-    >;
-
-    setFeeSplitStrategy(
-      _info: FeeSplitStrategy.InfoStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  calculateFeeSplit(
-    availableLiquidity: PromiseOrValue<BigNumberish>,
-    usedLiquidity: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getMaxVariableBorrowRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-  info(overrides?: CallOverrides): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber] & {
-      optimalUtilizationRate: BigNumber;
-      baseVariableBorrowRate: BigNumber;
-      variableRateSlope1: BigNumber;
-      variableRateSlope2: BigNumber;
-    }
+  calculateFeeSplit: TypedContractMethod<
+    [availableLiquidity: BigNumberish, usedLiquidity: BigNumberish],
+    [bigint],
+    'view'
   >;
 
-  setFeeSplitStrategy(
-    _info: FeeSplitStrategy.InfoStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getMaxVariableBorrowRate: TypedContractMethod<[], [bigint], 'view'>;
 
-  callStatic: {
-    calculateFeeSplit(
-      availableLiquidity: PromiseOrValue<BigNumberish>,
-      usedLiquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMaxVariableBorrowRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    info(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        optimalUtilizationRate: BigNumber;
-        baseVariableBorrowRate: BigNumber;
-        variableRateSlope1: BigNumber;
-        variableRateSlope2: BigNumber;
+  info: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        optimalUtilizationRate: bigint;
+        baseVariableBorrowRate: bigint;
+        variableRateSlope1: bigint;
+        variableRateSlope2: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    setFeeSplitStrategy(
-      _info: FeeSplitStrategy.InfoStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  setFeeSplitStrategy: TypedContractMethod<
+    [_info: FeeSplitStrategy.InfoStruct],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'calculateFeeSplit'
+  ): TypedContractMethod<
+    [availableLiquidity: BigNumberish, usedLiquidity: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getMaxVariableBorrowRate'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(nameOrSignature: 'info'): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint, bigint] & {
+        optimalUtilizationRate: bigint;
+        baseVariableBorrowRate: bigint;
+        variableRateSlope1: bigint;
+        variableRateSlope2: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'setFeeSplitStrategy'
+  ): TypedContractMethod<
+    [_info: FeeSplitStrategy.InfoStruct],
+    [void],
+    'nonpayable'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    calculateFeeSplit(
-      availableLiquidity: PromiseOrValue<BigNumberish>,
-      usedLiquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMaxVariableBorrowRate(overrides?: CallOverrides): Promise<BigNumber>;
-
-    info(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setFeeSplitStrategy(
-      _info: FeeSplitStrategy.InfoStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    calculateFeeSplit(
-      availableLiquidity: PromiseOrValue<BigNumberish>,
-      usedLiquidity: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMaxVariableBorrowRate(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    info(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setFeeSplitStrategy(
-      _info: FeeSplitStrategy.InfoStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-  };
 }

@@ -3,66 +3,62 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../common';
 
 export declare namespace RageERC4626 {
   export type RageERC4626InitParamsStruct = {
-    asset: PromiseOrValue<string>;
-    name: PromiseOrValue<string>;
-    symbol: PromiseOrValue<string>;
-  };
-
-  export type RageERC4626InitParamsStructOutput = [string, string, string] & {
-    asset: string;
+    asset: AddressLike;
     name: string;
     symbol: string;
   };
+
+  export type RageERC4626InitParamsStructOutput = [
+    asset: string,
+    name: string,
+    symbol: string
+  ] & { asset: string; name: string; symbol: string };
 }
 
 export declare namespace BaseVault {
   export type BaseVaultInitParamsStruct = {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStruct;
-    ethPoolId: PromiseOrValue<BigNumberish>;
-    swapSimulator: PromiseOrValue<string>;
-    rageClearingHouse: PromiseOrValue<string>;
-    clearingHouseLens: PromiseOrValue<string>;
-    rageCollateralToken: PromiseOrValue<string>;
-    rageSettlementToken: PromiseOrValue<string>;
+    ethPoolId: BigNumberish;
+    swapSimulator: AddressLike;
+    rageClearingHouse: AddressLike;
+    clearingHouseLens: AddressLike;
+    rageCollateralToken: AddressLike;
+    rageSettlementToken: AddressLike;
   };
 
   export type BaseVaultInitParamsStructOutput = [
-    RageERC4626.RageERC4626InitParamsStructOutput,
-    number,
-    string,
-    string,
-    string,
-    string,
-    string
+    rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStructOutput,
+    ethPoolId: bigint,
+    swapSimulator: string,
+    rageClearingHouse: string,
+    clearingHouseLens: string,
+    rageCollateralToken: string,
+    rageSettlementToken: string
   ] & {
     rageErc4626InitParams: RageERC4626.RageERC4626InitParamsStructOutput;
-    ethPoolId: number;
+    ethPoolId: bigint;
     swapSimulator: string;
     rageClearingHouse: string;
     clearingHouseLens: string;
@@ -74,47 +70,47 @@ export declare namespace BaseVault {
 export declare namespace EightyTwentyRangeStrategyVault {
   export type EightyTwentyRangeStrategyVaultInitParamsStruct = {
     baseVaultInitParams: BaseVault.BaseVaultInitParamsStruct;
-    closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>;
-    resetPositionThresholdBps: PromiseOrValue<BigNumberish>;
-    minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>;
+    closePositionSlippageSqrtToleranceBps: BigNumberish;
+    resetPositionThresholdBps: BigNumberish;
+    minNotionalPositionToCloseThreshold: BigNumberish;
   };
 
   export type EightyTwentyRangeStrategyVaultInitParamsStructOutput = [
-    BaseVault.BaseVaultInitParamsStructOutput,
-    number,
-    number,
-    BigNumber
+    baseVaultInitParams: BaseVault.BaseVaultInitParamsStructOutput,
+    closePositionSlippageSqrtToleranceBps: bigint,
+    resetPositionThresholdBps: bigint,
+    minNotionalPositionToCloseThreshold: bigint
   ] & {
     baseVaultInitParams: BaseVault.BaseVaultInitParamsStructOutput;
-    closePositionSlippageSqrtToleranceBps: number;
-    resetPositionThresholdBps: number;
-    minNotionalPositionToCloseThreshold: BigNumber;
+    closePositionSlippageSqrtToleranceBps: bigint;
+    resetPositionThresholdBps: bigint;
+    minNotionalPositionToCloseThreshold: bigint;
   };
 }
 
 export declare namespace CurveYieldStrategy {
   export type CurveYieldStrategyInitParamsStruct = {
     eightyTwentyRangeStrategyVaultInitParams: EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStruct;
-    usdt: PromiseOrValue<string>;
-    usdc: PromiseOrValue<string>;
-    weth: PromiseOrValue<string>;
-    crvToken: PromiseOrValue<string>;
-    gauge: PromiseOrValue<string>;
-    uniV3Router: PromiseOrValue<string>;
-    lpPriceHolder: PromiseOrValue<string>;
-    tricryptoPool: PromiseOrValue<string>;
+    usdt: AddressLike;
+    usdc: AddressLike;
+    weth: AddressLike;
+    crvToken: AddressLike;
+    gauge: AddressLike;
+    uniV3Router: AddressLike;
+    lpPriceHolder: AddressLike;
+    tricryptoPool: AddressLike;
   };
 
   export type CurveYieldStrategyInitParamsStructOutput = [
-    EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStructOutput,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string,
-    string
+    eightyTwentyRangeStrategyVaultInitParams: EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStructOutput,
+    usdt: string,
+    usdc: string,
+    weth: string,
+    crvToken: string,
+    gauge: string,
+    uniV3Router: string,
+    lpPriceHolder: string,
+    tricryptoPool: string
   ] & {
     eightyTwentyRangeStrategyVaultInitParams: EightyTwentyRangeStrategyVault.EightyTwentyRangeStrategyVaultInitParamsStructOutput;
     usdt: string;
@@ -128,75 +124,9 @@ export declare namespace CurveYieldStrategy {
   };
 }
 
-export interface CurveYieldStrategyInterface extends utils.Interface {
-  functions: {
-    'FEE()': FunctionFragment;
-    'MAX_BPS()': FunctionFragment;
-    'allowance(address,address)': FunctionFragment;
-    'approve(address,uint256)': FunctionFragment;
-    'asset()': FunctionFragment;
-    'balanceOf(address)': FunctionFragment;
-    'baseLiquidity()': FunctionFragment;
-    'baseTickLower()': FunctionFragment;
-    'baseTickUpper()': FunctionFragment;
-    'closePositionSlippageSqrtToleranceBps()': FunctionFragment;
-    'closeTokenPosition()': FunctionFragment;
-    'convertToAssets(uint256)': FunctionFragment;
-    'convertToShares(uint256)': FunctionFragment;
-    'decimals()': FunctionFragment;
-    'decreaseAllowance(address,uint256)': FunctionFragment;
-    'deposit(uint256,address)': FunctionFragment;
-    'depositCap()': FunctionFragment;
-    'ethPoolId()': FunctionFragment;
-    'extsload(bytes32)': FunctionFragment;
-    'extsload(bytes32[])': FunctionFragment;
-    'getMarketValue(uint256)': FunctionFragment;
-    'getPriceX128()': FunctionFragment;
-    'getVaultMarketValue()': FunctionFragment;
-    'grantAllowances()': FunctionFragment;
-    'increaseAllowance(address,uint256)': FunctionFragment;
-    'initialize(((((address,string,string),uint32,address,address,address,address,address),uint16,uint16,uint64),address,address,address,address,address,address,address,address))': FunctionFragment;
-    'isReset()': FunctionFragment;
-    'isValidRebalance(int256)': FunctionFragment;
-    'keeper()': FunctionFragment;
-    'lastRebalanceTS()': FunctionFragment;
-    'maxDeposit(address)': FunctionFragment;
-    'maxMint(address)': FunctionFragment;
-    'maxRedeem(address)': FunctionFragment;
-    'maxWithdraw(address)': FunctionFragment;
-    'migrate()': FunctionFragment;
-    'minNotionalPositionToCloseThreshold()': FunctionFragment;
-    'mint(uint256,address)': FunctionFragment;
-    'name()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'previewDeposit(uint256)': FunctionFragment;
-    'previewMint(uint256)': FunctionFragment;
-    'previewRedeem(uint256)': FunctionFragment;
-    'previewWithdraw(uint256)': FunctionFragment;
-    'rageAccountNo()': FunctionFragment;
-    'rageClearingHouse()': FunctionFragment;
-    'rageVPool()': FunctionFragment;
-    'rebalance()': FunctionFragment;
-    'rebalancePriceThresholdBps()': FunctionFragment;
-    'rebalanceTimeThreshold()': FunctionFragment;
-    'redeem(uint256,address,address)': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setEightTwentyParams(uint16,uint16,uint64)': FunctionFragment;
-    'swapSimulator()': FunctionFragment;
-    'symbol()': FunctionFragment;
-    'totalAssets()': FunctionFragment;
-    'totalSupply()': FunctionFragment;
-    'transfer(address,uint256)': FunctionFragment;
-    'transferFrom(address,address,uint256)': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'updateBaseParams(uint256,address,uint32,uint16)': FunctionFragment;
-    'updateCurveParams(uint256,uint256,uint256,uint256,address,address)': FunctionFragment;
-    'withdraw(uint256,address,address)': FunctionFragment;
-    'withdrawFees(address)': FunctionFragment;
-  };
-
+export interface CurveYieldStrategyInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'FEE'
       | 'MAX_BPS'
       | 'allowance'
@@ -262,20 +192,41 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
       | 'withdrawFees'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Approval'
+      | 'Deposit'
+      | 'Initialized'
+      | 'OwnershipTransferred'
+      | 'Transfer'
+      | 'Withdraw'
+      | 'BaseParamsUpdated'
+      | 'CrvSwapFailedDueToSlippage'
+      | 'CurveParamsUpdated'
+      | 'EightyTwentyParamsUpdated'
+      | 'FeesUpdated'
+      | 'FeesWithdrawn'
+      | 'Harvested'
+      | 'Rebalance'
+      | 'Staked'
+      | 'StateInfo'
+      | 'TokenPositionClosed'
+  ): EventFragment;
+
   encodeFunctionData(functionFragment: 'FEE', values?: undefined): string;
   encodeFunctionData(functionFragment: 'MAX_BPS', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'allowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'approve',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'asset', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'balanceOf',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'baseLiquidity',
@@ -299,20 +250,20 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToAssets',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'convertToShares',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'decimals', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'decreaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'deposit',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'depositCap',
@@ -321,15 +272,15 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'ethPoolId', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32)',
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'extsload(bytes32[])',
-    values: [PromiseOrValue<BytesLike>[]]
+    values: [BytesLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'getMarketValue',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPriceX128',
@@ -345,7 +296,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'increaseAllowance',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
@@ -354,7 +305,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: 'isReset', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'isValidRebalance',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
   encodeFunctionData(
@@ -363,19 +314,19 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'maxDeposit',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxMint',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxRedeem',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'maxWithdraw',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'migrate', values?: undefined): string;
   encodeFunctionData(
@@ -384,25 +335,25 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'mint',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'name', values?: undefined): string;
   encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'previewDeposit',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewMint',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewRedeem',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'previewWithdraw',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'rageAccountNo',
@@ -424,11 +375,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'redeem',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'renounceOwnership',
@@ -436,11 +383,7 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setEightTwentyParams',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'swapSimulator',
@@ -457,51 +400,38 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transfer',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferFrom',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateBaseParams',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'updateCurveParams',
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      AddressLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdraw',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFees',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
 
   decodeFunctionResult(functionFragment: 'FEE', data: BytesLike): Result;
@@ -678,1673 +608,1147 @@ export interface CurveYieldStrategyInterface extends utils.Interface {
     functionFragment: 'withdrawFees',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Approval(address,address,uint256)': EventFragment;
-    'Deposit(address,address,uint256,uint256)': EventFragment;
-    'Initialized(uint8)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-    'Transfer(address,address,uint256)': EventFragment;
-    'Withdraw(address,address,address,uint256,uint256)': EventFragment;
-    'BaseParamsUpdated(uint256,address,uint32,uint16)': EventFragment;
-    'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': EventFragment;
-    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
-    'FeesUpdated(uint256)': EventFragment;
-    'FeesWithdrawn(uint256)': EventFragment;
-    'Harvested(uint256)': EventFragment;
-    'Rebalance()': EventFragment;
-    'Staked(uint256,address)': EventFragment;
-    'StateInfo(uint256)': EventFragment;
-    'TokenPositionClosed()': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Transfer'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Withdraw'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'BaseParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CrvSwapFailedDueToSlippage'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CurveParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EightyTwentyParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Harvested'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Rebalance'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Staked'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'StateInfo'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionClosed'): EventFragment;
 }
 
-export interface ApprovalEventObject {
-  owner: string;
-  spender: string;
-  value: BigNumber;
+export namespace ApprovalEvent {
+  export type InputTuple = [
+    owner: AddressLike,
+    spender: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [owner: string, spender: string, value: bigint];
+  export interface OutputObject {
+    owner: string;
+    spender: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ApprovalEvent = TypedEvent<
-  [string, string, BigNumber],
-  ApprovalEventObject
->;
 
-export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
-
-export interface DepositEventObject {
-  caller: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace DepositEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type DepositEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber],
-  DepositEventObject
->;
 
-export type DepositEventFilter = TypedEventFilter<DepositEvent>;
-
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface TransferEventObject {
-  from: string;
-  to: string;
-  value: BigNumber;
+export namespace TransferEvent {
+  export type InputTuple = [
+    from: AddressLike,
+    to: AddressLike,
+    value: BigNumberish
+  ];
+  export type OutputTuple = [from: string, to: string, value: bigint];
+  export interface OutputObject {
+    from: string;
+    to: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TransferEvent = TypedEvent<
-  [string, string, BigNumber],
-  TransferEventObject
->;
 
-export type TransferEventFilter = TypedEventFilter<TransferEvent>;
-
-export interface WithdrawEventObject {
-  caller: string;
-  receiver: string;
-  owner: string;
-  assets: BigNumber;
-  shares: BigNumber;
+export namespace WithdrawEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    receiver: AddressLike,
+    owner: AddressLike,
+    assets: BigNumberish,
+    shares: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    receiver: string,
+    owner: string,
+    assets: bigint,
+    shares: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    receiver: string;
+    owner: string;
+    assets: bigint;
+    shares: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type WithdrawEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber],
-  WithdrawEventObject
->;
 
-export type WithdrawEventFilter = TypedEventFilter<WithdrawEvent>;
-
-export interface BaseParamsUpdatedEventObject {
-  newDepositCap: BigNumber;
-  newKeeperAddress: string;
-  rebalanceTimeThreshold: number;
-  rebalancePriceThresholdBps: number;
+export namespace BaseParamsUpdatedEvent {
+  export type InputTuple = [
+    newDepositCap: BigNumberish,
+    newKeeperAddress: AddressLike,
+    rebalanceTimeThreshold: BigNumberish,
+    rebalancePriceThresholdBps: BigNumberish
+  ];
+  export type OutputTuple = [
+    newDepositCap: bigint,
+    newKeeperAddress: string,
+    rebalanceTimeThreshold: bigint,
+    rebalancePriceThresholdBps: bigint
+  ];
+  export interface OutputObject {
+    newDepositCap: bigint;
+    newKeeperAddress: string;
+    rebalanceTimeThreshold: bigint;
+    rebalancePriceThresholdBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BaseParamsUpdatedEvent = TypedEvent<
-  [BigNumber, string, number, number],
-  BaseParamsUpdatedEventObject
->;
 
-export type BaseParamsUpdatedEventFilter =
-  TypedEventFilter<BaseParamsUpdatedEvent>;
-
-export interface CrvSwapFailedDueToSlippageEventObject {
-  crvSlippageTolerance: BigNumber;
+export namespace CrvSwapFailedDueToSlippageEvent {
+  export type InputTuple = [crvSlippageTolerance: BigNumberish];
+  export type OutputTuple = [crvSlippageTolerance: bigint];
+  export interface OutputObject {
+    crvSlippageTolerance: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CrvSwapFailedDueToSlippageEvent = TypedEvent<
-  [BigNumber],
-  CrvSwapFailedDueToSlippageEventObject
->;
 
-export type CrvSwapFailedDueToSlippageEventFilter =
-  TypedEventFilter<CrvSwapFailedDueToSlippageEvent>;
-
-export interface CurveParamsUpdatedEventObject {
-  feeBps: BigNumber;
-  stablecoinSlippage: BigNumber;
-  crvHarvestThreshold: BigNumber;
-  crvSlippageTolerance: BigNumber;
-  gauge: string;
-  crvOracle: string;
+export namespace CurveParamsUpdatedEvent {
+  export type InputTuple = [
+    feeBps: BigNumberish,
+    stablecoinSlippage: BigNumberish,
+    crvHarvestThreshold: BigNumberish,
+    crvSlippageTolerance: BigNumberish,
+    gauge: AddressLike,
+    crvOracle: AddressLike
+  ];
+  export type OutputTuple = [
+    feeBps: bigint,
+    stablecoinSlippage: bigint,
+    crvHarvestThreshold: bigint,
+    crvSlippageTolerance: bigint,
+    gauge: string,
+    crvOracle: string
+  ];
+  export interface OutputObject {
+    feeBps: bigint;
+    stablecoinSlippage: bigint;
+    crvHarvestThreshold: bigint;
+    crvSlippageTolerance: bigint;
+    gauge: string;
+    crvOracle: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CurveParamsUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, string, string],
-  CurveParamsUpdatedEventObject
->;
 
-export type CurveParamsUpdatedEventFilter =
-  TypedEventFilter<CurveParamsUpdatedEvent>;
-
-export interface EightyTwentyParamsUpdatedEventObject {
-  closePositionSlippageSqrtToleranceBps: number;
-  resetPositionThresholdBps: number;
-  minNotionalPositionToCloseThreshold: BigNumber;
+export namespace EightyTwentyParamsUpdatedEvent {
+  export type InputTuple = [
+    closePositionSlippageSqrtToleranceBps: BigNumberish,
+    resetPositionThresholdBps: BigNumberish,
+    minNotionalPositionToCloseThreshold: BigNumberish
+  ];
+  export type OutputTuple = [
+    closePositionSlippageSqrtToleranceBps: bigint,
+    resetPositionThresholdBps: bigint,
+    minNotionalPositionToCloseThreshold: bigint
+  ];
+  export interface OutputObject {
+    closePositionSlippageSqrtToleranceBps: bigint;
+    resetPositionThresholdBps: bigint;
+    minNotionalPositionToCloseThreshold: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EightyTwentyParamsUpdatedEvent = TypedEvent<
-  [number, number, BigNumber],
-  EightyTwentyParamsUpdatedEventObject
->;
 
-export type EightyTwentyParamsUpdatedEventFilter =
-  TypedEventFilter<EightyTwentyParamsUpdatedEvent>;
-
-export interface FeesUpdatedEventObject {
-  fee: BigNumber;
+export namespace FeesUpdatedEvent {
+  export type InputTuple = [fee: BigNumberish];
+  export type OutputTuple = [fee: bigint];
+  export interface OutputObject {
+    fee: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesUpdatedEvent = TypedEvent<[BigNumber], FeesUpdatedEventObject>;
 
-export type FeesUpdatedEventFilter = TypedEventFilter<FeesUpdatedEvent>;
-
-export interface FeesWithdrawnEventObject {
-  total: BigNumber;
+export namespace FeesWithdrawnEvent {
+  export type InputTuple = [total: BigNumberish];
+  export type OutputTuple = [total: bigint];
+  export interface OutputObject {
+    total: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesWithdrawnEvent = TypedEvent<
-  [BigNumber],
-  FeesWithdrawnEventObject
->;
 
-export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
-
-export interface HarvestedEventObject {
-  crvAmount: BigNumber;
+export namespace HarvestedEvent {
+  export type InputTuple = [crvAmount: BigNumberish];
+  export type OutputTuple = [crvAmount: bigint];
+  export interface OutputObject {
+    crvAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type HarvestedEvent = TypedEvent<[BigNumber], HarvestedEventObject>;
 
-export type HarvestedEventFilter = TypedEventFilter<HarvestedEvent>;
-
-export interface RebalanceEventObject {}
-export type RebalanceEvent = TypedEvent<[], RebalanceEventObject>;
-
-export type RebalanceEventFilter = TypedEventFilter<RebalanceEvent>;
-
-export interface StakedEventObject {
-  amount: BigNumber;
-  depositor: string;
+export namespace RebalanceEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StakedEvent = TypedEvent<[BigNumber, string], StakedEventObject>;
 
-export type StakedEventFilter = TypedEventFilter<StakedEvent>;
-
-export interface StateInfoEventObject {
-  lpPrice: BigNumber;
+export namespace StakedEvent {
+  export type InputTuple = [amount: BigNumberish, depositor: AddressLike];
+  export type OutputTuple = [amount: bigint, depositor: string];
+  export interface OutputObject {
+    amount: bigint;
+    depositor: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StateInfoEvent = TypedEvent<[BigNumber], StateInfoEventObject>;
 
-export type StateInfoEventFilter = TypedEventFilter<StateInfoEvent>;
+export namespace StateInfoEvent {
+  export type InputTuple = [lpPrice: BigNumberish];
+  export type OutputTuple = [lpPrice: bigint];
+  export interface OutputObject {
+    lpPrice: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
 
-export interface TokenPositionClosedEventObject {}
-export type TokenPositionClosedEvent = TypedEvent<
-  [],
-  TokenPositionClosedEventObject
->;
-
-export type TokenPositionClosedEventFilter =
-  TypedEventFilter<TokenPositionClosedEvent>;
+export namespace TokenPositionClosedEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
 
 export interface CurveYieldStrategy extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: CurveYieldStrategyInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    FEE(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<[string]>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    baseLiquidity(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    baseTickLower(overrides?: CallOverrides): Promise<[number]>;
-
-    baseTickUpper(overrides?: CallOverrides): Promise<[number]>;
-
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    decimals(overrides?: CallOverrides): Promise<[number]>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<[number]>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<[string] & { val: string }>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { marketValue: BigNumber }>;
-
-    getPriceX128(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
-
-    getVaultMarketValue(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { vaultMarketValue: BigNumber }>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  FEE: TypedContractMethod<[], [bigint], 'view'>;
+
+  MAX_BPS: TypedContractMethod<[], [bigint], 'view'>;
+
+  allowance: TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  approve: TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  asset: TypedContractMethod<[], [string], 'view'>;
 
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  balanceOf: TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
 
-    initialize(
-      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    isReset(overrides?: CallOverrides): Promise<[boolean]>;
+  baseLiquidity: TypedContractMethod<[], [bigint], 'view'>;
 
-    isValidRebalance(
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { isValid: boolean }>;
+  baseTickLower: TypedContractMethod<[], [bigint], 'view'>;
 
-    keeper(overrides?: CallOverrides): Promise<[string]>;
+  baseTickUpper: TypedContractMethod<[], [bigint], 'view'>;
 
-    lastRebalanceTS(overrides?: CallOverrides): Promise<[BigNumber]>;
+  closePositionSlippageSqrtToleranceBps: TypedContractMethod<
+    [],
+    [bigint],
+    'view'
+  >;
 
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  closeTokenPosition: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  convertToAssets: TypedContractMethod<
+    [shares: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+  convertToShares: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    migrate(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    name(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<[string]>;
-
-    rageVPool(overrides?: CallOverrides): Promise<[string]>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<[number]>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<[number]>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setEightTwentyParams(
-      _closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>,
-      _resetPositionThresholdBps: PromiseOrValue<BigNumberish>,
-      _minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<[string]>;
-
-    symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    totalAssets(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateBaseParams(
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      newKeeperAddress: PromiseOrValue<string>,
-      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      _rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    updateCurveParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _stablecoinSlippage: PromiseOrValue<BigNumberish>,
-      _crvHarvestThreshold: PromiseOrValue<BigNumberish>,
-      _crvSlippageTolerance: PromiseOrValue<BigNumberish>,
-      _gauge: PromiseOrValue<string>,
-      _crvOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawFees(
-      feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-  MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  allowance(
-    owner: PromiseOrValue<string>,
-    spender: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  approve(
-    spender: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  asset(overrides?: CallOverrides): Promise<string>;
-
-  balanceOf(
-    account: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  baseLiquidity(overrides?: CallOverrides): Promise<BigNumber>;
-
-  baseTickLower(overrides?: CallOverrides): Promise<number>;
-
-  baseTickUpper(overrides?: CallOverrides): Promise<number>;
-
-  closePositionSlippageSqrtToleranceBps(
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  closeTokenPosition(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  convertToAssets(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  convertToShares(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  decimals(overrides?: CallOverrides): Promise<number>;
-
-  decreaseAllowance(
-    spender: PromiseOrValue<string>,
-    subtractedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  deposit(
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-  ethPoolId(overrides?: CallOverrides): Promise<number>;
-
-  'extsload(bytes32)'(
-    slot: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  'extsload(bytes32[])'(
-    slots: PromiseOrValue<BytesLike>[],
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  getMarketValue(
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-  getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
+  decimals: TypedContractMethod<[], [bigint], 'view'>;
 
-  grantAllowances(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  increaseAllowance(
-    spender: PromiseOrValue<string>,
-    addedValue: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  initialize(
-    curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  isReset(overrides?: CallOverrides): Promise<boolean>;
-
-  isValidRebalance(
-    vaultMarketValue: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  keeper(overrides?: CallOverrides): Promise<string>;
+  decreaseAllowance: TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-  lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
+  deposit: TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-  maxDeposit(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  depositCap: TypedContractMethod<[], [bigint], 'view'>;
 
-  maxMint(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxRedeem(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  maxWithdraw(
-    owner: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  migrate(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  minNotionalPositionToCloseThreshold(
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  mint(
-    shares: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  name(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  previewDeposit(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewMint(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewRedeem(
-    shares: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  previewWithdraw(
-    assets: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-  rageClearingHouse(overrides?: CallOverrides): Promise<string>;
-
-  rageVPool(overrides?: CallOverrides): Promise<string>;
-
-  rebalance(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<number>;
-
-  rebalanceTimeThreshold(overrides?: CallOverrides): Promise<number>;
-
-  redeem(
-    shares: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setEightTwentyParams(
-    _closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>,
-    _resetPositionThresholdBps: PromiseOrValue<BigNumberish>,
-    _minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  swapSimulator(overrides?: CallOverrides): Promise<string>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-  totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-  transfer(
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferFrom(
-    from: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateBaseParams(
-    newDepositCap: PromiseOrValue<BigNumberish>,
-    newKeeperAddress: PromiseOrValue<string>,
-    _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-    _rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  updateCurveParams(
-    _feeBps: PromiseOrValue<BigNumberish>,
-    _stablecoinSlippage: PromiseOrValue<BigNumberish>,
-    _crvHarvestThreshold: PromiseOrValue<BigNumberish>,
-    _crvSlippageTolerance: PromiseOrValue<BigNumberish>,
-    _gauge: PromiseOrValue<string>,
-    _crvOracle: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdraw(
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    from: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawFees(
-    feeRecipient: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    asset(overrides?: CallOverrides): Promise<string>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    baseLiquidity(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseTickLower(overrides?: CallOverrides): Promise<number>;
-
-    baseTickUpper(overrides?: CallOverrides): Promise<number>;
-
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    closeTokenPosition(overrides?: CallOverrides): Promise<void>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<number>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<number>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<string[]>;
+  ethPoolId: TypedContractMethod<[], [bigint], 'view'>;
 
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  'extsload(bytes32)': TypedContractMethod<[slot: BytesLike], [string], 'view'>;
 
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
+  'extsload(bytes32[])': TypedContractMethod<
+    [slots: BytesLike[]],
+    [string[]],
+    'view'
+  >;
 
-    grantAllowances(overrides?: CallOverrides): Promise<void>;
+  getMarketValue: TypedContractMethod<[amount: BigNumberish], [bigint], 'view'>;
 
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    initialize(
-      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  getPriceX128: TypedContractMethod<[], [bigint], 'view'>;
 
-    isReset(overrides?: CallOverrides): Promise<boolean>;
+  getVaultMarketValue: TypedContractMethod<[], [bigint], 'view'>;
 
-    isValidRebalance(
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+  grantAllowances: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    keeper(overrides?: CallOverrides): Promise<string>;
+  increaseAllowance: TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-    lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
+  initialize: TypedContractMethod<
+    [
+      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  isReset: TypedContractMethod<[], [boolean], 'view'>;
 
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    migrate(overrides?: CallOverrides): Promise<void>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<string>;
-
-    rageVPool(overrides?: CallOverrides): Promise<string>;
-
-    rebalance(overrides?: CallOverrides): Promise<void>;
-
-    rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<number>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<number>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    setEightTwentyParams(
-      _closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>,
-      _resetPositionThresholdBps: PromiseOrValue<BigNumberish>,
-      _minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<string>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateBaseParams(
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      newKeeperAddress: PromiseOrValue<string>,
-      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      _rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    updateCurveParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _stablecoinSlippage: PromiseOrValue<BigNumberish>,
-      _crvHarvestThreshold: PromiseOrValue<BigNumberish>,
-      _crvSlippageTolerance: PromiseOrValue<BigNumberish>,
-      _gauge: PromiseOrValue<string>,
-      _crvOracle: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    withdrawFees(
-      feeRecipient: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  isValidRebalance: TypedContractMethod<
+    [vaultMarketValue: BigNumberish],
+    [boolean],
+    'view'
+  >;
+
+  keeper: TypedContractMethod<[], [string], 'view'>;
+
+  lastRebalanceTS: TypedContractMethod<[], [bigint], 'view'>;
+
+  maxDeposit: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+
+  maxMint: TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+
+  maxRedeem: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+
+  maxWithdraw: TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+
+  migrate: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  minNotionalPositionToCloseThreshold: TypedContractMethod<
+    [],
+    [bigint],
+    'view'
+  >;
+
+  mint: TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  name: TypedContractMethod<[], [string], 'view'>;
+
+  owner: TypedContractMethod<[], [string], 'view'>;
+
+  previewDeposit: TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+
+  previewMint: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+
+  previewRedeem: TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+
+  previewWithdraw: TypedContractMethod<
+    [assets: BigNumberish],
+    [bigint],
+    'view'
+  >;
+
+  rageAccountNo: TypedContractMethod<[], [bigint], 'view'>;
+
+  rageClearingHouse: TypedContractMethod<[], [string], 'view'>;
+
+  rageVPool: TypedContractMethod<[], [string], 'view'>;
+
+  rebalance: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  rebalancePriceThresholdBps: TypedContractMethod<[], [bigint], 'view'>;
+
+  rebalanceTimeThreshold: TypedContractMethod<[], [bigint], 'view'>;
+
+  redeem: TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  setEightTwentyParams: TypedContractMethod<
+    [
+      _closePositionSlippageSqrtToleranceBps: BigNumberish,
+      _resetPositionThresholdBps: BigNumberish,
+      _minNotionalPositionToCloseThreshold: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  swapSimulator: TypedContractMethod<[], [string], 'view'>;
+
+  symbol: TypedContractMethod<[], [string], 'view'>;
+
+  totalAssets: TypedContractMethod<[], [bigint], 'view'>;
+
+  totalSupply: TypedContractMethod<[], [bigint], 'view'>;
+
+  transfer: TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  transferFrom: TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  updateBaseParams: TypedContractMethod<
+    [
+      newDepositCap: BigNumberish,
+      newKeeperAddress: AddressLike,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  updateCurveParams: TypedContractMethod<
+    [
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _gauge: AddressLike,
+      _crvOracle: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  withdraw: TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  withdrawFees: TypedContractMethod<
+    [feeRecipient: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'FEE'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'MAX_BPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'allowance'
+  ): TypedContractMethod<
+    [owner: AddressLike, spender: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'approve'
+  ): TypedContractMethod<
+    [spender: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'asset'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'balanceOf'
+  ): TypedContractMethod<[account: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'baseLiquidity'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'baseTickLower'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'baseTickUpper'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'closePositionSlippageSqrtToleranceBps'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'closeTokenPosition'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'convertToAssets'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'convertToShares'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decimals'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'decreaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, subtractedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'deposit'
+  ): TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'depositCap'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'ethPoolId'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'extsload(bytes32)'
+  ): TypedContractMethod<[slot: BytesLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'extsload(bytes32[])'
+  ): TypedContractMethod<[slots: BytesLike[]], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getMarketValue'
+  ): TypedContractMethod<[amount: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPriceX128'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getVaultMarketValue'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'grantAllowances'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'increaseAllowance'
+  ): TypedContractMethod<
+    [spender: AddressLike, addedValue: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [
+      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'isReset'
+  ): TypedContractMethod<[], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'isValidRebalance'
+  ): TypedContractMethod<[vaultMarketValue: BigNumberish], [boolean], 'view'>;
+  getFunction(
+    nameOrSignature: 'keeper'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'lastRebalanceTS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxDeposit'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxMint'
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxRedeem'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'maxWithdraw'
+  ): TypedContractMethod<[owner: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'migrate'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'minNotionalPositionToCloseThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'mint'
+  ): TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'name'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewDeposit'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewMint'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewRedeem'
+  ): TypedContractMethod<[shares: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'previewWithdraw'
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageAccountNo'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageClearingHouse'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'rageVPool'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'rebalance'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'rebalancePriceThresholdBps'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'rebalanceTimeThreshold'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'redeem'
+  ): TypedContractMethod<
+    [shares: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setEightTwentyParams'
+  ): TypedContractMethod<
+    [
+      _closePositionSlippageSqrtToleranceBps: BigNumberish,
+      _resetPositionThresholdBps: BigNumberish,
+      _minNotionalPositionToCloseThreshold: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'swapSimulator'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'symbol'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalAssets'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'totalSupply'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'transfer'
+  ): TypedContractMethod<
+    [to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferFrom'
+  ): TypedContractMethod<
+    [from: AddressLike, to: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'updateBaseParams'
+  ): TypedContractMethod<
+    [
+      newDepositCap: BigNumberish,
+      newKeeperAddress: AddressLike,
+      _rebalanceTimeThreshold: BigNumberish,
+      _rebalancePriceThresholdBps: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'updateCurveParams'
+  ): TypedContractMethod<
+    [
+      _feeBps: BigNumberish,
+      _stablecoinSlippage: BigNumberish,
+      _crvHarvestThreshold: BigNumberish,
+      _crvSlippageTolerance: BigNumberish,
+      _gauge: AddressLike,
+      _crvOracle: AddressLike
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdraw'
+  ): TypedContractMethod<
+    [amount: BigNumberish, to: AddressLike, from: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'withdrawFees'
+  ): TypedContractMethod<[feeRecipient: AddressLike], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'Approval'
+  ): TypedContractEvent<
+    ApprovalEvent.InputTuple,
+    ApprovalEvent.OutputTuple,
+    ApprovalEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Deposit'
+  ): TypedContractEvent<
+    DepositEvent.InputTuple,
+    DepositEvent.OutputTuple,
+    DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Transfer'
+  ): TypedContractEvent<
+    TransferEvent.InputTuple,
+    TransferEvent.OutputTuple,
+    TransferEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Withdraw'
+  ): TypedContractEvent<
+    WithdrawEvent.InputTuple,
+    WithdrawEvent.OutputTuple,
+    WithdrawEvent.OutputObject
+  >;
+  getEvent(
+    key: 'BaseParamsUpdated'
+  ): TypedContractEvent<
+    BaseParamsUpdatedEvent.InputTuple,
+    BaseParamsUpdatedEvent.OutputTuple,
+    BaseParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CrvSwapFailedDueToSlippage'
+  ): TypedContractEvent<
+    CrvSwapFailedDueToSlippageEvent.InputTuple,
+    CrvSwapFailedDueToSlippageEvent.OutputTuple,
+    CrvSwapFailedDueToSlippageEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CurveParamsUpdated'
+  ): TypedContractEvent<
+    CurveParamsUpdatedEvent.InputTuple,
+    CurveParamsUpdatedEvent.OutputTuple,
+    CurveParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EightyTwentyParamsUpdated'
+  ): TypedContractEvent<
+    EightyTwentyParamsUpdatedEvent.InputTuple,
+    EightyTwentyParamsUpdatedEvent.OutputTuple,
+    EightyTwentyParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesUpdated'
+  ): TypedContractEvent<
+    FeesUpdatedEvent.InputTuple,
+    FeesUpdatedEvent.OutputTuple,
+    FeesUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesWithdrawn'
+  ): TypedContractEvent<
+    FeesWithdrawnEvent.InputTuple,
+    FeesWithdrawnEvent.OutputTuple,
+    FeesWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Harvested'
+  ): TypedContractEvent<
+    HarvestedEvent.InputTuple,
+    HarvestedEvent.OutputTuple,
+    HarvestedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Rebalance'
+  ): TypedContractEvent<
+    RebalanceEvent.InputTuple,
+    RebalanceEvent.OutputTuple,
+    RebalanceEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Staked'
+  ): TypedContractEvent<
+    StakedEvent.InputTuple,
+    StakedEvent.OutputTuple,
+    StakedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'StateInfo'
+  ): TypedContractEvent<
+    StateInfoEvent.InputTuple,
+    StateInfoEvent.OutputTuple,
+    StateInfoEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionClosed'
+  ): TypedContractEvent<
+    TokenPositionClosedEvent.InputTuple,
+    TokenPositionClosedEvent.OutputTuple,
+    TokenPositionClosedEvent.OutputObject
+  >;
 
   filters: {
-    'Approval(address,address,uint256)'(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-    Approval(
-      owner?: PromiseOrValue<string> | null,
-      spender?: PromiseOrValue<string> | null,
-      value?: null
-    ): ApprovalEventFilter;
-
-    'Deposit(address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-    Deposit(
-      caller?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): DepositEventFilter;
-
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
-
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-
-    'Transfer(address,address,uint256)'(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-    Transfer(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      value?: null
-    ): TransferEventFilter;
-
-    'Withdraw(address,address,address,uint256,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-    Withdraw(
-      caller?: PromiseOrValue<string> | null,
-      receiver?: PromiseOrValue<string> | null,
-      owner?: PromiseOrValue<string> | null,
-      assets?: null,
-      shares?: null
-    ): WithdrawEventFilter;
-
-    'BaseParamsUpdated(uint256,address,uint32,uint16)'(
-      newDepositCap?: null,
-      newKeeperAddress?: null,
-      rebalanceTimeThreshold?: null,
-      rebalancePriceThresholdBps?: null
-    ): BaseParamsUpdatedEventFilter;
-    BaseParamsUpdated(
-      newDepositCap?: null,
-      newKeeperAddress?: null,
-      rebalanceTimeThreshold?: null,
-      rebalancePriceThresholdBps?: null
-    ): BaseParamsUpdatedEventFilter;
-
-    'CrvSwapFailedDueToSlippage(uint256)'(
-      crvSlippageTolerance?: null
-    ): CrvSwapFailedDueToSlippageEventFilter;
-    CrvSwapFailedDueToSlippage(
-      crvSlippageTolerance?: null
-    ): CrvSwapFailedDueToSlippageEventFilter;
-
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)'(
-      feeBps?: null,
-      stablecoinSlippage?: null,
-      crvHarvestThreshold?: null,
-      crvSlippageTolerance?: null,
-      gauge?: PromiseOrValue<string> | null,
-      crvOracle?: PromiseOrValue<string> | null
-    ): CurveParamsUpdatedEventFilter;
-    CurveParamsUpdated(
-      feeBps?: null,
-      stablecoinSlippage?: null,
-      crvHarvestThreshold?: null,
-      crvSlippageTolerance?: null,
-      gauge?: PromiseOrValue<string> | null,
-      crvOracle?: PromiseOrValue<string> | null
-    ): CurveParamsUpdatedEventFilter;
-
-    'EightyTwentyParamsUpdated(uint16,uint16,uint64)'(
-      closePositionSlippageSqrtToleranceBps?: null,
-      resetPositionThresholdBps?: null,
-      minNotionalPositionToCloseThreshold?: null
-    ): EightyTwentyParamsUpdatedEventFilter;
-    EightyTwentyParamsUpdated(
-      closePositionSlippageSqrtToleranceBps?: null,
-      resetPositionThresholdBps?: null,
-      minNotionalPositionToCloseThreshold?: null
-    ): EightyTwentyParamsUpdatedEventFilter;
-
-    'FeesUpdated(uint256)'(fee?: null): FeesUpdatedEventFilter;
-    FeesUpdated(fee?: null): FeesUpdatedEventFilter;
-
-    'FeesWithdrawn(uint256)'(total?: null): FeesWithdrawnEventFilter;
-    FeesWithdrawn(total?: null): FeesWithdrawnEventFilter;
-
-    'Harvested(uint256)'(crvAmount?: null): HarvestedEventFilter;
-    Harvested(crvAmount?: null): HarvestedEventFilter;
-
-    'Rebalance()'(): RebalanceEventFilter;
-    Rebalance(): RebalanceEventFilter;
-
-    'Staked(uint256,address)'(
-      amount?: null,
-      depositor?: PromiseOrValue<string> | null
-    ): StakedEventFilter;
-    Staked(
-      amount?: null,
-      depositor?: PromiseOrValue<string> | null
-    ): StakedEventFilter;
-
-    'StateInfo(uint256)'(lpPrice?: null): StateInfoEventFilter;
-    StateInfo(lpPrice?: null): StateInfoEventFilter;
-
-    'TokenPositionClosed()'(): TokenPositionClosedEventFilter;
-    TokenPositionClosed(): TokenPositionClosedEventFilter;
-  };
-
-  estimateGas: {
-    FEE(overrides?: CallOverrides): Promise<BigNumber>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    asset(overrides?: CallOverrides): Promise<BigNumber>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    baseLiquidity(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseTickLower(overrides?: CallOverrides): Promise<BigNumber>;
-
-    baseTickUpper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    decimals(overrides?: CallOverrides): Promise<BigNumber>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    depositCap(overrides?: CallOverrides): Promise<BigNumber>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getVaultMarketValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    initialize(
-      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    isReset(overrides?: CallOverrides): Promise<BigNumber>;
-
-    isValidRebalance(
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    keeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    migrate(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rageVPool(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    rebalancePriceThresholdBps(overrides?: CallOverrides): Promise<BigNumber>;
-
-    rebalanceTimeThreshold(overrides?: CallOverrides): Promise<BigNumber>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setEightTwentyParams(
-      _closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>,
-      _resetPositionThresholdBps: PromiseOrValue<BigNumberish>,
-      _minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalAssets(overrides?: CallOverrides): Promise<BigNumber>;
-
-    totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateBaseParams(
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      newKeeperAddress: PromiseOrValue<string>,
-      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      _rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    updateCurveParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _stablecoinSlippage: PromiseOrValue<BigNumberish>,
-      _crvHarvestThreshold: PromiseOrValue<BigNumberish>,
-      _crvSlippageTolerance: PromiseOrValue<BigNumberish>,
-      _gauge: PromiseOrValue<string>,
-      _crvOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawFees(
-      feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    FEE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    MAX_BPS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    allowance(
-      owner: PromiseOrValue<string>,
-      spender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    approve(
-      spender: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    asset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    balanceOf(
-      account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    baseLiquidity(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    baseTickLower(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    baseTickUpper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    closePositionSlippageSqrtToleranceBps(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    closeTokenPosition(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    convertToAssets(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    convertToShares(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    decreaseAllowance(
-      spender: PromiseOrValue<string>,
-      subtractedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    deposit(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    depositCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    ethPoolId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    'extsload(bytes32)'(
-      slot: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    'extsload(bytes32[])'(
-      slots: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriceX128(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getVaultMarketValue(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    grantAllowances(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    increaseAllowance(
-      spender: PromiseOrValue<string>,
-      addedValue: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      curveYieldStrategyInitParams: CurveYieldStrategy.CurveYieldStrategyInitParamsStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    isReset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    isValidRebalance(
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    lastRebalanceTS(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    maxDeposit(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxMint(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxRedeem(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    maxWithdraw(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    migrate(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    minNotionalPositionToCloseThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mint(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    previewDeposit(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewMint(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewRedeem(
-      shares: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    previewWithdraw(
-      assets: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    rageAccountNo(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageClearingHouse(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rageVPool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    rebalance(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    rebalancePriceThresholdBps(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    rebalanceTimeThreshold(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    redeem(
-      shares: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEightTwentyParams(
-      _closePositionSlippageSqrtToleranceBps: PromiseOrValue<BigNumberish>,
-      _resetPositionThresholdBps: PromiseOrValue<BigNumberish>,
-      _minNotionalPositionToCloseThreshold: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    swapSimulator(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalAssets(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transfer(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferFrom(
-      from: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateBaseParams(
-      newDepositCap: PromiseOrValue<BigNumberish>,
-      newKeeperAddress: PromiseOrValue<string>,
-      _rebalanceTimeThreshold: PromiseOrValue<BigNumberish>,
-      _rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    updateCurveParams(
-      _feeBps: PromiseOrValue<BigNumberish>,
-      _stablecoinSlippage: PromiseOrValue<BigNumberish>,
-      _crvHarvestThreshold: PromiseOrValue<BigNumberish>,
-      _crvSlippageTolerance: PromiseOrValue<BigNumberish>,
-      _gauge: PromiseOrValue<string>,
-      _crvOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdraw(
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      from: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawFees(
-      feeRecipient: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'Approval(address,address,uint256)': TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+    Approval: TypedContractEvent<
+      ApprovalEvent.InputTuple,
+      ApprovalEvent.OutputTuple,
+      ApprovalEvent.OutputObject
+    >;
+
+    'Deposit(address,address,uint256,uint256)': TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+    Deposit: TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+
+    'Transfer(address,address,uint256)': TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+    Transfer: TypedContractEvent<
+      TransferEvent.InputTuple,
+      TransferEvent.OutputTuple,
+      TransferEvent.OutputObject
+    >;
+
+    'Withdraw(address,address,address,uint256,uint256)': TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+    Withdraw: TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
+    >;
+
+    'BaseParamsUpdated(uint256,address,uint32,uint16)': TypedContractEvent<
+      BaseParamsUpdatedEvent.InputTuple,
+      BaseParamsUpdatedEvent.OutputTuple,
+      BaseParamsUpdatedEvent.OutputObject
+    >;
+    BaseParamsUpdated: TypedContractEvent<
+      BaseParamsUpdatedEvent.InputTuple,
+      BaseParamsUpdatedEvent.OutputTuple,
+      BaseParamsUpdatedEvent.OutputObject
+    >;
+
+    'CrvSwapFailedDueToSlippage(uint256)': TypedContractEvent<
+      CrvSwapFailedDueToSlippageEvent.InputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputObject
+    >;
+    CrvSwapFailedDueToSlippage: TypedContractEvent<
+      CrvSwapFailedDueToSlippageEvent.InputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputObject
+    >;
+
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': TypedContractEvent<
+      CurveParamsUpdatedEvent.InputTuple,
+      CurveParamsUpdatedEvent.OutputTuple,
+      CurveParamsUpdatedEvent.OutputObject
+    >;
+    CurveParamsUpdated: TypedContractEvent<
+      CurveParamsUpdatedEvent.InputTuple,
+      CurveParamsUpdatedEvent.OutputTuple,
+      CurveParamsUpdatedEvent.OutputObject
+    >;
+
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': TypedContractEvent<
+      EightyTwentyParamsUpdatedEvent.InputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputObject
+    >;
+    EightyTwentyParamsUpdated: TypedContractEvent<
+      EightyTwentyParamsUpdatedEvent.InputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputObject
+    >;
+
+    'FeesUpdated(uint256)': TypedContractEvent<
+      FeesUpdatedEvent.InputTuple,
+      FeesUpdatedEvent.OutputTuple,
+      FeesUpdatedEvent.OutputObject
+    >;
+    FeesUpdated: TypedContractEvent<
+      FeesUpdatedEvent.InputTuple,
+      FeesUpdatedEvent.OutputTuple,
+      FeesUpdatedEvent.OutputObject
+    >;
+
+    'FeesWithdrawn(uint256)': TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+    FeesWithdrawn: TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+
+    'Harvested(uint256)': TypedContractEvent<
+      HarvestedEvent.InputTuple,
+      HarvestedEvent.OutputTuple,
+      HarvestedEvent.OutputObject
+    >;
+    Harvested: TypedContractEvent<
+      HarvestedEvent.InputTuple,
+      HarvestedEvent.OutputTuple,
+      HarvestedEvent.OutputObject
+    >;
+
+    'Rebalance()': TypedContractEvent<
+      RebalanceEvent.InputTuple,
+      RebalanceEvent.OutputTuple,
+      RebalanceEvent.OutputObject
+    >;
+    Rebalance: TypedContractEvent<
+      RebalanceEvent.InputTuple,
+      RebalanceEvent.OutputTuple,
+      RebalanceEvent.OutputObject
+    >;
+
+    'Staked(uint256,address)': TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
+    Staked: TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
+
+    'StateInfo(uint256)': TypedContractEvent<
+      StateInfoEvent.InputTuple,
+      StateInfoEvent.OutputTuple,
+      StateInfoEvent.OutputObject
+    >;
+    StateInfo: TypedContractEvent<
+      StateInfoEvent.InputTuple,
+      StateInfoEvent.OutputTuple,
+      StateInfoEvent.OutputObject
+    >;
+
+    'TokenPositionClosed()': TypedContractEvent<
+      TokenPositionClosedEvent.InputTuple,
+      TokenPositionClosedEvent.OutputTuple,
+      TokenPositionClosedEvent.OutputObject
+    >;
+    TokenPositionClosed: TypedContractEvent<
+      TokenPositionClosedEvent.InputTuple,
+      TokenPositionClosedEvent.OutputTuple,
+      TokenPositionClosedEvent.OutputObject
+    >;
   };
 }

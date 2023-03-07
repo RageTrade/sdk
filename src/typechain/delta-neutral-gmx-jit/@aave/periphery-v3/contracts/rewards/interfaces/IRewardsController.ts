@@ -3,53 +3,49 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
 export declare namespace RewardsDataTypes {
   export type RewardsConfigInputStruct = {
-    emissionPerSecond: PromiseOrValue<BigNumberish>;
-    totalSupply: PromiseOrValue<BigNumberish>;
-    distributionEnd: PromiseOrValue<BigNumberish>;
-    asset: PromiseOrValue<string>;
-    reward: PromiseOrValue<string>;
-    transferStrategy: PromiseOrValue<string>;
-    rewardOracle: PromiseOrValue<string>;
+    emissionPerSecond: BigNumberish;
+    totalSupply: BigNumberish;
+    distributionEnd: BigNumberish;
+    asset: AddressLike;
+    reward: AddressLike;
+    transferStrategy: AddressLike;
+    rewardOracle: AddressLike;
   };
 
   export type RewardsConfigInputStructOutput = [
-    BigNumber,
-    BigNumber,
-    number,
-    string,
-    string,
-    string,
-    string
+    emissionPerSecond: bigint,
+    totalSupply: bigint,
+    distributionEnd: bigint,
+    asset: string,
+    reward: string,
+    transferStrategy: string,
+    rewardOracle: string
   ] & {
-    emissionPerSecond: BigNumber;
-    totalSupply: BigNumber;
-    distributionEnd: number;
+    emissionPerSecond: bigint;
+    totalSupply: bigint;
+    distributionEnd: bigint;
     asset: string;
     reward: string;
     transferStrategy: string;
@@ -57,39 +53,9 @@ export declare namespace RewardsDataTypes {
   };
 }
 
-export interface IRewardsControllerInterface extends utils.Interface {
-  functions: {
-    'claimAllRewards(address[],address)': FunctionFragment;
-    'claimAllRewardsOnBehalf(address[],address,address)': FunctionFragment;
-    'claimAllRewardsToSelf(address[])': FunctionFragment;
-    'claimRewards(address[],uint256,address,address)': FunctionFragment;
-    'claimRewardsOnBehalf(address[],uint256,address,address,address)': FunctionFragment;
-    'claimRewardsToSelf(address[],uint256,address)': FunctionFragment;
-    'configureAssets((uint88,uint256,uint32,address,address,address,address)[])': FunctionFragment;
-    'getAllUserRewards(address[],address)': FunctionFragment;
-    'getAssetDecimals(address)': FunctionFragment;
-    'getClaimer(address)': FunctionFragment;
-    'getDistributionEnd(address,address)': FunctionFragment;
-    'getEmissionManager()': FunctionFragment;
-    'getRewardOracle(address)': FunctionFragment;
-    'getRewardsByAsset(address)': FunctionFragment;
-    'getRewardsData(address,address)': FunctionFragment;
-    'getRewardsList()': FunctionFragment;
-    'getTransferStrategy(address)': FunctionFragment;
-    'getUserAccruedRewards(address,address)': FunctionFragment;
-    'getUserAssetIndex(address,address,address)': FunctionFragment;
-    'getUserRewards(address[],address,address)': FunctionFragment;
-    'handleAction(address,uint256,uint256)': FunctionFragment;
-    'setClaimer(address,address)': FunctionFragment;
-    'setDistributionEnd(address,address,uint32)': FunctionFragment;
-    'setEmissionManager(address)': FunctionFragment;
-    'setEmissionPerSecond(address,address[],uint88[])': FunctionFragment;
-    'setRewardOracle(address,address)': FunctionFragment;
-    'setTransferStrategy(address,address)': FunctionFragment;
-  };
-
+export interface IRewardsControllerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'claimAllRewards'
       | 'claimAllRewardsOnBehalf'
       | 'claimAllRewardsToSelf'
@@ -119,48 +85,40 @@ export interface IRewardsControllerInterface extends utils.Interface {
       | 'setTransferStrategy'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Accrued'
+      | 'AssetConfigUpdated'
+      | 'ClaimerSet'
+      | 'EmissionManagerUpdated'
+      | 'RewardOracleUpdated'
+      | 'RewardsClaimed'
+      | 'TransferStrategyInstalled'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'claimAllRewards',
-    values: [PromiseOrValue<string>[], PromiseOrValue<string>]
+    values: [AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimAllRewardsOnBehalf',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimAllRewardsToSelf',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimRewards',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], BigNumberish, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimRewardsOnBehalf',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], BigNumberish, AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'claimRewardsToSelf',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'configureAssets',
@@ -168,19 +126,19 @@ export interface IRewardsControllerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getAllUserRewards',
-    values: [PromiseOrValue<string>[], PromiseOrValue<string>]
+    values: [AddressLike[], AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getAssetDecimals',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getClaimer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getDistributionEnd',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getEmissionManager',
@@ -188,15 +146,15 @@ export interface IRewardsControllerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardOracle',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsByAsset',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsData',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getRewardsList',
@@ -204,67 +162,47 @@ export interface IRewardsControllerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getTransferStrategy',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserAccruedRewards',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserAssetIndex',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUserRewards',
-    values: [
-      PromiseOrValue<string>[],
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike[], AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'handleAction',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setClaimer',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setDistributionEnd',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'setEmissionManager',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setEmissionPerSecond',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
-    ]
+    values: [AddressLike, AddressLike[], BigNumberish[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'setRewardOracle',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'setTransferStrategy',
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [AddressLike, AddressLike]
   ): string;
 
   decodeFunctionResult(
@@ -369,1046 +307,675 @@ export interface IRewardsControllerInterface extends utils.Interface {
     functionFragment: 'setTransferStrategy',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Accrued(address,address,address,uint256,uint256,uint256)': EventFragment;
-    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)': EventFragment;
-    'ClaimerSet(address,address)': EventFragment;
-    'EmissionManagerUpdated(address,address)': EventFragment;
-    'RewardOracleUpdated(address,address)': EventFragment;
-    'RewardsClaimed(address,address,address,address,uint256)': EventFragment;
-    'TransferStrategyInstalled(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Accrued'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'AssetConfigUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'ClaimerSet'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EmissionManagerUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RewardOracleUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'RewardsClaimed'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TransferStrategyInstalled'): EventFragment;
 }
 
-export interface AccruedEventObject {
-  asset: string;
-  reward: string;
-  user: string;
-  assetIndex: BigNumber;
-  userIndex: BigNumber;
-  rewardsAccrued: BigNumber;
+export namespace AccruedEvent {
+  export type InputTuple = [
+    asset: AddressLike,
+    reward: AddressLike,
+    user: AddressLike,
+    assetIndex: BigNumberish,
+    userIndex: BigNumberish,
+    rewardsAccrued: BigNumberish
+  ];
+  export type OutputTuple = [
+    asset: string,
+    reward: string,
+    user: string,
+    assetIndex: bigint,
+    userIndex: bigint,
+    rewardsAccrued: bigint
+  ];
+  export interface OutputObject {
+    asset: string;
+    reward: string;
+    user: string;
+    assetIndex: bigint;
+    userIndex: bigint;
+    rewardsAccrued: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AccruedEvent = TypedEvent<
-  [string, string, string, BigNumber, BigNumber, BigNumber],
-  AccruedEventObject
->;
 
-export type AccruedEventFilter = TypedEventFilter<AccruedEvent>;
-
-export interface AssetConfigUpdatedEventObject {
-  asset: string;
-  reward: string;
-  oldEmission: BigNumber;
-  newEmission: BigNumber;
-  oldDistributionEnd: BigNumber;
-  newDistributionEnd: BigNumber;
-  assetIndex: BigNumber;
+export namespace AssetConfigUpdatedEvent {
+  export type InputTuple = [
+    asset: AddressLike,
+    reward: AddressLike,
+    oldEmission: BigNumberish,
+    newEmission: BigNumberish,
+    oldDistributionEnd: BigNumberish,
+    newDistributionEnd: BigNumberish,
+    assetIndex: BigNumberish
+  ];
+  export type OutputTuple = [
+    asset: string,
+    reward: string,
+    oldEmission: bigint,
+    newEmission: bigint,
+    oldDistributionEnd: bigint,
+    newDistributionEnd: bigint,
+    assetIndex: bigint
+  ];
+  export interface OutputObject {
+    asset: string;
+    reward: string;
+    oldEmission: bigint;
+    newEmission: bigint;
+    oldDistributionEnd: bigint;
+    newDistributionEnd: bigint;
+    assetIndex: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type AssetConfigUpdatedEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber, BigNumber, BigNumber],
-  AssetConfigUpdatedEventObject
->;
 
-export type AssetConfigUpdatedEventFilter =
-  TypedEventFilter<AssetConfigUpdatedEvent>;
-
-export interface ClaimerSetEventObject {
-  user: string;
-  claimer: string;
+export namespace ClaimerSetEvent {
+  export type InputTuple = [user: AddressLike, claimer: AddressLike];
+  export type OutputTuple = [user: string, claimer: string];
+  export interface OutputObject {
+    user: string;
+    claimer: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type ClaimerSetEvent = TypedEvent<
-  [string, string],
-  ClaimerSetEventObject
->;
 
-export type ClaimerSetEventFilter = TypedEventFilter<ClaimerSetEvent>;
-
-export interface EmissionManagerUpdatedEventObject {
-  oldEmissionManager: string;
-  newEmissionManager: string;
+export namespace EmissionManagerUpdatedEvent {
+  export type InputTuple = [
+    oldEmissionManager: AddressLike,
+    newEmissionManager: AddressLike
+  ];
+  export type OutputTuple = [
+    oldEmissionManager: string,
+    newEmissionManager: string
+  ];
+  export interface OutputObject {
+    oldEmissionManager: string;
+    newEmissionManager: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EmissionManagerUpdatedEvent = TypedEvent<
-  [string, string],
-  EmissionManagerUpdatedEventObject
->;
 
-export type EmissionManagerUpdatedEventFilter =
-  TypedEventFilter<EmissionManagerUpdatedEvent>;
-
-export interface RewardOracleUpdatedEventObject {
-  reward: string;
-  rewardOracle: string;
+export namespace RewardOracleUpdatedEvent {
+  export type InputTuple = [reward: AddressLike, rewardOracle: AddressLike];
+  export type OutputTuple = [reward: string, rewardOracle: string];
+  export interface OutputObject {
+    reward: string;
+    rewardOracle: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RewardOracleUpdatedEvent = TypedEvent<
-  [string, string],
-  RewardOracleUpdatedEventObject
->;
 
-export type RewardOracleUpdatedEventFilter =
-  TypedEventFilter<RewardOracleUpdatedEvent>;
-
-export interface RewardsClaimedEventObject {
-  user: string;
-  reward: string;
-  to: string;
-  claimer: string;
-  amount: BigNumber;
+export namespace RewardsClaimedEvent {
+  export type InputTuple = [
+    user: AddressLike,
+    reward: AddressLike,
+    to: AddressLike,
+    claimer: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [
+    user: string,
+    reward: string,
+    to: string,
+    claimer: string,
+    amount: bigint
+  ];
+  export interface OutputObject {
+    user: string;
+    reward: string;
+    to: string;
+    claimer: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type RewardsClaimedEvent = TypedEvent<
-  [string, string, string, string, BigNumber],
-  RewardsClaimedEventObject
->;
 
-export type RewardsClaimedEventFilter = TypedEventFilter<RewardsClaimedEvent>;
-
-export interface TransferStrategyInstalledEventObject {
-  reward: string;
-  transferStrategy: string;
+export namespace TransferStrategyInstalledEvent {
+  export type InputTuple = [reward: AddressLike, transferStrategy: AddressLike];
+  export type OutputTuple = [reward: string, transferStrategy: string];
+  export interface OutputObject {
+    reward: string;
+    transferStrategy: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type TransferStrategyInstalledEvent = TypedEvent<
-  [string, string],
-  TransferStrategyInstalledEventObject
->;
-
-export type TransferStrategyInstalledEventFilter =
-  TypedEventFilter<TransferStrategyInstalledEvent>;
 
 export interface IRewardsController extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IRewardsControllerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
-
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
-
-  functions: {
-    claimAllRewards(
-      assets: PromiseOrValue<string>[],
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimAllRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimAllRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimRewards(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    claimRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    configureAssets(
-      config: RewardsDataTypes.RewardsConfigInputStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[], BigNumber[]]>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
-
-    getClaimer(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getEmissionManager(overrides?: CallOverrides): Promise<[string]>;
-
-    getRewardOracle(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getTransferStrategy(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    handleAction(
-      user: PromiseOrValue<string>,
-      userBalance: PromiseOrValue<BigNumberish>,
-      totalSupply: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setClaimer(
-      user: PromiseOrValue<string>,
-      claimer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setRewardOracle(
-      reward: PromiseOrValue<string>,
-      rewardOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setTransferStrategy(
-      reward: PromiseOrValue<string>,
-      transferStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  claimAllRewards(
-    assets: PromiseOrValue<string>[],
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimAllRewardsOnBehalf(
-    assets: PromiseOrValue<string>[],
-    user: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimAllRewardsToSelf(
-    assets: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimRewards(
-    assets: PromiseOrValue<string>[],
-    amount: PromiseOrValue<BigNumberish>,
-    to: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimRewardsOnBehalf(
-    assets: PromiseOrValue<string>[],
-    amount: PromiseOrValue<BigNumberish>,
-    user: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimRewardsToSelf(
-    assets: PromiseOrValue<string>[],
-    amount: PromiseOrValue<BigNumberish>,
-    reward: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  configureAssets(
-    config: RewardsDataTypes.RewardsConfigInputStruct[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getAllUserRewards(
-    assets: PromiseOrValue<string>[],
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[string[], BigNumber[]]>;
-
-  getAssetDecimals(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<number>;
-
-  getClaimer(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getDistributionEnd(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getEmissionManager(overrides?: CallOverrides): Promise<string>;
-
-  getRewardOracle(
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getRewardsByAsset(
-    asset: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  getRewardsData(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
-
-  getRewardsList(overrides?: CallOverrides): Promise<string[]>;
-
-  getTransferStrategy(
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getUserAccruedRewards(
-    user: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUserAssetIndex(
-    user: PromiseOrValue<string>,
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUserRewards(
-    assets: PromiseOrValue<string>[],
-    user: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  handleAction(
-    user: PromiseOrValue<string>,
-    userBalance: PromiseOrValue<BigNumberish>,
-    totalSupply: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setClaimer(
-    user: PromiseOrValue<string>,
-    claimer: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setDistributionEnd(
-    asset: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    newDistributionEnd: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setEmissionManager(
-    emissionManager: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setEmissionPerSecond(
-    asset: PromiseOrValue<string>,
-    rewards: PromiseOrValue<string>[],
-    newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setRewardOracle(
-    reward: PromiseOrValue<string>,
-    rewardOracle: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setTransferStrategy(
-    reward: PromiseOrValue<string>,
-    transferStrategy: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    claimAllRewards(
-      assets: PromiseOrValue<string>[],
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string[], BigNumber[]] & {
-        rewardsList: string[];
-        claimedAmounts: BigNumber[];
-      }
-    >;
-
-    claimAllRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<
-      [string[], BigNumber[]] & {
-        rewardsList: string[];
-        claimedAmounts: BigNumber[];
-      }
-    >;
-
-    claimAllRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<
-      [string[], BigNumber[]] & {
-        rewardsList: string[];
-        claimedAmounts: BigNumber[];
-      }
-    >;
-
-    claimRewards(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    claimRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    configureAssets(
-      config: RewardsDataTypes.RewardsConfigInputStruct[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[], BigNumber[]]>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-
-    getClaimer(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEmissionManager(overrides?: CallOverrides): Promise<string>;
-
-    getRewardOracle(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber, BigNumber, BigNumber]>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<string[]>;
-
-    getTransferStrategy(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    handleAction(
-      user: PromiseOrValue<string>,
-      userBalance: PromiseOrValue<BigNumberish>,
-      totalSupply: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setClaimer(
-      user: PromiseOrValue<string>,
-      claimer: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setRewardOracle(
-      reward: PromiseOrValue<string>,
-      rewardOracle: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setTransferStrategy(
-      reward: PromiseOrValue<string>,
-      transferStrategy: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
+
+  claimAllRewards: TypedContractMethod<
+    [assets: AddressLike[], to: AddressLike],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+
+  claimAllRewardsOnBehalf: TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, to: AddressLike],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+
+  claimAllRewardsToSelf: TypedContractMethod<
+    [assets: AddressLike[]],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+
+  claimRewards: TypedContractMethod<
+    [
+      assets: AddressLike[],
+      amount: BigNumberish,
+      to: AddressLike,
+      reward: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+
+  claimRewardsOnBehalf: TypedContractMethod<
+    [
+      assets: AddressLike[],
+      amount: BigNumberish,
+      user: AddressLike,
+      to: AddressLike,
+      reward: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+
+  claimRewardsToSelf: TypedContractMethod<
+    [assets: AddressLike[], amount: BigNumberish, reward: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+
+  configureAssets: TypedContractMethod<
+    [config: RewardsDataTypes.RewardsConfigInputStruct[]],
+    [void],
+    'nonpayable'
+  >;
+
+  getAllUserRewards: TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike],
+    [[string[], bigint[]]],
+    'view'
+  >;
+
+  getAssetDecimals: TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
+
+  getClaimer: TypedContractMethod<[user: AddressLike], [string], 'view'>;
+
+  getDistributionEnd: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  getEmissionManager: TypedContractMethod<[], [string], 'view'>;
+
+  getRewardOracle: TypedContractMethod<[reward: AddressLike], [string], 'view'>;
+
+  getRewardsByAsset: TypedContractMethod<
+    [asset: AddressLike],
+    [string[]],
+    'view'
+  >;
+
+  getRewardsData: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [[bigint, bigint, bigint, bigint]],
+    'view'
+  >;
+
+  getRewardsList: TypedContractMethod<[], [string[]], 'view'>;
+
+  getTransferStrategy: TypedContractMethod<
+    [reward: AddressLike],
+    [string],
+    'view'
+  >;
+
+  getUserAccruedRewards: TypedContractMethod<
+    [user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  getUserAssetIndex: TypedContractMethod<
+    [user: AddressLike, asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  getUserRewards: TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+
+  handleAction: TypedContractMethod<
+    [user: AddressLike, userBalance: BigNumberish, totalSupply: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  setClaimer: TypedContractMethod<
+    [user: AddressLike, claimer: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  setDistributionEnd: TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike, newDistributionEnd: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+
+  setEmissionManager: TypedContractMethod<
+    [emissionManager: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  setEmissionPerSecond: TypedContractMethod<
+    [
+      asset: AddressLike,
+      rewards: AddressLike[],
+      newEmissionsPerSecond: BigNumberish[]
+    ],
+    [void],
+    'nonpayable'
+  >;
+
+  setRewardOracle: TypedContractMethod<
+    [reward: AddressLike, rewardOracle: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  setTransferStrategy: TypedContractMethod<
+    [reward: AddressLike, transferStrategy: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'claimAllRewards'
+  ): TypedContractMethod<
+    [assets: AddressLike[], to: AddressLike],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimAllRewardsOnBehalf'
+  ): TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, to: AddressLike],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimAllRewardsToSelf'
+  ): TypedContractMethod<
+    [assets: AddressLike[]],
+    [
+      [string[], bigint[]] & { rewardsList: string[]; claimedAmounts: bigint[] }
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimRewards'
+  ): TypedContractMethod<
+    [
+      assets: AddressLike[],
+      amount: BigNumberish,
+      to: AddressLike,
+      reward: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimRewardsOnBehalf'
+  ): TypedContractMethod<
+    [
+      assets: AddressLike[],
+      amount: BigNumberish,
+      user: AddressLike,
+      to: AddressLike,
+      reward: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claimRewardsToSelf'
+  ): TypedContractMethod<
+    [assets: AddressLike[], amount: BigNumberish, reward: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'configureAssets'
+  ): TypedContractMethod<
+    [config: RewardsDataTypes.RewardsConfigInputStruct[]],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'getAllUserRewards'
+  ): TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike],
+    [[string[], bigint[]]],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getAssetDecimals'
+  ): TypedContractMethod<[asset: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getClaimer'
+  ): TypedContractMethod<[user: AddressLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getDistributionEnd'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getEmissionManager'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardOracle'
+  ): TypedContractMethod<[reward: AddressLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardsByAsset'
+  ): TypedContractMethod<[asset: AddressLike], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardsData'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike],
+    [[bigint, bigint, bigint, bigint]],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getRewardsList'
+  ): TypedContractMethod<[], [string[]], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTransferStrategy'
+  ): TypedContractMethod<[reward: AddressLike], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getUserAccruedRewards'
+  ): TypedContractMethod<
+    [user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserAssetIndex'
+  ): TypedContractMethod<
+    [user: AddressLike, asset: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUserRewards'
+  ): TypedContractMethod<
+    [assets: AddressLike[], user: AddressLike, reward: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'handleAction'
+  ): TypedContractMethod<
+    [user: AddressLike, userBalance: BigNumberish, totalSupply: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setClaimer'
+  ): TypedContractMethod<
+    [user: AddressLike, claimer: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setDistributionEnd'
+  ): TypedContractMethod<
+    [asset: AddressLike, reward: AddressLike, newDistributionEnd: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setEmissionManager'
+  ): TypedContractMethod<[emissionManager: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setEmissionPerSecond'
+  ): TypedContractMethod<
+    [
+      asset: AddressLike,
+      rewards: AddressLike[],
+      newEmissionsPerSecond: BigNumberish[]
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setRewardOracle'
+  ): TypedContractMethod<
+    [reward: AddressLike, rewardOracle: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'setTransferStrategy'
+  ): TypedContractMethod<
+    [reward: AddressLike, transferStrategy: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+
+  getEvent(
+    key: 'Accrued'
+  ): TypedContractEvent<
+    AccruedEvent.InputTuple,
+    AccruedEvent.OutputTuple,
+    AccruedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'AssetConfigUpdated'
+  ): TypedContractEvent<
+    AssetConfigUpdatedEvent.InputTuple,
+    AssetConfigUpdatedEvent.OutputTuple,
+    AssetConfigUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'ClaimerSet'
+  ): TypedContractEvent<
+    ClaimerSetEvent.InputTuple,
+    ClaimerSetEvent.OutputTuple,
+    ClaimerSetEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EmissionManagerUpdated'
+  ): TypedContractEvent<
+    EmissionManagerUpdatedEvent.InputTuple,
+    EmissionManagerUpdatedEvent.OutputTuple,
+    EmissionManagerUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RewardOracleUpdated'
+  ): TypedContractEvent<
+    RewardOracleUpdatedEvent.InputTuple,
+    RewardOracleUpdatedEvent.OutputTuple,
+    RewardOracleUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'RewardsClaimed'
+  ): TypedContractEvent<
+    RewardsClaimedEvent.InputTuple,
+    RewardsClaimedEvent.OutputTuple,
+    RewardsClaimedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TransferStrategyInstalled'
+  ): TypedContractEvent<
+    TransferStrategyInstalledEvent.InputTuple,
+    TransferStrategyInstalledEvent.OutputTuple,
+    TransferStrategyInstalledEvent.OutputObject
+  >;
 
   filters: {
-    'Accrued(address,address,address,uint256,uint256,uint256)'(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      assetIndex?: null,
-      userIndex?: null,
-      rewardsAccrued?: null
-    ): AccruedEventFilter;
-    Accrued(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      user?: PromiseOrValue<string> | null,
-      assetIndex?: null,
-      userIndex?: null,
-      rewardsAccrued?: null
-    ): AccruedEventFilter;
+    'Accrued(address,address,address,uint256,uint256,uint256)': TypedContractEvent<
+      AccruedEvent.InputTuple,
+      AccruedEvent.OutputTuple,
+      AccruedEvent.OutputObject
+    >;
+    Accrued: TypedContractEvent<
+      AccruedEvent.InputTuple,
+      AccruedEvent.OutputTuple,
+      AccruedEvent.OutputObject
+    >;
 
-    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)'(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      oldEmission?: null,
-      newEmission?: null,
-      oldDistributionEnd?: null,
-      newDistributionEnd?: null,
-      assetIndex?: null
-    ): AssetConfigUpdatedEventFilter;
-    AssetConfigUpdated(
-      asset?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      oldEmission?: null,
-      newEmission?: null,
-      oldDistributionEnd?: null,
-      newDistributionEnd?: null,
-      assetIndex?: null
-    ): AssetConfigUpdatedEventFilter;
+    'AssetConfigUpdated(address,address,uint256,uint256,uint256,uint256,uint256)': TypedContractEvent<
+      AssetConfigUpdatedEvent.InputTuple,
+      AssetConfigUpdatedEvent.OutputTuple,
+      AssetConfigUpdatedEvent.OutputObject
+    >;
+    AssetConfigUpdated: TypedContractEvent<
+      AssetConfigUpdatedEvent.InputTuple,
+      AssetConfigUpdatedEvent.OutputTuple,
+      AssetConfigUpdatedEvent.OutputObject
+    >;
 
-    'ClaimerSet(address,address)'(
-      user?: PromiseOrValue<string> | null,
-      claimer?: PromiseOrValue<string> | null
-    ): ClaimerSetEventFilter;
-    ClaimerSet(
-      user?: PromiseOrValue<string> | null,
-      claimer?: PromiseOrValue<string> | null
-    ): ClaimerSetEventFilter;
+    'ClaimerSet(address,address)': TypedContractEvent<
+      ClaimerSetEvent.InputTuple,
+      ClaimerSetEvent.OutputTuple,
+      ClaimerSetEvent.OutputObject
+    >;
+    ClaimerSet: TypedContractEvent<
+      ClaimerSetEvent.InputTuple,
+      ClaimerSetEvent.OutputTuple,
+      ClaimerSetEvent.OutputObject
+    >;
 
-    'EmissionManagerUpdated(address,address)'(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
-    EmissionManagerUpdated(
-      oldEmissionManager?: PromiseOrValue<string> | null,
-      newEmissionManager?: PromiseOrValue<string> | null
-    ): EmissionManagerUpdatedEventFilter;
+    'EmissionManagerUpdated(address,address)': TypedContractEvent<
+      EmissionManagerUpdatedEvent.InputTuple,
+      EmissionManagerUpdatedEvent.OutputTuple,
+      EmissionManagerUpdatedEvent.OutputObject
+    >;
+    EmissionManagerUpdated: TypedContractEvent<
+      EmissionManagerUpdatedEvent.InputTuple,
+      EmissionManagerUpdatedEvent.OutputTuple,
+      EmissionManagerUpdatedEvent.OutputObject
+    >;
 
-    'RewardOracleUpdated(address,address)'(
-      reward?: PromiseOrValue<string> | null,
-      rewardOracle?: PromiseOrValue<string> | null
-    ): RewardOracleUpdatedEventFilter;
-    RewardOracleUpdated(
-      reward?: PromiseOrValue<string> | null,
-      rewardOracle?: PromiseOrValue<string> | null
-    ): RewardOracleUpdatedEventFilter;
+    'RewardOracleUpdated(address,address)': TypedContractEvent<
+      RewardOracleUpdatedEvent.InputTuple,
+      RewardOracleUpdatedEvent.OutputTuple,
+      RewardOracleUpdatedEvent.OutputObject
+    >;
+    RewardOracleUpdated: TypedContractEvent<
+      RewardOracleUpdatedEvent.InputTuple,
+      RewardOracleUpdatedEvent.OutputTuple,
+      RewardOracleUpdatedEvent.OutputObject
+    >;
 
-    'RewardsClaimed(address,address,address,address,uint256)'(
-      user?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      claimer?: null,
-      amount?: null
-    ): RewardsClaimedEventFilter;
-    RewardsClaimed(
-      user?: PromiseOrValue<string> | null,
-      reward?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      claimer?: null,
-      amount?: null
-    ): RewardsClaimedEventFilter;
+    'RewardsClaimed(address,address,address,address,uint256)': TypedContractEvent<
+      RewardsClaimedEvent.InputTuple,
+      RewardsClaimedEvent.OutputTuple,
+      RewardsClaimedEvent.OutputObject
+    >;
+    RewardsClaimed: TypedContractEvent<
+      RewardsClaimedEvent.InputTuple,
+      RewardsClaimedEvent.OutputTuple,
+      RewardsClaimedEvent.OutputObject
+    >;
 
-    'TransferStrategyInstalled(address,address)'(
-      reward?: PromiseOrValue<string> | null,
-      transferStrategy?: PromiseOrValue<string> | null
-    ): TransferStrategyInstalledEventFilter;
-    TransferStrategyInstalled(
-      reward?: PromiseOrValue<string> | null,
-      transferStrategy?: PromiseOrValue<string> | null
-    ): TransferStrategyInstalledEventFilter;
-  };
-
-  estimateGas: {
-    claimAllRewards(
-      assets: PromiseOrValue<string>[],
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimAllRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimAllRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimRewards(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    configureAssets(
-      config: RewardsDataTypes.RewardsConfigInputStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getClaimer(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEmissionManager(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRewardOracle(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getTransferStrategy(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    handleAction(
-      user: PromiseOrValue<string>,
-      userBalance: PromiseOrValue<BigNumberish>,
-      totalSupply: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setClaimer(
-      user: PromiseOrValue<string>,
-      claimer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setRewardOracle(
-      reward: PromiseOrValue<string>,
-      rewardOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setTransferStrategy(
-      reward: PromiseOrValue<string>,
-      transferStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    claimAllRewards(
-      assets: PromiseOrValue<string>[],
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimAllRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimAllRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimRewards(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimRewardsOnBehalf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      user: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimRewardsToSelf(
-      assets: PromiseOrValue<string>[],
-      amount: PromiseOrValue<BigNumberish>,
-      reward: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    configureAssets(
-      config: RewardsDataTypes.RewardsConfigInputStruct[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getAllUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getAssetDecimals(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getClaimer(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getEmissionManager(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardOracle(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsByAsset(
-      asset: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsData(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsList(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getTransferStrategy(
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserAccruedRewards(
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserAssetIndex(
-      user: PromiseOrValue<string>,
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUserRewards(
-      assets: PromiseOrValue<string>[],
-      user: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    handleAction(
-      user: PromiseOrValue<string>,
-      userBalance: PromiseOrValue<BigNumberish>,
-      totalSupply: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setClaimer(
-      user: PromiseOrValue<string>,
-      claimer: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setDistributionEnd(
-      asset: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      newDistributionEnd: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEmissionManager(
-      emissionManager: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setEmissionPerSecond(
-      asset: PromiseOrValue<string>,
-      rewards: PromiseOrValue<string>[],
-      newEmissionsPerSecond: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setRewardOracle(
-      reward: PromiseOrValue<string>,
-      rewardOracle: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTransferStrategy(
-      reward: PromiseOrValue<string>,
-      transferStrategy: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'TransferStrategyInstalled(address,address)': TypedContractEvent<
+      TransferStrategyInstalledEvent.InputTuple,
+      TransferStrategyInstalledEvent.OutputTuple,
+      TransferStrategyInstalledEvent.OutputObject
+    >;
+    TransferStrategyInstalled: TypedContractEvent<
+      TransferStrategyInstalledEvent.InputTuple,
+      TransferStrategyInstalledEvent.OutputTuple,
+      TransferStrategyInstalledEvent.OutputObject
+    >;
   };
 }

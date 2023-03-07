@@ -3,142 +3,140 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
+  FunctionFragment,
+  Result,
+  Interface,
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
 } from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../common';
 
 export declare namespace IVPoolWrapper {
   export type SwapResultStruct = {
-    amountSpecified: PromiseOrValue<BigNumberish>;
-    vTokenIn: PromiseOrValue<BigNumberish>;
-    vQuoteIn: PromiseOrValue<BigNumberish>;
-    liquidityFees: PromiseOrValue<BigNumberish>;
-    protocolFees: PromiseOrValue<BigNumberish>;
-    sqrtPriceX96Start: PromiseOrValue<BigNumberish>;
-    sqrtPriceX96End: PromiseOrValue<BigNumberish>;
+    amountSpecified: BigNumberish;
+    vTokenIn: BigNumberish;
+    vQuoteIn: BigNumberish;
+    liquidityFees: BigNumberish;
+    protocolFees: BigNumberish;
+    sqrtPriceX96Start: BigNumberish;
+    sqrtPriceX96End: BigNumberish;
   };
 
   export type SwapResultStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    amountSpecified: bigint,
+    vTokenIn: bigint,
+    vQuoteIn: bigint,
+    liquidityFees: bigint,
+    protocolFees: bigint,
+    sqrtPriceX96Start: bigint,
+    sqrtPriceX96End: bigint
   ] & {
-    amountSpecified: BigNumber;
-    vTokenIn: BigNumber;
-    vQuoteIn: BigNumber;
-    liquidityFees: BigNumber;
-    protocolFees: BigNumber;
-    sqrtPriceX96Start: BigNumber;
-    sqrtPriceX96End: BigNumber;
+    amountSpecified: bigint;
+    vTokenIn: bigint;
+    vQuoteIn: bigint;
+    liquidityFees: bigint;
+    protocolFees: bigint;
+    sqrtPriceX96Start: bigint;
+    sqrtPriceX96End: bigint;
   };
 }
 
 export declare namespace SimulateSwap {
   export type CacheStruct = {
-    sqrtPriceX96Start: PromiseOrValue<BigNumberish>;
-    tickStart: PromiseOrValue<BigNumberish>;
-    feeProtocol: PromiseOrValue<BigNumberish>;
-    liquidityStart: PromiseOrValue<BigNumberish>;
-    tickSpacing: PromiseOrValue<BigNumberish>;
-    fee: PromiseOrValue<BigNumberish>;
-    value1: PromiseOrValue<BigNumberish>;
-    value2: PromiseOrValue<BigNumberish>;
+    sqrtPriceX96Start: BigNumberish;
+    tickStart: BigNumberish;
+    feeProtocol: BigNumberish;
+    liquidityStart: BigNumberish;
+    tickSpacing: BigNumberish;
+    fee: BigNumberish;
+    value1: BigNumberish;
+    value2: BigNumberish;
   };
 
   export type CacheStructOutput = [
-    BigNumber,
-    number,
-    number,
-    BigNumber,
-    number,
-    number,
-    BigNumber,
-    BigNumber
+    sqrtPriceX96Start: bigint,
+    tickStart: bigint,
+    feeProtocol: bigint,
+    liquidityStart: bigint,
+    tickSpacing: bigint,
+    fee: bigint,
+    value1: bigint,
+    value2: bigint
   ] & {
-    sqrtPriceX96Start: BigNumber;
-    tickStart: number;
-    feeProtocol: number;
-    liquidityStart: BigNumber;
-    tickSpacing: number;
-    fee: number;
-    value1: BigNumber;
-    value2: BigNumber;
+    sqrtPriceX96Start: bigint;
+    tickStart: bigint;
+    feeProtocol: bigint;
+    liquidityStart: bigint;
+    tickSpacing: bigint;
+    fee: bigint;
+    value1: bigint;
+    value2: bigint;
   };
 
   export type StepStruct = {
-    sqrtPriceStartX96: PromiseOrValue<BigNumberish>;
-    tickNext: PromiseOrValue<BigNumberish>;
-    initialized: PromiseOrValue<boolean>;
-    sqrtPriceNextX96: PromiseOrValue<BigNumberish>;
-    amountIn: PromiseOrValue<BigNumberish>;
-    amountOut: PromiseOrValue<BigNumberish>;
-    feeAmount: PromiseOrValue<BigNumberish>;
+    sqrtPriceStartX96: BigNumberish;
+    tickNext: BigNumberish;
+    initialized: boolean;
+    sqrtPriceNextX96: BigNumberish;
+    amountIn: BigNumberish;
+    amountOut: BigNumberish;
+    feeAmount: BigNumberish;
   };
 
   export type StepStructOutput = [
-    BigNumber,
-    number,
-    boolean,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    sqrtPriceStartX96: bigint,
+    tickNext: bigint,
+    initialized: boolean,
+    sqrtPriceNextX96: bigint,
+    amountIn: bigint,
+    amountOut: bigint,
+    feeAmount: bigint
   ] & {
-    sqrtPriceStartX96: BigNumber;
-    tickNext: number;
+    sqrtPriceStartX96: bigint;
+    tickNext: bigint;
     initialized: boolean;
-    sqrtPriceNextX96: BigNumber;
-    amountIn: BigNumber;
-    amountOut: BigNumber;
-    feeAmount: BigNumber;
+    sqrtPriceNextX96: bigint;
+    amountIn: bigint;
+    amountOut: bigint;
+    feeAmount: bigint;
   };
 
   export type StateStruct = {
-    amountSpecifiedRemaining: PromiseOrValue<BigNumberish>;
-    amountCalculated: PromiseOrValue<BigNumberish>;
-    sqrtPriceX96: PromiseOrValue<BigNumberish>;
-    tick: PromiseOrValue<BigNumberish>;
-    feeGrowthGlobalIncreaseX128: PromiseOrValue<BigNumberish>;
-    protocolFee: PromiseOrValue<BigNumberish>;
-    liquidity: PromiseOrValue<BigNumberish>;
+    amountSpecifiedRemaining: BigNumberish;
+    amountCalculated: BigNumberish;
+    sqrtPriceX96: BigNumberish;
+    tick: BigNumberish;
+    feeGrowthGlobalIncreaseX128: BigNumberish;
+    protocolFee: BigNumberish;
+    liquidity: BigNumberish;
   };
 
   export type StateStructOutput = [
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    number,
-    BigNumber,
-    BigNumber,
-    BigNumber
+    amountSpecifiedRemaining: bigint,
+    amountCalculated: bigint,
+    sqrtPriceX96: bigint,
+    tick: bigint,
+    feeGrowthGlobalIncreaseX128: bigint,
+    protocolFee: bigint,
+    liquidity: bigint
   ] & {
-    amountSpecifiedRemaining: BigNumber;
-    amountCalculated: BigNumber;
-    sqrtPriceX96: BigNumber;
-    tick: number;
-    feeGrowthGlobalIncreaseX128: BigNumber;
-    protocolFee: BigNumber;
-    liquidity: BigNumber;
+    amountSpecifiedRemaining: bigint;
+    amountCalculated: bigint;
+    sqrtPriceX96: bigint;
+    tick: bigint;
+    feeGrowthGlobalIncreaseX128: bigint;
+    protocolFee: bigint;
+    liquidity: bigint;
   };
 }
 
@@ -149,43 +147,26 @@ export declare namespace SwapSimulator {
   };
 
   export type SwapStepAndStateStructOutput = [
-    SimulateSwap.StepStructOutput,
-    SimulateSwap.StateStructOutput
+    step: SimulateSwap.StepStructOutput,
+    state: SimulateSwap.StateStructOutput
   ] & {
     step: SimulateSwap.StepStructOutput;
     state: SimulateSwap.StateStructOutput;
   };
 }
 
-export interface SwapSimulatorInterface extends utils.Interface {
-  functions: {
-    'simulateSwap(address,uint32,int256,uint160,bool)': FunctionFragment;
-    'simulateSwapView(address,uint32,int256,uint160,bool)': FunctionFragment;
-  };
-
+export interface SwapSimulatorInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic: 'simulateSwap' | 'simulateSwapView'
+    nameOrSignature: 'simulateSwap' | 'simulateSwapView'
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: 'simulateSwap',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'simulateSwapView',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish, boolean]
   ): string;
 
   decodeFunctionResult(
@@ -196,87 +177,61 @@ export interface SwapSimulatorInterface extends utils.Interface {
     functionFragment: 'simulateSwapView',
     data: BytesLike
   ): Result;
-
-  events: {};
 }
 
 export interface SwapSimulator extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: SwapSimulatorInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    simulateSwap(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    simulateSwapView(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
-      [IVPoolWrapper.SwapResultStructOutput] & {
-        swapResult: IVPoolWrapper.SwapResultStructOutput;
-      }
-    >;
-  };
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-  simulateSwap(
-    clearingHouse: PromiseOrValue<string>,
-    poolId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-    isNotional: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  simulateSwapView(
-    clearingHouse: PromiseOrValue<string>,
-    poolId: PromiseOrValue<BigNumberish>,
-    amount: PromiseOrValue<BigNumberish>,
-    sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-    isNotional: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<IVPoolWrapper.SwapResultStructOutput>;
-
-  callStatic: {
-    simulateSwap(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<
+  simulateSwap: TypedContractMethod<
+    [
+      clearingHouse: AddressLike,
+      poolId: BigNumberish,
+      amount: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish,
+      isNotional: boolean
+    ],
+    [
       [
         IVPoolWrapper.SwapResultStructOutput,
         SimulateSwap.CacheStructOutput,
@@ -286,57 +241,60 @@ export interface SwapSimulator extends BaseContract {
         cache: SimulateSwap.CacheStructOutput;
         steps: SwapSimulator.SwapStepAndStateStructOutput[];
       }
-    >;
+    ],
+    'nonpayable'
+  >;
 
-    simulateSwapView(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<IVPoolWrapper.SwapResultStructOutput>;
-  };
+  simulateSwapView: TypedContractMethod<
+    [
+      clearingHouse: AddressLike,
+      poolId: BigNumberish,
+      amount: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish,
+      isNotional: boolean
+    ],
+    [IVPoolWrapper.SwapResultStructOutput],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(nameOrSignature: 'simulateSwap'): TypedContractMethod<
+    [
+      clearingHouse: AddressLike,
+      poolId: BigNumberish,
+      amount: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish,
+      isNotional: boolean
+    ],
+    [
+      [
+        IVPoolWrapper.SwapResultStructOutput,
+        SimulateSwap.CacheStructOutput,
+        SwapSimulator.SwapStepAndStateStructOutput[]
+      ] & {
+        swapResult: IVPoolWrapper.SwapResultStructOutput;
+        cache: SimulateSwap.CacheStructOutput;
+        steps: SwapSimulator.SwapStepAndStateStructOutput[];
+      }
+    ],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'simulateSwapView'
+  ): TypedContractMethod<
+    [
+      clearingHouse: AddressLike,
+      poolId: BigNumberish,
+      amount: BigNumberish,
+      sqrtPriceLimitX96: BigNumberish,
+      isNotional: boolean
+    ],
+    [IVPoolWrapper.SwapResultStructOutput],
+    'view'
+  >;
 
   filters: {};
-
-  estimateGas: {
-    simulateSwap(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    simulateSwapView(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    simulateSwap(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    simulateSwapView(
-      clearingHouse: PromiseOrValue<string>,
-      poolId: PromiseOrValue<BigNumberish>,
-      amount: PromiseOrValue<BigNumberish>,
-      sqrtPriceLimitX96: PromiseOrValue<BigNumberish>,
-      isNotional: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
 }

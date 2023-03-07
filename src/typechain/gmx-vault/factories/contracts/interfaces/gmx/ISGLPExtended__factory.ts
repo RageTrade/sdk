@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ISGLPExtended,
   ISGLPExtendedInterface,
@@ -245,17 +244,17 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class ISGLPExtended__factory {
   static readonly abi = _abi;
   static createInterface(): ISGLPExtendedInterface {
-    return new utils.Interface(_abi) as ISGLPExtendedInterface;
+    return new Interface(_abi) as ISGLPExtendedInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ISGLPExtended {
-    return new Contract(address, _abi, signerOrProvider) as ISGLPExtended;
+    return new Contract(address, _abi, runner) as unknown as ISGLPExtended;
   }
 }

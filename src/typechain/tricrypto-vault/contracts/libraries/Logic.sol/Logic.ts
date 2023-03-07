@@ -3,41 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface LogicInterface extends utils.Interface {
-  functions: {
-    'getMarketValue(uint256,ILPPriceGetter)': FunctionFragment;
-    'getPriceX128(ILPPriceGetter)': FunctionFragment;
-    'getTwapSqrtPriceX96(IUniswapV3Pool,uint32)': FunctionFragment;
-    'getUpdatedBaseRangeParams(uint160,int256,uint64)': FunctionFragment;
-    'isValidRebalanceRangeWithoutCheckReset(IUniswapV3Pool,uint32,uint16,int24,int24)': FunctionFragment;
-    'simulateBeforeWithdraw(address,uint256,uint256)': FunctionFragment;
-    'sqrtPriceX96ToValidTick(uint160,bool)': FunctionFragment;
-  };
-
+export interface LogicInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'getMarketValue'
       | 'getPriceX128'
       | 'getTwapSqrtPriceX96'
@@ -47,47 +35,54 @@ export interface LogicInterface extends utils.Interface {
       | 'sqrtPriceX96ToValidTick'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'BaseParamsUpdated'
+      | 'CrvSwapFailedDueToSlippage'
+      | 'CurveParamsUpdated'
+      | 'EightyTwentyParamsUpdated'
+      | 'FeesUpdated'
+      | 'FeesWithdrawn'
+      | 'Harvested'
+      | 'Rebalance'
+      | 'Staked'
+      | 'StateInfo'
+      | 'TokenPositionClosed'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'getMarketValue',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getPriceX128',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getTwapSqrtPriceX96',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'getUpdatedBaseRangeParams',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'isValidRebalanceRangeWithoutCheckReset',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
     functionFragment: 'simulateBeforeWithdraw',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'sqrtPriceX96ToValidTick',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<boolean>]
+    values: [BigNumberish, boolean]
   ): string;
 
   decodeFunctionResult(
@@ -118,512 +113,561 @@ export interface LogicInterface extends utils.Interface {
     functionFragment: 'sqrtPriceX96ToValidTick',
     data: BytesLike
   ): Result;
-
-  events: {
-    'BaseParamsUpdated(uint256,address,uint32,uint16)': EventFragment;
-    'CrvSwapFailedDueToSlippage(uint256)': EventFragment;
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': EventFragment;
-    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': EventFragment;
-    'FeesUpdated(uint256)': EventFragment;
-    'FeesWithdrawn(uint256)': EventFragment;
-    'Harvested(uint256)': EventFragment;
-    'Rebalance()': EventFragment;
-    'Staked(uint256,address)': EventFragment;
-    'StateInfo(uint256)': EventFragment;
-    'TokenPositionClosed()': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'BaseParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CrvSwapFailedDueToSlippage'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'CurveParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'EightyTwentyParamsUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesUpdated'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'FeesWithdrawn'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Harvested'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Rebalance'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'Staked'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'StateInfo'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'TokenPositionClosed'): EventFragment;
 }
 
-export interface BaseParamsUpdatedEventObject {
-  newDepositCap: BigNumber;
-  newKeeperAddress: string;
-  rebalanceTimeThreshold: number;
-  rebalancePriceThresholdBps: number;
+export namespace BaseParamsUpdatedEvent {
+  export type InputTuple = [
+    newDepositCap: BigNumberish,
+    newKeeperAddress: AddressLike,
+    rebalanceTimeThreshold: BigNumberish,
+    rebalancePriceThresholdBps: BigNumberish
+  ];
+  export type OutputTuple = [
+    newDepositCap: bigint,
+    newKeeperAddress: string,
+    rebalanceTimeThreshold: bigint,
+    rebalancePriceThresholdBps: bigint
+  ];
+  export interface OutputObject {
+    newDepositCap: bigint;
+    newKeeperAddress: string;
+    rebalanceTimeThreshold: bigint;
+    rebalancePriceThresholdBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type BaseParamsUpdatedEvent = TypedEvent<
-  [BigNumber, string, number, number],
-  BaseParamsUpdatedEventObject
->;
 
-export type BaseParamsUpdatedEventFilter =
-  TypedEventFilter<BaseParamsUpdatedEvent>;
-
-export interface CrvSwapFailedDueToSlippageEventObject {
-  crvSlippageTolerance: BigNumber;
+export namespace CrvSwapFailedDueToSlippageEvent {
+  export type InputTuple = [crvSlippageTolerance: BigNumberish];
+  export type OutputTuple = [crvSlippageTolerance: bigint];
+  export interface OutputObject {
+    crvSlippageTolerance: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CrvSwapFailedDueToSlippageEvent = TypedEvent<
-  [BigNumber],
-  CrvSwapFailedDueToSlippageEventObject
->;
 
-export type CrvSwapFailedDueToSlippageEventFilter =
-  TypedEventFilter<CrvSwapFailedDueToSlippageEvent>;
-
-export interface CurveParamsUpdatedEventObject {
-  feeBps: BigNumber;
-  stablecoinSlippage: BigNumber;
-  crvHarvestThreshold: BigNumber;
-  crvSlippageTolerance: BigNumber;
-  gauge: string;
-  crvOracle: string;
+export namespace CurveParamsUpdatedEvent {
+  export type InputTuple = [
+    feeBps: BigNumberish,
+    stablecoinSlippage: BigNumberish,
+    crvHarvestThreshold: BigNumberish,
+    crvSlippageTolerance: BigNumberish,
+    gauge: AddressLike,
+    crvOracle: AddressLike
+  ];
+  export type OutputTuple = [
+    feeBps: bigint,
+    stablecoinSlippage: bigint,
+    crvHarvestThreshold: bigint,
+    crvSlippageTolerance: bigint,
+    gauge: string,
+    crvOracle: string
+  ];
+  export interface OutputObject {
+    feeBps: bigint;
+    stablecoinSlippage: bigint;
+    crvHarvestThreshold: bigint;
+    crvSlippageTolerance: bigint;
+    gauge: string;
+    crvOracle: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type CurveParamsUpdatedEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber, string, string],
-  CurveParamsUpdatedEventObject
->;
 
-export type CurveParamsUpdatedEventFilter =
-  TypedEventFilter<CurveParamsUpdatedEvent>;
-
-export interface EightyTwentyParamsUpdatedEventObject {
-  closePositionSlippageSqrtToleranceBps: number;
-  resetPositionThresholdBps: number;
-  minNotionalPositionToCloseThreshold: BigNumber;
+export namespace EightyTwentyParamsUpdatedEvent {
+  export type InputTuple = [
+    closePositionSlippageSqrtToleranceBps: BigNumberish,
+    resetPositionThresholdBps: BigNumberish,
+    minNotionalPositionToCloseThreshold: BigNumberish
+  ];
+  export type OutputTuple = [
+    closePositionSlippageSqrtToleranceBps: bigint,
+    resetPositionThresholdBps: bigint,
+    minNotionalPositionToCloseThreshold: bigint
+  ];
+  export interface OutputObject {
+    closePositionSlippageSqrtToleranceBps: bigint;
+    resetPositionThresholdBps: bigint;
+    minNotionalPositionToCloseThreshold: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EightyTwentyParamsUpdatedEvent = TypedEvent<
-  [number, number, BigNumber],
-  EightyTwentyParamsUpdatedEventObject
->;
 
-export type EightyTwentyParamsUpdatedEventFilter =
-  TypedEventFilter<EightyTwentyParamsUpdatedEvent>;
-
-export interface FeesUpdatedEventObject {
-  fee: BigNumber;
+export namespace FeesUpdatedEvent {
+  export type InputTuple = [fee: BigNumberish];
+  export type OutputTuple = [fee: bigint];
+  export interface OutputObject {
+    fee: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesUpdatedEvent = TypedEvent<[BigNumber], FeesUpdatedEventObject>;
 
-export type FeesUpdatedEventFilter = TypedEventFilter<FeesUpdatedEvent>;
-
-export interface FeesWithdrawnEventObject {
-  total: BigNumber;
+export namespace FeesWithdrawnEvent {
+  export type InputTuple = [total: BigNumberish];
+  export type OutputTuple = [total: bigint];
+  export interface OutputObject {
+    total: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type FeesWithdrawnEvent = TypedEvent<
-  [BigNumber],
-  FeesWithdrawnEventObject
->;
 
-export type FeesWithdrawnEventFilter = TypedEventFilter<FeesWithdrawnEvent>;
-
-export interface HarvestedEventObject {
-  crvAmount: BigNumber;
+export namespace HarvestedEvent {
+  export type InputTuple = [crvAmount: BigNumberish];
+  export type OutputTuple = [crvAmount: bigint];
+  export interface OutputObject {
+    crvAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type HarvestedEvent = TypedEvent<[BigNumber], HarvestedEventObject>;
 
-export type HarvestedEventFilter = TypedEventFilter<HarvestedEvent>;
-
-export interface RebalanceEventObject {}
-export type RebalanceEvent = TypedEvent<[], RebalanceEventObject>;
-
-export type RebalanceEventFilter = TypedEventFilter<RebalanceEvent>;
-
-export interface StakedEventObject {
-  amount: BigNumber;
-  depositor: string;
+export namespace RebalanceEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StakedEvent = TypedEvent<[BigNumber, string], StakedEventObject>;
 
-export type StakedEventFilter = TypedEventFilter<StakedEvent>;
-
-export interface StateInfoEventObject {
-  lpPrice: BigNumber;
+export namespace StakedEvent {
+  export type InputTuple = [amount: BigNumberish, depositor: AddressLike];
+  export type OutputTuple = [amount: bigint, depositor: string];
+  export interface OutputObject {
+    amount: bigint;
+    depositor: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StateInfoEvent = TypedEvent<[BigNumber], StateInfoEventObject>;
 
-export type StateInfoEventFilter = TypedEventFilter<StateInfoEvent>;
+export namespace StateInfoEvent {
+  export type InputTuple = [lpPrice: BigNumberish];
+  export type OutputTuple = [lpPrice: bigint];
+  export interface OutputObject {
+    lpPrice: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
 
-export interface TokenPositionClosedEventObject {}
-export type TokenPositionClosedEvent = TypedEvent<
-  [],
-  TokenPositionClosedEventObject
->;
-
-export type TokenPositionClosedEventFilter =
-  TypedEventFilter<TokenPositionClosedEvent>;
+export namespace TokenPositionClosedEvent {
+  export type InputTuple = [];
+  export type OutputTuple = [];
+  export interface OutputObject {}
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
 
 export interface Logic extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: LogicInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { marketValue: BigNumber }>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getPriceX128(
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { priceX128: BigNumber }>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getTwapSqrtPriceX96(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { twapSqrtPriceX96: BigNumber }>;
-
-    getUpdatedBaseRangeParams(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      SQRT_PRICE_FACTOR_PIPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [number, number, BigNumber] & {
-        baseTickLowerUpdate: number;
-        baseTickUpperUpdate: number;
-        baseLiquidityUpdate: BigNumber;
-      }
-    >;
-
-    isValidRebalanceRangeWithoutCheckReset(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      baseTickLower: PromiseOrValue<BigNumberish>,
-      baseTickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[boolean] & { isValid: boolean }>;
-
-    simulateBeforeWithdraw(
-      vault: PromiseOrValue<string>,
-      amountBeforeWithdraw: PromiseOrValue<BigNumberish>,
-      amountWithdrawn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        updatedAmountWithdrawn: BigNumber;
-        tokensToTrade: BigNumber;
-      }
-    >;
-
-    sqrtPriceX96ToValidTick(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      isTickUpper: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[number] & { roundedTick: number }>;
-  };
-
-  getMarketValue(
-    amount: PromiseOrValue<BigNumberish>,
-    lpPriceHolder: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getPriceX128(
-    lpPriceHolder: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getTwapSqrtPriceX96(
-    rageVPool: PromiseOrValue<string>,
-    rageTwapDuration: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUpdatedBaseRangeParams(
-    sqrtPriceX96: PromiseOrValue<BigNumberish>,
-    vaultMarketValue: PromiseOrValue<BigNumberish>,
-    SQRT_PRICE_FACTOR_PIPS: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [number, number, BigNumber] & {
-      baseTickLowerUpdate: number;
-      baseTickUpperUpdate: number;
-      baseLiquidityUpdate: BigNumber;
-    }
+  getMarketValue: TypedContractMethod<
+    [amount: BigNumberish, lpPriceHolder: AddressLike],
+    [bigint],
+    'view'
   >;
 
-  isValidRebalanceRangeWithoutCheckReset(
-    rageVPool: PromiseOrValue<string>,
-    rageTwapDuration: PromiseOrValue<BigNumberish>,
-    rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-    baseTickLower: PromiseOrValue<BigNumberish>,
-    baseTickUpper: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  simulateBeforeWithdraw(
-    vault: PromiseOrValue<string>,
-    amountBeforeWithdraw: PromiseOrValue<BigNumberish>,
-    amountWithdrawn: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      updatedAmountWithdrawn: BigNumber;
-      tokensToTrade: BigNumber;
-    }
+  getPriceX128: TypedContractMethod<
+    [lpPriceHolder: AddressLike],
+    [bigint],
+    'view'
   >;
 
-  sqrtPriceX96ToValidTick(
-    sqrtPriceX96: PromiseOrValue<BigNumberish>,
-    isTickUpper: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<number>;
+  getTwapSqrtPriceX96: TypedContractMethod<
+    [rageVPool: AddressLike, rageTwapDuration: BigNumberish],
+    [bigint],
+    'view'
+  >;
 
-  callStatic: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTwapSqrtPriceX96(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUpdatedBaseRangeParams(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      SQRT_PRICE_FACTOR_PIPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [number, number, BigNumber] & {
-        baseTickLowerUpdate: number;
-        baseTickUpperUpdate: number;
-        baseLiquidityUpdate: BigNumber;
+  getUpdatedBaseRangeParams: TypedContractMethod<
+    [
+      sqrtPriceX96: BigNumberish,
+      vaultMarketValue: BigNumberish,
+      SQRT_PRICE_FACTOR_PIPS: BigNumberish
+    ],
+    [
+      [bigint, bigint, bigint] & {
+        baseTickLowerUpdate: bigint;
+        baseTickUpperUpdate: bigint;
+        baseLiquidityUpdate: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    isValidRebalanceRangeWithoutCheckReset(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      baseTickLower: PromiseOrValue<BigNumberish>,
-      baseTickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+  isValidRebalanceRangeWithoutCheckReset: TypedContractMethod<
+    [
+      rageVPool: AddressLike,
+      rageTwapDuration: BigNumberish,
+      rebalancePriceThresholdBps: BigNumberish,
+      baseTickLower: BigNumberish,
+      baseTickUpper: BigNumberish
+    ],
+    [boolean],
+    'view'
+  >;
 
-    simulateBeforeWithdraw(
-      vault: PromiseOrValue<string>,
-      amountBeforeWithdraw: PromiseOrValue<BigNumberish>,
-      amountWithdrawn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        updatedAmountWithdrawn: BigNumber;
-        tokensToTrade: BigNumber;
+  simulateBeforeWithdraw: TypedContractMethod<
+    [
+      vault: AddressLike,
+      amountBeforeWithdraw: BigNumberish,
+      amountWithdrawn: BigNumberish
+    ],
+    [
+      [bigint, bigint] & {
+        updatedAmountWithdrawn: bigint;
+        tokensToTrade: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    sqrtPriceX96ToValidTick(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      isTickUpper: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<number>;
-  };
+  sqrtPriceX96ToValidTick: TypedContractMethod<
+    [sqrtPriceX96: BigNumberish, isTickUpper: boolean],
+    [bigint],
+    'view'
+  >;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'getMarketValue'
+  ): TypedContractMethod<
+    [amount: BigNumberish, lpPriceHolder: AddressLike],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getPriceX128'
+  ): TypedContractMethod<[lpPriceHolder: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTwapSqrtPriceX96'
+  ): TypedContractMethod<
+    [rageVPool: AddressLike, rageTwapDuration: BigNumberish],
+    [bigint],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getUpdatedBaseRangeParams'
+  ): TypedContractMethod<
+    [
+      sqrtPriceX96: BigNumberish,
+      vaultMarketValue: BigNumberish,
+      SQRT_PRICE_FACTOR_PIPS: BigNumberish
+    ],
+    [
+      [bigint, bigint, bigint] & {
+        baseTickLowerUpdate: bigint;
+        baseTickUpperUpdate: bigint;
+        baseLiquidityUpdate: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'isValidRebalanceRangeWithoutCheckReset'
+  ): TypedContractMethod<
+    [
+      rageVPool: AddressLike,
+      rageTwapDuration: BigNumberish,
+      rebalancePriceThresholdBps: BigNumberish,
+      baseTickLower: BigNumberish,
+      baseTickUpper: BigNumberish
+    ],
+    [boolean],
+    'view'
+  >;
+  getFunction(nameOrSignature: 'simulateBeforeWithdraw'): TypedContractMethod<
+    [
+      vault: AddressLike,
+      amountBeforeWithdraw: BigNumberish,
+      amountWithdrawn: BigNumberish
+    ],
+    [
+      [bigint, bigint] & {
+        updatedAmountWithdrawn: bigint;
+        tokensToTrade: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'sqrtPriceX96ToValidTick'
+  ): TypedContractMethod<
+    [sqrtPriceX96: BigNumberish, isTickUpper: boolean],
+    [bigint],
+    'view'
+  >;
+
+  getEvent(
+    key: 'BaseParamsUpdated'
+  ): TypedContractEvent<
+    BaseParamsUpdatedEvent.InputTuple,
+    BaseParamsUpdatedEvent.OutputTuple,
+    BaseParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CrvSwapFailedDueToSlippage'
+  ): TypedContractEvent<
+    CrvSwapFailedDueToSlippageEvent.InputTuple,
+    CrvSwapFailedDueToSlippageEvent.OutputTuple,
+    CrvSwapFailedDueToSlippageEvent.OutputObject
+  >;
+  getEvent(
+    key: 'CurveParamsUpdated'
+  ): TypedContractEvent<
+    CurveParamsUpdatedEvent.InputTuple,
+    CurveParamsUpdatedEvent.OutputTuple,
+    CurveParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'EightyTwentyParamsUpdated'
+  ): TypedContractEvent<
+    EightyTwentyParamsUpdatedEvent.InputTuple,
+    EightyTwentyParamsUpdatedEvent.OutputTuple,
+    EightyTwentyParamsUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesUpdated'
+  ): TypedContractEvent<
+    FeesUpdatedEvent.InputTuple,
+    FeesUpdatedEvent.OutputTuple,
+    FeesUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'FeesWithdrawn'
+  ): TypedContractEvent<
+    FeesWithdrawnEvent.InputTuple,
+    FeesWithdrawnEvent.OutputTuple,
+    FeesWithdrawnEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Harvested'
+  ): TypedContractEvent<
+    HarvestedEvent.InputTuple,
+    HarvestedEvent.OutputTuple,
+    HarvestedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Rebalance'
+  ): TypedContractEvent<
+    RebalanceEvent.InputTuple,
+    RebalanceEvent.OutputTuple,
+    RebalanceEvent.OutputObject
+  >;
+  getEvent(
+    key: 'Staked'
+  ): TypedContractEvent<
+    StakedEvent.InputTuple,
+    StakedEvent.OutputTuple,
+    StakedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'StateInfo'
+  ): TypedContractEvent<
+    StateInfoEvent.InputTuple,
+    StateInfoEvent.OutputTuple,
+    StateInfoEvent.OutputObject
+  >;
+  getEvent(
+    key: 'TokenPositionClosed'
+  ): TypedContractEvent<
+    TokenPositionClosedEvent.InputTuple,
+    TokenPositionClosedEvent.OutputTuple,
+    TokenPositionClosedEvent.OutputObject
+  >;
 
   filters: {
-    'BaseParamsUpdated(uint256,address,uint32,uint16)'(
-      newDepositCap?: null,
-      newKeeperAddress?: null,
-      rebalanceTimeThreshold?: null,
-      rebalancePriceThresholdBps?: null
-    ): BaseParamsUpdatedEventFilter;
-    BaseParamsUpdated(
-      newDepositCap?: null,
-      newKeeperAddress?: null,
-      rebalanceTimeThreshold?: null,
-      rebalancePriceThresholdBps?: null
-    ): BaseParamsUpdatedEventFilter;
+    'BaseParamsUpdated(uint256,address,uint32,uint16)': TypedContractEvent<
+      BaseParamsUpdatedEvent.InputTuple,
+      BaseParamsUpdatedEvent.OutputTuple,
+      BaseParamsUpdatedEvent.OutputObject
+    >;
+    BaseParamsUpdated: TypedContractEvent<
+      BaseParamsUpdatedEvent.InputTuple,
+      BaseParamsUpdatedEvent.OutputTuple,
+      BaseParamsUpdatedEvent.OutputObject
+    >;
 
-    'CrvSwapFailedDueToSlippage(uint256)'(
-      crvSlippageTolerance?: null
-    ): CrvSwapFailedDueToSlippageEventFilter;
-    CrvSwapFailedDueToSlippage(
-      crvSlippageTolerance?: null
-    ): CrvSwapFailedDueToSlippageEventFilter;
+    'CrvSwapFailedDueToSlippage(uint256)': TypedContractEvent<
+      CrvSwapFailedDueToSlippageEvent.InputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputObject
+    >;
+    CrvSwapFailedDueToSlippage: TypedContractEvent<
+      CrvSwapFailedDueToSlippageEvent.InputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputTuple,
+      CrvSwapFailedDueToSlippageEvent.OutputObject
+    >;
 
-    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)'(
-      feeBps?: null,
-      stablecoinSlippage?: null,
-      crvHarvestThreshold?: null,
-      crvSlippageTolerance?: null,
-      gauge?: PromiseOrValue<string> | null,
-      crvOracle?: PromiseOrValue<string> | null
-    ): CurveParamsUpdatedEventFilter;
-    CurveParamsUpdated(
-      feeBps?: null,
-      stablecoinSlippage?: null,
-      crvHarvestThreshold?: null,
-      crvSlippageTolerance?: null,
-      gauge?: PromiseOrValue<string> | null,
-      crvOracle?: PromiseOrValue<string> | null
-    ): CurveParamsUpdatedEventFilter;
+    'CurveParamsUpdated(uint256,uint256,uint256,uint256,address,address)': TypedContractEvent<
+      CurveParamsUpdatedEvent.InputTuple,
+      CurveParamsUpdatedEvent.OutputTuple,
+      CurveParamsUpdatedEvent.OutputObject
+    >;
+    CurveParamsUpdated: TypedContractEvent<
+      CurveParamsUpdatedEvent.InputTuple,
+      CurveParamsUpdatedEvent.OutputTuple,
+      CurveParamsUpdatedEvent.OutputObject
+    >;
 
-    'EightyTwentyParamsUpdated(uint16,uint16,uint64)'(
-      closePositionSlippageSqrtToleranceBps?: null,
-      resetPositionThresholdBps?: null,
-      minNotionalPositionToCloseThreshold?: null
-    ): EightyTwentyParamsUpdatedEventFilter;
-    EightyTwentyParamsUpdated(
-      closePositionSlippageSqrtToleranceBps?: null,
-      resetPositionThresholdBps?: null,
-      minNotionalPositionToCloseThreshold?: null
-    ): EightyTwentyParamsUpdatedEventFilter;
+    'EightyTwentyParamsUpdated(uint16,uint16,uint64)': TypedContractEvent<
+      EightyTwentyParamsUpdatedEvent.InputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputObject
+    >;
+    EightyTwentyParamsUpdated: TypedContractEvent<
+      EightyTwentyParamsUpdatedEvent.InputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputTuple,
+      EightyTwentyParamsUpdatedEvent.OutputObject
+    >;
 
-    'FeesUpdated(uint256)'(fee?: null): FeesUpdatedEventFilter;
-    FeesUpdated(fee?: null): FeesUpdatedEventFilter;
+    'FeesUpdated(uint256)': TypedContractEvent<
+      FeesUpdatedEvent.InputTuple,
+      FeesUpdatedEvent.OutputTuple,
+      FeesUpdatedEvent.OutputObject
+    >;
+    FeesUpdated: TypedContractEvent<
+      FeesUpdatedEvent.InputTuple,
+      FeesUpdatedEvent.OutputTuple,
+      FeesUpdatedEvent.OutputObject
+    >;
 
-    'FeesWithdrawn(uint256)'(total?: null): FeesWithdrawnEventFilter;
-    FeesWithdrawn(total?: null): FeesWithdrawnEventFilter;
+    'FeesWithdrawn(uint256)': TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
+    FeesWithdrawn: TypedContractEvent<
+      FeesWithdrawnEvent.InputTuple,
+      FeesWithdrawnEvent.OutputTuple,
+      FeesWithdrawnEvent.OutputObject
+    >;
 
-    'Harvested(uint256)'(crvAmount?: null): HarvestedEventFilter;
-    Harvested(crvAmount?: null): HarvestedEventFilter;
+    'Harvested(uint256)': TypedContractEvent<
+      HarvestedEvent.InputTuple,
+      HarvestedEvent.OutputTuple,
+      HarvestedEvent.OutputObject
+    >;
+    Harvested: TypedContractEvent<
+      HarvestedEvent.InputTuple,
+      HarvestedEvent.OutputTuple,
+      HarvestedEvent.OutputObject
+    >;
 
-    'Rebalance()'(): RebalanceEventFilter;
-    Rebalance(): RebalanceEventFilter;
+    'Rebalance()': TypedContractEvent<
+      RebalanceEvent.InputTuple,
+      RebalanceEvent.OutputTuple,
+      RebalanceEvent.OutputObject
+    >;
+    Rebalance: TypedContractEvent<
+      RebalanceEvent.InputTuple,
+      RebalanceEvent.OutputTuple,
+      RebalanceEvent.OutputObject
+    >;
 
-    'Staked(uint256,address)'(
-      amount?: null,
-      depositor?: PromiseOrValue<string> | null
-    ): StakedEventFilter;
-    Staked(
-      amount?: null,
-      depositor?: PromiseOrValue<string> | null
-    ): StakedEventFilter;
+    'Staked(uint256,address)': TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
+    Staked: TypedContractEvent<
+      StakedEvent.InputTuple,
+      StakedEvent.OutputTuple,
+      StakedEvent.OutputObject
+    >;
 
-    'StateInfo(uint256)'(lpPrice?: null): StateInfoEventFilter;
-    StateInfo(lpPrice?: null): StateInfoEventFilter;
+    'StateInfo(uint256)': TypedContractEvent<
+      StateInfoEvent.InputTuple,
+      StateInfoEvent.OutputTuple,
+      StateInfoEvent.OutputObject
+    >;
+    StateInfo: TypedContractEvent<
+      StateInfoEvent.InputTuple,
+      StateInfoEvent.OutputTuple,
+      StateInfoEvent.OutputObject
+    >;
 
-    'TokenPositionClosed()'(): TokenPositionClosedEventFilter;
-    TokenPositionClosed(): TokenPositionClosedEventFilter;
-  };
-
-  estimateGas: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getPriceX128(
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTwapSqrtPriceX96(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUpdatedBaseRangeParams(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      SQRT_PRICE_FACTOR_PIPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    isValidRebalanceRangeWithoutCheckReset(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      baseTickLower: PromiseOrValue<BigNumberish>,
-      baseTickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    simulateBeforeWithdraw(
-      vault: PromiseOrValue<string>,
-      amountBeforeWithdraw: PromiseOrValue<BigNumberish>,
-      amountWithdrawn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    sqrtPriceX96ToValidTick(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      isTickUpper: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    getMarketValue(
-      amount: PromiseOrValue<BigNumberish>,
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getPriceX128(
-      lpPriceHolder: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTwapSqrtPriceX96(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getUpdatedBaseRangeParams(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      vaultMarketValue: PromiseOrValue<BigNumberish>,
-      SQRT_PRICE_FACTOR_PIPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    isValidRebalanceRangeWithoutCheckReset(
-      rageVPool: PromiseOrValue<string>,
-      rageTwapDuration: PromiseOrValue<BigNumberish>,
-      rebalancePriceThresholdBps: PromiseOrValue<BigNumberish>,
-      baseTickLower: PromiseOrValue<BigNumberish>,
-      baseTickUpper: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    simulateBeforeWithdraw(
-      vault: PromiseOrValue<string>,
-      amountBeforeWithdraw: PromiseOrValue<BigNumberish>,
-      amountWithdrawn: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    sqrtPriceX96ToValidTick(
-      sqrtPriceX96: PromiseOrValue<BigNumberish>,
-      isTickUpper: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    'TokenPositionClosed()': TypedContractEvent<
+      TokenPositionClosedEvent.InputTuple,
+      TokenPositionClosedEvent.OutputTuple,
+      TokenPositionClosedEvent.OutputObject
+    >;
+    TokenPositionClosed: TypedContractEvent<
+      TokenPositionClosedEvent.InputTuple,
+      TokenPositionClosedEvent.OutputTuple,
+      TokenPositionClosedEvent.OutputObject
+    >;
   };
 }

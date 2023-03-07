@@ -3,55 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../common';
 
-export interface IRewardRouterV2Interface extends utils.Interface {
-  functions: {
-    'acceptTransfer(address)': FunctionFragment;
-    'batchCompoundForAccounts(address[])': FunctionFragment;
-    'batchStakeGmxForAccount(address[],uint256[])': FunctionFragment;
-    'claim()': FunctionFragment;
-    'claimEsGmx()': FunctionFragment;
-    'claimFees()': FunctionFragment;
-    'compound()': FunctionFragment;
-    'compoundForAccount(address)': FunctionFragment;
-    'handleRewards(bool,bool,bool,bool,bool,bool,bool)': FunctionFragment;
-    'mintAndStakeGlp(address,uint256,uint256,uint256)': FunctionFragment;
-    'mintAndStakeGlpETH(uint256,uint256)': FunctionFragment;
-    'signalTransfer(address)': FunctionFragment;
-    'stakeEsGmx(uint256)': FunctionFragment;
-    'stakeGmx(uint256)': FunctionFragment;
-    'stakeGmxForAccount(address,uint256)': FunctionFragment;
-    'unstakeAndRedeemGlp(address,uint256,uint256,address)': FunctionFragment;
-    'unstakeAndRedeemGlpETH(uint256,uint256,address)': FunctionFragment;
-    'unstakeEsGmx(uint256)': FunctionFragment;
-    'unstakeGmx(uint256)': FunctionFragment;
-  };
-
+export interface IRewardRouterV2Interface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'acceptTransfer'
       | 'batchCompoundForAccounts'
       | 'batchStakeGmxForAccount'
@@ -73,17 +47,25 @@ export interface IRewardRouterV2Interface extends utils.Interface {
       | 'unstakeGmx'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'StakeGlp'
+      | 'StakeGmx'
+      | 'UnstakeGlp'
+      | 'UnstakeGmx'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'acceptTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'batchCompoundForAccounts',
-    values: [PromiseOrValue<string>[]]
+    values: [AddressLike[]]
   ): string;
   encodeFunctionData(
     functionFragment: 'batchStakeGmxForAccount',
-    values: [PromiseOrValue<string>[], PromiseOrValue<BigNumberish>[]]
+    values: [AddressLike[], BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: 'claim', values?: undefined): string;
   encodeFunctionData(
@@ -94,73 +76,51 @@ export interface IRewardRouterV2Interface extends utils.Interface {
   encodeFunctionData(functionFragment: 'compound', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'compoundForAccount',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'handleRewards',
-    values: [
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<boolean>
-    ]
+    values: [boolean, boolean, boolean, boolean, boolean, boolean, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'mintAndStakeGlp',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'mintAndStakeGlpETH',
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'signalTransfer',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'stakeEsGmx',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'stakeGmx',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'stakeGmxForAccount',
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeAndRedeemGlp',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeAndRedeemGlpETH',
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>
-    ]
+    values: [BigNumberish, BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeEsGmx',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: 'unstakeGmx',
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
 
   decodeFunctionResult(
@@ -218,661 +178,406 @@ export interface IRewardRouterV2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: 'unstakeGmx', data: BytesLike): Result;
-
-  events: {
-    'StakeGlp(address,uint256)': EventFragment;
-    'StakeGmx(address,address,uint256)': EventFragment;
-    'UnstakeGlp(address,uint256)': EventFragment;
-    'UnstakeGmx(address,address,uint256)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'StakeGlp'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'StakeGmx'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'UnstakeGlp'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'UnstakeGmx'): EventFragment;
 }
 
-export interface StakeGlpEventObject {
-  account: string;
-  amount: BigNumber;
+export namespace StakeGlpEvent {
+  export type InputTuple = [account: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [account: string, amount: bigint];
+  export interface OutputObject {
+    account: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StakeGlpEvent = TypedEvent<
-  [string, BigNumber],
-  StakeGlpEventObject
->;
 
-export type StakeGlpEventFilter = TypedEventFilter<StakeGlpEvent>;
-
-export interface StakeGmxEventObject {
-  account: string;
-  token: string;
-  amount: BigNumber;
+export namespace StakeGmxEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    token: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [account: string, token: string, amount: bigint];
+  export interface OutputObject {
+    account: string;
+    token: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type StakeGmxEvent = TypedEvent<
-  [string, string, BigNumber],
-  StakeGmxEventObject
->;
 
-export type StakeGmxEventFilter = TypedEventFilter<StakeGmxEvent>;
-
-export interface UnstakeGlpEventObject {
-  account: string;
-  amount: BigNumber;
+export namespace UnstakeGlpEvent {
+  export type InputTuple = [account: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [account: string, amount: bigint];
+  export interface OutputObject {
+    account: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UnstakeGlpEvent = TypedEvent<
-  [string, BigNumber],
-  UnstakeGlpEventObject
->;
 
-export type UnstakeGlpEventFilter = TypedEventFilter<UnstakeGlpEvent>;
-
-export interface UnstakeGmxEventObject {
-  account: string;
-  token: string;
-  amount: BigNumber;
+export namespace UnstakeGmxEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    token: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [account: string, token: string, amount: bigint];
+  export interface OutputObject {
+    account: string;
+    token: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type UnstakeGmxEvent = TypedEvent<
-  [string, string, BigNumber],
-  UnstakeGmxEventObject
->;
-
-export type UnstakeGmxEventFilter = TypedEventFilter<UnstakeGmxEvent>;
 
 export interface IRewardRouterV2 extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: IRewardRouterV2Interface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    acceptTransfer(
-      _sender: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    batchCompoundForAccounts(
-      _accounts: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    batchStakeGmxForAccount(
-      _accounts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  acceptTransfer: TypedContractMethod<
+    [_sender: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  batchCompoundForAccounts: TypedContractMethod<
+    [_accounts: AddressLike[]],
+    [void],
+    'nonpayable'
+  >;
 
-    claimEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  batchStakeGmxForAccount: TypedContractMethod<
+    [_accounts: AddressLike[], _amounts: BigNumberish[]],
+    [void],
+    'nonpayable'
+  >;
 
-    claimFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claim: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    compound(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claimEsGmx: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    compoundForAccount(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  claimFees: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  compound: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    mintAndStakeGlp(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  compoundForAccount: TypedContractMethod<
+    [_account: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    mintAndStakeGlpETH(
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  handleRewards: TypedContractMethod<
+    [
+      _shouldClaimGmx: boolean,
+      _shouldStakeGmx: boolean,
+      _shouldClaimEsGmx: boolean,
+      _shouldStakeEsGmx: boolean,
+      _shouldStakeMultiplierPoints: boolean,
+      _shouldClaimWeth: boolean,
+      _shouldConvertWethToEth: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    signalTransfer(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  mintAndStakeGlp: TypedContractMethod<
+    [
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    stakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  mintAndStakeGlpETH: TypedContractMethod<
+    [_minUsdg: BigNumberish, _minGlp: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
 
-    stakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  signalTransfer: TypedContractMethod<
+    [_receiver: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    stakeGmxForAccount(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  stakeEsGmx: TypedContractMethod<
+    [_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    unstakeAndRedeemGlp(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  stakeGmx: TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
 
-    unstakeAndRedeemGlpETH(
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  stakeGmxForAccount: TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    unstakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  unstakeAndRedeemGlp: TypedContractMethod<
+    [
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
 
-    unstakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  unstakeAndRedeemGlpETH: TypedContractMethod<
+    [_glpAmount: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
 
-  acceptTransfer(
-    _sender: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  unstakeEsGmx: TypedContractMethod<
+    [_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  batchCompoundForAccounts(
-    _accounts: PromiseOrValue<string>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  unstakeGmx: TypedContractMethod<
+    [_amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-  batchStakeGmxForAccount(
-    _accounts: PromiseOrValue<string>[],
-    _amounts: PromiseOrValue<BigNumberish>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  claim(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction(
+    nameOrSignature: 'acceptTransfer'
+  ): TypedContractMethod<[_sender: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'batchCompoundForAccounts'
+  ): TypedContractMethod<[_accounts: AddressLike[]], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'batchStakeGmxForAccount'
+  ): TypedContractMethod<
+    [_accounts: AddressLike[], _amounts: BigNumberish[]],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'claim'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claimEsGmx'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'claimFees'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'compound'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'compoundForAccount'
+  ): TypedContractMethod<[_account: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'handleRewards'
+  ): TypedContractMethod<
+    [
+      _shouldClaimGmx: boolean,
+      _shouldStakeGmx: boolean,
+      _shouldClaimEsGmx: boolean,
+      _shouldStakeEsGmx: boolean,
+      _shouldStakeMultiplierPoints: boolean,
+      _shouldClaimWeth: boolean,
+      _shouldConvertWethToEth: boolean
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'mintAndStakeGlp'
+  ): TypedContractMethod<
+    [
+      _token: AddressLike,
+      _amount: BigNumberish,
+      _minUsdg: BigNumberish,
+      _minGlp: BigNumberish
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'mintAndStakeGlpETH'
+  ): TypedContractMethod<
+    [_minUsdg: BigNumberish, _minGlp: BigNumberish],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'signalTransfer'
+  ): TypedContractMethod<[_receiver: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'stakeEsGmx'
+  ): TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'stakeGmx'
+  ): TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'stakeGmxForAccount'
+  ): TypedContractMethod<
+    [_account: AddressLike, _amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'unstakeAndRedeemGlp'
+  ): TypedContractMethod<
+    [
+      _tokenOut: AddressLike,
+      _glpAmount: BigNumberish,
+      _minOut: BigNumberish,
+      _receiver: AddressLike
+    ],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'unstakeAndRedeemGlpETH'
+  ): TypedContractMethod<
+    [_glpAmount: BigNumberish, _minOut: BigNumberish, _receiver: AddressLike],
+    [bigint],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'unstakeEsGmx'
+  ): TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'unstakeGmx'
+  ): TypedContractMethod<[_amount: BigNumberish], [void], 'nonpayable'>;
 
-  claimEsGmx(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  claimFees(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  compound(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  compoundForAccount(
-    _account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  handleRewards(
-    _shouldClaimGmx: PromiseOrValue<boolean>,
-    _shouldStakeGmx: PromiseOrValue<boolean>,
-    _shouldClaimEsGmx: PromiseOrValue<boolean>,
-    _shouldStakeEsGmx: PromiseOrValue<boolean>,
-    _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-    _shouldClaimWeth: PromiseOrValue<boolean>,
-    _shouldConvertWethToEth: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  mintAndStakeGlp(
-    _token: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _minUsdg: PromiseOrValue<BigNumberish>,
-    _minGlp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  mintAndStakeGlpETH(
-    _minUsdg: PromiseOrValue<BigNumberish>,
-    _minGlp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  signalTransfer(
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakeEsGmx(
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakeGmx(
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  stakeGmxForAccount(
-    _account: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeAndRedeemGlp(
-    _tokenOut: PromiseOrValue<string>,
-    _glpAmount: PromiseOrValue<BigNumberish>,
-    _minOut: PromiseOrValue<BigNumberish>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeAndRedeemGlpETH(
-    _glpAmount: PromiseOrValue<BigNumberish>,
-    _minOut: PromiseOrValue<BigNumberish>,
-    _receiver: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeEsGmx(
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  unstakeGmx(
-    _amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    acceptTransfer(
-      _sender: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    batchCompoundForAccounts(
-      _accounts: PromiseOrValue<string>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    batchStakeGmxForAccount(
-      _accounts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    claim(overrides?: CallOverrides): Promise<void>;
-
-    claimEsGmx(overrides?: CallOverrides): Promise<void>;
-
-    claimFees(overrides?: CallOverrides): Promise<void>;
-
-    compound(overrides?: CallOverrides): Promise<void>;
-
-    compoundForAccount(
-      _account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mintAndStakeGlp(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mintAndStakeGlpETH(
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    signalTransfer(
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    stakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    stakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    stakeGmxForAccount(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    unstakeAndRedeemGlp(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    unstakeAndRedeemGlpETH(
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    unstakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    unstakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  getEvent(
+    key: 'StakeGlp'
+  ): TypedContractEvent<
+    StakeGlpEvent.InputTuple,
+    StakeGlpEvent.OutputTuple,
+    StakeGlpEvent.OutputObject
+  >;
+  getEvent(
+    key: 'StakeGmx'
+  ): TypedContractEvent<
+    StakeGmxEvent.InputTuple,
+    StakeGmxEvent.OutputTuple,
+    StakeGmxEvent.OutputObject
+  >;
+  getEvent(
+    key: 'UnstakeGlp'
+  ): TypedContractEvent<
+    UnstakeGlpEvent.InputTuple,
+    UnstakeGlpEvent.OutputTuple,
+    UnstakeGlpEvent.OutputObject
+  >;
+  getEvent(
+    key: 'UnstakeGmx'
+  ): TypedContractEvent<
+    UnstakeGmxEvent.InputTuple,
+    UnstakeGmxEvent.OutputTuple,
+    UnstakeGmxEvent.OutputObject
+  >;
 
   filters: {
-    'StakeGlp(address,uint256)'(
-      account?: null,
-      amount?: null
-    ): StakeGlpEventFilter;
-    StakeGlp(account?: null, amount?: null): StakeGlpEventFilter;
+    'StakeGlp(address,uint256)': TypedContractEvent<
+      StakeGlpEvent.InputTuple,
+      StakeGlpEvent.OutputTuple,
+      StakeGlpEvent.OutputObject
+    >;
+    StakeGlp: TypedContractEvent<
+      StakeGlpEvent.InputTuple,
+      StakeGlpEvent.OutputTuple,
+      StakeGlpEvent.OutputObject
+    >;
 
-    'StakeGmx(address,address,uint256)'(
-      account?: null,
-      token?: null,
-      amount?: null
-    ): StakeGmxEventFilter;
-    StakeGmx(account?: null, token?: null, amount?: null): StakeGmxEventFilter;
+    'StakeGmx(address,address,uint256)': TypedContractEvent<
+      StakeGmxEvent.InputTuple,
+      StakeGmxEvent.OutputTuple,
+      StakeGmxEvent.OutputObject
+    >;
+    StakeGmx: TypedContractEvent<
+      StakeGmxEvent.InputTuple,
+      StakeGmxEvent.OutputTuple,
+      StakeGmxEvent.OutputObject
+    >;
 
-    'UnstakeGlp(address,uint256)'(
-      account?: null,
-      amount?: null
-    ): UnstakeGlpEventFilter;
-    UnstakeGlp(account?: null, amount?: null): UnstakeGlpEventFilter;
+    'UnstakeGlp(address,uint256)': TypedContractEvent<
+      UnstakeGlpEvent.InputTuple,
+      UnstakeGlpEvent.OutputTuple,
+      UnstakeGlpEvent.OutputObject
+    >;
+    UnstakeGlp: TypedContractEvent<
+      UnstakeGlpEvent.InputTuple,
+      UnstakeGlpEvent.OutputTuple,
+      UnstakeGlpEvent.OutputObject
+    >;
 
-    'UnstakeGmx(address,address,uint256)'(
-      account?: null,
-      token?: null,
-      amount?: null
-    ): UnstakeGmxEventFilter;
-    UnstakeGmx(
-      account?: null,
-      token?: null,
-      amount?: null
-    ): UnstakeGmxEventFilter;
-  };
-
-  estimateGas: {
-    acceptTransfer(
-      _sender: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    batchCompoundForAccounts(
-      _accounts: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    batchStakeGmxForAccount(
-      _accounts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    claimFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    compound(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    compoundForAccount(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    mintAndStakeGlp(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    mintAndStakeGlpETH(
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    signalTransfer(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    stakeGmxForAccount(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeAndRedeemGlp(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeAndRedeemGlpETH(
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    unstakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    acceptTransfer(
-      _sender: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    batchCompoundForAccounts(
-      _accounts: PromiseOrValue<string>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    batchStakeGmxForAccount(
-      _accounts: PromiseOrValue<string>[],
-      _amounts: PromiseOrValue<BigNumberish>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claim(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimEsGmx(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    claimFees(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    compound(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    compoundForAccount(
-      _account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    handleRewards(
-      _shouldClaimGmx: PromiseOrValue<boolean>,
-      _shouldStakeGmx: PromiseOrValue<boolean>,
-      _shouldClaimEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeEsGmx: PromiseOrValue<boolean>,
-      _shouldStakeMultiplierPoints: PromiseOrValue<boolean>,
-      _shouldClaimWeth: PromiseOrValue<boolean>,
-      _shouldConvertWethToEth: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintAndStakeGlp(
-      _token: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    mintAndStakeGlpETH(
-      _minUsdg: PromiseOrValue<BigNumberish>,
-      _minGlp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    signalTransfer(
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    stakeGmxForAccount(
-      _account: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeAndRedeemGlp(
-      _tokenOut: PromiseOrValue<string>,
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeAndRedeemGlpETH(
-      _glpAmount: PromiseOrValue<BigNumberish>,
-      _minOut: PromiseOrValue<BigNumberish>,
-      _receiver: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeEsGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    unstakeGmx(
-      _amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'UnstakeGmx(address,address,uint256)': TypedContractEvent<
+      UnstakeGmxEvent.InputTuple,
+      UnstakeGmxEvent.OutputTuple,
+      UnstakeGmxEvent.OutputObject
+    >;
+    UnstakeGmx: TypedContractEvent<
+      UnstakeGmxEvent.InputTuple,
+      UnstakeGmxEvent.OutputTuple,
+      UnstakeGmxEvent.OutputObject
+    >;
   };
 }

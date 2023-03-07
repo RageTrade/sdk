@@ -3,247 +3,200 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../../../../../common';
 
-export interface ITransferStrategyBaseInterface extends utils.Interface {
-  functions: {
-    'emergencyWithdrawal(address,address,uint256)': FunctionFragment;
-    'getIncentivesController()': FunctionFragment;
-    'getRewardsAdmin()': FunctionFragment;
-    'performTransfer(address,address,uint256)': FunctionFragment;
-  };
-
+export interface ITransferStrategyBaseInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'emergencyWithdrawal'
       | 'getIncentivesController'
       | 'getRewardsAdmin'
       | 'performTransfer'
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: 'emergencyWithdrawal',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getIncentivesController',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'getRewardsAdmin',
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: 'performTransfer',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-
-  decodeFunctionResult(
-    functionFragment: 'emergencyWithdrawal',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getIncentivesController',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'getRewardsAdmin',
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: 'performTransfer',
-    data: BytesLike
-  ): Result;
-
-  events: {
-    'EmergencyWithdrawal(address,address,address,uint256)': EventFragment;
-  };
-
   getEvent(nameOrSignatureOrTopic: 'EmergencyWithdrawal'): EventFragment;
+
+  encodeFunctionData(
+    functionFragment: 'emergencyWithdrawal',
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getIncentivesController',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'getRewardsAdmin',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'performTransfer',
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+
+  decodeFunctionResult(
+    functionFragment: 'emergencyWithdrawal',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getIncentivesController',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'getRewardsAdmin',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'performTransfer',
+    data: BytesLike
+  ): Result;
 }
 
-export interface EmergencyWithdrawalEventObject {
-  caller: string;
-  token: string;
-  to: string;
-  amount: BigNumber;
+export namespace EmergencyWithdrawalEvent {
+  export type InputTuple = [
+    caller: AddressLike,
+    token: AddressLike,
+    to: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [
+    caller: string,
+    token: string,
+    to: string,
+    amount: bigint
+  ];
+  export interface OutputObject {
+    caller: string;
+    token: string;
+    to: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type EmergencyWithdrawalEvent = TypedEvent<
-  [string, string, string, BigNumber],
-  EmergencyWithdrawalEventObject
->;
-
-export type EmergencyWithdrawalEventFilter =
-  TypedEventFilter<EmergencyWithdrawalEvent>;
 
 export interface ITransferStrategyBase extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: ITransferStrategyBaseInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    emergencyWithdrawal(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    getIncentivesController(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    getRewardsAdmin(overrides?: CallOverrides): Promise<[string]>;
+  emergencyWithdrawal: TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
 
-    performTransfer(
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
+  getIncentivesController: TypedContractMethod<[], [string], 'view'>;
 
-  emergencyWithdrawal(
-    token: PromiseOrValue<string>,
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getRewardsAdmin: TypedContractMethod<[], [string], 'view'>;
 
-  getIncentivesController(overrides?: CallOverrides): Promise<string>;
+  performTransfer: TypedContractMethod<
+    [to: AddressLike, reward: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-  getRewardsAdmin(overrides?: CallOverrides): Promise<string>;
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
 
-  performTransfer(
-    to: PromiseOrValue<string>,
-    reward: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  getFunction(
+    nameOrSignature: 'emergencyWithdrawal'
+  ): TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'getIncentivesController'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'getRewardsAdmin'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'performTransfer'
+  ): TypedContractMethod<
+    [to: AddressLike, reward: AddressLike, amount: BigNumberish],
+    [boolean],
+    'nonpayable'
+  >;
 
-  callStatic: {
-    emergencyWithdrawal(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    getIncentivesController(overrides?: CallOverrides): Promise<string>;
-
-    getRewardsAdmin(overrides?: CallOverrides): Promise<string>;
-
-    performTransfer(
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-  };
+  getEvent(
+    key: 'EmergencyWithdrawal'
+  ): TypedContractEvent<
+    EmergencyWithdrawalEvent.InputTuple,
+    EmergencyWithdrawalEvent.OutputTuple,
+    EmergencyWithdrawalEvent.OutputObject
+  >;
 
   filters: {
-    'EmergencyWithdrawal(address,address,address,uint256)'(
-      caller?: PromiseOrValue<string> | null,
-      token?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      amount?: null
-    ): EmergencyWithdrawalEventFilter;
-    EmergencyWithdrawal(
-      caller?: PromiseOrValue<string> | null,
-      token?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      amount?: null
-    ): EmergencyWithdrawalEventFilter;
-  };
-
-  estimateGas: {
-    emergencyWithdrawal(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    getIncentivesController(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRewardsAdmin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    performTransfer(
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    emergencyWithdrawal(
-      token: PromiseOrValue<string>,
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getIncentivesController(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRewardsAdmin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    performTransfer(
-      to: PromiseOrValue<string>,
-      reward: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'EmergencyWithdrawal(address,address,address,uint256)': TypedContractEvent<
+      EmergencyWithdrawalEvent.InputTuple,
+      EmergencyWithdrawalEvent.OutputTuple,
+      EmergencyWithdrawalEvent.OutputObject
+    >;
+    EmergencyWithdrawal: TypedContractEvent<
+      EmergencyWithdrawalEvent.InputTuple,
+      EmergencyWithdrawalEvent.OutputTuple,
+      EmergencyWithdrawalEvent.OutputObject
+    >;
   };
 }

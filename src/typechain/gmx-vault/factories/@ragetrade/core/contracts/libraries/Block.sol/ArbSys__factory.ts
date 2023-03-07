@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ArbSys,
   ArbSysInterface,
@@ -23,14 +22,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class ArbSys__factory {
   static readonly abi = _abi;
   static createInterface(): ArbSysInterface {
-    return new utils.Interface(_abi) as ArbSysInterface;
+    return new Interface(_abi) as ArbSysInterface;
   }
-  static connect(address: string, signerOrProvider: Signer | Provider): ArbSys {
-    return new Contract(address, _abi, signerOrProvider) as ArbSys;
+  static connect(address: string, runner?: ContractRunner | null): ArbSys {
+    return new Contract(address, _abi, runner) as unknown as ArbSys;
   }
 }

@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   ERC1967Upgrade,
   ERC1967UpgradeInterface,
@@ -55,17 +54,17 @@ const _abi = [
     name: 'Upgraded',
     type: 'event',
   },
-];
+] as const;
 
 export class ERC1967Upgrade__factory {
   static readonly abi = _abi;
   static createInterface(): ERC1967UpgradeInterface {
-    return new utils.Interface(_abi) as ERC1967UpgradeInterface;
+    return new Interface(_abi) as ERC1967UpgradeInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ERC1967Upgrade {
-    return new Contract(address, _abi, signerOrProvider) as ERC1967Upgrade;
+    return new Contract(address, _abi, runner) as unknown as ERC1967Upgrade;
   }
 }

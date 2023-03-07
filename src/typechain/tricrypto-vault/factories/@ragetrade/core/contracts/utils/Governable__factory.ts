@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   Governable,
   GovernableInterface,
@@ -201,17 +200,14 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class Governable__factory {
   static readonly abi = _abi;
   static createInterface(): GovernableInterface {
-    return new utils.Interface(_abi) as GovernableInterface;
+    return new Interface(_abi) as GovernableInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): Governable {
-    return new Contract(address, _abi, signerOrProvider) as Governable;
+  static connect(address: string, runner?: ContractRunner | null): Governable {
+    return new Contract(address, _abi, runner) as unknown as Governable;
   }
 }

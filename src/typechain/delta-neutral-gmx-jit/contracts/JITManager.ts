@@ -3,66 +3,29 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  ContractTransaction,
-  Overrides,
-  PopulatedTransaction,
-  Signer,
-  utils,
-} from 'ethers';
-import type {
   FunctionFragment,
   Result,
+  Interface,
   EventFragment,
-} from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
+  AddressLike,
+  ContractRunner,
+  ContractMethod,
+  Listener,
+} from 'ethers';
 import type {
-  TypedEventFilter,
-  TypedEvent,
+  TypedContractEvent,
+  TypedDeferredTopicFilter,
+  TypedEventLog,
+  TypedLogDescription,
   TypedListener,
-  OnEvent,
-  PromiseOrValue,
+  TypedContractMethod,
 } from '../common';
 
-export interface JITManagerInterface extends utils.Interface {
-  functions: {
-    'addLiquidity(bool)': FunctionFragment;
-    'authorizedCaller()': FunctionFragment;
-    'feeTier()': FunctionFragment;
-    'getDeviationFromChainlink()': FunctionFragment;
-    'getDollarValue()': FunctionFragment;
-    'getPrice(address)': FunctionFragment;
-    'getTickRange(bool)': FunctionFragment;
-    'initialize(address,address,address)': FunctionFragment;
-    'keeper()': FunctionFragment;
-    'liquidity()': FunctionFragment;
-    'nfpm()': FunctionFragment;
-    'nfpmTokenId()': FunctionFragment;
-    'owner()': FunctionFragment;
-    'pool()': FunctionFragment;
-    'priceDeviationThresholdBPS()': FunctionFragment;
-    'removeLiquidity()': FunctionFragment;
-    'renounceOwnership()': FunctionFragment;
-    'setValues(address,address,address,address,uint256,uint256,uint256)': FunctionFragment;
-    'sqrtPriceThresholdBPS()': FunctionFragment;
-    'swapLossThresholdBPS()': FunctionFragment;
-    'swapTokens(address,bytes,bool)': FunctionFragment;
-    'tickSpacing()': FunctionFragment;
-    'token0()': FunctionFragment;
-    'token0PriceFeed()': FunctionFragment;
-    'token1()': FunctionFragment;
-    'token1PriceFeed()': FunctionFragment;
-    'transferOwnership(address)': FunctionFragment;
-    'uniswapV3Factory()': FunctionFragment;
-    'withdrawFunds(address)': FunctionFragment;
-    'withdrawTokenFunds()': FunctionFragment;
-  };
-
+export interface JITManagerInterface extends Interface {
   getFunction(
-    nameOrSignatureOrTopic:
+    nameOrSignature:
       | 'addLiquidity'
       | 'authorizedCaller'
       | 'feeTier'
@@ -95,9 +58,16 @@ export interface JITManagerInterface extends utils.Interface {
       | 'withdrawTokenFunds'
   ): FunctionFragment;
 
+  getEvent(
+    nameOrSignatureOrTopic:
+      | 'Initialized'
+      | 'JITLiquidity'
+      | 'OwnershipTransferred'
+  ): EventFragment;
+
   encodeFunctionData(
     functionFragment: 'addLiquidity',
-    values: [PromiseOrValue<boolean>]
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'authorizedCaller',
@@ -114,19 +84,15 @@ export interface JITManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'getPrice',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'getTickRange',
-    values: [PromiseOrValue<boolean>]
+    values: [boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'initialize',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>
-    ]
+    values: [AddressLike, AddressLike, AddressLike]
   ): string;
   encodeFunctionData(functionFragment: 'keeper', values?: undefined): string;
   encodeFunctionData(functionFragment: 'liquidity', values?: undefined): string;
@@ -152,13 +118,13 @@ export interface JITManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'setValues',
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(
@@ -171,11 +137,7 @@ export interface JITManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'swapTokens',
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<boolean>
-    ]
+    values: [AddressLike, BytesLike, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: 'tickSpacing',
@@ -193,7 +155,7 @@ export interface JITManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'uniswapV3Factory',
@@ -201,7 +163,7 @@ export interface JITManagerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawFunds',
-    values: [PromiseOrValue<string>]
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: 'withdrawTokenFunds',
@@ -292,627 +254,388 @@ export interface JITManagerInterface extends utils.Interface {
     functionFragment: 'withdrawTokenFunds',
     data: BytesLike
   ): Result;
-
-  events: {
-    'Initialized(uint8)': EventFragment;
-    'JITLiquidity(int24,int24,uint128)': EventFragment;
-    'OwnershipTransferred(address,address)': EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: 'Initialized'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'JITLiquidity'): EventFragment;
-  getEvent(nameOrSignatureOrTopic: 'OwnershipTransferred'): EventFragment;
 }
 
-export interface InitializedEventObject {
-  version: number;
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface JITLiquidityEventObject {
-  tickLower: number;
-  tickUpper: number;
-  liquidity: BigNumber;
+export namespace JITLiquidityEvent {
+  export type InputTuple = [
+    tickLower: BigNumberish,
+    tickUpper: BigNumberish,
+    liquidity: BigNumberish
+  ];
+  export type OutputTuple = [
+    tickLower: bigint,
+    tickUpper: bigint,
+    liquidity: bigint
+  ];
+  export interface OutputObject {
+    tickLower: bigint;
+    tickUpper: bigint;
+    liquidity: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type JITLiquidityEvent = TypedEvent<
-  [number, number, BigNumber],
-  JITLiquidityEventObject
->;
 
-export type JITLiquidityEventFilter = TypedEventFilter<JITLiquidityEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export namespace OwnershipTransferredEvent {
+  export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
+  export type OutputTuple = [previousOwner: string, newOwner: string];
+  export interface OutputObject {
+    previousOwner: string;
+    newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface JITManager extends BaseContract {
-  connect(signerOrProvider: Signer | Provider | string): this;
-  attach(addressOrName: string): this;
+  connect(runner?: ContractRunner | null): BaseContract;
+  attach(addressOrName: AddressLike): this;
   deployed(): Promise<this>;
 
   interface: JITManagerInterface;
 
-  queryFilter<TEvent extends TypedEvent>(
-    event: TypedEventFilter<TEvent>,
+  queryFilter<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
     fromBlockOrBlockhash?: string | number | undefined,
     toBlock?: string | number | undefined
-  ): Promise<Array<TEvent>>;
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
+  queryFilter<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    fromBlockOrBlockhash?: string | number | undefined,
+    toBlock?: string | number | undefined
+  ): Promise<Array<TypedEventLog<TCEvent>>>;
 
-  listeners<TEvent extends TypedEvent>(
-    eventFilter?: TypedEventFilter<TEvent>
-  ): Array<TypedListener<TEvent>>;
-  listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(
-    eventFilter: TypedEventFilter<TEvent>
-  ): this;
-  removeAllListeners(eventName?: string): this;
-  off: OnEvent<this>;
-  on: OnEvent<this>;
-  once: OnEvent<this>;
-  removeListener: OnEvent<this>;
+  on<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  on<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-  functions: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+  once<TCEvent extends TypedContractEvent>(
+    event: TCEvent,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
+  once<TCEvent extends TypedContractEvent>(
+    filter: TypedDeferredTopicFilter<TCEvent>,
+    listener: TypedListener<TCEvent>
+  ): Promise<this>;
 
-    authorizedCaller(overrides?: CallOverrides): Promise<[string]>;
+  listeners<TCEvent extends TypedContractEvent>(
+    event: TCEvent
+  ): Promise<Array<TypedListener<TCEvent>>>;
+  listeners(eventName?: string): Promise<Array<Listener>>;
+  removeAllListeners<TCEvent extends TypedContractEvent>(
+    event?: TCEvent
+  ): Promise<this>;
 
-    feeTier(overrides?: CallOverrides): Promise<[number]>;
-
-    getDeviationFromChainlink(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        deviationBPS: BigNumber;
-        uniswapPriceX128: BigNumber;
-        chainlinkPriceX128: BigNumber;
-      }
-    >;
-
-    getDollarValue(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { dollarValueD6: BigNumber }>;
-
-    getPrice(
-      priceFeed: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getTickRange(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
-
-    initialize(
-      _uniswapV3Factory: PromiseOrValue<string>,
-      _nfpm: PromiseOrValue<string>,
-      _pool: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<[string]>;
-
-    liquidity(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    nfpm(overrides?: CallOverrides): Promise<[string]>;
-
-    nfpmTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    pool(overrides?: CallOverrides): Promise<[string]>;
-
-    priceDeviationThresholdBPS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setValues(
-      _keeper: PromiseOrValue<string>,
-      _authorizedCaller: PromiseOrValue<string>,
-      _token0PriceFeed: PromiseOrValue<string>,
-      _token1PriceFeed: PromiseOrValue<string>,
-      _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
-      _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
-      _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    sqrtPriceThresholdBPS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    swapLossThresholdBPS(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    tickSpacing(overrides?: CallOverrides): Promise<[number]>;
-
-    token0(overrides?: CallOverrides): Promise<[string]>;
-
-    token0PriceFeed(overrides?: CallOverrides): Promise<[string]>;
-
-    token1(overrides?: CallOverrides): Promise<[string]>;
-
-    token1PriceFeed(overrides?: CallOverrides): Promise<[string]>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    uniswapV3Factory(overrides?: CallOverrides): Promise<[string]>;
-
-    withdrawFunds(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    withdrawTokenFunds(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-  };
-
-  addLiquidity(
-    isToken0: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  authorizedCaller(overrides?: CallOverrides): Promise<string>;
-
-  feeTier(overrides?: CallOverrides): Promise<number>;
-
-  getDeviationFromChainlink(overrides?: CallOverrides): Promise<
-    [BigNumber, BigNumber, BigNumber] & {
-      deviationBPS: BigNumber;
-      uniswapPriceX128: BigNumber;
-      chainlinkPriceX128: BigNumber;
-    }
+  addLiquidity: TypedContractMethod<
+    [isToken0: boolean],
+    [bigint],
+    'nonpayable'
   >;
 
-  getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
+  authorizedCaller: TypedContractMethod<[], [string], 'view'>;
 
-  getPrice(
-    priceFeed: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  feeTier: TypedContractMethod<[], [bigint], 'view'>;
 
-  getTickRange(
-    isToken0: PromiseOrValue<boolean>,
-    overrides?: CallOverrides
-  ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
-
-  initialize(
-    _uniswapV3Factory: PromiseOrValue<string>,
-    _nfpm: PromiseOrValue<string>,
-    _pool: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  keeper(overrides?: CallOverrides): Promise<string>;
-
-  liquidity(overrides?: CallOverrides): Promise<BigNumber>;
-
-  nfpm(overrides?: CallOverrides): Promise<string>;
-
-  nfpmTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  pool(overrides?: CallOverrides): Promise<string>;
-
-  priceDeviationThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  removeLiquidity(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setValues(
-    _keeper: PromiseOrValue<string>,
-    _authorizedCaller: PromiseOrValue<string>,
-    _token0PriceFeed: PromiseOrValue<string>,
-    _token1PriceFeed: PromiseOrValue<string>,
-    _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
-    _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
-    _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  sqrtPriceThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-  swapTokens(
-    to: PromiseOrValue<string>,
-    data: PromiseOrValue<BytesLike>,
-    approveToken0: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  tickSpacing(overrides?: CallOverrides): Promise<number>;
-
-  token0(overrides?: CallOverrides): Promise<string>;
-
-  token0PriceFeed(overrides?: CallOverrides): Promise<string>;
-
-  token1(overrides?: CallOverrides): Promise<string>;
-
-  token1PriceFeed(overrides?: CallOverrides): Promise<string>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  uniswapV3Factory(overrides?: CallOverrides): Promise<string>;
-
-  withdrawFunds(
-    token: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  withdrawTokenFunds(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  callStatic: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    authorizedCaller(overrides?: CallOverrides): Promise<string>;
-
-    feeTier(overrides?: CallOverrides): Promise<number>;
-
-    getDeviationFromChainlink(overrides?: CallOverrides): Promise<
-      [BigNumber, BigNumber, BigNumber] & {
-        deviationBPS: BigNumber;
-        uniswapPriceX128: BigNumber;
-        chainlinkPriceX128: BigNumber;
+  getDeviationFromChainlink: TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        deviationBPS: bigint;
+        uniswapPriceX128: bigint;
+        chainlinkPriceX128: bigint;
       }
-    >;
+    ],
+    'view'
+  >;
 
-    getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
+  getDollarValue: TypedContractMethod<[], [bigint], 'view'>;
 
-    getPrice(
-      priceFeed: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  getPrice: TypedContractMethod<[priceFeed: AddressLike], [bigint], 'view'>;
 
-    getTickRange(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<[number, number] & { tickLower: number; tickUpper: number }>;
+  getTickRange: TypedContractMethod<
+    [isToken0: boolean],
+    [[bigint, bigint] & { tickLower: bigint; tickUpper: bigint }],
+    'view'
+  >;
 
-    initialize(
-      _uniswapV3Factory: PromiseOrValue<string>,
-      _nfpm: PromiseOrValue<string>,
-      _pool: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  initialize: TypedContractMethod<
+    [_uniswapV3Factory: AddressLike, _nfpm: AddressLike, _pool: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    keeper(overrides?: CallOverrides): Promise<string>;
+  keeper: TypedContractMethod<[], [string], 'view'>;
 
-    liquidity(overrides?: CallOverrides): Promise<BigNumber>;
+  liquidity: TypedContractMethod<[], [bigint], 'view'>;
 
-    nfpm(overrides?: CallOverrides): Promise<string>;
+  nfpm: TypedContractMethod<[], [string], 'view'>;
 
-    nfpmTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+  nfpmTokenId: TypedContractMethod<[], [bigint], 'view'>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
+  owner: TypedContractMethod<[], [string], 'view'>;
 
-    pool(overrides?: CallOverrides): Promise<string>;
+  pool: TypedContractMethod<[], [string], 'view'>;
 
-    priceDeviationThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
+  priceDeviationThresholdBPS: TypedContractMethod<[], [bigint], 'view'>;
 
-    removeLiquidity(overrides?: CallOverrides): Promise<void>;
+  removeLiquidity: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+  renounceOwnership: TypedContractMethod<[], [void], 'nonpayable'>;
 
-    setValues(
-      _keeper: PromiseOrValue<string>,
-      _authorizedCaller: PromiseOrValue<string>,
-      _token0PriceFeed: PromiseOrValue<string>,
-      _token1PriceFeed: PromiseOrValue<string>,
-      _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
-      _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
-      _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  setValues: TypedContractMethod<
+    [
+      _keeper: AddressLike,
+      _authorizedCaller: AddressLike,
+      _token0PriceFeed: AddressLike,
+      _token1PriceFeed: AddressLike,
+      _sqrtPriceThresholdBPS: BigNumberish,
+      _swapLossThresholdBPS: BigNumberish,
+      _priceDeviationThresholdBPS: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
 
-    sqrtPriceThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
+  sqrtPriceThresholdBPS: TypedContractMethod<[], [bigint], 'view'>;
 
-    swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
+  swapLossThresholdBPS: TypedContractMethod<[], [bigint], 'view'>;
 
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  swapTokens: TypedContractMethod<
+    [to: AddressLike, data: BytesLike, approveToken0: boolean],
+    [void],
+    'nonpayable'
+  >;
 
-    tickSpacing(overrides?: CallOverrides): Promise<number>;
+  tickSpacing: TypedContractMethod<[], [bigint], 'view'>;
 
-    token0(overrides?: CallOverrides): Promise<string>;
+  token0: TypedContractMethod<[], [string], 'view'>;
 
-    token0PriceFeed(overrides?: CallOverrides): Promise<string>;
+  token0PriceFeed: TypedContractMethod<[], [string], 'view'>;
 
-    token1(overrides?: CallOverrides): Promise<string>;
+  token1: TypedContractMethod<[], [string], 'view'>;
 
-    token1PriceFeed(overrides?: CallOverrides): Promise<string>;
+  token1PriceFeed: TypedContractMethod<[], [string], 'view'>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  transferOwnership: TypedContractMethod<
+    [newOwner: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    uniswapV3Factory(overrides?: CallOverrides): Promise<string>;
+  uniswapV3Factory: TypedContractMethod<[], [string], 'view'>;
 
-    withdrawFunds(
-      token: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  withdrawFunds: TypedContractMethod<
+    [token: AddressLike],
+    [void],
+    'nonpayable'
+  >;
 
-    withdrawTokenFunds(overrides?: CallOverrides): Promise<void>;
-  };
+  withdrawTokenFunds: TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getFunction<T extends ContractMethod = ContractMethod>(
+    key: string | FunctionFragment
+  ): T;
+
+  getFunction(
+    nameOrSignature: 'addLiquidity'
+  ): TypedContractMethod<[isToken0: boolean], [bigint], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'authorizedCaller'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'feeTier'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getDeviationFromChainlink'
+  ): TypedContractMethod<
+    [],
+    [
+      [bigint, bigint, bigint] & {
+        deviationBPS: bigint;
+        uniswapPriceX128: bigint;
+        chainlinkPriceX128: bigint;
+      }
+    ],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'getDollarValue'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getPrice'
+  ): TypedContractMethod<[priceFeed: AddressLike], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'getTickRange'
+  ): TypedContractMethod<
+    [isToken0: boolean],
+    [[bigint, bigint] & { tickLower: bigint; tickUpper: bigint }],
+    'view'
+  >;
+  getFunction(
+    nameOrSignature: 'initialize'
+  ): TypedContractMethod<
+    [_uniswapV3Factory: AddressLike, _nfpm: AddressLike, _pool: AddressLike],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'keeper'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'liquidity'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'nfpm'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'nfpmTokenId'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'owner'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'pool'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'priceDeviationThresholdBPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'removeLiquidity'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'renounceOwnership'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'setValues'
+  ): TypedContractMethod<
+    [
+      _keeper: AddressLike,
+      _authorizedCaller: AddressLike,
+      _token0PriceFeed: AddressLike,
+      _token1PriceFeed: AddressLike,
+      _sqrtPriceThresholdBPS: BigNumberish,
+      _swapLossThresholdBPS: BigNumberish,
+      _priceDeviationThresholdBPS: BigNumberish
+    ],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'sqrtPriceThresholdBPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'swapLossThresholdBPS'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'swapTokens'
+  ): TypedContractMethod<
+    [to: AddressLike, data: BytesLike, approveToken0: boolean],
+    [void],
+    'nonpayable'
+  >;
+  getFunction(
+    nameOrSignature: 'tickSpacing'
+  ): TypedContractMethod<[], [bigint], 'view'>;
+  getFunction(
+    nameOrSignature: 'token0'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'token0PriceFeed'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'token1'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'token1PriceFeed'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'transferOwnership'
+  ): TypedContractMethod<[newOwner: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'uniswapV3Factory'
+  ): TypedContractMethod<[], [string], 'view'>;
+  getFunction(
+    nameOrSignature: 'withdrawFunds'
+  ): TypedContractMethod<[token: AddressLike], [void], 'nonpayable'>;
+  getFunction(
+    nameOrSignature: 'withdrawTokenFunds'
+  ): TypedContractMethod<[], [void], 'nonpayable'>;
+
+  getEvent(
+    key: 'Initialized'
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
+  >;
+  getEvent(
+    key: 'JITLiquidity'
+  ): TypedContractEvent<
+    JITLiquidityEvent.InputTuple,
+    JITLiquidityEvent.OutputTuple,
+    JITLiquidityEvent.OutputObject
+  >;
+  getEvent(
+    key: 'OwnershipTransferred'
+  ): TypedContractEvent<
+    OwnershipTransferredEvent.InputTuple,
+    OwnershipTransferredEvent.OutputTuple,
+    OwnershipTransferredEvent.OutputObject
+  >;
 
   filters: {
-    'Initialized(uint8)'(version?: null): InitializedEventFilter;
-    Initialized(version?: null): InitializedEventFilter;
+    'Initialized(uint8)': TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
 
-    'JITLiquidity(int24,int24,uint128)'(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null
-    ): JITLiquidityEventFilter;
-    JITLiquidity(
-      tickLower?: null,
-      tickUpper?: null,
-      liquidity?: null
-    ): JITLiquidityEventFilter;
+    'JITLiquidity(int24,int24,uint128)': TypedContractEvent<
+      JITLiquidityEvent.InputTuple,
+      JITLiquidityEvent.OutputTuple,
+      JITLiquidityEvent.OutputObject
+    >;
+    JITLiquidity: TypedContractEvent<
+      JITLiquidityEvent.InputTuple,
+      JITLiquidityEvent.OutputTuple,
+      JITLiquidityEvent.OutputObject
+    >;
 
-    'OwnershipTransferred(address,address)'(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-  };
-
-  estimateGas: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    authorizedCaller(overrides?: CallOverrides): Promise<BigNumber>;
-
-    feeTier(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getDeviationFromChainlink(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getDollarValue(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getPrice(
-      priceFeed: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTickRange(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initialize(
-      _uniswapV3Factory: PromiseOrValue<string>,
-      _nfpm: PromiseOrValue<string>,
-      _pool: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    keeper(overrides?: CallOverrides): Promise<BigNumber>;
-
-    liquidity(overrides?: CallOverrides): Promise<BigNumber>;
-
-    nfpm(overrides?: CallOverrides): Promise<BigNumber>;
-
-    nfpmTokenId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pool(overrides?: CallOverrides): Promise<BigNumber>;
-
-    priceDeviationThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setValues(
-      _keeper: PromiseOrValue<string>,
-      _authorizedCaller: PromiseOrValue<string>,
-      _token0PriceFeed: PromiseOrValue<string>,
-      _token1PriceFeed: PromiseOrValue<string>,
-      _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
-      _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
-      _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    sqrtPriceThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    swapLossThresholdBPS(overrides?: CallOverrides): Promise<BigNumber>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    tickSpacing(overrides?: CallOverrides): Promise<BigNumber>;
-
-    token0(overrides?: CallOverrides): Promise<BigNumber>;
-
-    token0PriceFeed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    token1(overrides?: CallOverrides): Promise<BigNumber>;
-
-    token1PriceFeed(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    uniswapV3Factory(overrides?: CallOverrides): Promise<BigNumber>;
-
-    withdrawFunds(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    withdrawTokenFunds(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    addLiquidity(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    authorizedCaller(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    feeTier(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getDeviationFromChainlink(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getDollarValue(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getPrice(
-      priceFeed: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTickRange(
-      isToken0: PromiseOrValue<boolean>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      _uniswapV3Factory: PromiseOrValue<string>,
-      _nfpm: PromiseOrValue<string>,
-      _pool: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    keeper(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    liquidity(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    nfpm(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    nfpmTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    priceDeviationThresholdBPS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    removeLiquidity(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setValues(
-      _keeper: PromiseOrValue<string>,
-      _authorizedCaller: PromiseOrValue<string>,
-      _token0PriceFeed: PromiseOrValue<string>,
-      _token1PriceFeed: PromiseOrValue<string>,
-      _sqrtPriceThresholdBPS: PromiseOrValue<BigNumberish>,
-      _swapLossThresholdBPS: PromiseOrValue<BigNumberish>,
-      _priceDeviationThresholdBPS: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    sqrtPriceThresholdBPS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    swapLossThresholdBPS(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    swapTokens(
-      to: PromiseOrValue<string>,
-      data: PromiseOrValue<BytesLike>,
-      approveToken0: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    tickSpacing(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    token0(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    token0PriceFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    token1(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    token1PriceFeed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    uniswapV3Factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    withdrawFunds(
-      token: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    withdrawTokenFunds(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    'OwnershipTransferred(address,address)': TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
+    OwnershipTransferred: TypedContractEvent<
+      OwnershipTransferredEvent.InputTuple,
+      OwnershipTransferredEvent.OutputTuple,
+      OwnershipTransferredEvent.OutputObject
+    >;
   };
 }

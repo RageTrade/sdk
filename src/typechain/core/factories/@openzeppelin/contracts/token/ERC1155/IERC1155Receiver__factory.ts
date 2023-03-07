@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IERC1155Receiver,
   IERC1155ReceiverInterface,
@@ -107,17 +106,17 @@ const _abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;
 
 export class IERC1155Receiver__factory {
   static readonly abi = _abi;
   static createInterface(): IERC1155ReceiverInterface {
-    return new utils.Interface(_abi) as IERC1155ReceiverInterface;
+    return new Interface(_abi) as IERC1155ReceiverInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): IERC1155Receiver {
-    return new Contract(address, _abi, signerOrProvider) as IERC1155Receiver;
+    return new Contract(address, _abi, runner) as unknown as IERC1155Receiver;
   }
 }

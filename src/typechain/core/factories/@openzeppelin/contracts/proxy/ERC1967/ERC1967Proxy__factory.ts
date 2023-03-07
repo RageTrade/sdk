@@ -3,14 +3,16 @@
 /* eslint-disable */
 import {
   Signer,
-  utils,
   Contract,
   ContractFactory,
-  PayableOverrides,
   BytesLike,
+  ContractTransactionResponse,
+  Interface,
+  AddressLike,
+  ContractDeployTransaction,
+  ContractRunner,
 } from 'ethers';
-import type { Provider, TransactionRequest } from '@ethersproject/providers';
-import type { PromiseOrValue } from '../../../../../common';
+import type { PayableOverrides } from '../../../../../common';
 import type {
   ERC1967Proxy,
   ERC1967ProxyInterface,
@@ -86,7 +88,7 @@ const _abi = [
     stateMutability: 'payable',
     type: 'receive',
   },
-];
+] as const;
 
 const _bytecode =
   '0x608060405261048c80380380610014816100bd565b92833981016040828203126100a1578151916001600160a01b03831683036100a1576020810151906001600160401b0382116100a157019181601f840112156100a15782519261006b610066856100ef565b6100bd565b92848452602085830101116100a1576100939361008e9160208086019101610119565b61014e565b60405160e790816103a58239f35b600080fd5b50634e487b7160e01b600052604160045260246000fd5b6040519190601f01601f191682016001600160401b038111838210176100e257604052565b6100ea6100a6565b604052565b6020906001600160401b03811161010c575b601f01601f19160190565b6101146100a6565b610101565b918091926000905b828210610139575011610132575050565b6000910152565b91508060209183015181860152018291610121565b803b156101eb577f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc80546001600160a01b0319166001600160a01b0383169081179091556040517fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b90600090a28151158015906101e3575b6101ce575050565b6101e0916101da610246565b916102ad565b50565b5060006101c6565b60405162461bcd60e51b815260206004820152602d60248201527f455243313936373a206e657720696d706c656d656e746174696f6e206973206e60448201526c1bdd08184818dbdb9d1c9858dd609a1b6064820152608490fd5b60405190606082016001600160401b038111838210176102a0575b60405260278252660819985a5b195960ca1b6040837f416464726573733a206c6f772d6c6576656c2064656c65676174652063616c6c60208201520152565b6102a86100a6565b610261565b9190823b156102f6576000816102eb9460208394519201905af43d156102ee573d906102db610066836100ef565b9182523d6000602084013e61034a565b90565b60609061034a565b60405162461bcd60e51b815260206004820152602660248201527f416464726573733a2064656c65676174652063616c6c20746f206e6f6e2d636f6044820152651b9d1c9858dd60d21b6064820152608490fd5b90919015610356575090565b8151156103665750805190602001fd5b6044604051809262461bcd60e51b8252602060048301526103968151809281602486015260208686019101610119565b601f01601f19168101030190fdfe60806040523615605f5773ffffffffffffffffffffffffffffffffffffffff7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc54166000808092368280378136915af43d82803e15605b573d90f35b3d90fd5b73ffffffffffffffffffffffffffffffffffffffff7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc54166000808092368280378136915af43d82803e15605b573d90f3fea2646970667358221220b4a6f331636547129bf873d3b81ff7fa9616c514e13396ef2dbf4f4e6182951264736f6c634300080e0033';
@@ -108,40 +110,37 @@ export class ERC1967Proxy__factory extends ContractFactory {
     }
   }
 
-  override deploy(
-    _logic: PromiseOrValue<string>,
-    _data: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ERC1967Proxy> {
-    return super.deploy(
-      _logic,
-      _data,
-      overrides || {}
-    ) as Promise<ERC1967Proxy>;
-  }
   override getDeployTransaction(
-    _logic: PromiseOrValue<string>,
-    _data: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): TransactionRequest {
+    _logic: AddressLike,
+    _data: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
+  ): Promise<ContractDeployTransaction> {
     return super.getDeployTransaction(_logic, _data, overrides || {});
   }
-  override attach(address: string): ERC1967Proxy {
-    return super.attach(address) as ERC1967Proxy;
+  override deploy(
+    _logic: AddressLike,
+    _data: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
+  ) {
+    return super.deploy(_logic, _data, overrides || {}) as Promise<
+      ERC1967Proxy & {
+        deploymentTransaction(): ContractTransactionResponse;
+      }
+    >;
   }
-  override connect(signer: Signer): ERC1967Proxy__factory {
-    return super.connect(signer) as ERC1967Proxy__factory;
+  override connect(runner: ContractRunner | null): ERC1967Proxy__factory {
+    return super.connect(runner) as ERC1967Proxy__factory;
   }
 
   static readonly bytecode = _bytecode;
   static readonly abi = _abi;
   static createInterface(): ERC1967ProxyInterface {
-    return new utils.Interface(_abi) as ERC1967ProxyInterface;
+    return new Interface(_abi) as ERC1967ProxyInterface;
   }
   static connect(
     address: string,
-    signerOrProvider: Signer | Provider
+    runner?: ContractRunner | null
   ): ERC1967Proxy {
-    return new Contract(address, _abi, signerOrProvider) as ERC1967Proxy;
+    return new Contract(address, _abi, runner) as unknown as ERC1967Proxy;
   }
 }

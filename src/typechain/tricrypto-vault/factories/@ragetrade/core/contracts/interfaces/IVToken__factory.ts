@@ -2,8 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { Contract, Signer, utils } from 'ethers';
-import type { Provider } from '@ethersproject/providers';
+import { Contract, Interface, ContractRunner } from 'ethers';
 import type {
   IVToken,
   IVTokenInterface,
@@ -237,17 +236,14 @@ const _abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;
 
 export class IVToken__factory {
   static readonly abi = _abi;
   static createInterface(): IVTokenInterface {
-    return new utils.Interface(_abi) as IVTokenInterface;
+    return new Interface(_abi) as IVTokenInterface;
   }
-  static connect(
-    address: string,
-    signerOrProvider: Signer | Provider
-  ): IVToken {
-    return new Contract(address, _abi, signerOrProvider) as IVToken;
+  static connect(address: string, runner?: ContractRunner | null): IVToken {
+    return new Contract(address, _abi, runner) as unknown as IVToken;
   }
 }
