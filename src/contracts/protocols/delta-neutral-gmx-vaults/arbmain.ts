@@ -7,6 +7,7 @@ import DnGmxBatchingManagerGlpLogicDeployment from '../../../deployments/delta-n
 import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVault.json';
 import DnGmxJuniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultLogic.json';
 import DnGmxJuniorVaultManagerLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxJuniorVaultManagerLibrary.json';
+import QuoterLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/QuoterLibrary.json';
 import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVault.json';
 import DnGmxSeniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/DnGmxSeniorVaultLogic.json';
 import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/WithdrawPeriphery.json';
@@ -27,6 +28,7 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxJuniorVaultDeployment,
     DnGmxJuniorVaultLogicDeployment,
     DnGmxJuniorVaultManagerLibraryDeployment,
+    QuoterLibraryDeployment,
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
     DnGmxTraderHedgeStrategyDeployment,

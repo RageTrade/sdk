@@ -75,6 +75,8 @@ export {
   DepositPeriphery__factory,
   IGlpManager__factory,
   IRewardRouterV2__factory,
+  DnGmxJuniorVaultManager__factory,
+  QuoterLib__factory,
   DnGmxSeniorVault,
   DnGmxJuniorVault,
   DnGmxBatchingManager,

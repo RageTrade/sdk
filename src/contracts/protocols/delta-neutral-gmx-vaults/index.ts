@@ -8,6 +8,8 @@ import {
   ProxyAdmin__factory,
   DnGmxBatchingManagerGlp__factory,
   DnGmxTraderHedgeStrategy__factory,
+  DnGmxJuniorVaultManager__factory,
+  QuoterLib__factory,
 } from '../../../typechain';
 import { newError } from '../../../utils/loggers';
 import {
@@ -108,6 +110,14 @@ export function getContractsSync(
     ),
     proxyAdmin: ProxyAdmin__factory.connect(
       deployments.ProxyAdmin.address,
+      signerOrProvider
+    ),
+    dnGmxJuniorVaultManagerLibrary: DnGmxJuniorVaultManager__factory.connect(
+      deployments.DnGmxJuniorVaultManagerLibraryDeployment.address,
+      signerOrProvider
+    ),
+    quoterLibrary: QuoterLib__factory.connect(
+      deployments.QuoterLibraryDeployment.address,
       signerOrProvider
     ),
   };

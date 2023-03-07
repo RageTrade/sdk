@@ -29,6 +29,9 @@ export function getDeployments(): DnGmxVaultDeployments {
     DnGmxJuniorVaultDeployment,
     DnGmxJuniorVaultLogicDeployment,
     DnGmxJuniorVaultManagerLibraryDeployment,
+    QuoterLibraryDeployment: {
+      address: ethers.constants.AddressZero,
+    },
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
     DnGmxTraderHedgeStrategyDeployment: {
