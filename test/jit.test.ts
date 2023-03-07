@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider } from 'ethers';
 
 import { config } from 'dotenv';
 import {
@@ -13,9 +13,7 @@ jest.setTimeout(200_000);
 
 describe('jit', () => {
   describe('arbmain', () => {
-    const provider = new ethers.providers.StaticJsonRpcProvider(
-      'https://arb1.arbitrum.io/rpc'
-    );
+    const provider = new JsonRpcProvider('https://arb1.arbitrum.io/rpc');
 
     it('junior vault used in JIT is consistent', async () => {
       const { dnGmxRouter } = await deltaNeutralGmxJIT.getContracts(provider);
@@ -23,10 +21,10 @@ describe('jit', () => {
         await deltaNeutralGmxVaults.getContracts(provider);
 
       expect(await dnGmxRouter.dnGmxJuniorVault()).toEqual(
-        dnGmxJuniorVault.address
+        await dnGmxJuniorVault.getAddress()
       );
       expect(await dnGmxRouter.dnGmxBatchingManager()).toEqual(
-        dnGmxBatchingManager.address
+        await dnGmxBatchingManager.getAddress()
       );
     });
 
@@ -49,10 +47,10 @@ describe('jit', () => {
         await deltaNeutralGmxVaults.getContracts(provider);
 
       expect(await dnGmxRouter.dnGmxJuniorVault()).toEqual(
-        dnGmxJuniorVault.address
+        await dnGmxJuniorVault.getAddress()
       );
       expect(await dnGmxRouter.dnGmxBatchingManager()).toEqual(
-        dnGmxBatchingManager.address
+        await dnGmxBatchingManager.getAddress()
       );
     });
   });

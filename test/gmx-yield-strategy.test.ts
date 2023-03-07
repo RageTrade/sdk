@@ -1,8 +1,7 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider, stripZerosLeft, zeroPadBytes } from 'ethers';
 
 import { config } from 'dotenv';
 import { GMXYieldStrategy, gmxProtocol, gmxVault, tokens } from '../dist';
-import { hexStripZeros, hexZeroPad } from 'ethers/lib/utils';
 
 let gmxYieldStrategy: GMXYieldStrategy;
 
@@ -10,9 +9,7 @@ config();
 
 describe('gmx strategy', () => {
   describe('arbmain', () => {
-    const provider = new ethers.providers.StaticJsonRpcProvider(
-      'https://arb1.arbitrum.io/rpc'
-    );
+    const provider = new JsonRpcProvider('https://arb1.arbitrum.io/rpc');
 
     // it('works', async () => {
     //   ({ curveYieldStrategy } = await getTricryptoVaultContracts(provider));
@@ -24,7 +21,7 @@ describe('gmx strategy', () => {
       const { sGLP } = await gmxProtocol.getContracts(provider);
       const { fsGLP } = await tokens.getContracts(provider);
       const sgt = await sGLP.stakedGlpTracker();
-      expect(fsGLP.address).toEqual(sgt);
+      expect(await fsGLP.getAddress()).toEqual(sgt);
     });
 
     // it('works vault', async () => {
@@ -37,7 +34,7 @@ describe('gmx strategy', () => {
   });
 
   describe('arbgoerli', () => {
-    const provider = new ethers.providers.StaticJsonRpcProvider(
+    const provider = new JsonRpcProvider(
       'https://arb-goerli.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
     );
 
@@ -51,7 +48,7 @@ describe('gmx strategy', () => {
       const { sGLP } = await gmxProtocol.getContracts(provider);
       const { fsGLP } = await tokens.getContracts(provider);
       const sgt = await sGLP.stakedGlpTracker();
-      expect(sgt).toEqual(fsGLP.address);
+      expect(sgt).toEqual(await fsGLP.getAddress());
     });
 
     it('works vault', async () => {
@@ -59,17 +56,17 @@ describe('gmx strategy', () => {
         provider
       );
       const vaultAddr = await glpManager.vault();
-      expect(gmxUnderlyingVault.address).toEqual(vaultAddr);
+      expect(await gmxUnderlyingVault.getAddress()).toEqual(vaultAddr);
     });
 
     it('works strategy contracts', async () => {
       const { glpManager } = await gmxProtocol.getContracts(provider);
       const { glpStakingManager } = await gmxVault.getContracts(provider);
 
-      const val = await provider.getStorageAt(glpStakingManager.address, 261);
+      const val = await provider.getStorage(glpStakingManager, 261);
 
-      expect(hexZeroPad(hexStripZeros(val), 20)).toEqual(
-        glpManager.address.toLocaleLowerCase()
+      expect(zeroPadBytes(stripZerosLeft(val), 20)).toEqual(
+        (await glpManager.getAddress()).toLocaleLowerCase()
       );
     });
   });

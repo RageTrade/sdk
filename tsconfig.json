@@ -1,4 +1,7 @@
 {
+  "ts-node": {
+    "esm": true
+  },
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
   "include": ["src", "types"],
   "compilerOptions": {

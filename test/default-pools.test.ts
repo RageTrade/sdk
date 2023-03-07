@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { isHexString } from 'ethers';
 // import { getDefaultPoolContracts } from '../src/';
 
 import defaultPools from '../dist/default_pools.json';
@@ -15,8 +15,8 @@ describe('default pools', () => {
   //   );
   //   const { vToken, vPool } = await getDefaultPoolContracts(provider);
   //   if (vToken && vPool) {
-  //     expect(ethers.utils.isHexString(vToken.address)).toBeTruthy();
-  //     expect(ethers.utils.isHexString(vPool.address)).toBeTruthy();
+  //     expect(isHexString(vToken.address)).toBeTruthy();
+  //     expect(isHexString(vPool.address)).toBeTruthy();
   //   } else {
   //     // vTokena or vPool is undefined
   //     expect(false).toBeTruthy();
@@ -25,58 +25,34 @@ describe('default pools', () => {
 
   describe('arbmain', () => {
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(defaultPools.arbmain.vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(defaultPools.arbmain.vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(defaultPools.arbmain.vTokenAddress)).toBeTruthy();
+      expect(isHexString(defaultPools.arbmain.vPoolAddress)).toBeTruthy();
     });
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(allPools.arbmain[0].vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(allPools.arbmain[0].vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(allPools.arbmain[0].vTokenAddress)).toBeTruthy();
+      expect(isHexString(allPools.arbmain[0].vPoolAddress)).toBeTruthy();
     });
   });
 
   describe('arbgoerli', () => {
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(defaultPools.arbgoerli.vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(defaultPools.arbgoerli.vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(defaultPools.arbgoerli.vTokenAddress)).toBeTruthy();
+      expect(isHexString(defaultPools.arbgoerli.vPoolAddress)).toBeTruthy();
     });
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(allPools.arbgoerli[0].vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(allPools.arbgoerli[0].vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(allPools.arbgoerli[0].vTokenAddress)).toBeTruthy();
+      expect(isHexString(allPools.arbgoerli[0].vPoolAddress)).toBeTruthy();
     });
   });
 
   describe('arbgoerli', () => {
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(defaultPools.arbgoerli.vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(defaultPools.arbgoerli.vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(defaultPools.arbgoerli.vTokenAddress)).toBeTruthy();
+      expect(isHexString(defaultPools.arbgoerli.vPoolAddress)).toBeTruthy();
     });
     it('defaultPool', async () => {
-      expect(
-        ethers.utils.isHexString(allPools.arbgoerli[0].vTokenAddress)
-      ).toBeTruthy();
-      expect(
-        ethers.utils.isHexString(allPools.arbgoerli[0].vPoolAddress)
-      ).toBeTruthy();
+      expect(isHexString(allPools.arbgoerli[0].vTokenAddress)).toBeTruthy();
+      expect(isHexString(allPools.arbgoerli[0].vPoolAddress)).toBeTruthy();
     });
   });
 

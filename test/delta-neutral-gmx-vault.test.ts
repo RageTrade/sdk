@@ -18,11 +18,11 @@ describe('delta neutral gmx vaults', () => {
         );
 
         const addresses = [
-          dnGmxSeniorVault.address,
-          dnGmxJuniorVault.address,
-          dnGmxBatchingManager.address,
-          withdrawPeriphery.address,
-          batchingManagerBypass.address,
+          await dnGmxSeniorVault.getAddress(),
+          await dnGmxJuniorVault.getAddress(),
+          await dnGmxBatchingManager.getAddress(),
+          await withdrawPeriphery.getAddress(),
+          await batchingManagerBypass.getAddress(),
         ];
 
         // ensure no addresses are repeated

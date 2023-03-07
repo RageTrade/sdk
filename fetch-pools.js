@@ -1,9 +1,9 @@
-const { providers } = require('ethers');
 const { core, truncate } = require('./dist');
 const sdk = require('./dist');
 
 const { config } = require('dotenv');
 const { writeJson } = require('fs-extra');
+const { toNumber } = require('ethers');
 config();
 
 async function main() {
@@ -48,20 +48,18 @@ async function getPoolsList() {
         );
         const poolContracts = events.map(
           ({ blockNumber, args: { vToken, vPool, vPoolWrapper } }) => {
-            const signerOrProvider =
-              rageTradeFactory.signer ?? rageTradeFactory.provider;
             return {
               vToken: sdk.typechain.VToken__factory.connect(
                 vToken,
-                signerOrProvider
+                rageTradeFactory.runner
               ),
               vPool: sdk.typechain.IUniswapV3Pool__factory.connect(
                 vPool,
-                signerOrProvider
+                rageTradeFactory.runner
               ),
               vPoolWrapper: sdk.typechain.VPoolWrapper__factory.connect(
                 vPoolWrapper,
-                signerOrProvider
+                rageTradeFactory.runner
               ),
               creationBlockNumber: blockNumber,
             };
@@ -69,16 +67,18 @@ async function getPoolsList() {
         );
         poolsListForChain = await Promise.all(
           poolContracts.map(
-            async ({ vToken, vPool, vPoolWrapper, creationBlockNumber }) => ({
-              poolId: truncate(vToken.address),
-              name: await vToken.name(),
-              symbol: await vToken.symbol(),
-              decimals: await vToken.decimals(),
-              vTokenAddress: vToken.address,
-              vPoolAddress: vPool.address,
-              vPoolWrapperAddress: vPoolWrapper.address,
-              creationBlockNumber,
-            })
+            async ({ vToken, vPool, vPoolWrapper, creationBlockNumber }) => {
+              return {
+                poolId: truncate(await vToken.getAddress()),
+                name: await vToken.name(),
+                symbol: await vToken.symbol(),
+                decimals: toNumber(await vToken.decimals()),
+                vTokenAddress: await vToken.getAddress(),
+                vPoolAddress: await vPool.getAddress(),
+                vPoolWrapperAddress: await vPoolWrapper.getAddress(),
+                creationBlockNumber,
+              };
+            }
           )
         );
       } catch (e) {

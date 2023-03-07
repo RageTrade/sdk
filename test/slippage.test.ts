@@ -1,11 +1,9 @@
 import { TickMath } from '@uniswap/v3-sdk';
-import { BigNumber } from 'ethers';
+import { toBigInt } from 'ethers';
 import { sqrtPriceX96ToPrice } from '../dist';
 import { slippageToSqrtPriceLimit } from '../src/';
 
-const MIN_SQRT_RATIO = BigNumber.from(
-  '0x' + TickMath.MIN_SQRT_RATIO.toString(16)
-);
+const MIN_SQRT_RATIO = toBigInt('0x' + TickMath.MIN_SQRT_RATIO.toString(16));
 
 describe('slippage', () => {
   it('works for small slippage', async () => {

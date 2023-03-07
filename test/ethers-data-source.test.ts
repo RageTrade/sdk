@@ -1,4 +1,4 @@
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits, toNumber } from 'ethers';
 import {
   EthersProviderDataSource,
   getProvider,
@@ -25,9 +25,11 @@ describe('ethers data source', () => {
           tricryptoVault.getContractsSync(networkName);
         const {
           result: [accountId],
-        } = await ds.getAccountIdsByAddress(curveYieldStrategy.address);
+        } = await ds.getAccountIdsByAddress(
+          await curveYieldStrategy.getAddress()
+        );
 
-        expect((await curveYieldStrategy.rageAccountNo()).toNumber()).toEqual(
+        expect(toNumber(await curveYieldStrategy.rageAccountNo())).toEqual(
           accountId
         );
       });
@@ -97,7 +99,7 @@ describe('ethers data source', () => {
             parseUsdc('100'),
             6
           );
-          expect(sglpAmount.gt(0)).toBeTruthy();
+          expect(sglpAmount > 0n).toBeTruthy();
         });
       }
 

@@ -43,6 +43,9 @@ describe('find block by timestamp', () => {
       allowFutureTimestamp: true,
     });
     const blockLatest = await arbmain.getBlock('latest');
+    if (!blockLatest) {
+      throw new Error('blockLatest is nullish');
+    }
     expect(Math.abs(block.timestamp - blockLatest.timestamp)).toBeLessThan(100);
   });
 });

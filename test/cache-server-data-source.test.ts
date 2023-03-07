@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits, toNumber } from 'ethers';
 
 import {
   tricryptoVault,
@@ -27,10 +27,10 @@ describe('cache data source', () => {
           getProvider(networkName)
         );
         const resp = await ds.getAccountIdsByAddress(
-          curveYieldStrategy.address
+          await curveYieldStrategy.getAddress()
         );
         expect(resp.result).toEqual([
-          (await curveYieldStrategy.rageAccountNo()).toNumber(),
+          toNumber(await curveYieldStrategy.rageAccountNo()),
         ]);
       });
 

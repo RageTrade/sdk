@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { BigNumberish, toBigInt } from 'ethers';
 import {
   priceToPriceX128,
   priceToSqrtPriceX96,
@@ -19,18 +19,18 @@ describe('price-tick util', () => {
   }> = [
     {
       price: 1,
-      priceX128: BigNumber.from(1).shl(128), // 1n << 128n,
-      sqrtPriceX96: BigNumber.from(1).shl(96), // 1n << 96n,
+      priceX128: toBigInt(1) << 128n, // 1n << 128n,
+      sqrtPriceX96: toBigInt(1) << 96n, // 1n << 96n,
     },
     {
       price: 0.25,
-      priceX128: BigNumber.from(1).shl(126), // 1n << 126n,
-      sqrtPriceX96: BigNumber.from(1).shl(95), // 1n << 95n,
+      priceX128: toBigInt(1) << 126n, // 1n << 126n,
+      sqrtPriceX96: toBigInt(1) << 95n, // 1n << 95n,
     },
     {
       price: 4,
-      priceX128: BigNumber.from(1).shl(130), // 1n << 130n,
-      sqrtPriceX96: BigNumber.from(1).shl(97), // 1n << 97n,
+      priceX128: toBigInt(1) << 130n, // 1n << 130n,
+      sqrtPriceX96: toBigInt(1) << 97n, // 1n << 97n,
     },
   ];
 

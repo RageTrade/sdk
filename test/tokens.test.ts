@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { JsonRpcProvider, Provider } from 'ethers';
 
 import { config } from 'dotenv';
 import { core, tokens, tricryptoVault, gmxProtocol, aave } from '../dist';
@@ -6,16 +6,11 @@ import { core, tokens, tricryptoVault, gmxProtocol, aave } from '../dist';
 config();
 
 describe('tokens', () => {
-  const providers: [string, ethers.providers.Provider][] = [
-    [
-      'arbmain',
-      new ethers.providers.StaticJsonRpcProvider(
-        'https://arb1.arbitrum.io/rpc'
-      ),
-    ],
+  const providers: [string, Provider][] = [
+    ['arbmain', new JsonRpcProvider('https://arb1.arbitrum.io/rpc')],
     [
       'arbgoerli',
-      new ethers.providers.StaticJsonRpcProvider(
+      new JsonRpcProvider(
         'https://arb-goerli.g.alchemy.com/v2/' + process.env.ALCHEMY_KEY
       ),
     ],
@@ -26,7 +21,9 @@ describe('tokens', () => {
       it('usdc is same', async () => {
         const { settlementToken } = await core.getContracts(provider);
         const { usdc } = await tokens.getContracts(provider);
-        expect(settlementToken.address).toEqual(usdc.address);
+        expect(await settlementToken.getAddress()).toEqual(
+          await usdc.getAddress()
+        );
       });
 
       it('crv3 is same', async () => {
@@ -34,7 +31,9 @@ describe('tokens', () => {
           provider
         );
         const { crv3 } = await tokens.getContracts(provider);
-        expect(await curveYieldStrategy.asset()).toEqual(crv3.address);
+        expect(await curveYieldStrategy.asset()).toEqual(
+          await crv3.getAddress()
+        );
       });
 
       // TODO remove if check after mainnet deploy
@@ -42,31 +41,39 @@ describe('tokens', () => {
         it('gmx is same', async () => {
           const gpc = await gmxProtocol.getContracts(provider);
           const tc = await tokens.getContracts(provider);
-          expect(gpc.gmx.address).toEqual(tc.gmx.address);
+          expect(gpc.gmx.getAddress()).toEqual(await tc.gmx.getAddress());
         });
 
         it('aUsdc is proper', async () => {
           const { aUsdc } = await aave.getContracts(provider);
           const { usdc } = await tokens.getContracts(provider);
-          expect(await aUsdc.UNDERLYING_ASSET_ADDRESS()).toEqual(usdc.address);
+          expect(await aUsdc.UNDERLYING_ASSET_ADDRESS()).toEqual(
+            await usdc.getAddress()
+          );
         });
 
         it('aUsdt is proper', async () => {
           const { aUsdt } = await aave.getContracts(provider);
           const { usdt } = await tokens.getContracts(provider);
-          expect(await aUsdt.UNDERLYING_ASSET_ADDRESS()).toEqual(usdt.address);
+          expect(await aUsdt.UNDERLYING_ASSET_ADDRESS()).toEqual(
+            await usdt.getAddress()
+          );
         });
 
         it('aWeth is proper', async () => {
           const { aWeth } = await aave.getContracts(provider);
           const { weth } = await tokens.getContracts(provider);
-          expect(await aWeth.UNDERLYING_ASSET_ADDRESS()).toEqual(weth.address);
+          expect(await aWeth.UNDERLYING_ASSET_ADDRESS()).toEqual(
+            await weth.getAddress()
+          );
         });
 
         it('aWeth is proper', async () => {
           const { aWeth } = await aave.getContracts(provider);
           const { weth } = await tokens.getContracts(provider);
-          expect(await aWeth.UNDERLYING_ASSET_ADDRESS()).toEqual(weth.address);
+          expect(await aWeth.UNDERLYING_ASSET_ADDRESS()).toEqual(
+            await weth.getAddress()
+          );
         });
       }
     });

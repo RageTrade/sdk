@@ -8,11 +8,11 @@ describe('chainlink', () => {
     describe(networkName, () => {
       it('eth price', async () => {
         const { answer } = await ethUsdAggregator.latestRoundData();
-        expect(answer.gt(0)).toBeTruthy();
+        expect(answer > 0n).toBeTruthy();
       });
       it('btc price', async () => {
         const { answer } = await btcUsdAggregator.latestRoundData();
-        expect(answer.gt(0)).toBeTruthy();
+        expect(answer > 0n).toBeTruthy();
       });
     });
   }

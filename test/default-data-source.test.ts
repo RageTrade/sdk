@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { ethers } from 'ethers';
+import { JsonRpcProvider } from 'ethers';
 
 import {
   EthersProviderDataSource,
@@ -12,9 +12,7 @@ config();
 
 jest.setTimeout(200_000);
 
-const provider = new ethers.providers.StaticJsonRpcProvider(
-  'https://arb1.arbitrum.io/rpc'
-);
+const provider = new JsonRpcProvider('https://arb1.arbitrum.io/rpc');
 
 describe('default data source', () => {
   describe('arbmain', () => {
@@ -26,7 +24,7 @@ describe('default data source', () => {
 
       try {
         const resp = await ds.getAccountIdsByAddress(
-          curveYieldStrategy.address
+          await curveYieldStrategy.getAddress()
         );
         expect(resp.result).toEqual([0]);
       } catch (e) {

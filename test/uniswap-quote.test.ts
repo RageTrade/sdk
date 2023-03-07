@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from 'ethers';
+import { concat, toBeHex, toBigInt, Wallet, zeroPadBytes } from 'ethers';
 import {
   core,
   uniswap,
@@ -10,13 +10,12 @@ import {
 } from '../';
 
 import { config } from 'dotenv';
-import { hexZeroPad } from 'ethers/lib/utils';
 
 config();
 
 const arbgoerli = getProvider('arbgoerli');
 
-const wallet = new ethers.Wallet(
+const wallet = new Wallet(
   process.env.PRIVATE_KEY ?? 'pvt key not present, pls enter it in .env file',
   arbgoerli
 );
@@ -30,29 +29,28 @@ describe.skip('Uniswap quote', () => {
     const inputUsdcAmount = parseUsdc('1');
 
     const actualPriceX128 = await curveYieldStrategy.getPriceX128();
-    const expectedOutputAmount = inputUsdcAmount.mul(Q128).div(actualPriceX128);
+    const expectedOutputAmount = (inputUsdcAmount * Q128) / actualPriceX128;
 
-    const actualOutputCrv3 = await uniswapV3QuoterV1
-      .connect(wallet)
-      .callStatic.quoteExactInput(
-        ethers.utils.concat([
-          usdc.address,
-          hexZeroPad(BigNumber.from(500).toHexString(), 3), // uint24
-          usdt.address,
-          hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
-          crv3.address,
+    const actualOutputCrv3 = (
+      (await uniswapV3QuoterV1.connect(wallet)) as any
+    ).quoteExactInput // TODO
+      .staticCall(
+        concat([
+          await usdc.getAddress(),
+          zeroPadBytes(toBeHex(500), 3), // uint24
+          await usdt.getAddress(),
+          zeroPadBytes(toBeHex(3000), 3), // uint24
+          await crv3.getAddress(),
         ]),
         inputUsdcAmount
       );
 
     // actualOutputCrv3 should be within 3% tolerance of expectedOutputAmount
     expect(
-      actualOutputCrv3
-        .sub(expectedOutputAmount)
-        .mul(100)
-        .div(3)
-        .div(expectedOutputAmount)
-        .isZero()
+      ((actualOutputCrv3 - expectedOutputAmount) * 100n) /
+        3n /
+        expectedOutputAmount ===
+        0n
     ).toBe(true);
   });
 
@@ -64,32 +62,31 @@ describe.skip('Uniswap quote', () => {
 
     const usdcAmount = parseUsdc('1');
     const ethPriceX128 = await eth_oracle.getTwapPriceX128(0);
-    const inputEthAmount = usdcAmount.mul(Q128).div(ethPriceX128);
+    const inputEthAmount = (usdcAmount * Q128) / ethPriceX128;
     const crv3UsdPriceX128 = await curveYieldStrategy.getPriceX128();
 
-    const expectedOutputAmount = usdcAmount.mul(Q128).div(crv3UsdPriceX128);
+    const expectedOutputAmount = (usdcAmount * Q128) / crv3UsdPriceX128;
 
-    const actualOutputCrv3 = await uniswapV3QuoterV1
-      .connect(wallet)
-      .callStatic.quoteExactInput(
-        ethers.utils.concat([
-          weth.address,
-          hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
-          usdt.address,
-          hexZeroPad(BigNumber.from(3000).toHexString(), 3), // uint24
-          crv3.address,
+    const actualOutputCrv3 = (
+      (await uniswapV3QuoterV1.connect(wallet)) as any
+    ).quoteExactInput // TODO
+      .staticCall(
+        concat([
+          await weth.getAddress(),
+          zeroPadBytes(toBeHex(3000), 3), // uint24
+          await usdt.getAddress(),
+          zeroPadBytes(toBeHex(3000), 3), // uint24
+          await crv3.getAddress(),
         ]),
         inputEthAmount
       );
 
     // actualOutputCrv3 should be within 3% tolerance of expectedOutputAmount
     expect(
-      actualOutputCrv3
-        .sub(expectedOutputAmount)
-        .mul(100)
-        .div(3)
-        .div(expectedOutputAmount)
-        .isZero()
+      ((actualOutputCrv3 - expectedOutputAmount) * 100n) /
+        3n /
+        expectedOutputAmount ===
+        0n
     ).toBe(true);
   });
 });

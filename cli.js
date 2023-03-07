@@ -3,10 +3,10 @@ const repl = require('repl');
 const ethers = require('ethers');
 
 const mainnet = new ethers.getDefaultProvider();
-const arbmain = new ethers.providers.StaticJsonRpcProvider(
+const arbmain = new ethers.JsonRpcProvider(
   'https://arb-mainnet.g.alchemy.com/v2/gh1-tm4X9f0pxljEGsnFnPe693FZ-gim'
 );
-const arbgoerli = new ethers.providers.StaticJsonRpcProvider(
+const arbgoerli = new ethers.JsonRpcProvider(
   'https://arb-goerli.g.alchemy.com/v2/gh1-tm4X9f0pxljEGsnFnPe693FZ-gim'
 );
 
