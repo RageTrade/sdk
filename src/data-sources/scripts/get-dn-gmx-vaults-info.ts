@@ -34,14 +34,19 @@ export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
   };
   dnGmxBatchingManagerGlp: {
     paused: boolean;
+    depositCap: Amount;
   };
 }
 
 export async function getDnGmxVaultsInfo(
   provider: ethers.providers.Provider
 ): Promise<DnGmxVaultsInfoResult> {
-  const { dnGmxJuniorVault, dnGmxSeniorVault, dnGmxBatchingManager } =
-    await deltaNeutralGmxVaults.getContracts(provider);
+  const {
+    dnGmxJuniorVault,
+    dnGmxSeniorVault,
+    dnGmxBatchingManager,
+    dnGmxBatchingManagerGlp,
+  } = await deltaNeutralGmxVaults.getContracts(provider);
 
   const { aUsdc } = await aave.getContracts(provider);
 
@@ -62,6 +67,9 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager_paused,
     dnGmxBatchingManager_depositCap,
     dnGmxBatchingManager_roundUsdcBalance,
+    // batching manager
+    dnGmxBatchingManagerGlp_paused,
+    dnGmxBatchingManagerGlp_depositCap,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
@@ -99,6 +107,9 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager.paused(),
     dnGmxBatchingManager.depositCap(),
     dnGmxBatchingManager.roundUsdcBalance(),
+    // batching manager glp
+    dnGmxBatchingManagerGlp.paused(),
+    dnGmxBatchingManagerGlp.depositCap(),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
   ] as const);
@@ -169,7 +180,8 @@ export async function getDnGmxVaultsInfo(
       ),
     },
     dnGmxBatchingManagerGlp: {
-      paused: dnGmxBatchingManager_paused,
+      paused: dnGmxBatchingManagerGlp_paused,
+      depositCap: bigNumberToAmount(dnGmxBatchingManagerGlp_depositCap, 18),
     },
   };
 }
