@@ -92,8 +92,8 @@ export async function getVaultInfo(
   }
 
   // share price
-  const assetsPerShareDX = await vault.convertToAssets(
-    parseUnits('1', shareDecimals)
+  const assetsPerShareDX = parseUnits('1', assetDecimals + shareDecimals).div(
+    await vault.convertToShares(parseUnits('1', assetDecimals))
   );
   const assetsPerShare = bigNumberToAmount(assetsPerShareDX, assetDecimals);
   const sharePrice = stringToAmount(
