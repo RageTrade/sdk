@@ -10,6 +10,7 @@ import {
   PoolInfoResult,
   PricesResult,
   VaultInfoResult,
+  GeneralDataResult,
 } from './scripts';
 
 export type MethodNames =
@@ -26,7 +27,8 @@ export type MethodNames =
   | 'getDnGmxVaultsApyBreakdown'
   | 'getDnGmxVaultsMaxDepositWithdraw'
   | 'getGlpMintBurnConversionIntermediate'
-  | 'getGlpMintBurnConversion';
+  | 'getGlpMintBurnConversion'
+  | 'getGeneralData';
 
 export abstract class BaseDataSource {
   _isDataSource: boolean;
@@ -110,6 +112,7 @@ export abstract class BaseDataSource {
   > {
     return this.perform('getDnGmxVaultsApyBreakdown', []);
   }
+
   getDnGmxVaultsMaxDepositWithdraw(): Promise<
     ResultWithMetadata<{
       maxDepositInUsd: string;
@@ -117,6 +120,16 @@ export abstract class BaseDataSource {
     }>
   > {
     return this.perform('getDnGmxVaultsMaxDepositWithdraw', []);
+  }
+
+  getGlpMintBurnConversionIntermediate(): Promise<
+    ResultWithMetadata<MintBurnConversionIntermediateResult>
+  > {
+    return this.perform('getGlpMintBurnConversionIntermediate', []);
+  }
+
+  getGeneralData(): Promise<ResultWithMetadata<GeneralDataResult>> {
+    return this.perform('getGeneralData', []);
   }
 
   perform<MethodName extends MethodNames>(
@@ -190,12 +203,6 @@ export abstract class BaseDataSource {
           ? Math.min(timestamp1, timestamp2)
           : undefined,
     };
-  }
-
-  async getGlpMintBurnConversionIntermediate(): Promise<
-    ResultWithMetadata<MintBurnConversionIntermediateResult>
-  > {
-    return this.perform('getGlpMintBurnConversionIntermediate', []);
   }
 
   async getGlpMintBurnConversion(

@@ -363,4 +363,13 @@ export class CacheServerDataSource extends BaseDataSource {
       >
     >;
   }
+
+  async getGeneralData() {
+    const response = await ethers.utils.fetchJson(
+      `${this._baseUrl}/data/v2/get-general-data?networkName=${this._networkName}`
+    );
+    return getResultWithMetadata(response) as Awaited<
+      ReturnType<InstanceType<typeof BaseDataSource>['getGeneralData']>
+    >;
+  }
 }

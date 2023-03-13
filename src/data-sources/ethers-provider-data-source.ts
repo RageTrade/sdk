@@ -11,6 +11,7 @@ import {
   getPoolInfo,
   getPrices,
   getGlpMintBurnConversionIntermediate,
+  getGeneralData,
 } from './scripts';
 
 export class EthersProviderDataSource extends BaseDataSource {
@@ -76,6 +77,9 @@ export class EthersProviderDataSource extends BaseDataSource {
     return getResultWithMetadata(
       await getGlpMintBurnConversionIntermediate(this._provider)
     );
+  }
+  async getGeneralData() {
+    return getResultWithMetadata(await getGeneralData(this._provider));
   }
 }
 
