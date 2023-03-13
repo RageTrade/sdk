@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { ERC20PresetMinterPauser__factory } from '../../typechain';
 import { IWETH9__factory } from '../../typechain';
 import { newError } from '../../utils/loggers';
@@ -20,6 +21,8 @@ export interface TokenAddresses {
   glpAddress: string;
   sGLPAddress: string;
   fsGLPAddress: string;
+  linkAddress: string;
+  uniAddress: string;
 }
 
 import * as core from './core';
@@ -49,6 +52,8 @@ export function getAddresses(
         glpAddress,
         sGLPAddress,
         fsGLPAddress,
+        linkAddress: '0xf97f4df75117a78c1A5a0DBb814Af92458539FB4',
+        uniAddress: '0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0',
       };
     case 'arbgoerli':
       return {
@@ -62,6 +67,8 @@ export function getAddresses(
         glpAddress,
         sGLPAddress,
         fsGLPAddress,
+        linkAddress: '0x56033E114c61183590d39BA847400F02022Ebe47',
+        uniAddress: ethers.constants.AddressZero, // TODO change
       };
     default:
       throw newError(`token addresses not present for ${networkName} network`);
