@@ -87,10 +87,12 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'previewRedeem(uint256)': FunctionFragment;
     'previewWithdraw(uint256)': FunctionFragment;
     'rebalance()': FunctionFragment;
+    'rebalanceProfit()': FunctionFragment;
     'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,uint16,uint24)': FunctionFragment;
+    'setDirectConversion(bool)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
     'setGmxParams(address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
@@ -154,10 +156,12 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'previewRedeem'
       | 'previewWithdraw'
       | 'rebalance'
+      | 'rebalanceProfit'
       | 'receiveFlashLoan'
       | 'redeem'
       | 'renounceOwnership'
       | 'setAdminParams'
+      | 'setDirectConversion'
       | 'setFeeParams'
       | 'setGmxParams'
       | 'setHedgeParams'
@@ -333,6 +337,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: 'rebalance', values?: undefined): string;
   encodeFunctionData(
+    functionFragment: 'rebalanceProfit',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: 'receiveFlashLoan',
     values: [
       PromiseOrValue<string>[],
@@ -362,6 +370,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setDirectConversion',
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeParams',
@@ -567,6 +579,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'rebalance', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'rebalanceProfit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'receiveFlashLoan',
     data: BytesLike
   ): Result;
@@ -577,6 +593,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setAdminParams',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setDirectConversion',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -666,7 +686,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'ProtocolFeeAccrued(uint256)': EventFragment;
     'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
     'TokenSwapped(address,address,uint256,uint256)': EventFragment;
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
+    'VaultState(uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
@@ -1032,6 +1052,10 @@ export interface VaultStateEventObject {
   eventType: BigNumber;
   btcBorrows: BigNumber;
   ethBorrows: BigNumber;
+  btcPoolAmount: BigNumber;
+  ethPoolAmount: BigNumber;
+  btcTraderOIHedge: BigNumber;
+  ethTraderOIHedge: BigNumber;
   glpPrice: BigNumber;
   glpBalance: BigNumber;
   totalAssets: BigNumber;
@@ -1042,6 +1066,10 @@ export interface VaultStateEventObject {
 }
 export type VaultStateEvent = TypedEvent<
   [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
@@ -1310,6 +1338,10 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    rebalanceProfit(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
@@ -1335,6 +1367,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
       feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1651,6 +1688,10 @@ export interface DnGmxJuniorVault extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  rebalanceProfit(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   receiveFlashLoan(
     tokens: PromiseOrValue<string>[],
     amounts: PromiseOrValue<BigNumberish>[],
@@ -1676,6 +1717,11 @@ export interface DnGmxJuniorVault extends BaseContract {
     newDepositCap: PromiseOrValue<BigNumberish>,
     withdrawFeeBps: PromiseOrValue<BigNumberish>,
     feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setDirectConversion(
+    _useDirectConversion: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1982,6 +2028,8 @@ export interface DnGmxJuniorVault extends BaseContract {
 
     rebalance(overrides?: CallOverrides): Promise<void>;
 
+    rebalanceProfit(overrides?: CallOverrides): Promise<void>;
+
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
@@ -2005,6 +2053,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
       feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2334,10 +2387,14 @@ export interface DnGmxJuniorVault extends BaseContract {
       toQuantity?: null
     ): TokenSwappedEventFilter;
 
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
+    'VaultState(uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
       eventType?: PromiseOrValue<BigNumberish> | null,
       btcBorrows?: null,
       ethBorrows?: null,
+      btcPoolAmount?: null,
+      ethPoolAmount?: null,
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null,
       glpPrice?: null,
       glpBalance?: null,
       totalAssets?: null,
@@ -2350,6 +2407,10 @@ export interface DnGmxJuniorVault extends BaseContract {
       eventType?: PromiseOrValue<BigNumberish> | null,
       btcBorrows?: null,
       ethBorrows?: null,
+      btcPoolAmount?: null,
+      ethPoolAmount?: null,
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null,
       glpPrice?: null,
       glpBalance?: null,
       totalAssets?: null,
@@ -2531,6 +2592,10 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    rebalanceProfit(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
@@ -2556,6 +2621,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
       feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2826,6 +2896,10 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    rebalanceProfit(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
       amounts: PromiseOrValue<BigNumberish>[],
@@ -2851,6 +2925,11 @@ export interface DnGmxJuniorVault extends BaseContract {
       newDepositCap: PromiseOrValue<BigNumberish>,
       withdrawFeeBps: PromiseOrValue<BigNumberish>,
       feeTierWethWbtcPool: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

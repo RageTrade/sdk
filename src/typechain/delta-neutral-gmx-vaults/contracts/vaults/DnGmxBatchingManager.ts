@@ -76,10 +76,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'roundSharesMinted()': FunctionFragment;
     'roundUsdcBalance()': FunctionFragment;
     'setDepositCap(uint256)': FunctionFragment;
+    'setGlp(address)': FunctionFragment;
+    'setGlpBatchingManager(address)': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
     'setParamsV1(address,address)': FunctionFragment;
+    'setTargetAssetCap(uint256)': FunctionFragment;
     'setThresholds(uint256,uint256)': FunctionFragment;
     'slippageThresholdGmxBps()': FunctionFragment;
+    'targetAssetCap()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
     'unpauseDeposit()': FunctionFragment;
@@ -113,10 +117,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
       | 'roundSharesMinted'
       | 'roundUsdcBalance'
       | 'setDepositCap'
+      | 'setGlp'
+      | 'setGlpBatchingManager'
       | 'setKeeper'
       | 'setParamsV1'
+      | 'setTargetAssetCap'
       | 'setThresholds'
       | 'slippageThresholdGmxBps'
+      | 'targetAssetCap'
       | 'transferOwnership'
       | 'unclaimedShares'
       | 'unpauseDeposit'
@@ -216,6 +224,14 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setGlp',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setGlpBatchingManager',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setKeeper',
     values: [PromiseOrValue<string>]
   ): string;
@@ -224,11 +240,19 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setTargetAssetCap',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setThresholds',
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: 'slippageThresholdGmxBps',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'targetAssetCap',
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -327,9 +351,18 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     functionFragment: 'setDepositCap',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'setGlp', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: 'setGlpBatchingManager',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'setParamsV1',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setTargetAssetCap',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -338,6 +371,10 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'slippageThresholdGmxBps',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'targetAssetCap',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -378,6 +415,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'Paused(address)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
+    'TargetAssetCapUpdated(uint256)': EventFragment;
     'ThresholdsUpdated(uint256,uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
   };
@@ -394,6 +432,7 @@ export interface DnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TargetAssetCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
 }
@@ -531,6 +570,17 @@ export type SharesClaimedEvent = TypedEvent<
 
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
+export interface TargetAssetCapUpdatedEventObject {
+  newTargeAssetCap: BigNumber;
+}
+export type TargetAssetCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  TargetAssetCapUpdatedEventObject
+>;
+
+export type TargetAssetCapUpdatedEventFilter =
+  TypedEventFilter<TargetAssetCapUpdatedEvent>;
+
 export interface ThresholdsUpdatedEventObject {
   newSlippageThresholdGmx: BigNumber;
   minUsdcConversionAmount: BigNumber;
@@ -659,6 +709,16 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setGlp(
+      _glp: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setGlpBatchingManager(
+      _glpBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -670,6 +730,11 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
       _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -677,6 +742,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     ): Promise<ContractTransaction>;
 
     slippageThresholdGmxBps(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -795,6 +862,16 @@ export interface DnGmxBatchingManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setGlp(
+    _glp: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setGlpBatchingManager(
+    _glpBatchingManager: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setKeeper(
     _keeper: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -806,6 +883,11 @@ export interface DnGmxBatchingManager extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setTargetAssetCap(
+    _targetAssetCap: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setThresholds(
     _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
     _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -813,6 +895,8 @@ export interface DnGmxBatchingManager extends BaseContract {
   ): Promise<ContractTransaction>;
 
   slippageThresholdGmxBps(overrides?: CallOverrides): Promise<BigNumber>;
+
+  targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -923,6 +1007,16 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setGlp(
+      _glp: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setGlpBatchingManager(
+      _glpBatchingManager: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -934,6 +1028,11 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
       _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -941,6 +1040,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     ): Promise<void>;
 
     slippageThresholdGmxBps(overrides?: CallOverrides): Promise<BigNumber>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -1082,6 +1183,13 @@ export interface DnGmxBatchingManager extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
+    'TargetAssetCapUpdated(uint256)'(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+    TargetAssetCapUpdated(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+
     'ThresholdsUpdated(uint256,uint256)'(
       newSlippageThresholdGmx?: null,
       minUsdcConversionAmount?: null
@@ -1178,6 +1286,16 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setGlp(
+      _glp: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setGlpBatchingManager(
+      _glpBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1189,6 +1307,11 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setThresholds(
       _slippageThresholdGmxBps: PromiseOrValue<BigNumberish>,
       _minUsdcConversionAmount: PromiseOrValue<BigNumberish>,
@@ -1196,6 +1319,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     ): Promise<BigNumber>;
 
     slippageThresholdGmxBps(overrides?: CallOverrides): Promise<BigNumber>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -1313,6 +1438,16 @@ export interface DnGmxBatchingManager extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setGlp(
+      _glp: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setGlpBatchingManager(
+      _glpBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setKeeper(
       _keeper: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1321,6 +1456,11 @@ export interface DnGmxBatchingManager extends BaseContract {
     setParamsV1(
       _weth: PromiseOrValue<string>,
       _rewardsHarvestingRouter: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1333,6 +1473,8 @@ export interface DnGmxBatchingManager extends BaseContract {
     slippageThresholdGmxBps(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

@@ -32,6 +32,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     'getAumInUsdg(bool)': FunctionFragment;
     'getAums()': FunctionFragment;
     'getGlobalShortAveragePrice(address)': FunctionFragment;
+    'glp()': FunctionFragment;
     'gov()': FunctionFragment;
     'lastAddedAt(address)': FunctionFragment;
     'removeLiquidity(address,uint256,uint256,address)': FunctionFragment;
@@ -49,6 +50,7 @@ export interface IGlpManagerInterface extends utils.Interface {
       | 'getAumInUsdg'
       | 'getAums'
       | 'getGlobalShortAveragePrice'
+      | 'glp'
       | 'gov'
       | 'lastAddedAt'
       | 'removeLiquidity'
@@ -94,6 +96,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     functionFragment: 'getGlobalShortAveragePrice',
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: 'glp', values?: undefined): string;
   encodeFunctionData(functionFragment: 'gov', values?: undefined): string;
   encodeFunctionData(
     functionFragment: 'lastAddedAt',
@@ -146,6 +149,7 @@ export interface IGlpManagerInterface extends utils.Interface {
     functionFragment: 'getGlobalShortAveragePrice',
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: 'glp', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'gov', data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: 'lastAddedAt',
@@ -234,6 +238,8 @@ export interface IGlpManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    glp(overrides?: CallOverrides): Promise<[string]>;
+
     gov(overrides?: CallOverrides): Promise<[string]>;
 
     lastAddedAt(
@@ -305,6 +311,8 @@ export interface IGlpManager extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  glp(overrides?: CallOverrides): Promise<string>;
+
   gov(overrides?: CallOverrides): Promise<string>;
 
   lastAddedAt(
@@ -373,6 +381,8 @@ export interface IGlpManager extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    glp(overrides?: CallOverrides): Promise<string>;
 
     gov(overrides?: CallOverrides): Promise<string>;
 
@@ -448,6 +458,8 @@ export interface IGlpManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    glp(overrides?: CallOverrides): Promise<BigNumber>;
+
     gov(overrides?: CallOverrides): Promise<BigNumber>;
 
     lastAddedAt(
@@ -519,6 +531,8 @@ export interface IGlpManager extends BaseContract {
       token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    glp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     gov(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

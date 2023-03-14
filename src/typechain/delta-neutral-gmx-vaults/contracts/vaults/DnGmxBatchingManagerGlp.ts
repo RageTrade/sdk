@@ -75,7 +75,10 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
     'roundSharesMinted()': FunctionFragment;
     'setDepositCap(uint256)': FunctionFragment;
     'setKeeper(address)': FunctionFragment;
+    'setTargetAssetCap(uint256)': FunctionFragment;
     'setThresholds(uint256)': FunctionFragment;
+    'setUsdcBatchingManager(address)': FunctionFragment;
+    'targetAssetCap()': FunctionFragment;
     'transferOwnership(address)': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
     'unpauseDeposit()': FunctionFragment;
@@ -107,7 +110,10 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
       | 'roundSharesMinted'
       | 'setDepositCap'
       | 'setKeeper'
+      | 'setTargetAssetCap'
       | 'setThresholds'
+      | 'setUsdcBatchingManager'
+      | 'targetAssetCap'
       | 'transferOwnership'
       | 'unclaimedShares'
       | 'unpauseDeposit'
@@ -201,8 +207,20 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: 'setTargetAssetCap',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: 'setThresholds',
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setUsdcBatchingManager',
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'targetAssetCap',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'transferOwnership',
@@ -290,7 +308,19 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: 'setKeeper', data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: 'setTargetAssetCap',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'setThresholds',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setUsdcBatchingManager',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'targetAssetCap',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -325,6 +355,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'Paused(address)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
+    'TargetAssetCapUpdated(uint256)': EventFragment;
     'ThresholdsUpdated(uint256)': EventFragment;
     'Unpaused(address)': EventFragment;
   };
@@ -339,6 +370,7 @@ export interface DnGmxBatchingManagerGlpInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Paused'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TargetAssetCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Unpaused'): EventFragment;
 }
@@ -452,6 +484,17 @@ export type SharesClaimedEvent = TypedEvent<
 >;
 
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
+
+export interface TargetAssetCapUpdatedEventObject {
+  newTargeAssetCap: BigNumber;
+}
+export type TargetAssetCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  TargetAssetCapUpdatedEventObject
+>;
+
+export type TargetAssetCapUpdatedEventFilter =
+  TypedEventFilter<TargetAssetCapUpdatedEvent>;
 
 export interface ThresholdsUpdatedEventObject {
   minGlpDepositThreshold: BigNumber;
@@ -581,10 +624,22 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setThresholds(
       _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    setUsdcBatchingManager(
+      _usdcBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -698,10 +753,22 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  setTargetAssetCap(
+    _targetAssetCap: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setThresholds(
     _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  setUsdcBatchingManager(
+    _usdcBatchingManager: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -809,10 +876,22 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setThresholds(
       _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setUsdcBatchingManager(
+      _usdcBatchingManager: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -928,6 +1007,13 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
+    'TargetAssetCapUpdated(uint256)'(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+    TargetAssetCapUpdated(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+
     'ThresholdsUpdated(uint256)'(
       minGlpDepositThreshold?: null
     ): ThresholdsUpdatedEventFilter;
@@ -1023,10 +1109,22 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setThresholds(
       _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    setUsdcBatchingManager(
+      _usdcBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -1136,10 +1234,22 @@ export interface DnGmxBatchingManagerGlp extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTargetAssetCap(
+      _targetAssetCap: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     setThresholds(
       _minGlpDepositThreshold: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    setUsdcBatchingManager(
+      _usdcBatchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    targetAssetCap(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,

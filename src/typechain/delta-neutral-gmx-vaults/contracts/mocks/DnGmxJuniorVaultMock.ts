@@ -119,11 +119,13 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     'rebalanceBorrow(uint256,uint256,uint256,uint256)': FunctionFragment;
     'rebalanceHedge(uint256,uint256)': FunctionFragment;
     'rebalanceProfit(uint256)': FunctionFragment;
+    'rebalanceProfit()': FunctionFragment;
     'receiveFlashLoan(address[],uint256[],uint256[],bytes)': FunctionFragment;
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,uint16,uint24)': FunctionFragment;
     'setBatchingManager(address)': FunctionFragment;
+    'setDirectConversion(bool)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
     'setGmxParams(address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
@@ -228,12 +230,14 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
       | 'rebalanceBeforeShareAllocation'
       | 'rebalanceBorrow'
       | 'rebalanceHedge'
-      | 'rebalanceProfit'
+      | 'rebalanceProfit(uint256)'
+      | 'rebalanceProfit()'
       | 'receiveFlashLoan'
       | 'redeem'
       | 'renounceOwnership'
       | 'setAdminParams'
       | 'setBatchingManager'
+      | 'setDirectConversion'
       | 'setFeeParams'
       | 'setGmxParams'
       | 'setHedgeParams'
@@ -568,8 +572,12 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: 'rebalanceProfit',
+    functionFragment: 'rebalanceProfit(uint256)',
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'rebalanceProfit()',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'receiveFlashLoan',
@@ -605,6 +613,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'setBatchingManager',
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'setDirectConversion',
+    values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeParams',
@@ -982,7 +994,11 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: 'rebalanceProfit',
+    functionFragment: 'rebalanceProfit(uint256)',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'rebalanceProfit()',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1000,6 +1016,10 @@ export interface DnGmxJuniorVaultMockInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: 'setBatchingManager',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'setDirectConversion',
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -1840,8 +1860,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    rebalanceProfit(
+    'rebalanceProfit(uint256)'(
       borrowValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    'rebalanceProfit()'(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1875,6 +1899,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     setBatchingManager(
       _batchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -2408,8 +2437,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  rebalanceProfit(
+  'rebalanceProfit(uint256)'(
     borrowValue: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  'rebalanceProfit()'(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -2443,6 +2476,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
   setBatchingManager(
     _batchingManager: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setDirectConversion(
+    _useDirectConversion: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -2960,10 +2998,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    rebalanceProfit(
+    'rebalanceProfit(uint256)'(
       borrowValue: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    'rebalanceProfit()'(overrides?: CallOverrides): Promise<void>;
 
     receiveFlashLoan(
       tokens: PromiseOrValue<string>[],
@@ -2993,6 +3033,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     setBatchingManager(
       _batchingManager: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -3660,8 +3705,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    rebalanceProfit(
+    'rebalanceProfit(uint256)'(
       borrowValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    'rebalanceProfit()'(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -3695,6 +3744,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     setBatchingManager(
       _batchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -4168,8 +4222,12 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    rebalanceProfit(
+    'rebalanceProfit(uint256)'(
       borrowValue: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    'rebalanceProfit()'(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -4203,6 +4261,11 @@ export interface DnGmxJuniorVaultMock extends BaseContract {
 
     setBatchingManager(
       _batchingManager: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setDirectConversion(
+      _useDirectConversion: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
