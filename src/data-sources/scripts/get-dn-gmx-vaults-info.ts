@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from 'ethers';
 import { formatEther, formatUnits, parseEther } from 'ethers/lib/utils';
-import { aave, deltaNeutralGmxVaults } from '../../contracts';
+import { aave, deltaNeutralGmxVaults, gmxProtocol } from '../../contracts';
 import { Amount, bigNumberToAmount, safeDiv } from '../../utils';
 import { DnGmxVaultsInfoFastResult } from './get-dn-gmx-vaults-info-fast';
 
@@ -36,6 +36,7 @@ export interface DnGmxVaultsInfoResult extends DnGmxVaultsInfoFastResult {
     paused: boolean;
     depositCap: Amount;
   };
+  __debug?: any;
 }
 
 export async function getDnGmxVaultsInfo(
@@ -49,6 +50,7 @@ export async function getDnGmxVaultsInfo(
   } = await deltaNeutralGmxVaults.getContracts(provider);
 
   const { aUsdc } = await aave.getContracts(provider);
+  const { glpManager, fsGLP } = await gmxProtocol.getContracts(provider);
 
   const [
     // junior vault
@@ -58,6 +60,7 @@ export async function getDnGmxVaultsInfo(
     dnGmxJuniorVault_getUsdcBorrowed,
     dnGmxJuniorVault_getPrice_false,
     dnGmxJuniorVault_getPrice_true,
+    dnGmxJuniorVault_totalAssets,
     // senior vault
     dnGmxSeniorVault_totalUsdcBorrowed,
     dnGmxSeniorVault_totalAssets,
@@ -67,9 +70,13 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager_paused,
     dnGmxBatchingManager_depositCap,
     dnGmxBatchingManager_roundUsdcBalance,
+    dnGmxBatchingManager_targetAssetCap,
+    dnGmxBatchingManager_roundGlpStaked,
     // batching manager
     dnGmxBatchingManagerGlp_paused,
     dnGmxBatchingManagerGlp_depositCap,
+    dnGmxBatchingManagerGlp_roundAssetBalance,
+    dnGmxBatchingManagerGlp_targetAssetCap,
     // other
     aUsdc_balanceOf_dnGmxSeniorVault,
   ] = await Promise.all([
@@ -98,6 +105,7 @@ export async function getDnGmxVaultsInfo(
     dnGmxJuniorVault.getUsdcBorrowed(),
     dnGmxJuniorVault.getPrice(false),
     dnGmxJuniorVault.getPrice(true),
+    dnGmxJuniorVault.totalAssets(),
     // senior vault
     dnGmxSeniorVault.totalUsdcBorrowed(),
     dnGmxSeniorVault.totalAssets(),
@@ -107,9 +115,13 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager.paused(),
     dnGmxBatchingManager.depositCap(),
     dnGmxBatchingManager.roundUsdcBalance(),
+    dnGmxBatchingManager.targetAssetCap(),
+    dnGmxBatchingManager.roundGlpStaked(),
     // batching manager glp
     dnGmxBatchingManagerGlp.paused(),
     dnGmxBatchingManagerGlp.depositCap(),
+    dnGmxBatchingManagerGlp.roundAssetBalance(),
+    dnGmxBatchingManagerGlp.targetAssetCap(),
     // other
     aUsdc.balanceOf(dnGmxSeniorVault.address),
   ] as const);
@@ -137,6 +149,7 @@ export async function getDnGmxVaultsInfo(
   const seniorVault_ethRewardsSplitRate = Number(
     formatUnits(dnGmxSeniorVault_getEthRewardsSplitRate, 30)
   );
+
   return {
     juniorVault: {
       currentExposureInGlp: {
@@ -149,7 +162,6 @@ export async function getDnGmxVaultsInfo(
         btcD8: dnGmxJuniorVault_getCurrentBorrows.currentBtcBorrow,
         ethD18: dnGmxJuniorVault_getCurrentBorrows.currentEthBorrow,
       },
-      // check with finquant, done, awaiting findev
       currentBorrowValueD6: dnGmxJuniorVault_getUsdcBorrowed,
       ethRewardsSplitRate: 1 - seniorVault_ethRewardsSplitRate,
       assetPriceMinimized: bigNumberToAmount(
@@ -173,7 +185,19 @@ export async function getDnGmxVaultsInfo(
     },
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,
-      depositCap: bigNumberToAmount(dnGmxBatchingManager_depositCap, 6),
+      depositCap: bigNumberToAmount(
+        min(
+          dnGmxBatchingManager_depositCap,
+          await glpToUsdc(
+            dnGmxBatchingManager_targetAssetCap.sub(
+              dnGmxJuniorVault_totalAssets
+                .add(dnGmxBatchingManagerGlp_roundAssetBalance)
+                .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+            )
+          )
+        ),
+        6
+      ),
       roundUsdcBalance: bigNumberToAmount(
         dnGmxBatchingManager_roundUsdcBalance,
         6
@@ -181,7 +205,69 @@ export async function getDnGmxVaultsInfo(
     },
     dnGmxBatchingManagerGlp: {
       paused: dnGmxBatchingManagerGlp_paused,
-      depositCap: bigNumberToAmount(dnGmxBatchingManagerGlp_depositCap, 18),
+      depositCap: bigNumberToAmount(
+        min(
+          dnGmxBatchingManagerGlp_depositCap,
+          dnGmxBatchingManagerGlp_targetAssetCap.sub(
+            dnGmxJuniorVault_totalAssets
+              .add(dnGmxBatchingManagerGlp_roundAssetBalance)
+              .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+              .sub(dnGmxBatchingManager_roundGlpStaked)
+          )
+        ),
+        18
+      ),
+    },
+    __debug: {
+      // junior vault
+      dnGmxJuniorVault_getOptimalBorrows_of_totalAssets,
+      dnGmxJuniorVault_getCurrentBorrows,
+      dnGmxJuniorVault_dnUsdcDeposited,
+      dnGmxJuniorVault_getUsdcBorrowed,
+      dnGmxJuniorVault_getPrice_false,
+      dnGmxJuniorVault_getPrice_true,
+      dnGmxJuniorVault_totalAssets,
+      // senior vault
+      dnGmxSeniorVault_totalUsdcBorrowed,
+      dnGmxSeniorVault_totalAssets,
+      dnGmxSeniorVault_maxUtilizationBps,
+      dnGmxSeniorVault_getEthRewardsSplitRate,
+      // batching manager
+      dnGmxBatchingManager_paused,
+      dnGmxBatchingManager_depositCap,
+      dnGmxBatchingManager_roundUsdcBalance,
+      dnGmxBatchingManager_targetAssetCap,
+      dnGmxBatchingManager_roundGlpStaked,
+      // batching manager
+      dnGmxBatchingManagerGlp_paused,
+      dnGmxBatchingManagerGlp_depositCap,
+      dnGmxBatchingManagerGlp_roundAssetBalance,
+      dnGmxBatchingManagerGlp_targetAssetCap,
+      // other
+      aUsdc_balanceOf_dnGmxSeniorVault,
     },
   };
+
+  async function usdcToGlp(amount: BigNumber) {
+    // aum is in 1e30
+    const aum = await glpManager.getAum(false);
+    // totalSupply is in 1e18
+    const totalSupply = await fsGLP.totalSupply();
+
+    // 6 + 18 + 24 - 30 = 18 (glp decimals)
+    return amount.mul(totalSupply).mul(BigNumber.from(10).pow(24)).div(aum);
+  }
+
+  async function glpToUsdc(amount: BigNumber) {
+    // aum is in 1e30
+    const aum = await glpManager.getAum(false);
+    // totalSupply is in 1e18
+    const totalSupply = await fsGLP.totalSupply();
+
+    return amount.mul(aum).div(totalSupply).div(BigNumber.from(10).pow(24));
+  }
+}
+
+function min(a: BigNumber, b: BigNumber) {
+  return a.gt(b) ? b : a;
 }
