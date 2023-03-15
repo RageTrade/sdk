@@ -7,7 +7,7 @@ import DnGmxBatchingManagerGlpLogicDeployment from '../../../deployments/delta-n
 import DnGmxJuniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxJuniorVault.json';
 import DnGmxJuniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxJuniorVaultLogic.json';
 import DnGmxJuniorVaultManagerLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxJuniorVaultManagerLibrary.json';
-import QuoterLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/arbmain/QuoterLibrary.json';
+import QuoterLibraryDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/QuoterLibrary.json';
 import DnGmxSeniorVaultDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxSeniorVault.json';
 import DnGmxSeniorVaultLogicDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/DnGmxSeniorVaultLogic.json';
 import WithdrawPeripheryDeployment from '../../../deployments/delta-neutral-gmx-vaults/mainnetfork/WithdrawPeriphery.json';
