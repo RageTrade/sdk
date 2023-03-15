@@ -45,6 +45,10 @@ export declare namespace DnGmxJuniorVaultManager {
 
 export interface DnGmxJuniorVaultInterface extends utils.Interface {
   functions: {
+    '_previewDeposit(uint256)': FunctionFragment;
+    '_previewMint(uint256)': FunctionFragment;
+    '_previewRedeem(uint256)': FunctionFragment;
+    '_previewWithdraw(uint256)': FunctionFragment;
     'allowance(address,address)': FunctionFragment;
     'approve(address,uint256)': FunctionFragment;
     'asset()': FunctionFragment;
@@ -92,7 +96,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'redeem(uint256,address,address)': FunctionFragment;
     'renounceOwnership()': FunctionFragment;
     'setAdminParams(address,address,uint256,uint16,uint24)': FunctionFragment;
-    'setDirectConversion(bool)': FunctionFragment;
+    'setDirectConversion(bool,bool)': FunctionFragment;
     'setFeeParams(uint16,address)': FunctionFragment;
     'setGmxParams(address)': FunctionFragment;
     'setHedgeParams(address,address,uint256,address)': FunctionFragment;
@@ -114,6 +118,10 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | '_previewDeposit'
+      | '_previewMint'
+      | '_previewRedeem'
+      | '_previewWithdraw'
       | 'allowance'
       | 'approve'
       | 'asset'
@@ -181,6 +189,22 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
       | 'withdrawFees'
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: '_previewDeposit',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: '_previewMint',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: '_previewRedeem',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: '_previewWithdraw',
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
   encodeFunctionData(
     functionFragment: 'allowance',
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
@@ -373,7 +397,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: 'setDirectConversion',
-    values: [PromiseOrValue<boolean>]
+    values: [PromiseOrValue<boolean>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
     functionFragment: 'setFeeParams',
@@ -464,6 +488,22 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: '_previewDeposit',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: '_previewMint',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: '_previewRedeem',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: '_previewWithdraw',
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: 'allowance', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'approve', data: BytesLike): Result;
   decodeFunctionResult(functionFragment: 'asset', data: BytesLike): Result;
@@ -660,6 +700,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
     'AdminParamsUpdated(address,address,uint256,address,uint16)': EventFragment;
     'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
+    'AssetSlippage(address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxSeniorVaultUpdated(address)': EventFragment;
@@ -692,6 +733,7 @@ export interface DnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'AssetSlippage'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
@@ -756,6 +798,17 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export interface AssetSlippageEventObject {
+  user: string;
+  slippage: BigNumber;
+}
+export type AssetSlippageEvent = TypedEvent<
+  [string, BigNumber],
+  AssetSlippageEventObject
+>;
+
+export type AssetSlippageEventFilter = TypedEventFilter<AssetSlippageEvent>;
 
 export interface DepositEventObject {
   caller: string;
@@ -1113,6 +1166,26 @@ export interface DnGmxJuniorVault extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    _previewDeposit(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewMint(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewRedeem(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewWithdraw(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -1371,7 +1444,8 @@ export interface DnGmxJuniorVault extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setDirectConversion(
-      _useDirectConversion: PromiseOrValue<boolean>,
+      _useDirectConversionBurn: PromiseOrValue<boolean>,
+      _useDirectConversionMint: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1466,6 +1540,26 @@ export interface DnGmxJuniorVault extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  _previewDeposit(
+    assets: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
+  _previewMint(
+    shares: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
+  _previewRedeem(
+    shares: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
+  _previewWithdraw(
+    assets: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
 
   allowance(
     owner: PromiseOrValue<string>,
@@ -1721,7 +1815,8 @@ export interface DnGmxJuniorVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setDirectConversion(
-    _useDirectConversion: PromiseOrValue<boolean>,
+    _useDirectConversionBurn: PromiseOrValue<boolean>,
+    _useDirectConversionMint: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1817,6 +1912,26 @@ export interface DnGmxJuniorVault extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    _previewDeposit(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewMint(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewRedeem(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    _previewWithdraw(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -2057,7 +2172,8 @@ export interface DnGmxJuniorVault extends BaseContract {
     ): Promise<void>;
 
     setDirectConversion(
-      _useDirectConversion: PromiseOrValue<boolean>,
+      _useDirectConversionBurn: PromiseOrValue<boolean>,
+      _useDirectConversionMint: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -2174,6 +2290,15 @@ export interface DnGmxJuniorVault extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    'AssetSlippage(address,uint256)'(
+      user?: PromiseOrValue<string> | null,
+      slippage?: null
+    ): AssetSlippageEventFilter;
+    AssetSlippage(
+      user?: PromiseOrValue<string> | null,
+      slippage?: null
+    ): AssetSlippageEventFilter;
 
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
@@ -2422,6 +2547,26 @@ export interface DnGmxJuniorVault extends BaseContract {
   };
 
   estimateGas: {
+    _previewDeposit(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    _previewMint(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    _previewRedeem(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    _previewWithdraw(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -2625,7 +2770,8 @@ export interface DnGmxJuniorVault extends BaseContract {
     ): Promise<BigNumber>;
 
     setDirectConversion(
-      _useDirectConversion: PromiseOrValue<boolean>,
+      _useDirectConversionBurn: PromiseOrValue<boolean>,
+      _useDirectConversionMint: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -2722,6 +2868,26 @@ export interface DnGmxJuniorVault extends BaseContract {
   };
 
   populateTransaction: {
+    _previewDeposit(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    _previewMint(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    _previewRedeem(
+      shares: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    _previewWithdraw(
+      assets: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     allowance(
       owner: PromiseOrValue<string>,
       spender: PromiseOrValue<string>,
@@ -2929,7 +3095,8 @@ export interface DnGmxJuniorVault extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setDirectConversion(
-      _useDirectConversion: PromiseOrValue<boolean>,
+      _useDirectConversionBurn: PromiseOrValue<boolean>,
+      _useDirectConversionMint: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -1736,10 +1736,10 @@
     "@uniswap/v3-core" "https://github.com/Uniswap/v3-core#6562c52e8f75f0c10f9deaf44861847585fc8129"
     "@uniswap/v3-periphery" "https://github.com/Uniswap/v3-periphery#b325bb0905d922ae61fcc7df85ee802e8df5e96c"
 
-"@ragetrade/delta-neutral-gmx-vaults@^1.0.0-parallel-arbmain.8":
-  version "1.0.0-parallel-arbmain.8"
-  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.0-parallel-arbmain.8.tgz#c74a5f44213f50dd67ffceb65b8f8f5a2b1bfb28"
-  integrity sha512-bgPPgsZ9fgGCwTeFmSDq/7a0mAWvoJ1rj1sTfQMOoW8MGLByhUhJQlnuW86ngYGKep4TBW3WWGM/EgrO2i5Vug==
+"@ragetrade/delta-neutral-gmx-vaults@^1.0.0-parallel-arbmain.9":
+  version "1.0.0-parallel-arbmain.9"
+  resolved "https://registry.yarnpkg.com/@ragetrade/delta-neutral-gmx-vaults/-/delta-neutral-gmx-vaults-1.0.0-parallel-arbmain.9.tgz#1a1c21f4883ab0d957a86d913a988c27a9400c37"
+  integrity sha512-ur6FMwFspDF4XvC18aVkm1I/A0knn/aK1YFlAIfKtaambLJ1dxJVM/uvc2f8fdFXoy74RldIic2ENfehJQEjrA==
   dependencies:
     "@aave/core-v3" "^1.17.2"
     "@aave/periphery-v3" "^1.19.2"

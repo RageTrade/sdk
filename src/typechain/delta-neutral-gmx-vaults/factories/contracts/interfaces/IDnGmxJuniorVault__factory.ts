@@ -228,6 +228,25 @@ const _abi = [
       {
         indexed: true,
         internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'slippage',
+        type: 'uint256',
+      },
+    ],
+    name: 'AssetSlippage',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
         name: 'caller',
         type: 'address',
       },

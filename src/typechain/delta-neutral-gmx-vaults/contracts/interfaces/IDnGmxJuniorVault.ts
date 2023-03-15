@@ -291,6 +291,7 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
     'AdminParamsUpdated(address,address,uint256,address,uint16)': EventFragment;
     'AllowancesGranted()': EventFragment;
     'Approval(address,address,uint256)': EventFragment;
+    'AssetSlippage(address,uint256)': EventFragment;
     'Deposit(address,address,uint256,uint256)': EventFragment;
     'DepositCapUpdated(uint256)': EventFragment;
     'DnGmxSeniorVaultUpdated(address)': EventFragment;
@@ -314,6 +315,7 @@ export interface IDnGmxJuniorVaultInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'AdminParamsUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'AllowancesGranted'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Approval'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'AssetSlippage'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'Deposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DepositCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'DnGmxSeniorVaultUpdated'): EventFragment;
@@ -369,6 +371,17 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export interface AssetSlippageEventObject {
+  user: string;
+  slippage: BigNumber;
+}
+export type AssetSlippageEvent = TypedEvent<
+  [string, BigNumber],
+  AssetSlippageEventObject
+>;
+
+export type AssetSlippageEventFilter = TypedEventFilter<AssetSlippageEvent>;
 
 export interface DepositEventObject {
   caller: string;
@@ -1024,6 +1037,15 @@ export interface IDnGmxJuniorVault extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    'AssetSlippage(address,uint256)'(
+      user?: PromiseOrValue<string> | null,
+      slippage?: null
+    ): AssetSlippageEventFilter;
+    AssetSlippage(
+      user?: PromiseOrValue<string> | null,
+      slippage?: null
+    ): AssetSlippageEventFilter;
 
     'Deposit(address,address,uint256,uint256)'(
       caller?: PromiseOrValue<string> | null,
