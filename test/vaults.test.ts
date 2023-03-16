@@ -17,12 +17,12 @@ const skipIf: any = {
     mainnetfork: true,
   },
   dn_gmx_senior: {
-    arbmain: true,
     arbgoerli: true,
+    mainnetfork: true,
   },
   dn_gmx_junior: {
-    arbmain: true,
     arbgoerli: true,
+    mainnetfork: true,
   },
 };
 
