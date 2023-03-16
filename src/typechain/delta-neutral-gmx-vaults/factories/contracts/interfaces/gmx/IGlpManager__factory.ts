@@ -173,6 +173,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: 'glp',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'gov',
     outputs: [
       {

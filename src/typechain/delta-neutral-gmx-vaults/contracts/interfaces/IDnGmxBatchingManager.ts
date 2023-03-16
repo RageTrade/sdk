@@ -47,6 +47,8 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'dnGmxJuniorVaultGlpBalance()': FunctionFragment;
     'executeBatch(uint128)': FunctionFragment;
     'roundDeposits(uint256)': FunctionFragment;
+    'roundGlpStaked()': FunctionFragment;
+    'roundUsdcBalance()': FunctionFragment;
     'unclaimedShares(address)': FunctionFragment;
     'usdcBalance(address)': FunctionFragment;
   };
@@ -59,6 +61,8 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
       | 'dnGmxJuniorVaultGlpBalance'
       | 'executeBatch'
       | 'roundDeposits'
+      | 'roundGlpStaked'
+      | 'roundUsdcBalance'
       | 'unclaimedShares'
       | 'usdcBalance'
   ): FunctionFragment;
@@ -86,6 +90,14 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: 'roundDeposits',
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'roundGlpStaked',
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: 'roundUsdcBalance',
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: 'unclaimedShares',
@@ -118,6 +130,14 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: 'roundGlpStaked',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: 'roundUsdcBalance',
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: 'unclaimedShares',
     data: BytesLike
   ): Result;
@@ -136,6 +156,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
     'ParamsV1Updated(address,address)': EventFragment;
     'PartialBatchDeposit(uint256,uint256,uint256)': EventFragment;
     'SharesClaimed(address,address,uint256)': EventFragment;
+    'TargetAssetCapUpdated(uint256)': EventFragment;
     'ThresholdsUpdated(uint256,uint256)': EventFragment;
   };
 
@@ -148,6 +169,7 @@ export interface IDnGmxBatchingManagerInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: 'ParamsV1Updated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'PartialBatchDeposit'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'SharesClaimed'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: 'TargetAssetCapUpdated'): EventFragment;
   getEvent(nameOrSignatureOrTopic: 'ThresholdsUpdated'): EventFragment;
 }
 
@@ -258,6 +280,17 @@ export type SharesClaimedEvent = TypedEvent<
 
 export type SharesClaimedEventFilter = TypedEventFilter<SharesClaimedEvent>;
 
+export interface TargetAssetCapUpdatedEventObject {
+  newTargeAssetCap: BigNumber;
+}
+export type TargetAssetCapUpdatedEvent = TypedEvent<
+  [BigNumber],
+  TargetAssetCapUpdatedEventObject
+>;
+
+export type TargetAssetCapUpdatedEventFilter =
+  TypedEventFilter<TargetAssetCapUpdatedEvent>;
+
 export interface ThresholdsUpdatedEventObject {
   newSlippageThresholdGmx: BigNumber;
   minUsdcConversionAmount: BigNumber;
@@ -325,6 +358,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[IDnGmxBatchingManager.RoundDepositStructOutput]>;
 
+    roundGlpStaked(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    roundUsdcBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     unclaimedShares(
       account: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -362,6 +399,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
     overrides?: CallOverrides
   ): Promise<IDnGmxBatchingManager.RoundDepositStructOutput>;
 
+  roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
+
+  roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
   unclaimedShares(
     account: PromiseOrValue<string>,
     overrides?: CallOverrides
@@ -398,6 +439,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<IDnGmxBatchingManager.RoundDepositStructOutput>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
+
+    roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     unclaimedShares(
       account: PromiseOrValue<string>,
@@ -502,6 +547,13 @@ export interface IDnGmxBatchingManager extends BaseContract {
       claimAmount?: null
     ): SharesClaimedEventFilter;
 
+    'TargetAssetCapUpdated(uint256)'(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+    TargetAssetCapUpdated(
+      newTargeAssetCap?: null
+    ): TargetAssetCapUpdatedEventFilter;
+
     'ThresholdsUpdated(uint256,uint256)'(
       newSlippageThresholdGmx?: null,
       minUsdcConversionAmount?: null
@@ -538,6 +590,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<BigNumber>;
+
+    roundUsdcBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     unclaimedShares(
       account: PromiseOrValue<string>,
@@ -578,6 +634,10 @@ export interface IDnGmxBatchingManager extends BaseContract {
       round: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    roundGlpStaked(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    roundUsdcBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     unclaimedShares(
       account: PromiseOrValue<string>,

@@ -26,7 +26,7 @@ export interface DnGmxJuniorVaultManagerInterface extends utils.Interface {
     'ProtocolFeeAccrued(uint256)': EventFragment;
     'RewardsHarvested(uint256,uint256,uint256,uint256,uint256,uint256)': EventFragment;
     'TokenSwapped(address,address,uint256,uint256)': EventFragment;
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
+    'VaultState(uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256,uint256,int256,uint256,uint256,uint256)': EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: 'GlpSwapped'): EventFragment;
@@ -92,6 +92,10 @@ export interface VaultStateEventObject {
   eventType: BigNumber;
   btcBorrows: BigNumber;
   ethBorrows: BigNumber;
+  btcPoolAmount: BigNumber;
+  ethPoolAmount: BigNumber;
+  btcTraderOIHedge: BigNumber;
+  ethTraderOIHedge: BigNumber;
   glpPrice: BigNumber;
   glpBalance: BigNumber;
   totalAssets: BigNumber;
@@ -102,6 +106,10 @@ export interface VaultStateEventObject {
 }
 export type VaultStateEvent = TypedEvent<
   [
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    BigNumber,
     BigNumber,
     BigNumber,
     BigNumber,
@@ -193,10 +201,14 @@ export interface DnGmxJuniorVaultManager extends BaseContract {
       toQuantity?: null
     ): TokenSwappedEventFilter;
 
-    'VaultState(uint256,uint256,uint256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
+    'VaultState(uint256,uint256,uint256,uint256,uint256,int256,int256,uint256,uint256,uint256,int256,uint256,uint256,uint256)'(
       eventType?: PromiseOrValue<BigNumberish> | null,
       btcBorrows?: null,
       ethBorrows?: null,
+      btcPoolAmount?: null,
+      ethPoolAmount?: null,
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null,
       glpPrice?: null,
       glpBalance?: null,
       totalAssets?: null,
@@ -209,6 +221,10 @@ export interface DnGmxJuniorVaultManager extends BaseContract {
       eventType?: PromiseOrValue<BigNumberish> | null,
       btcBorrows?: null,
       ethBorrows?: null,
+      btcPoolAmount?: null,
+      ethPoolAmount?: null,
+      btcTraderOIHedge?: null,
+      ethTraderOIHedge?: null,
       glpPrice?: null,
       glpBalance?: null,
       totalAssets?: null,

@@ -53,6 +53,27 @@ const _abi = [
     type: 'error',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'totalAssetsDeposited',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'depositAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'targetAssetCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'TargetAssetCapBreached',
+    type: 'error',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -233,6 +254,19 @@ const _abi = [
       {
         indexed: false,
         internalType: 'uint256',
+        name: 'newTargeAssetCap',
+        type: 'uint256',
+      },
+    ],
+    name: 'TargetAssetCapUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
         name: 'minGlpDepositThreshold',
         type: 'uint256',
       },
@@ -319,6 +353,19 @@ const _abi = [
     name: 'executeBatch',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'roundAssetBalance',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
