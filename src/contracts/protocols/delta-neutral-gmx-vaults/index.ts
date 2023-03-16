@@ -89,6 +89,10 @@ export function getContractsSync(
       deployments.DnGmxTraderHedgeStrategyDeployment.address,
       signerOrProvider
     ),
+    dnGmxTraderHedgeStrategyLogic: DnGmxTraderHedgeStrategy__factory.connect(
+      deployments.DnGmxTraderHedgeStrategyLogicDeployment.address,
+      signerOrProvider
+    ),
     withdrawPeriphery: WithdrawPeriphery__factory.connect(
       deployments.WithdrawPeripheryDeployment.address,
       signerOrProvider
