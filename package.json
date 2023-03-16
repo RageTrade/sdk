@@ -2,7 +2,7 @@
   "name": "@ragetrade/sdk",
   "author": "LeadDev",
   "homepage": "https://github.com/ragetrade/sdk#readme",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "repository": "https://github.com/ragetrade/sdk.git",
   "license": "MIT",
   "main": "dist/index.js",
