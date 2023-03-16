@@ -89,13 +89,6 @@ export {
   IRewardRouterV2,
 } from './delta-neutral-gmx-vaults';
 
-export {
-  JITManager__factory,
-  DnGmxRouter__factory,
-  JITManager,
-  DnGmxRouter,
-} from './delta-neutral-gmx-jit';
-
 export { IUniswapV3Factory__factory, IUniswapV3Factory } from './uniswap-core';
 export {
   INonfungiblePositionManager__factory,
