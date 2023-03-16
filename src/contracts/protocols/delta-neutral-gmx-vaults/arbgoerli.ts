@@ -19,28 +19,23 @@ export function getDeployments(): DnGmxVaultDeployments {
     DepositPeripheryDeployment,
     DnGmxBatchingManagerDeployment,
     DnGmxBatchingManagerLogicDeployment,
-    // TODO remove these when we have the contracts deployed
-    DnGmxBatchingManagerGlpDeployment: {
-      address: ethers.constants.AddressZero,
-    },
-    DnGmxBatchingManagerGlpLogicDeployment: {
-      address: ethers.constants.AddressZero,
-    },
+    DnGmxBatchingManagerGlpDeployment: _default(),
+    DnGmxBatchingManagerGlpLogicDeployment: _default(),
     DnGmxJuniorVaultDeployment,
     DnGmxJuniorVaultLogicDeployment,
     DnGmxJuniorVaultManagerLibraryDeployment,
-    QuoterLibraryDeployment: {
-      address: ethers.constants.AddressZero,
-    },
+    QuoterLibraryDeployment: _default(),
     DnGmxSeniorVaultDeployment,
     DnGmxSeniorVaultLogicDeployment,
-    DnGmxTraderHedgeStrategyDeployment: {
-      address: ethers.constants.AddressZero,
-    },
-    DnGmxTraderHedgeStrategyLogicDeployment: {
-      address: ethers.constants.AddressZero,
-    },
+    DnGmxTraderHedgeStrategyDeployment: _default(),
+    DnGmxTraderHedgeStrategyLogicDeployment: _default(),
     WithdrawPeripheryDeployment,
     ProxyAdmin,
+  };
+}
+
+function _default() {
+  return {
+    address: ethers.constants.AddressZero,
   };
 }
