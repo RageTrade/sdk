@@ -186,13 +186,16 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManager: {
       paused: dnGmxBatchingManager_paused,
       depositCap: bigNumberToAmount(
-        min(
-          dnGmxBatchingManager_depositCap,
-          await glpToUsdc(
-            dnGmxBatchingManager_targetAssetCap.sub(
-              dnGmxJuniorVault_totalAssets
-                .add(dnGmxBatchingManagerGlp_roundAssetBalance)
-                .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+        max(
+          ethers.constants.Zero,
+          min(
+            dnGmxBatchingManager_depositCap,
+            await glpToUsdc(
+              dnGmxBatchingManager_targetAssetCap.sub(
+                dnGmxJuniorVault_totalAssets
+                  .add(dnGmxBatchingManagerGlp_roundAssetBalance)
+                  .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+              )
             )
           )
         ),
@@ -206,13 +209,16 @@ export async function getDnGmxVaultsInfo(
     dnGmxBatchingManagerGlp: {
       paused: dnGmxBatchingManagerGlp_paused,
       depositCap: bigNumberToAmount(
-        min(
-          dnGmxBatchingManagerGlp_depositCap,
-          dnGmxBatchingManagerGlp_targetAssetCap.sub(
-            dnGmxJuniorVault_totalAssets
-              .add(dnGmxBatchingManagerGlp_roundAssetBalance)
-              .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
-              .sub(dnGmxBatchingManager_roundGlpStaked)
+        max(
+          ethers.constants.Zero,
+          min(
+            dnGmxBatchingManagerGlp_depositCap,
+            dnGmxBatchingManagerGlp_targetAssetCap.sub(
+              dnGmxJuniorVault_totalAssets
+                .add(dnGmxBatchingManagerGlp_roundAssetBalance)
+                .add(await usdcToGlp(dnGmxBatchingManager_roundUsdcBalance))
+                .sub(dnGmxBatchingManager_roundGlpStaked)
+            )
           )
         ),
         18
@@ -270,4 +276,8 @@ export async function getDnGmxVaultsInfo(
 
 function min(a: BigNumber, b: BigNumber) {
   return a.gt(b) ? b : a;
+}
+
+function max(a: BigNumber, b: BigNumber) {
+  return a.lt(b) ? b : a;
 }
