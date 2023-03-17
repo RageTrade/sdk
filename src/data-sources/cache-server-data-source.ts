@@ -360,6 +360,7 @@ export class CacheServerDataSource extends BaseDataSource {
       initialAmount: BigNumber.from(result.initialAmount),
       usdgSupply: BigNumber.from(result.usdgSupply),
       usdcWeight: BigNumber.from(result.usdcWeight),
+      wethWeight: BigNumber.from(result.wethWeight ?? 0),
       totalWeights: BigNumber.from(result.totalWeights),
       feeBasisPoints: BigNumber.from(result.feeBasisPoints),
       taxBasisPoints: BigNumber.from(result.taxBasisPoints),

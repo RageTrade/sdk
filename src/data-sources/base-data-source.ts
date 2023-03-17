@@ -207,13 +207,15 @@ export abstract class BaseDataSource {
 
   async getGlpMintBurnConversion(
     dollarValueD18: BigNumber,
-    isUsdcToGlp: boolean
+    isTokenToGlp: boolean,
+    tokenName: 'usdc' | 'weth' = 'usdc'
   ): Promise<ResultWithMetadata<number>> {
     const {
       result: {
         initialAmount,
         usdgSupply,
         usdcWeight,
+        wethWeight,
         totalWeights,
         feeBasisPoints,
         taxBasisPoints,
@@ -223,13 +225,15 @@ export abstract class BaseDataSource {
 
     let nextAmount = initialAmount.add(dollarValueD18);
 
-    if (!isUsdcToGlp) {
+    if (!isTokenToGlp) {
       nextAmount = dollarValueD18.gt(initialAmount)
         ? BigNumber.from(0)
         : initialAmount.sub(dollarValueD18);
     }
 
-    const targetAmount = usdgSupply.mul(usdcWeight).div(totalWeights);
+    const targetAmount = usdgSupply
+      .mul(tokenName === 'usdc' ? usdcWeight : wethWeight)
+      .div(totalWeights);
 
     if (!targetAmount || targetAmount.eq(0)) {
       return returnResult(feeBasisPoints.toNumber());

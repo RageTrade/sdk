@@ -11,6 +11,7 @@ export interface MintBurnConversionIntermediateResult {
   initialAmount: BigNumber;
   usdgSupply: BigNumber;
   usdcWeight: BigNumber;
+  wethWeight: BigNumber;
   totalWeights: BigNumber;
   feeBasisPoints: BigNumber;
   taxBasisPoints: BigNumber;
@@ -50,6 +51,7 @@ export async function getGlpMintBurnConversionIntermediate(
 
   const totalWeights = await gmx.gmxUnderlyingVault.totalTokenWeights();
   const usdcWeight = await gmx.gmxUnderlyingVault.tokenWeights(tk.usdc.address);
+  const wethWeight = await gmx.gmxUnderlyingVault.tokenWeights(tk.weth.address);
 
   const usdgSupply = await usdg.totalSupply();
 
@@ -61,6 +63,7 @@ export async function getGlpMintBurnConversionIntermediate(
     initialAmount,
     usdgSupply,
     usdcWeight,
+    wethWeight,
     totalWeights,
     feeBasisPoints,
     taxBasisPoints,
