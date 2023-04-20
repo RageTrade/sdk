@@ -100,6 +100,7 @@ export class CacheServerDataSource extends BaseDataSource {
       realTwapPrice: result.realTwapPrice,
       virtualTwapPrice: result.virtualTwapPrice,
       fundingRate: result.fundingRate,
+      markPrice24HourOld: result.markPrice24HourOld,
 
       realSqrtPriceX96: BigNumber.from(result.realSqrtPriceX96),
       virtualSqrtPriceX96: BigNumber.from(result.virtualSqrtPriceX96),
